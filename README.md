@@ -24,10 +24,10 @@ experience in Bangladesh.
 Project-Overview
 ----------------
 CareHub BD is a comprehensive platform designed to solve the common
-challenges faced by salon customers in Bangladesh. It allows users to easily find, book,
-and manage salon services with customizable options. By providing advanced search
+challenges faced by salon and parlour customers in Bangladesh. It allows users to easily find, book,
+and manage salon and parlour services with customizable options. By providing advanced search
 and filtering, real-time booking management, expert selection, and communication
-tools, CareantHub BD ensures a seamless experience for both customers and shop
+tools, CareHub BD ensures a seamless experience for both customers and shop
 owners. The platform's focus on convenience, transparency, and user satisfaction
 makes it a transformative solution for the salon industry.
 
