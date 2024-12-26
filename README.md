@@ -10,7 +10,7 @@
 
 ## Project Description
 CareHub:
-Motivation behind the project CareHub
+Motivation behind the project
 ----------------------------------------
 Our project addresses the prevalent issues faced by people in Bangladesh when
 visiting salons. Long wait times, uncertainty about whether a shop is open, or
