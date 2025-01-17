@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/location.css" />
+    
+</head>
+
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header id="navbar" class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="home.html" class="t text-2xl font-bold text-pink-700">RadiantHub BD</a>
+            <nav class="space-x-6">
+                <a href="home.html" class="text-gray-700 hover:text-pink-600">Home</a>
+                <a href="service.html" class="text-gray-700 hover:text-pink-600">Services</a>
+                <a href="book_now.html" class="text-gray-700 hover:text-pink-600">Book Now</a>
+                <a href="location.html" class="text-gray-700 hover:text-pink-600">Locations</a>
+                <a href="contact_us.html" class="text-gray-700 hover:text-pink-600">Contact Us</a>
+                <a href="login.html" class="text-gray-700 hover:text-pink-600">Login</a>
+            </nav>
+        </div>
+    </header>
+    <!-- empty space creation -->
+    <section class="py-6 bg-gray-100">
+        <div>&nbsp;</div>
+        <!-- <div>&nbsp;</div> -->
+    </section>
+    <section id="wat">
+        <div class="container mx-auto px-4">
+            <section class="py-12">
+                <div class="container mx-auto px-4 text-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Stay Updated with the Latest Beauty Trends and
+                        Offers
+                    </h2>
+                    <form action="search_result_of_city.html" method="POST">
+                        <input type="text" name="search" placeholder="Enter your nearby place"
+                            class="p-2 w-full md:w-1/3 rounded-lg text-gray-800">
+                        <button type="submit"
+                            class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700">Search</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <body class="bg-gray-100">
+            <div class="container mx-auto py-12">
+                <h2 class="text-4xl font-bold text-gray-800 text-center mb-8">Browse by City</h2>
+
+                <!-- City selection -->
+                <div class="flex justify-center space-x-4 city-list mb-8">
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Dhaka">
+                        <button type="submit" class="bg-transparent text-black">Dhaka</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Chittagong">
+                        <button type="submit" class="bg-transparent text-black">Chittagong</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Rajshahi">
+                        <button type="submit" class="bg-transparent text-black">Rajshahi</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Barisal">
+                        <button type="submit" class="bg-transparent text-black">Barisal</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Khulna">
+                        <button type="submit" class="bg-transparent text-black">Khulna</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Mymensingh">
+                        <button type="submit" class="bg-transparent text-black">Mymensingh</button>
+                    </form>
+
+                    <form action="search_by_city.html" method="POST">
+                        <input type="hidden" name="city" value="Rangpur">
+                        <button type="submit" class="bg-transparent text-black">Rangpur</button>
+                    </form>
+                </div>
+
+                <!-- City services -->
+                <!-- Fetching and listing all cities available in the database -->
+                <div class="grid grid-cols-5 gap-8 city-section text-left center">
+                        <div>
+                            <h3 class="text-lg font-bold">Dhaka</h3>
+                            <ul>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li> 
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold">Dhaka</h3>
+                            <ul>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li> 
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold">Dhaka</h3>
+                            <ul>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li> 
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold">Dhaka</h3>
+                            <ul>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li> 
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold">Dhaka</h3>
+                            <ul>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li> 
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                                <li><a href="#" class="text-gray-700">Dhaka </a></li>   
+                            </ul>
+                        </div>
+                </div>
+            </div>
+        </body>
+        <!-- </section> -->
+        <!-- don't do anything here -->
+        <div class="wave water"></div>
+        <div class="wave water"></div>
+        <div class="wave water"></div>
+        <div class="wave water"></div>
+        <!-- don't do anything here -->
+
+    </section>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="home.html" class="hover:text-gray-300">Home</a></li>
+                        <li><a href="service.html" class="hover:text-gray-300">Services</a></li>
+                        <li><a href="book_now.html" class="hover:text-gray-300">Book Now</a></li>
+                        <li><a href="location.html" class="hover:text-gray-300">Locations</a></li>
+                        <li><a href="contact_us.html" class="hover:text-gray-300">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Contact Information -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
+                    <p class="text-gray-400">Madani avenue</p>
+                    <p class="text-gray-400">radienthub@admin.com</p>
+                    <p class="text-gray-400">+8801794706582</p>
+                </div>
+                <!-- Social Media Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Follow Us</h3>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.facebook.com/" class="hover:text-gray-300">Facebook</a></li>
+                        <li><a href="https://www.instagram.com" class="hover:text-gray-300">Instagram</a></li>
+                        <li><a href="https://www.twitter.com" class="hover:text-gray-300">Twitter</a></li>
+                    </ul>
+                </div>
+                <!-- Newsletter Signup -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Subscribe to Our Newsletter</h3>
+                    <form action="#" class="flex">
+                        <input type="email" placeholder="Enter your email"
+                            class="p-2 w-full rounded-l-lg text-gray-800 bg-gray-700">
+                        <button type="submit"
+                            class="p-2 bg-pink-600 text-white rounded-r-lg hover:bg-pink-700">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

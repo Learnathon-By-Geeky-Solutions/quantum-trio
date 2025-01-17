@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
 }
-
 .bg-black {
     opacity: 0.8;
 }
@@ -89,7 +88,6 @@ h1 {
     -ms-text-overflow: none;
     scrollbar-width: none;
 }
-
 #wat {
     position: relative;
     width: 100%;
@@ -183,3 +181,11 @@ h1 {
         background-position-x: -1000px;
     }
 }
+
+
+
+
+
+
+
+
