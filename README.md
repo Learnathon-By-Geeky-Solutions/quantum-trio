@@ -34,57 +34,25 @@ makes it a transformative solution for the salon industry.
 
 Features
 --------
-1. User Authentication: Separate login/signup for
-customers and shop profiles.
-2. Customer Profile: Manage personal details, bookings,
-and preferences.
-3. Shop Profile: Maintain shop information, services, and
-worker details.
-4. Salon Search: Find salons and parlors nearest to your
-location.
-5. Advanced Filtering: Search based on services, ratings,
-reviews, and location.
-6. Ratings and Reviews: Discover the best salons based
-on customer feedback.
-7. Service-Based Search: Find salons based on specific
-services offered.
-8. Location-Based Search: Identify the nearest, most
-suitable salon for you.
-9. Advanced Booking: Book appointments in advance
-with customizable time slots.
-10. Service Provider Selection: Choose your preferred
-barber or expert for each service.
-11. Slot Selection: Book desired time slots by day or date.
-12. Payment Slip: Auto-generation of payment slips for
-confirmation.
-13. In-App Chat: Direct communication with shop owners
-for queries or service details.
-14. Service Expert Selection: Choose the best specialist
-based on services offered.
-15. Booking Reports: Detailed booking reports for both
-shop owners and customers.
-16. Order Confirmation: Dual consent system for both
-customer and shop owner.
-17. Post-Service Ratings: Rate your barber or expert after
-the service.
-18. Shop Dashboard: Manage shop information, services,
-and workers.
-19. Booking Management: Shop owners can manage
-upcoming bookings efficiently.
-20. Booking History: View booking history through a
-calendar interface.
-21. Worker Management: Handle staff and their
-availability.
-22. Notifications: Instant notifications for every new
-booking.
-23. Admin Management: Comprehensive admin panel for
-system control and management.
+1. User Authentication: Separate login/signup for customers and shop profiles.
+2. Customer Profile: Manage personal details, bookings, and preferences.
+3. Shop Profile: Maintain shop information, services, and worker details.
+4. Advanced Filtering: Search based on services, ratings, reviews, and location.
+5. Ratings and Reviews: Discover the best salons/parlour based on customer feedback.
+6. Advanced Booking: Book appointments in advance with customizable date and time slots.
+7. Service Provider Selection: Choose your preferred expert for each of your desired service.
+8. Payment Slip: Auto-generation of payment slips for confirmation.
+9. In-App Chat: Direct communication with shop manager for queries or service details.
+0. Booking Reports: Detailed booking reports for both shop owners and customers.
+11. Order Confirmation: Dual consent system for both customer and shop owner that means a order will show completed only if both customer and shop owner/expert consent that the order have been completed.
+12. Post-Service Ratings: Rate your barber or expert after the service. Only when the order became completed, you can rate the shop or the expert to prevent fraud or fake rating. 
+13. Shop Dashboard: Manage shop information, services, bookings and workers.
+14. Notifications: Instant notification for every new booking also there will have a reminder for upcoming order.
+15. Admin Management: Comprehensive admin panel for system control and management.
 
 
-## Getting Started
-1. Clone the repository
-2. Install dependencies
-3. Start development
+## Initial Entity Relationship Diagram(ER)
+![alt text](CareHUB.drawio.png)
 
 ## Development Guidelines
 1. Create feature branches
