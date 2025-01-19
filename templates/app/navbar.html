@@ -1,0 +1,49 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: cursive;
+    }
+    .text-gray-700 {
+        font-weight: bolder;
+    }
+    
+    .t {
+        font-size: 2px;
+    }
+    h1 {
+        font-weight: 800;
+    }
+    #navbar {
+        position: fixed;
+        z-index: 1;
+        width: 100%;
+        height: 69px;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+ 
+</style>
+</head>
+<body>
+<!-- Header -->
+<header id="navbar" class="bg-white shadow">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="home" class="t text-2xl font-bold text-pink-700">CareHUB BD</a>
+        <nav class="space-x-6">
+            <a href="home" class="text-gray-700 hover:text-pink-600">Home</a>
+            <a href="service" class="text-gray-700 hover:text-pink-600">Services</a>
+            <a href="booknow" class="text-gray-700 hover:text-pink-600">Book Now</a>
+            <a href="location" class="text-gray-700 hover:text-pink-600">Locations</a>
+            <a href="contact" class="text-gray-700 hover:text-pink-600">Contact Us</a>
+            <a href="login" class="text-gray-700 hover:text-pink-600">Login</a>
+        </nav>
+    </div>
+</header>
+
+</body>
+</html>

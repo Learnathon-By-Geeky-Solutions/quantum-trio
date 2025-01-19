@@ -2,7 +2,9 @@
     opacity: 0.8;
 
 }
-
+body{
+    background-color: fuchsia;
+}
 .bg-gray-100 {
     background-color: #F8F6FF;
 }

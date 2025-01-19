@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 
 <head>
@@ -6,25 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CareHUB home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
     
 </head>
 
 <body class="bg-gray-100">
-    <!-- Header -->
-    <header id="navbar" class="bg-white shadow">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="home.html" class="t text-2xl font-bold text-pink-700">RadiantHub BD</a>
-            <nav class="space-x-6">
-                <a href="home.html" class="text-gray-700 hover:text-pink-600">Home</a>
-                <a href="service.html" class="text-gray-700 hover:text-pink-600">Services</a>
-                <a href="book_now.html" class="text-gray-700 hover:text-pink-600">Book Now</a>
-                <a href="location.html" class="text-gray-700 hover:text-pink-600">Locations</a>
-                <a href="contact_us.html" class="text-gray-700 hover:text-pink-600">Contact Us</a>
-                <a href="login.html" class="text-gray-700 hover:text-pink-600">Login</a>
-            </nav>
-        </div>
-    </header>
+    {% include "app/navbar.html" %}
     <section id="wat">
         <!-- <section class="bg-cover bg-center h-screen" id="background">Hero Section -->
         <div class="bg-black-400 bg-opacity-70 h-full flex items-center justify-center" id="backgroundinside">
@@ -35,7 +23,7 @@
                 <p id="weight" class="mt-4 text-lg md:text-xl">
                     Your beauty journey starts here
                 </p>
-                <form action="search.html" method="POST">
+                <form action="search" method="POST">
                     <div class="mt-6">
                         <input type="text" required placeholder="Enter your location or salon name"
                             class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 sha" name="search" />
@@ -100,20 +88,21 @@
                     <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
                         <div class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                             onclick="scrollCarousel('carousel-3', -300)">
-                            <img src="image/icon/left-arrow1.png" alt="Left Arrow"
+                            <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Left Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </div>
                     </div>
                     <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-3">
                         <div class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                             onclick="scrollCarousel('carousel-3', 300)">
-                            <img src="image/icon/right-arrow.png" alt="Right Arrow"
+                            <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Right Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        
 
         <script>
             const recommendations = [
@@ -123,7 +112,7 @@
                     reviews: 120,
                     location: "Dhaka",
                     category: "Men's Haircut",
-                    image: "image/shop/1.jpg",
+                    image: "{% static 'app/image/shop/1.jpg' %}",
                     link: "saloon_profile/dashboard.html?shop_id=1",
                 },
                 {
@@ -132,7 +121,7 @@
                     reviews: 200,
                     location: "Chittagong",
                     category: "Women's Beauty",
-                    image: "image/shop/2.jpg",
+                    image: "{% static 'app/image/shop/2.jpg' %}",
                     link: "saloon_profile/dashboard.html?shop_id=2",
                 },
                 {
@@ -141,7 +130,7 @@
                     reviews: 150,
                     location: "Sylhet",
                     category: "Spa Services",
-                    image: "image/shop/3.avif",
+                    image: "{% static 'app/image/shop/3.avif' %}",
                     link: "saloon_profile/dashboard.html?shop_id=3",
                 },
                 {
@@ -150,16 +139,16 @@
                     reviews: 180,
                     location: "Rajshahi",
                     category: "Men's Grooming",
-                    image: "image/shop/1.jpg",
+                    image: "{% static 'app/image/shop/1.jpg' %}",
                     link: "saloon_profile/dashboard.html?shop_id=4",
                 },
                 {
-                    title: "Urban Style Salon",
+                    title: "Easy for Gentle",
                     rating: 4.6,
                     reviews: 180,
                     location: "Rajshahi",
                     category: "Men's Grooming",
-                    image: "image/shop/2.jpg",
+                    image: "{% static 'app/image/shop/2.jpg' %}",
                     link: "saloon_profile/dashboard.html?shop_id=4",
                 },
                
@@ -207,10 +196,10 @@
                     <div id="carousel-1" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
                         
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items.html">
+                            <a href="explore_by_items">
                                
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/2.jpg"
+                                    <img src="{% static 'app/image/item/2.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -222,7 +211,7 @@
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items.html">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/1.jpg"
+                                    <img src="{% static 'app/image/item/1.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -235,7 +224,7 @@
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items.html">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/3.jpg"
+                                    <img src="{% static 'app/image/item/3.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -244,11 +233,11 @@
                                 </h3>
                             </a>
                         </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items.html">
         
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/1.jpg"
+                                    <img src="{% static 'app/image/item/4.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -257,11 +246,11 @@
                                 </h3>
                             </a>
                         </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items.html">
         
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/1.jpg"
+                                    <img src="{% static 'app/image/item/5.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -279,7 +268,7 @@
                         <button id="leftBtn-1"
                             class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 focus:outline-none"
                             onclick="scrollCarousel('carousel-1', -300)">
-                            <img src="image/icon/left-arrow1.png" alt="Left Arrow"
+                            <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Left Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </button>
                     </div>
@@ -287,7 +276,7 @@
                         <button id="rightBtn-1"
                             class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 focus:outline-none"
                             onclick="scrollCarousel('carousel-1', 300)">
-                            <img src="image/icon/right-arrow.png" alt="Right Arrow"
+                            <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Right Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </button>
                     </div>
@@ -305,7 +294,7 @@
                             <a href="explore_by_items.html">
                                
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/5.jpg"
+                                    <img src="{% static 'app/image/item/5.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -318,7 +307,7 @@
                             <a href="explore_by_items.html">
                                 
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/4.jpg"
+                                    <img src="{% static 'app/image/item/4.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -331,7 +320,7 @@
                             <a href="explore_by_items.html">
         
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/1.jpg"
+                                    <img src="{% static 'app/image/item/1.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -344,7 +333,7 @@
                             <a href="explore_by_items.html">
         
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/2.jpg"
+                                    <img src="{% static 'app/image/item/2.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -357,7 +346,7 @@
                             <a href="explore_by_items.html">
         
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="image/item/1.jpg"
+                                    <img src="{% static 'app/image/item/1.jpg' %}"
                                         alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
@@ -373,7 +362,7 @@
                         <button id="leftBtn-2"
                             class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 focus:outline-none"
                             onclick="scrollCarousel('carousel-2', -300)">
-                            <img src="image/icon/left-arrow1.png" alt="Left Arrow"
+                            <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Left Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </button>
                     </div>
@@ -381,7 +370,7 @@
                         <button id="rightBtn-2"
                             class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 focus:outline-none"
                             onclick="scrollCarousel('carousel-2', 300)">
-                            <img src="image/icon/right-arrow.png" alt="Right Arrow"
+                            <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Right Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </button>
                     </div>
@@ -481,7 +470,7 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="image/customer/1.jpg" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/1.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
                                     <p class="text-gray-600 text-sm">Dhaka</p>
@@ -499,7 +488,7 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="image/customer/2.jpg" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/2.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Asfak Shahriur</p>
                                     <p class="text-gray-600 text-sm">Lakkhipur</p>
@@ -516,7 +505,7 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="image/customer/4.jpg" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/4.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Israt Jahan Reshma</p>
                                     <p class="text-gray-600 text-sm">Gopalgonj</p>
@@ -533,7 +522,7 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="image/customer/3.jpg" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/3.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
                                     <p class="text-gray-600 text-sm">Dhaka</p>
@@ -546,7 +535,7 @@
                             <div class="absolute inset-y-0 left-0 flex items-center">
                                 <div class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                                     onclick="scrollCarousel('carousel-7', -300)">
-                                    <img src="image/icon/left-arrow1.png" alt="Right Arrow"
+                                    <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Right Arrow"
                                         class="w-8 h-8 opacity-75 hover:opacity-100" />
                                 </div>
                             </div>
@@ -555,7 +544,7 @@
                             <div class="absolute inset-y-0 right-0 flex items-center">
                                 <div class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                                     onclick="scrollCarousel('carousel-7', 300)">
-                                    <img src="image/icon/right-arrow.png" alt="Right Arrow"
+                                    <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Right Arrow"
                                         class="w-8 h-8 opacity-75 hover:opacity-100" />
                                 </div>
                             </div>
@@ -700,68 +689,9 @@
             });
         </script>
     </section>
-
+    {% include "app/footer.html" %}
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-4 gap-8">
-                <!-- Quick Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="home.html" class="hover:text-gray-300">Home</a></li>
-                        <li>
-                            <a href="service.html" class="hover:text-gray-300">Services</a>
-                        </li>
-                        <li>
-                            <a href="book_now.html" class="hover:text-gray-300">Book Now</a>
-                        </li>
-                        <li>
-                            <a href="location.html" class="hover:text-gray-300">Locations</a>
-                        </li>
-                        <li>
-                            <a href="contact_us.html" class="hover:text-gray-300">Contact Us</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Contact Information -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
-                    <p class="text-gray-400">Madani avenue</p>
-                    <p class="text-gray-400">CareHUB@admin.com</p>
-                    <p class="text-gray-400">+8801794706582</p>
-                </div>
-                <!-- Social Media Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Follow Us</h3>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="https://www.facebook.com" class="hover:text-gray-300">Facebook</a>
-                        </li>
-                        <li>
-                            <a href="https://www.instagram.com" class="hover:text-gray-300">Instagram</a>
-                        </li>
-                        <li>
-                            <a href="https://www.twitter.com" class="hover:text-gray-300">Twitter</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Newsletter Signup -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">
-                        Subscribe to Our Newsletter
-                    </h3>
-                    <form action="" method="POST" class="flex">
-                        <input type="email" placeholder="Enter your email"
-                            class="p-2 w-full rounded-l-lg text-gray-800 bg-gray-700" />
-                        <button type="submit" class="p-2 bg-pink-600 text-white rounded-r-lg hover:bg-pink-700">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </footer>
+    
 </body>
 
 </html>
