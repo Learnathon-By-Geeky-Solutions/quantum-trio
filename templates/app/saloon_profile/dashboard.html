@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'app/css/salon-profile/dashboard.css' %}" />
+
+</head>
+
+<body class="bg-gray-100">
+
+    {% include "app/navbar.html" %}
+
+    <!-- empty space creation -->
+    <section class="py-6 bg-gray-100">
+        <div>&nbsp;</div>
+    </section>
+
+    <!-- Salon Profile Section -->
+    <section class="py-6 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="flex flex-col md:flex-row">
+                    <img src="{% static 'app/image/shop/1.jpg' %}"
+                        alt="shop name"
+                        class="w-full md:w-1/3 rounded-lg shadow-lg object-cover">
+                    <div class="md:ml-6 mt-6 md:mt-5">
+                        <h1 class="text-3xl font-bold text-gray-800">Elite barbar Shop</h1>
+                        <p class="text-2xl mt-3 text-sm text-gray-900">Welcome to our Shop</p>
+                        <p class="mt-2 text-sm text-gray-600">Comilla</p>
+                        <p class="mt-2 text-sm text-gray-600">Shop landmark 1</p>
+                        <p class="mt-2 text-sm text-gray-600">shop landmark 2</p>
+                        <p class="mt-2 text-sm text-gray-600">shop landmark 3</p>
+                        <div class="mt-4">
+                            <span class="font-bold text-yellow-500 text-lg">3.5 &#9733;</span>
+                            <span class="text-sm text-gray-600">(6 Reviews)</span>
+                            <span class="text-sm text-gray-600">For Male Only</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Salon gallery Section -->
+    <section class="photo-slider">
+        <div class="slider-container p-100">
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Body Treatments</div>
+                    <img src="{% static 'app/image/services photo/1.jpg' %}" alt="Body Treatments">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Educational Services</div>
+                    <img src="{% static 'app/image/services photo/2.jpg' %}" alt="Educational Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Facial Services</div>
+                    <img src="{% static 'app/image/services photo/3.jpg' %}" alt="Facial Services">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Grooming Services (For Men)</div>
+                    <img src="{% static 'app/image/services photo/10.avif' %}" alt="Grooming Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Hair Services</div>
+                    <img src="{% static 'app/image/services photo/11.avif' %}" alt="Hair Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Miscellaneous Services</div>
+                    <img src="{% static 'app/image/services photo/3.jpg' %}" alt="Miscellaneous Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Nail Services</div>
+                    <img src="{% static 'app/image/services photo/4.jpg' %}" alt="Nail Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Retail Products</div>
+                    <img src="{% static 'app/image/services photo/5.jpg' %}" alt="Retail Products" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Spa Services</div>
+                    <img src="{% static 'app/image/services photo/6.jpg' %}" alt="Spa Services" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Specialized Treatments</div>
+                    <img src="{% static 'app/image/services photo/12.avif' %}" alt="Specialized Treatments" class="fit-img">
+                </a>
+            </div>
+            <div class="slide">
+                <a href="">
+                    <div class="under_img">Wellness Services</div>
+                    <img src="{% static 'app/image/services photo/7.jpg' %}" alt="Wellness Services" class="fit-img">
+                </a>
+            </div>
+        </div>
+        <button class="prev" onclick="changeSlide(-1)"><img src="{% static 'app/image/icon/left-arrow1.png' %}"
+        alt="Right Arrow" class="w-8 h-8 opacity-75 hover:opacity-100"></button>
+        <button class="next" onclick="changeSlide(1)"><img src="{% static 'app/image/icon/right-arrow.png' %}"
+        alt="Right Arrow" class="w-8 h-8 opacity-75 hover:opacity-100"></button>
+    </section>
+
+
+
+
+
+    <!-- chatwithsalonn -->
+    
+    
+    
+    
+    <div class="chat-wrapper" id="chat-wrapper">
+        <div class="chat-circle" id="chat-circle">
+            <i class="fas fa-comments"></i>
+        </div>
+    
+        <div class="chat-container hidden" id="chat-container">
+            <input type="hidden" id="chat_shop_id" name="chat_shop_id" value="' . $shop_id . '">
+            <div class="title">💬 Let's Chat</div>
+            <div class="chat" id="chat"></div>
+            <div class="input-container">
+                <input type="text" class="input" id="input" placeholder="Type your message here...">
+                <button class="button" id="button">
+                    <i class="fa-brands fa-telegram"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    <!-- chat_javascript -->
+    <script>
+        function displayUserMessage(message) {
+            let chat = document.getElementById("chat");
+            let userMessage = document.createElement("div");
+            userMessage.classList.add("message");
+            userMessage.classList.add("user");
+            let userAvatar = document.createElement("div");
+            userAvatar.classList.add("avatar");
+            let userText = document.createElement("div");
+            userText.classList.add("text");
+            userText.innerHTML = message;
+            userMessage.appendChild(userAvatar);
+            userMessage.appendChild(userText);
+            chat.appendChild(userMessage);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Display the bot message on the chat
+        function displayBotMessage(message) {
+            let chat = document.getElementById("chat");
+            let botMessage = document.createElement("div");
+            botMessage.classList.add("message");
+            botMessage.classList.add("bot");
+            let botAvatar = document.createElement("div");
+            botAvatar.classList.add("avatar");
+            let botText = document.createElement("div");
+            botText.classList.add("text");
+            botText.innerHTML = message;
+            botMessage.appendChild(botAvatar);
+            botMessage.appendChild(botText);
+            chat.appendChild(botMessage);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Send the user message and get the bot response
+        function sendMessage() {
+            let input = document.getElementById("input").value;
+            if (input) {
+                let shop_id = document.getElementById("chat_shop_id").value; // Get shop_id
+                // alert(shop_id); // For debugging
+                // alert(input); // For debugging
+                displayUserMessage(input); // Display user message
+
+                // Create the JSON data to send
+                let data = JSON.stringify({
+                    message: input,
+                    shop_id: shop_id
+                });
+
+                // Send the message to the server via AJAX
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "send_message.php", true);
+                xhr.setRequestHeader("Content-Type", "application/json"); // Set content type to JSON
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        let response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            // Display bot message after successful message insertion
+                            setTimeout(function () {
+                                displayBotMessage("Thank you for your interest in our salon. We will reach you soon.");
+                            }, 1000);
+                        } else {
+                            console.error("Error sending message:", response.error);
+                        }
+                    }
+                };
+
+                xhr.send(data); // Send the JSON data
+                document.getElementById("input").value = ""; // Clear input field
+            }
+        }
+
+
+
+
+        // Add a click event listener to the button
+        document.getElementById("button").addEventListener("click", sendMessage);
+
+        // Add a keypress event listener to the input
+        document.getElementById("input").addEventListener("keypress", function (event) {
+            if (event.keyCode == 13) {
+                sendMessage();
+            }
+        });
+    </script>
+    <script>
+        // Toggle chat container visibility
+        document.getElementById('chat-circle').addEventListener('click', function () {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.classList.toggle('hidden');
+        });
+
+        // Make chat-wrapper (circle and chat window) draggable
+        let chatWrapper = document.getElementById('chat-wrapper');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        chatWrapper.addEventListener('mousedown', function (e) {
+            isDragging = true;
+            offsetX = e.clientX - chatWrapper.getBoundingClientRect().left;
+            offsetY = e.clientY - chatWrapper.getBoundingClientRect().top;
+        });
+
+        document.addEventListener('mousemove', function (e) {
+            if (isDragging) {
+                chatWrapper.style.left = e.clientX - offsetX + 'px';
+                chatWrapper.style.top = e.clientY - offsetY + 'px';
+                chatWrapper.style.position = 'fixed';
+            }
+        });
+
+        document.addEventListener('mouseup', function () {
+            isDragging = false;
+        });
+    </script>
+
+
+
+
+    <script>
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+
+            // Reset the slider if index is out of bounds
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+
+            // Move slider to show the current slide
+            const sliderContainer = document.querySelector('.slider-container');
+            sliderContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Auto-slide functionality
+        setInterval(function () {
+            changeSlide(1);
+        }, 10000); // Auto-slide every 5 seconds
+
+        // Show the first slide on load
+        showSlide(currentSlide);
+    </script>
+
+    <!-- Photo Gallary -->
+
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Our Services</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+               
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-pink-600 text-5xl mb-4">💇‍♂️</div>
+                    <h3 class="text-xl font-semibold\">Hair Cut</h3>
+                    <p class="mt-2 text-sm text-gray-600\"></p>
+                    <p class="mt-2 text-lg font-bold text-gray-800\">300 BDT</p>
+
+                
+                    <form action="book_step_1.php" method="POST">
+                    {% comment %} <input type=\"hidden\" name=\"item_id\" value=item_id>
+                    <input type=\"hidden\" name=\"item_description\" value=Facial Service>
+                    <input type=\"hidden\" name=\"item_price\" value=item_price>
+                    <input type=\"hidden\" name=\"shop_id\" value=shop_id> {% endcomment %}
+                    <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-lg mt-4">Book Now</button>
+                    </form>  
+                   </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-pink-600 text-5xl mb-4">💇‍♂️</div>
+                <h3 class="text-xl font-semibold\">Facial</h3>
+                <p class="mt-2 text-sm text-gray-600\"></p>
+                <p class="mt-2 text-lg font-bold text-gray-800\">300 BDT</p>
+
+            
+                <form action="book_step_1.php" method="POST">
+                <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-lg mt-4">Book Now</button>
+                </form>  
+            </div>
+    
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <div class="text-pink-600 text-5xl mb-4">💇‍♂️</div>
+                <h3 class="text-xl font-semibold\">Sawna</h3>
+                <p class="mt-2 text-sm text-gray-600\"></p>
+                <p class="mt-2 text-lg font-bold text-gray-800\">300 BDT</p>
+
+                <form action="book_step_1.php" method="POST">
+                <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-lg mt-4">Book Now</button>
+                </form>  
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <div class="text-pink-600 text-5xl mb-4">💇‍♂️</div>
+                <h3 class="text-xl font-semibold\">Sawna</h3>
+                <p class="mt-2 text-sm text-gray-600\"></p>
+                <p class="mt-2 text-lg font-bold text-gray-800\">300 BDT</p>
+
+                <form action="book_step_1.php" method="POST">
+                <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-lg mt-4">Book Now</button>
+                </form>  
+            </div>
+        </div>
+    </section>
+
+    <section>
+       <div class="container mx-auto px-4 py-8">
+    <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-8 tracking-wide">
+        Our Experts
+    </h2>
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-gradient-to-r from-pink-100 to-pink-200 p-6 rounded-lg shadow-lg text-center transform transition hover:scale-105 duration-300">
+            <div class="mb-4 flex justify-center items-center">
+                <img 
+                    src="{% static 'app/image/founder/3.png' %}" 
+                    alt="Expert Image" 
+                    class="w-24 h-24 rounded-full shadow-md border-4 border-pink-500"
+                />
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Worker Name</h3>
+            <p class="mt-1 text-sm text-gray-600">Rating  {% for _ in "123" %}
+                <span>&#9733;</span> <!-- Filled star -->
+            {% endfor %}
+            
+            <!-- Display 2 empty stars -->
+            {% for _ in "12" %}
+                <span>&#9734;</span> <!-- Empty star -->
+            {% endfor %} </p>
+            <p class="mt-4 text-gray-700 text-left">
+                <span class="font-semibold">Expert in:</span>
+                <ul class="list-disc list-inside mt-2">
+                    <li>Swana</li>
+                    <li>Facial</li>
+                    <li>Swana</li>
+                </ul>
+            </p>
+        </div>
+        <div class="bg-gradient-to-r from-pink-100 to-pink-200 p-6 rounded-lg shadow-lg text-center transform transition hover:scale-105 duration-300">
+            <div class="mb-4 flex justify-center items-center">
+                <img 
+                    src="{% static 'app/image/founder/3.png' %}" 
+                    alt="Expert Image" 
+                    class="w-24 h-24 rounded-full shadow-md border-4 border-pink-500"
+                />
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Worker Name</h3>
+            <p class="mt-1 text-sm text-gray-600">Rating  {% for _ in "123" %}
+                <span>&#9733;</span> <!-- Filled star -->
+            {% endfor %}
+            
+            <!-- Display 2 empty stars -->
+            {% for _ in "12" %}
+                <span>&#9734;</span> <!-- Empty star -->
+            {% endfor %} </p>
+            <p class="mt-4 text-gray-700 text-left">
+                <span class="font-semibold">Expert in:</span>
+                <ul class="list-disc list-inside mt-2">
+                    <li>Swana</li>
+                    <li>Facial</li>
+                    <li>Swana</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+</div>
+
+    </section>
+
+    <!--Customer Reviews Section-->
+    <!-- Reviews Container -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Reviews</h2>
+            <div class="relative">
+                <div id="carousel-7" class="carousel flex space-x-4 overflow-x-auto scroll-smooth">
+                   {% comment %} Review 1 {% endcomment %}
+                     <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none">
+                            <div class="flex items-center mb-4">
+                                <div class="text-yellow-400">
+                                     <!-- Display 3 filled stars -->
+                                        {% for _ in "123" %}
+                                            <span>&#9733;</span> <!-- Filled star -->
+                                        {% endfor %}
+                                        
+                                        <!-- Display 2 empty stars -->
+                                        {% for _ in "12" %}
+                                            <span>&#9734;</span> <!-- Empty star -->
+                                        {% endfor %} 
+                                    <br><span style="color: red;">20.01.2025 01:25:04</span>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-gray-600">Best barbar have in Your salon</p>
+                             <div class="flex items-center mt-4">
+                                <img src="{% static 'app/image/icon/review person.png' %}" alt="" class="w-10 h-10 rounded-full mr-4">
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Md xyz</p>
+                                    <p class="text-gray-600 text-sm">Dhaka</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} Review 2 {% endcomment %}
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none">
+                            <div class="flex items-center mb-4">
+                                <div class="text-yellow-400">
+                                     <!-- Display 3 filled stars -->
+                                        {% for _ in "123" %}
+                                            <span>&#9733;</span> <!-- Filled star -->
+                                        {% endfor %}
+                                        
+                                        <!-- Display 2 empty stars -->
+                                        {% for _ in "12" %}
+                                            <span>&#9734;</span> <!-- Empty star -->
+                                        {% endfor %} 
+                                    <br><span style="color: red;">20.01.2025 01:25:04</span>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-gray-600">Best barbar have in Your salon</p>
+                             <div class="flex items-center mt-4">
+                                <img src="{% static 'app/image/icon/review person.png' %}" alt="" class="w-10 h-10 rounded-full mr-4">
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Md xyz</p>
+                                    <p class="text-gray-600 text-sm">Dhaka</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} Review 3 {% endcomment %}
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none">
+                            <div class="flex items-center mb-4">
+                                <div class="text-yellow-400">
+                                     <!-- Display 3 filled stars -->
+                                        {% for _ in "123" %}
+                                            <span>&#9733;</span> <!-- Filled star -->
+                                        {% endfor %}
+                                        
+                                        <!-- Display 2 empty stars -->
+                                        {% for _ in "12" %}
+                                            <span>&#9734;</span> <!-- Empty star -->
+                                        {% endfor %} 
+                                    <br><span style="color: red;">20.01.2025 01:25:04</span>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-gray-600">Best barbar have in Your salon</p>
+                             <div class="flex items-center mt-4">
+                                <img src="{% static 'app/image/icon/review person.png' %}" alt="" class="w-10 h-10 rounded-full mr-4">
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Md xyz</p>
+                                    <p class="text-gray-600 text-sm">Dhaka</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} Review 4 {% endcomment %}
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none">
+                            <div class="flex items-center mb-4">
+                                <div class="text-yellow-400">
+                                     <!-- Display 3 filled stars -->
+                                        {% for _ in "123" %}
+                                            <span>&#9733;</span> <!-- Filled star -->
+                                        {% endfor %}
+                                        
+                                        <!-- Display 2 empty stars -->
+                                        {% for _ in "12" %}
+                                            <span>&#9734;</span> <!-- Empty star -->
+                                        {% endfor %} 
+                                    <br><span style="color: red;">20.01.2025 01:25:04</span>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-gray-600">Best barbar have in Your salon</p>
+                             <div class="flex items-center mt-4">
+                                <img src="{% static 'app/image/icon/review person.png' %}" alt="" class="w-10 h-10 rounded-full mr-4">
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Md xyz</p>
+                                    <p class="text-gray-600 text-sm">Dhaka</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        
+                    
+                </div>
+
+                <!-- Left Arrow -->
+                <div class="absolute inset-y-0 left-0 flex items-center">
+                    <div class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                        onclick="scrollCarousel('carousel-7', -300)"><img src="{% static 'app/image/icon/left-arrow1.png' %}"
+                        alt="Right Arrow" class="w-8 h-8 opacity-75 hover:opacity-100"></div>
+                </div>
+
+                <!-- Right Arrow -->
+                <div class="absolute inset-y-0 right-0 flex items-center">
+                    <div class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                        onclick="scrollCarousel('carousel-7', 300)"><img src="{% static 'app/image/icon/right-arrow.png' %}"
+                        alt="Right Arrow" class="w-8 h-8 opacity-75 hover:opacity-100"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- review about our shop-->
+    <section>
+
+        <div class="container mx-auto px-4 py-4">
+        
+            <button id="writeReviewBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">Write a Review</button>
+
+            <!-- Modal Overlay -->
+            <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
+
+            <!-- Review Modal -->
+            <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
+                    <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
+                    <!-- Review Form -->
+                    <form id="reviewForm" action="submit_review.php" method="POST">
+                        <!-- Name Input -->
+
+                        <input type="text" id="reviewerName" name="reviewer_name"
+                            class="w-full border p-2 rounded-lg mb-4" readonly value="Md XYZ" />
+
+                        <!-- Star Rating -->
+                        <div class="flex mb-4">
+                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
+                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
+                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
+                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
+                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
+                        </div>
+                        <!-- Rating Input (hidden) -->
+                        <input type="hidden" id="rating" name="rating" value="" required>
+                        <!-- Review Textarea -->
+                        <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4"
+                            placeholder="Describe your experience (optional)" rows="4"></textarea>
+                        <!-- Character Count -->
+                        <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
+                        <!-- <?php echo $shop_id; ?> -->
+                        <input type="hidden" name="shop_id" value="<?php echo $shop_id; ?>">
+                        <input type="hidden" name="customer_id" value="<?php echo $_session['customer_id']; ?>">
+                        <!-- Submit and Cancel Buttons -->
+                        <button type="submit" id="submitReview"
+                            class="bg-green-500 text-white px-4 py-2 rounded-lg">Submit Review</button>
+                        <button type="button" id="cancelReview" class="ml-4 text-gray-600">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- JavaScript for Review Modal and Functionality -->
+            <script>
+                const writeReviewBtn = document.getElementById('writeReviewBtn');
+                const modalOverlay = document.getElementById('modalOverlay');
+                const reviewModal = document.getElementById('reviewModal');
+                const cancelReview = document.getElementById('cancelReview');
+                const reviewText = document.getElementById('reviewText');
+                const reviewerName = document.getElementById('reviewerName');
+                const charCount = document.getElementById('charCount');
+                const stars = document.querySelectorAll('.star');
+                const ratingInput = document.getElementById('rating');
+                const reviewForm = document.getElementById('reviewForm');
+
+                let selectedRating = 0;
+
+                // Show the review modal when "Write a Review" button is clicked
+                writeReviewBtn.onclick = () => {
+                    reviewModal.classList.remove('hidden');
+                    modalOverlay.classList.remove('hidden');
+                };
+
+                // Hide the review modal when "Cancel" button is clicked
+                cancelReview.onclick = () => {
+                    reviewModal.classList.add('hidden');
+                    modalOverlay.classList.add('hidden');
+                    resetStars();
+                };
+
+                // Star rating selection
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        selectedRating = parseInt(star.getAttribute('data-value'));
+                        ratingInput.value = selectedRating; // Set hidden rating input value
+
+                        // Reset all stars before filling the selected ones
+                        stars.forEach(s => s.classList.remove('text-yellow-500'));
+
+                        // Highlight selected stars
+                        for (let i = 0; i < selectedRating; i++) {
+                            stars[i].classList.add('text-yellow-500');
+                        }
+                    });
+                });
+
+                // Character count update
+                reviewText.addEventListener('input', () => {
+                    const textLength = reviewText.value.length;
+                    charCount.textContent = `${textLength} / 500`;
+                });
+
+                // Reset stars and form values when closing the modal
+                function resetStars() {
+                    selectedRating = 0;
+                    stars.forEach(s => s.classList.remove('text-yellow-500'));
+                    ratingInput.value = ''; // Clear hidden rating input
+                    reviewText.value = '';
+                    charCount.textContent = '0 / 500';
+                }
+
+                // Validate form submission to ensure rating is selected
+                reviewForm.addEventListener('submit', (e) => {
+                    if (selectedRating === 0) {
+                        alert("Please select a star rating.");
+                        e.preventDefault();
+                    }
+                });
+            </script>
+
+    </section>
+
+    {% include "app/footer.html" %}
+
+
+    <script>
+        // Function to scroll carousel
+        function scrollCarousel(carouselId, scrollOffset) {
+            const carousel = document.getElementById(carouselId);
+            carousel.scrollBy({
+                left: scrollOffset,
+                behavior: 'smooth'
+            });
+        }
+
+        // Function to show/hide navigation buttons based on scroll position
+        function updateNavigationButtons(carouselId, leftBtnId, rightBtnId) {
+            const carousel = document.getElementById(carouselId);
+            const leftBtn = document.getElementById(leftBtnId);
+            const rightBtn = document.getElementById(rightBtnId);
+
+            // Check if carousel can scroll left or right
+            leftBtn.style.display = carousel.scrollLeft > 0 ? 'flex' : 'none';
+            rightBtn.style.display = carousel.scrollLeft < (carousel.scrollWidth - carousel.clientWidth) ? 'flex' : 'none';
+        }
+
+        // Attach scroll event listeners to both carousels
+        document.getElementById('carousel-1').addEventListener('scroll', function () {
+            updateNavigationButtons('carousel-1', 'leftBtn-1', 'rightBtn-1');
+        });
+        document.getElementById('carousel-2').addEventListener('scroll', function () {
+            updateNavigationButtons('carousel-2', 'leftBtn-2', 'rightBtn-2');
+        });
+        document.getElementById('carousel-3').addEventListener('scroll', function () {
+            updateNavigationButtons('carousel-3', 'leftBtn-3', 'rightBtn-3');
+        });
+
+        // Initialize navigation button visibility on page load
+        updateNavigationButtons('carousel-1', 'leftBtn-1', 'rightBtn-1');
+        updateNavigationButtons('carousel-2', 'leftBtn-2', 'rightBtn-2');
+        updateNavigationButtons('carousel-3', 'leftBtn-3', 'rightBtn-3');
+    </script>
+</body>
+
+</html>

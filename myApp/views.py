@@ -26,3 +26,7 @@ def Location(request):
 
 def exploreByItem(request):
     return render(request, 'app\explore_by_items.html')
+
+#For Salon Profile
+def viewDashBoard(request):
+    return render(request, 'app\saloon_profile\dashboard.html')
