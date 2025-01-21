@@ -41,10 +41,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-#for livereload: Auto Reload
-MIDDLEWARE += [
-    'livereload.middleware.LiveReloadScript',
-]
+# #for livereload: Auto Reload
+# MIDDLEWARE += [
+#     'livereload.middleware.LiveReloadScript',
+# ]
 
 ROOT_URLCONF = 'CareHub.urls'
 

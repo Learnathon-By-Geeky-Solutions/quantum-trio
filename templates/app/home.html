@@ -8,7 +8,7 @@
     <title>CareHUB home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
-    
+
 </head>
 
 <body class="bg-gray-100">
@@ -33,7 +33,7 @@
                         </button>
                     </div>
                 </form>
-                
+
             </div>
         </div>
         <!-- </section> -->
@@ -44,7 +44,7 @@
         <div class="wave water"></div>
         <!-- don't do anything here -->
     </section>
-    
+
     <section id="bg">
         <!-- How It Works Section -->
         <div class="container mx-auto px-4 mid">
@@ -102,7 +102,6 @@
                 </div>
             </div>
         </section>
-        
 
         <script>
             const recommendations = [
@@ -146,12 +145,31 @@
                     title: "Easy for Gentle",
                     rating: 4.6,
                     reviews: 180,
-                    location: "Rajshahi",
+                    location: "Lakshmipur",
                     category: "Men's Grooming",
                     image: "{% static 'app/image/shop/2.jpg' %}",
                     link: "saloon_profile",
                 },
-               
+                {
+                    title: "Golden Touch Beauty Lounge",
+                    rating: 4.9,
+                    reviews: 250,
+                    location: "Khulna",
+                    category: "Women's Beauty",
+                    image: "{% static 'app/image/shop/5.webp' %}",
+                    link: "saloon_profile/dashboard.html?shop_id=5",
+                },
+                {
+                    title: "Blissful Retreat Spa",
+                    rating: 4.8,
+                    reviews: 190,
+                    location: "Barisal",
+                    category: "Spa and Wellness",
+                    image: "{% static 'app/image/shop/4.jpg' %}",
+                    link: "saloon_profile/dashboard.html?shop_id=6",
+                },
+
+
             ];
 
             const carousel = document.getElementById("carousel-3");
@@ -194,13 +212,12 @@
                 </h4>
                 <div class="relative">
                     <div id="carousel-1" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
-                        
+
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-                               
+
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/2.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/2.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -211,8 +228,7 @@
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -224,8 +240,7 @@
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/3.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/3.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -234,11 +249,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
         
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/4.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/4.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -247,11 +266,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
         
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/5.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/5.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -259,7 +282,7 @@
                                 </h3>
                             </a>
                         </div>
-                        
+
                     </div>
 
 
@@ -282,20 +305,24 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="mb-12">
                 <h4 class="text-3xl font-bold text-left text-gray-800 mb-6">
                     Female Services
                 </h4>
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
-                        
+
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
                                
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/5.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/5.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -304,11 +331,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
                                 
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/4.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/4.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -317,11 +348,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
         
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -330,11 +365,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
         
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/2.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/2.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -343,11 +382,15 @@
                             </a>
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
+<<<<<<< HEAD
                             <a href="explore_by_items">
         
+=======
+                            <a href="explore_by_items.html">
+
+>>>>>>> 8466d6f8ca3e41900f84dbb71e130f28aeed0f77
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}"
-                                        alt=""
+                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
@@ -355,7 +398,7 @@
                                 </h3>
                             </a>
                         </div>
-                        
+
                     </div>
                     <!-- Navigation buttons -->
                     <div class="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -470,7 +513,8 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/1.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/1.jpg' %}" alt=""
+                                    class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
                                     <p class="text-gray-600 text-sm">Dhaka</p>
@@ -488,7 +532,8 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/2.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/2.jpg' %}" alt=""
+                                    class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Asfak Shahriur</p>
                                     <p class="text-gray-600 text-sm">Lakkhipur</p>
@@ -505,7 +550,8 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/4.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/4.jpg' %}" alt=""
+                                    class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Israt Jahan Reshma</p>
                                     <p class="text-gray-600 text-sm">Gopalgonj</p>
@@ -522,7 +568,8 @@
                                 This is a great platform.Thanks to you
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/3.jpg' %}" alt="" class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/3.jpg' %}" alt=""
+                                    class="w-10 h-10 rounded-full mr-4" />
                                 <div>
                                     <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
                                     <p class="text-gray-600 text-sm">Dhaka</p>
@@ -572,7 +619,8 @@
                     <form id="reviewForm" action="submit_review.html" method="POST">
                         <!-- Name Input -->
                         <input type="text" id="reviewerName" name="reviewer_name"
-                            class="w-full border p-2 rounded-lg mb-4" readonly value="" placeholder="please enter your name"/>
+                            class="w-full border p-2 rounded-lg mb-4" readonly value=""
+                            placeholder="please enter your name" />
 
                         <!-- Star Rating -->
                         <div class="flex mb-4">
@@ -691,7 +739,7 @@
     </section>
     {% include "app/footer.html" %}
     <!-- Footer -->
-    
+
 </body>
 
 </html>
