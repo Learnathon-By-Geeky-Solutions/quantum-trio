@@ -1,5 +1,5 @@
-.bg-black {
-    opacity: 0.8;
+* {
+    font-family: cursive;
 
 }
 body{
@@ -13,40 +13,13 @@ body{
     font-weight: bolder;
 }
 
-.t {
-
-    font-size: 50px;
-}
-
-* {
-    font-family: cursive;
-
-
-}
-
 
 h1 {
     font-weight: 900;
 }
 .fit-img{
     background-size: cover;
-    height:600px;
-}
-
-
-#weight {
-    font-weight: 800px;
-    color: pink;
-    font-style: italic;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-
-}
-
-.s {
-    width: 200px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    border-radius: 10px;
+    height:400px;
 }
 
 #imagesize:hover {
@@ -72,19 +45,13 @@ h1 {
     background-color: rgb(0, 0, 0, 0.1);
 }
 
-#reviewsContainer {
-    width: 400px;
-}
-
-
-
 
 /* Photo Slider Section */
 .photo-slider {
     position: relative;
     width: 100%;
     max-width: 1200px;
-    height: 600px;
+    height: 400px;
     margin: 50px auto;
     overflow: hidden;
     border-radius: 15px;
@@ -107,7 +74,7 @@ h1 {
 
 .slide img {
     width: 100%;
-    height: auto;
+    height: 400px;
     display: block;
     border-radius: 15px;
     transition: transform 0.3s ease;

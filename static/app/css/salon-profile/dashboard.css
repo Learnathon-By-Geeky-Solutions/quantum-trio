@@ -48,7 +48,7 @@ h1 {
     position: relative;
     width: 100%;
     max-width: 1500px;
-    height: 800px;
+    height: 200px;
     margin: 50px auto;
     overflow: hidden;
     border-radius: 15px;
@@ -71,7 +71,7 @@ h1 {
 
 .slide img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     border-radius: 15px;
     transition: transform 0.3s ease;
@@ -145,45 +145,6 @@ h1 {
     color: white;
     height: 100px;
 }
-
-
-
-
-
-.chat-wrapper {
-    position: sticky;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.chat-circle {
-    width: 60px;
-    height: 60px;
-    background-color: #f1c40f;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.chat-container {
-    width: 300px;
-    height: 500px;
-    background-color: #fff;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    position: relative;
-    margin-top: 10px;
-}
-
 .hidden {
     display: none;
 }
@@ -194,7 +155,7 @@ h1 {
     margin-bottom: 10px;
     color: #333;
 }
-
+/* Chat Area */
 .chat {
     flex-grow: 1;
     background-color: #f8f9fa;
@@ -235,161 +196,73 @@ h1 {
 }
 
 .button {
-    background-color: #F7366C;
-    color: white;
+    width: 40px;
+    height: 40px;
     border: none;
-    padding: 8px;
-    border-radius: 50%;
-    margin-left: 5px;
-
+    background-color: #5e1bdc;;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+.button:hover {
+    background-color: #bf95f3; /* Darker pink */
 }
 
 .button i {
-    font-size: 14px;
-    /* Decreased icon size */
-}
-
-/* Styling for the photo slider section */
-.photo-slider {
-    position: relative;
-    width: 50%;
-    max-width: 800px; /* Optional: Adjust max width to control the overall size */
-    margin: 0 auto;
-    overflow: hidden;
-    padding: 20px 0; /* Adjust padding for compact spacing */
-}
-
-.slider-container {
-    display: flex;
-    gap: 10px; /* Space between slides */
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto; /* Horizontal scrolling */
-    scroll-behavior: smooth;
-}
-
-.slide {
-    flex: 0 0 auto;
-    width: 150px; /* Adjust slide width */
-    height: 200px; /* Adjust slide height */
-    text-align: center;
-    position: relative;
-}
-
-.slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensure images fit the slides */
-    border-radius: 8px; /* Optional: Add rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-}
-
-.under_img {
-    position: absolute;
-    bottom: 5px; /* Adjust position */
-    left: 0;
-    right: 0;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.6); /* Add a semi-transparent background */
-    color: #fff;
-    padding: 5px;
-    font-size: 12px; /* Adjust text size */
-    border-radius: 0 0 8px 8px; /* Match image corners */
-}
-
-/* Arrow buttons */
-button.prev, button.next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-button.prev {
-    left: 10px;
-}
-
-button.next {
-    right: 10px;
-}
-
-button img {
-    width: 24px; /* Adjust arrow icon size */
-    height: 24px;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-}
-
-button:hover img {
-    opacity: 1;
+    font-size: 20px;
 }
 
 
-
-/* Chat Wrapper */
 .chat-wrapper {
-    position: fixed;
+    position: sticky;
     bottom: 20px;
     right: 20px;
     z-index: 1000;
 }
 
-/* Chat Circle */
 .chat-circle {
     width: 60px;
     height: 60px;
-    background-color: #5e1bdc; /* Pink color */
-    border-radius: 50%;
+    background-color: #470d9a;
+    border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-size: 20px;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px;
 }
-
-.chat-circle i {
-    font-size: 24px;
-    color: rgb(207, 21, 21);
-}
-
 .chat-circle:hover {
     transform: scale(1.1);
 }
 
 /* Chat Container */
+
 .chat-container {
     position: absolute;
-    bottom: 80px;
-    right: 0;
-    width: 300px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    bottom: 30px;
+    right: 10px;
     overflow: hidden;
-    display: flex;
     flex-direction: column;
     animation: fadeIn 0.3s ease-in-out;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    padding: 15px;
 }
 
-/* Title */
-
-
-/* Chat Area */
-.chat {
-    flex-grow: 1;
-    padding: 10px;
-    overflow-y: auto;
-    background-color: #f9f9f9;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    max-height: 200px;
-}
-
-/* Input Container */
 .input-container {
     display: flex;
     align-items: center;
@@ -412,29 +285,6 @@ button:hover img {
 .input:focus {
     border-color: #5e1bdc; /* Darker pink */
     box-shadow: 0 0 4px rgba(255, 105, 180, 0.5);
-}
-
-.button {
-    width: 40px;
-    height: 40px;
-    border: none;
-    background-color: #5e1bdc;;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease-in-out;
-}
-
-.button:hover {
-    background-color: #bf95f3; /* Darker pink */
-}
-
-.button i {
-    font-size: 18px;
 }
 
 /* Animations */
