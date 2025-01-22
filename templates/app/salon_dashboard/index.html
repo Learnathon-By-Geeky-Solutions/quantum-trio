@@ -14,11 +14,9 @@
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
 
     <div class="flex h-screen">
-        <!-- Sidebar -->
+        
         {% include "app/salon_dashboard/sidebar.html" %}
-        <!-- Main Content -->
-
-        <!-- Main Content Area -->
+        
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
                 <div class="header flex justify-between items-center mb-4">
@@ -64,7 +62,7 @@
                     <div class="carousel-container">
 
                         <div class="carousel-inner">
-                            <!-- Card 1 -->
+                            
                                 <div class="cards">
                                 <h3 style="color:white">Rakib</h3>
                                 
@@ -75,7 +73,7 @@
                             
                         </div>
 
-                        <!-- Navigation Buttons -->
+                        
                         <button class="prev-btn">❮</button>
                         <button class="next-btn">❯</button>
                     </div>
@@ -127,7 +125,7 @@
                 </div>
             </div>
         </main>
-        <!-- Chart.js script for example chart -->
+        
         <script>
             window.onload = function () {
                 var chart = new CanvasJS.Chart("stats", {
