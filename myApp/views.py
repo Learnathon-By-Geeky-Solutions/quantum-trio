@@ -28,5 +28,9 @@ def exploreByItem(request):
     return render(request, 'app\explore_by_items.html')
 
 #For Salon Profile
-def viewDashBoard(request):
+def viewSalonProfile(request):
     return render(request, 'app\saloon_profile\dashboard.html')
+
+#For Salon Deshboard
+def viewDashBoard(request):
+    return render(request, 'app\salon_dashboard\index.html')

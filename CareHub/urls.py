@@ -13,7 +13,8 @@ urlpatterns = [
     path('location', views.Location),
     path('service', views.Service),
     path('explore_by_items', views.exploreByItem),
-    path('saloon_profile', views.viewDashBoard),
+    path('saloon_profile', views.viewSalonProfile),
+    path('salon_dashboard', views.viewDashBoard),
 ]
 
 

@@ -10,6 +10,9 @@
 .text-gray-700 {
     font-weight: bolder;
 }
+.text-gray-800 {
+    color:antiquewhite
+}
 
 .t {
 
@@ -21,20 +24,8 @@
 
 }
 
-section div div h1 {
-    font-weight: 900;
-
-}
-
 h1 {
     font-weight: 900;
-}
-
-#navbar {
-    position: fixed;
-    z-index: 1;
-    width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 #weight {
