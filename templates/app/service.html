@@ -95,7 +95,7 @@
                     <button class="next" onclick="changeSlide(1)">&#10095;</button>
                 </section>
 
-                <!-- Waves -->
+                
                 <div class="wave water"></div>
                 <div class="wave water"></div>
                 <div class="wave water"></div>
@@ -110,7 +110,7 @@
                 const slides = document.querySelectorAll('.slide');
                 const totalSlides = slides.length;
 
-                // Reset the slider if index is out of bounds
+                
                 if (index >= totalSlides) {
                     currentSlide = 0;
                 } else if (index < 0) {
@@ -138,7 +138,6 @@
         </script>
     </section>
 
-    <!-- Footer -->
     {% include "app/footer.html" %}
 </body>
 
