@@ -1,5 +1,5 @@
 # quantum-trio
-
+https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=alert_status
 ## Team Members
 - IsratJahanR (Team Leader)
 - rakib151p
