@@ -1,5 +1,5 @@
 # quantum-trio
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_quantum-trio)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=Learnathon-By-Geeky-Solutions_quantum-trio)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_quantum-trio)
 ## Team Members
 - IsratJahanR (Team Leader)
 - rakib151p
