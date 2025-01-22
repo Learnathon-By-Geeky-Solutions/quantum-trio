@@ -63,8 +63,7 @@ h1 {
     margin: 0 0 0 45%;
 }
 
-#background {
-    /* background-image: url(pexels-delbeautybox-211032-705255.jpg); */
+#background {                   
     background-repeat: no-repeat;
     background-size: cover;
 

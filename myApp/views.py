@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 
 # Create your views here.
@@ -17,7 +17,10 @@ def service(request):
 
 
 def book_now(request):
-    return render(request, 'app\book_now.html')
+    if request.method == 'GET':
+        return render(request, 'app/book_now.html')
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 
 def location(request):
