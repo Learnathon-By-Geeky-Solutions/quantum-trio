@@ -11,13 +11,12 @@
 
 <body class="bg-gray-100">
 
-     <!-- Header -->
      {% include "app/navbar.html" %}
 
     <!-- empty space creation -->
     {% comment %} <section class="py-6 bg-gray-100">
         <div>&nbsp;</div>
-        <!-- <div>&nbsp;</div> -->
+       
     </section>
 
     <section id="" class="py-12">
@@ -135,7 +134,7 @@
                 return;
             }
             let district = document.getElementById('districtDropdown').value;
-            // console.log(district);
+            
             fetch(`fetch_area.php?upazila=${upazila}&district=${district}`)
                 .then(response => response.json())
                 .then(areas => {
@@ -167,7 +166,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', fetchDistrict);
-        // document.addEventListener('DOMContentLoaded', fetchUpazilla);
+        
     </script> {% endcomment %}
 
     {% include "app/footer.html" %}

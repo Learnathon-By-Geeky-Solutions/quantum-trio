@@ -14,7 +14,6 @@
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
     <section id="wat">
-        <!-- <section class="bg-cover bg-center h-screen" id="background">Hero Section -->
         <div class="bg-black-400 bg-opacity-70 h-full flex items-center justify-center" id="backgroundinside">
             <div class="text-center text-white px-4">
                 <h1 id="weight" class="text-4xl md:text-6xl font-bold">
@@ -36,8 +35,7 @@
 
             </div>
         </div>
-        <!-- </section> -->
-        <!-- don't do anything here -->
+       
         <div class="wave water"></div>
         <div class="wave water"></div>
         <div class="wave water"></div>
@@ -86,8 +84,10 @@
                         
                     </div>
                     <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
+
                         <div class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                             onclick="scrollCarousel('carousel-3', -300)">
+                            
                             <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Left Arrow"
                                 class="w-8 h-8 opacity-75 hover:opacity-100" />
                         </div>

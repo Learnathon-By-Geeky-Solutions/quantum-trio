@@ -1,6 +1,6 @@
 .bg-black {
     opacity: 0.8;
-    /* background-image: url("professional.jpg"); */
+   
 }
 
 .bg-gray-100 {
@@ -56,7 +56,7 @@ h1 {
 }
 
 #background {
-    /* background-image: url(pexels-delbeautybox-211032-705255.jpg); */
+
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -72,7 +72,7 @@ h1 {
 }
 
 body {
-    /* background-image: url(pawel-czerwinski-OG44d93iNJk-unsplash.jpg); */
+  
     background-repeat: no-repeat;
     background-size: cover;
 

@@ -199,7 +199,7 @@ h1 {
     width: 40px;
     height: 40px;
     border: none;
-    background-color: #5e1bdc;;
+    background-color: #5e1bdc;
     color: white;
     display: flex;
     align-items: center;
@@ -275,7 +275,7 @@ h1 {
     flex-grow: 1;
     height: 40px;
     border-radius: 20px;
-    border: 1px solid #5e1bdc;;
+    border: 1px solid #5e1bdc;
     padding: 0 15px;
     outline: none;
     font-size: 14px;
