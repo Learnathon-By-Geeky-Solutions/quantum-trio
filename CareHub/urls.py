@@ -9,12 +9,12 @@ urlpatterns = [
     path('', views.home),
     path('home', views.home),
     path('contact', views.contact_us),
-    path('booknow', views.bookNow),
-    path('location', views.Location),
-    path('service', views.Service),
-    path('explore_by_items', views.exploreByItem),
-    path('saloon_profile', views.viewSalonProfile),
-    path('salon_dashboard', views.viewDashBoard),
+    path('booknow', views.book_now),
+    path('location', views.location),
+    path('service', views.service),
+    path('explore_by_items', views.explore_by_item),
+    path('saloon_profile', views.view_salon_profile),
+    path('salon_dashboard', views.view_dash_board),
 ]
 
 

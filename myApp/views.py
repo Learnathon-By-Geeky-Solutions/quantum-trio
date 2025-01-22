@@ -12,25 +12,25 @@ def contact_us(request):
     return render(request, 'app\contact_us.html')
 
 
-def Service(request):
+def service(request):
     return render(request, 'app\service.html')
 
 
-def bookNow(request):
+def book_now(request):
     return render(request, 'app\book_now.html')
 
 
-def Location(request):
+def location(request):
     return render(request, 'app\location.html')
 
 
-def exploreByItem(request):
+def explore_by_item(request):
     return render(request, 'app\explore_by_items.html')
 
 #For Salon Profile
-def viewSalonProfile(request):
+def view_salon_profile(request):
     return render(request, 'app\saloon_profile\dashboard.html')
 
 #For Salon Deshboard
-def viewDashBoard(request):
+def view_dash_board(request):
     return render(request, 'app\salon_dashboard\index.html')
