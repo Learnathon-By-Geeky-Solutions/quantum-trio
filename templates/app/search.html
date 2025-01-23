@@ -42,7 +42,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/1.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -64,7 +64,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/2.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -86,7 +86,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/3.avif' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -108,7 +108,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/4.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -130,7 +130,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/5.webp' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -148,40 +148,38 @@
             </a>
           </div>
 
-          <div
-            class="absolute inset-y-0 left-0 flex items-center"
-            id="leftBtn-1"
-          >
-            <div
+          <!-- Left Arrow -->
+          <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-1">
+            <button
               class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-1', -300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
-              >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-1', -300); event.preventDefault(); }"
+              aria-label="Scroll left"
+            >
               <img
-                src="image/icon/left-arrow1.png"
-                alt=""
+                src="{% static 'app/image/icon/left-arrow1.png' %}"
+                alt="Scroll left"
                 class="w-8 h-8 opacity-100"
               />
-            </div>
+            </button>
           </div>
-          <div
-            class="absolute inset-y-0 right-0 flex items-center"
-            id="rightBtn-1"
-          >
-            <div
+
+          <!-- Right Arrow -->
+          <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-1">
+            <button
               class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-1', 300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-1', 300); event.preventDefault(); }"
               aria-label="Scroll right"
-              >
+            >
               <img
-                src="image/icon/right-arrow.png"
-                alt=""
+                src="{% static 'app/image/icon/right-arrow.png' %}"
+                alt="Scroll right"
                 class="w-8 h-8 opacity-100"
               />
-            </div>
+            </button>
           </div>
+
         </div>
       </div>
     </section>
@@ -216,7 +214,7 @@
               class="recommendation-item block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
             >
               <img id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/2.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -238,7 +236,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/1.jpg"
+                src="{% static 'app/image/shop/1.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -260,7 +258,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/3.avif' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -282,7 +280,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/4.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -299,40 +297,36 @@
               </div>
             </a>
           </div>
-          <div
-            class="absolute inset-y-0 left-0 flex items-center"
-            id="leftBtn-2"
-          >
-            <div
-              class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-2', -300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
+          <!-- Left Arrow -->
+            <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-2">
+              <button
+                class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                onclick="scrollCarousel('carousel-2', -300)"
+                aria-label="Scroll left"
               >
-              <img
-                src="image/icon/left-arrow1.png"
-                alt=""
-                class="w-8 h-8 opacity-100"
-              />
+                <img
+                  src="{% static 'app/image/icon/left-arrow1.png' %}"
+                  alt="Scroll left"
+                  class="w-8 h-8 opacity-100"
+                />
+              </button>
             </div>
-          </div>
-          <div
-            class="absolute inset-y-0 right-0 flex items-center"
-            id="rightBtn-2"
-          >
-            <div
-              class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-2', 300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
+
+            <!-- Right Arrow -->
+            <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-2">
+              <button
+                class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                onclick="scrollCarousel('carousel-2', 300)"
+                aria-label="Scroll right"
               >
-              <img
-                src="image/icon/right-arrow.png"
-                alt=""
-                class="w-8 h-8 opacity-100"
-              />
+                <img
+                  src="{% static 'app/image/icon/right-arrow.png' %}"
+                  alt="Scroll right"
+                  class="w-8 h-8 opacity-100"
+                />
+              </button>
             </div>
-          </div>
+
         </div>
       </div>
     </section>
@@ -381,17 +375,12 @@
           Based on provided services
         </h2>
         <div class="relative">
-          <div
-            id="carousel-3"
-            class="carousel flex space-x-4 overflow-x-auto scroll-smooth"
-          >
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
+          <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto scroll-smooth">
+            <a href="" class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/5.webp' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -413,7 +402,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/4.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -435,7 +424,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/1.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -457,7 +446,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/4.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -479,7 +468,7 @@
             >
               <img
                 id="imagesize"
-                src="image/shop/2.jpg"
+                src="{% static 'app/image/shop/2.jpg' %}"
                 alt=""
                 class="w-full h-48 object-cover"
               />
@@ -496,40 +485,38 @@
               </div>
             </a>
           </div>
-          <div
-            class="absolute inset-y-0 left-0 flex items-center"
-            id="leftBtn-3"
-          >
-            <div
-              class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-3', -300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
-              >
-              <img
-                src="image/icon/left-arrow1.png"
-                alt=""
-                class="w-8 h-8 opacity-100"
-              />
-            </div>
-          </div>
-          <div
-            class="absolute inset-y-0 right-0 flex items-center"
-            id="rightBtn-3"
-          >
-            <div
-              class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-3', 300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
-              >
-              <img
-                src="image/icon/right-arrow.png"
-                alt=""
-                class="w-8 h-8 opacity-100"
-              />
-            </div>
-          </div>
+          <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
+        <button
+          class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+          onclick="scrollCarousel('carousel-3', -300)"
+          onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', -300); event.preventDefault(); }"
+          aria-label="Scroll left"
+        >
+          <img
+            src="{% static 'app/image/icon/left-arrow1.png' %}"
+            alt="Scroll left"
+            class="w-8 h-8 opacity-100"
+          />
+        </button>
+      </div>
+      <div
+        class="absolute inset-y-0 right-0 flex items-center"
+        id="rightBtn-3"
+      >
+        <button
+          class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+          onclick="scrollCarousel('carousel-3', 300)"
+          onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+          aria-label="Scroll right"
+        >
+          <img
+            src="{% static 'app/image/icon/right-arrow.png' %}"
+            alt="Scroll right"
+            class="w-8 h-8 opacity-100"
+          />
+        </button>
+        </div>
+
         </div>
       </div>
     </section>
