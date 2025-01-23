@@ -11,6 +11,18 @@ def home(request):
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
+def search(request):
+    if request.method == 'POST':
+        query = request.POST.get('search', '')  # Retrieve the 'search' parameter from POST data
+        if query:
+            # Perform your search logic here (e.g., filter database records)
+            # For demonstration purposes, let's return the query
+            return HttpResponse(f"Search results for: {query}")
+        else:
+            return HttpResponse("No search query provided.")
+    else:
+        # If the request is not POST, return a form or an error message
+        return HttpResponse("Invalid request method. Please use the search form.")
 
 def service(request):
     return render(request, 'app\service.html')
