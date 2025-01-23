@@ -5,7 +5,11 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request, 'app\home.html')
+    if request.method != 'GET':
+        # Return a 405 Method Not Allowed response for any non-GET requests
+        return HttpResponseNotAllowed(['GET'])
+
+    return render(request, 'app/home.html')
 
 
 def contact_us(request):
