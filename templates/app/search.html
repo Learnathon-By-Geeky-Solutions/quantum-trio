@@ -155,7 +155,9 @@
             <div
               class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-1', -300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/left-arrow1.png"
                 alt=""
@@ -170,7 +172,9 @@
             <div
               class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-1', 300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/right-arrow.png"
                 alt=""
@@ -302,7 +306,9 @@
             <div
               class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-2', -300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/left-arrow1.png"
                 alt=""
@@ -317,7 +323,9 @@
             <div
               class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-2', 300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/right-arrow.png"
                 alt=""
