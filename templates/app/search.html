@@ -6,9 +6,9 @@
     
     <title>Search results</title>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	{% tailwind_css %}
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	  {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/search.css' %}" />
     
   </head>
@@ -503,7 +503,9 @@
             <div
               class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-3', -300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/left-arrow1.png"
                 alt=""
@@ -518,7 +520,9 @@
             <div
               class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-3', 300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/right-arrow.png"
                 alt=""
@@ -604,7 +608,9 @@
             <div
               class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-4', -300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/left-arrow1.png"
                 alt=""
@@ -619,7 +625,9 @@
             <div
               class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
               onclick="scrollCarousel('carousel-4', 300)"
-            >
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+              aria-label="Scroll right"
+              >
               <img
                 src="image/icon/right-arrow.png"
                 alt=""
