@@ -43,3 +43,12 @@ def view_salon_profile(request):
 #For Salon Deshboard
 def view_dash_board(request):
     return render(request, 'app\salon_dashboard\index.html')
+
+def view_salon_gallery(request):
+    return render(request, 'app\salon_dashboard\saloon_gallery.html')
+
+def view_saloon_calender(request):
+    return render(request, 'app\salon_dashboard\saloon_calender.html')
+
+def view_saloon_stuff(request):
+    return render(request, 'app\salon_dashboard\staffs.html')

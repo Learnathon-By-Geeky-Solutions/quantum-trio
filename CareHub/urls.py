@@ -16,6 +16,9 @@ urlpatterns = [
     path('explore_by_items', views.explore_by_item),
     path('saloon_profile', views.view_salon_profile),
     path('salon_dashboard', views.view_dash_board),
+    path('salon_gallery', views.view_salon_gallery),
+    path('saloon_calender', views.view_saloon_calender),
+    path('staffs', views.view_saloon_stuff),
 ]
 
 
