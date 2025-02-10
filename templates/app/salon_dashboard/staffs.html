@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Salon stuff</title>
     {% tailwind_css %}
-    {% comment %} <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" /> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
     <style>
         #dashboard {
             height: 100vh;
@@ -109,17 +109,7 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Welcome to Deshboard</h2>
-                    
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="{% static 'app/image/icon/star.png' %}" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold">&nbsp;</h3>
-                        <a href=""><img src="{% static 'app/image/icon/logout.png'%}" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
-                    </div>
-                </div>
+                {% include "app/salon_dashboard/header.html" %}
 
                 <!-- Members List -->
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">

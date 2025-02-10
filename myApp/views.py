@@ -48,7 +48,30 @@ def view_salon_gallery(request):
     return render(request, 'app\salon_dashboard\saloon_gallery.html')
 
 def view_saloon_calender(request):
-    return render(request, 'app\salon_dashboard\saloon_calender.html')
+    return render(request, 'app\salon_dashboard\saloon-calender.html')
 
 def view_saloon_stuff(request):
     return render(request, 'app\salon_dashboard\staffs.html')
+
+def view_settings(request):
+    return render(request, 'app\salon_dashboard\saloon-setting.html')
+
+def view_notification(request):
+    return render(request, 'app/salon_dashboard/notifications.html')
+
+def view_reviews(request):
+    return render(request, 'app/salon_dashboard/reviews.html')
+
+def view_customers(request):
+    return render(request, 'app/salon_dashboard/customers.html')
+
+def booking_slots(request):
+    return render(request, 'app/salon_dashboard/booking-slots.html')
+
+def view_message(request):
+    return render(request, 'app/salon_dashboard/message.html')
+
+def view_message_reply(request):
+    return render(request, 'app/salon_dashboard/reply-message.html')
+
+

@@ -1,12 +1,18 @@
 
 <!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inbox</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
     <!-- Include Tailwind CSS -->
+
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
     <!-- Include Chart.js for graphs/charts -->
 
@@ -114,58 +120,14 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Inbox</h2>
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="../image/shop/<?php echo $_SESSION['shop_id']; ?>.jpeg" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold"><?php echo $_SESSION['shop_name']; ?>&nbsp;</h3>
-                        <a href="../logout.php"><img src="../image/icon/logout.png" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
-                    </div>
-                </div>
-                <?php
-                $shop_id = $_SESSION['shop_id'];
-                $sql_user = "SELECT 
-                                    m.message_id,
-                                    m.shop_id,
-                                    m.customer_id,
-                                    m.message,
-                                    m.date_and_time,
-                                    CONCAT(c.first_name, ' ', c.last_name) AS name,
-                                    c.mobile_number,
-                                    c.email
-                                FROM 
-                                    message_table m
-                                JOIN 
-                                    customer c ON m.customer_id = c.customer_id
-                                WHERE 
-                                    m.date_and_time = (
-                                        SELECT 
-                                            MAX(mt.date_and_time)
-                                        FROM 
-                                            message_table mt
-                                        WHERE 
-                                            mt.customer_id = m.customer_id
-                                            AND mt.shop_id = m.shop_id
-                                    ) 
-                                    AND m.shop_id = '$shop_id'
-                                ORDER BY 
-                                    m.date_and_time DESC";
-
-                // $sql_notify = "SELECT * FROM notifications_by_admin WHERE shop_id='$shop_id' ORDER BY date_time desc";
-                $result_notify = mysqli_query($conn, $sql_user);
-                if ($result_notify->num_rows > 0) {
-                    while ($row_notify = $result_notify->fetch_assoc()) {
-                        echo '<a href="reply_message.php?customer_id=' . $row_notify['customer_id'] . '">';
-                        echo '<div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
-                        role="alert"><h4 class="font-bold text-lg">' . $row_notify['name'] . '</h4>';
-                        // echo '<p class="mt-2">' . $row_notify['message'] . '</p>';
-                        echo '<p class="mb-0">' . $row_notify['message'] . '
-                                    </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">' . $row_notify['date_and_time'] . '</span></div></a>';
-                    }
-                }
-                ?>
+                {% include "app/salon_dashboard/header.html" %}
+                <a href="message-reply">
+                        <div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
+                        role="alert"><h4 class="font-bold text-lg">Md XYZ</h4>
+                        <p class="mt-2">Thanks for reaching</p>
+                        <p class="mb-0">
+                                    </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">10 feb 2025 2:10 PM</span></div></a>
+                 
                 <!-- <h4 class="font-bold text-lg">Well done!</h4> -->
                 <!-- <p class="mt-2">Aww yeah, you successfully read this important alert message. This example text is
                         going to run a

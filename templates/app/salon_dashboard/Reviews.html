@@ -1,195 +1,70 @@
-<?php
-include '../mysql_connection.php';
-session_start();
-?>
 <!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saloon Dashboard</title>
-    <!-- Include Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salon Reviews</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
     <!-- Include Chart.js for graphs/charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        #dashboard {
-            height: 100vh;
-            scrollbar-width: none;
+    
+</head>
 
-        }
+<!DOCTYPE html>
+{% load static %}
+{% load tailwind_tags %}
+<html lang="en">
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #00014E;
-            width: 250px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .sidebar li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            background-color: #00E081;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            width: 1625px;
-            box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.1);
-            /* border:1px solid black; */
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 0;
-            color: rgb(0, 0, 0);
-        }
-        table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        font-size: 16px;
-        text-align: left;
-    }
-    th, td {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-    }
-    th {
-        background-color: #f4f4f4;
-        font-weight: bold;
-    }
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-    .rating {
-        font-weight: bold;
-        color: #ffb400;
-    }
-        table {
-            width: 1620px;
-            background-color: whitesmoke;
-        }
-        *{
-            font-family: cursive;
-        }
-    </style>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salon Reviews</title>
+    {% tailwind_css %}
 </head>
 
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
     <div class="flex h-screen">
         <!-- Sidebar -->
         {% include "app/salon_dashboard/sidebar.html" %}
+
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-            <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Our valuable testimonials</h2>
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="../image/shop/<?php echo $_SESSION['shop_id']; ?>.jpeg" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold"><?php echo $_SESSION['shop_name']; ?>&nbsp;</h3>
-                        <a href="../logout.php"><img src="../image/icon/logout.png" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
-                    </div>
-                </div>
-                <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Serial No</th>
-                                <th>Date</th>
-                                <th>Customer Name</th>
-                                <th>Review</th>
-                                <th>Rating</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $shop_id = $_SESSION['shop_id'];
-                            $sql = "SELECT * from review_shop 
-                                    JOIN customer ON customer.customer_id = review_shop.customer_id 
-                                    WHERE shop_id = '$shop_id'";
-                            $result = mysqli_query($conn, $sql);
-                            if ($result) {
-                                $cnt = 1;
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<tr>';
-                                    echo '<td>' . $cnt++ . '</td>';
-                                    echo '<td>' . $row['date_and_time'] . '</td>';
-                                    echo '<td>' . $row['first_name'] . ' ' . $row['last_name'] . '</td>';
-                                    echo '<td>' . $row['review'] . '</td>';
-                                    echo '<td class="rating">' . $row['star'] . ' / 5</td>';
-                                    echo '</tr>';
-                                }
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4">
+            {% include "app/salon_dashboard/header.html" %}
+            
+            <div class="overflow-x-auto bg-white p-4 shadow-lg rounded-lg">
+                <table class="min-w-full border border-gray-200 rounded-lg">
+                    <thead class="bg-pink-500">
+                        <tr>
+                            <th class="py-2 px-4 text-left">Serial No</th>
+                            <th class="py-2 px-4 text-left">Date</th>
+                            <th class="py-2 px-4 text-left">Customer Name</th>
+                            <th class="py-2 px-4 text-left">Review</th>
+                            <th class="py-2 px-4 text-left">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b hover:bg-pink-100">
+                            <td class="py-2 px-4">1</td>
+                            <td class="py-2 px-4">10.02.1025</td>
+                            <td class="py-2 px-4">Israt Jahan</td>
+                            <td class="py-2 px-4">It's the best place</td>
+                            <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
+                        </tr>
+                        <tr class="border-b hover:bg-pink-100">
+                            <td class="py-2 px-4">2</td>
+                            <td class="py-2 px-4">10.02.1025</td>
+                            <td class="py-2 px-4">Israt Jahan</td>
+                            <td class="py-2 px-4">It's the best place</td>
+                            <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </main>
-
-
-
+    </div>
 </body>
-
 </html>

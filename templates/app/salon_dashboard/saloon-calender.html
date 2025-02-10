@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salon Calender</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
+    
+</head>
+
+<body class="bg-gray-200 font-sans leading-normal tracking-normal">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        {% include "app/salon_dashboard/sidebar.html" %}
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+            <div class="main-content p-4 flex-1">
+                {% include "app/salon_dashboard/header.html" %}
+                <div class="container1">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?php
+                            $timezone = new DateTimeZone('Asia/Dhaka');
+                            $current_date_time_bd = new DateTime('now', $timezone);
+                            $dateComponents = getdate();
+                            if (isset($_GET['month']) && isset($_GET['year'])) {
+                                $month = $_GET['month'];
+                                $year = $_GET['year'];
+                            } else {
+                                $month = $dateComponents['mon'];
+                                $year = $dateComponents['year'];
+                            }
+
+                            echo build_calendar($month, $year);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+</body>
+
+</html>

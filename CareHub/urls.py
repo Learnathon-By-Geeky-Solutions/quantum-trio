@@ -19,6 +19,13 @@ urlpatterns = [
     path('salon_gallery', views.view_salon_gallery),
     path('saloon_calender', views.view_saloon_calender),
     path('staffs', views.view_saloon_stuff),
+    path('settings', views.view_settings),
+    path('notifications', views.view_notification),
+    path('salon_reviews', views.view_reviews),
+    path('customers', views.view_customers),
+    path('booking-slots', views.booking_slots),
+    path('message', views.view_message),
+    path('message-reply', views.view_message_reply),
 ]
 
 

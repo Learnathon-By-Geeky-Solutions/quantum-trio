@@ -1,101 +1,21 @@
 
 <!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customers</title>
-    <!-- Include Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salon Customer</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
+
+    
     <!-- Include Chart.js for graphs/charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        #dashboard {
-            height: 100vh;
-            scrollbar-width: none;
-
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #00014E;
-            width: 250px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .sidebar li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            background-color: #00E081;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            width: 1625px;
-            box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.1);
-            /* border:1px solid black; */
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 0;
-            color: rgb(0, 0, 0);
-        }
-
+     
         table {
             width: 100%;
             border-collapse: collapse;
@@ -128,9 +48,7 @@
             width: 1620px;
             background-color: whitesmoke;
         } */
-        *{
-            font-family: cursive;
-        }
+        
     </style>
 </head>
 
@@ -143,78 +61,45 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Customers history</h2>
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="../image/shop/<?php echo $_SESSION['shop_id']; ?>.jpeg" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold"><?php echo $_SESSION['shop_name']; ?>&nbsp;</h3>
-                        <a href="../logout.php"><img src="../image/icon/logout.png" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
+                {% include "app/salon_dashboard/header.html" %}
+                
+                    <div class="overflow-x-auto tables">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-pink-500 text-white">
+                    <tr>
+                    <th class="px-2 py-1 text-left">Booking Date</th>
+                    <th class="px-2 py-1 text-left">customer_name</th>
+                    <th class="px-2 py-1 text-left">Customer_address</th>
+                    <th class="px-2 py-1 text-left">Contact</th>
+                    <th class="px-2 py-1 text-left">Product details</th>
+                    <th class="px-2 py-1 text-left">Appointment date</th>
+                    <th class="px-2 py-1 text-left">Appointment Time</th>
+                    <th class="px-2 py-1 text-left">Expert</th>
+                    <th class="px-2 py-1 text-left">Expert contact</th>
+                    <th class="px-2 py-1 text-left">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                    
+
+                        <tr class="border-t">
+                        <td class="px-2 py-1">12/12/12</td>
+                        <td class="px-2 py-1">Rakibul islam</td>
+                        <td class="px-2 py-1">Comilla, Debidwar, Agaragram</td>
+                        <td class="px-2 py-1">01770090141</td>
+                        <td class="px-2 py-1">swana</td>
+                        <td class="px-2 py-1">10/2/25</td>
+                        <td class="px-2 py-1">10 am</td>
+                        <td class="px-2 py-1">Md XYZ</td>
+                        <td class="px-2 py-1">1234567890</td>
+                        <td class="px-2 py-1">Booked</td>
+
+                    
+                    </tbody>
+                    </table>
                     </div>
-                </div>
-                <?php
-                if ($result->num_rows > 0) {
-                    echo '<div class="overflow-x-auto tables">';
-                    echo '<table class="min-w-full bg-white border border-gray-200 rounded-lg">';
-                    echo '<thead class="bg-pink-500 text-white">';
-                    echo '<tr>';
-                    echo '<th class="px-2 py-1 text-left">Booking Date</th>';
-                    echo '<th class="px-2 py-1 text-left">customer_name</th>';
-                    echo '<th class="px-2 py-1 text-left">Customer_address</th>';
-                    echo '<th class="px-2 py-1 text-left">Contact</th>';
-                    echo '<th class="px-2 py-1 text-left">Product details</th>';
-                    echo '<th class="px-2 py-1 text-left">Appointment date</th>';
-                    echo '<th class="px-2 py-1 text-left">Appointment Time</th>';
-                    echo '<th class="px-2 py-1 text-left">Expert</th>';
-                    echo '<th class="px-2 py-1 text-left">Expert contact</th>';
-                    echo '<th class="px-2 py-1 text-left">Status</th>';
-                    echo '</tr>';
-                    echo '</thead>';
-                    echo '<tbody class="text-gray-700">';
-                    while ($row = $result->fetch_assoc()) {
-
-                        echo '<tr class="border-t">';
-                        echo '<td class="px-2 py-1">' . htmlspecialchars($row['when_booked']) . '</td>';
-                        //fetching shops
-                        $customer_id = $row['customer_id'];
-                        $sql_shop = "select * from customer where customer_id='$customer_id'";
-                        $result_shop = mysqli_query($conn, $sql_shop);
-                        while ($row_shop = $result_shop->fetch_assoc()) {
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_shop['first_name']) . ' ' . htmlspecialchars($row_shop['last_name']) . '</td>';
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_shop['district']) . ',' . htmlspecialchars($row_shop['upazilla']) . ',' . htmlspecialchars($row_shop['area']) . '</td>';
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_shop['mobile_number']);
-                        }
-                        //fetching items
-                        $item_id = $row['item_id'];
-                        $sql_item = "select item_name from item_table where item_id='$item_id'";
-                        $result_item = mysqli_query($conn, $sql_item);
-                        while ($row_item = $result_item->fetch_assoc()) {
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_item['item_name']) . '</td>';
-                        }
-                        // booking date and time
-                        echo '<td class="px-2 py-1">' . htmlspecialchars($row['date']) . '</td>';
-                        echo '<td class="px-2 py-1">' . htmlspecialchars($row['booking_time']) . '</td>';
-
-                        // expert details 
-                        $worker_id = $row['worker_id'];
-                        $sql_worker = "select worker_name,mobile_number from shop_worker where worker_id='$worker_id'";
-                        $result_worker = mysqli_query($conn, $sql_worker);
-                        while ($row_worker = $result_worker->fetch_assoc()) {
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_worker['worker_name']) . '</td>';
-                            echo '<td class="px-2 py-1">' . htmlspecialchars($row_worker['mobile_number']) . '</td>';
-                        }
-                        //status
-                        echo '<td class="px-2 py-1">' . htmlspecialchars($row['status']) . '</td>';
-
-                    }
-                    echo '</tbody>';
-                    echo '</table>';
-                    echo '</div>';
-                } else {
-                    echo '<p class="text-gray-500">No bookings found.</p>';
-                }
-                ?>
+                <p class="text-gray-500">No bookings found.</p>
+              
             </div>
     </div>
     </main>

@@ -11,93 +11,7 @@
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
     <style>
-        #dashboard {
-            height: 100vh;
-            scrollbar-width: none;
-
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #00014E;
-            width: 250px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .sidebar li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            background-color: #00E081;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            width: 1625px;
-            box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.1);
-            /* border:1px solid black; */
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 0;
-            color: rgb(0, 0, 0);
-        }
-        *{
-            font-family: cursive;
-        }
+      
     </style>
 </head>
 
@@ -110,16 +24,7 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4 bg-pink-500">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Gallery</h2>
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="../image/shop/<?php echo $_SESSION['shop_id']; ?>.jpeg" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold">Elite barbar Shop &nbsp;</h3>
-                        <a href=""><img src="{% static 'app/image/icon/logout.png'%}" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
-                    </div>
-                </div>
+                {% include "app/salon_dashboard/header.html" %}
                 <div class="mb-4">
                     <!-- Add Image Button -->
                     <button id="addImageBtn"
