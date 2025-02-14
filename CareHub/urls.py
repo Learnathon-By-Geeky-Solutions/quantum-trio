@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home),
     path('home', views.home),
+    # added by rakib for login purpose
+    path('login', views.login),
     path('contact', views.contact_us),
     path('search', views.search),
     path('booknow', views.book_now),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('booking-slots', views.booking_slots),
     path('message', views.view_message),
     path('message-reply', views.view_message_reply),
+    
 ]
 
 

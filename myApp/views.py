@@ -11,7 +11,10 @@ def home(request):
 
     return render(request, 'app/home.html')
 
-
+# added by rakib for login purpose
+def login(request):
+    return render(request, 'app\login_signup\login.html')
+                  
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
