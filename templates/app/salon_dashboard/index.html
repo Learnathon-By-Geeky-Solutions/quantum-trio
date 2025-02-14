@@ -10,6 +10,9 @@
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
 
+    <!-- Include Chart.js for graphs/charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
  
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
@@ -25,16 +28,16 @@
 
                 <div class="dashboard-content flex flex-wrap justify-between">
                 
-                    <div class="card bg-white rounded-lg p-4  mb-4 shadow-md">
+                    <div class="card bg-white rounded-lg p-4  mb-4 shadow-md w-1/2">
                         <h3 class="text-xl font-bold mb-2">Response of last 7 days</h3>
                         <div id="stats" style="height: 370px; width: 100%;"></div>
                     </div>
-                    <div class="card bg-white rounded-lg p-4  mb-4 shadow-md">
+                    <div class="card bg-white rounded-lg p-4  mb-4 shadow-md w-1/2">
                         <h3 class="text-xl font-bold mb-2">Sales</h3>
                         <div id="sales" style="height: 370px; width: 100%;"></div>
                         
                     </div>
-                    <div class="card rounded-lg p-4 mb-4 shadow-md" style="background-color:#963FF0;color:white;">
+                    <div class="card rounded-lg p-4 mb-4 shadow-md w-1/2" style="background-color:#963FF0;color:white;">
                         <h3 class="text-xl font-bold mb-2">Total customers</h3>
                         <div class="card-content flex flex-col items-center">
                             <div class="number text-4xl mb-2">
@@ -42,15 +45,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card bg-purple-600  rounded-lg p-4 mb-4 shadow-md "
-                        style="background-color:#963FF0;color:white;">
-                        <h3 class="text-xl mb-2">Total sales(this month)</h3>
-                        <div class="card-content flex flex-col items-center">
-                            <div class="number text-4xl mb-2">30543</div>
-                            
-                        </div>
+                    <div class="card bg-purple-600  rounded-lg p-4 mb-4 shadow-md w-1/2"
+                            style="background-color:#963FF0;color:white;">
+                            <h3 class="text-xl mb-2">Total sales(this month)</h3>
+                            <div class="card-content flex flex-col items-center">
+                                <div class="number text-4xl mb-2">30543</div>
+                                
+                            </div>
                     </div>
+                    
                 </div>
+                
+                
+                
                 <div class="dashboard-content flex flex-wrap justify-between"> 
                     <p style="font-size:20px;font-weight:700;">Our Review:</p>
                     <div class="carousel-container">
