@@ -12,9 +12,13 @@ def home(request):
     return render(request, 'app/home.html')
 
 # added by rakib for login purpose
+def select_user_type(request):
+    return render(request, 'app\login_signup\select_user_type.html')
+
 def login(request):
-    return render(request, 'app\login_signup\login.html')
-                  
+    user_type=request.GET.get('profile-type', 'Customer')
+    return render(request, 'app\login_signup\login.html',{'type': user_type})
+      
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
