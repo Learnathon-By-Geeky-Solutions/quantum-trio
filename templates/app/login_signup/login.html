@@ -16,7 +16,7 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <a href="select_user" class="text-gray-700"><img src="../image/icon/left-arrow1.png" alt=""
+            <a href="select_user" class="text-gray-700"><img src="{% static "app/image/icon/left-arrow.png" %}" alt=""
                     style="width: 30px; height: 30px;"></a>
 
             <h1 class="text-2xl font-bold mb-8 text-center text-gray-700">{{ type }} Login</h1>
@@ -50,7 +50,7 @@
                 <button type="submit"
                     class="bg-pink-600 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">Login</button>
             </form>
-            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="create_account.php"
+            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="create-account"
                     class="text-pink-600 hover:underline">Create Account</a></p>
             <p class="text-pink-600 hover:underline" align="center" style="cursor:pointer;"><a
                     href="forget_password.php"> forgot password?</a></p>

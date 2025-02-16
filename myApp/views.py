@@ -2,8 +2,6 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 
 # Create your views here.
-
-
 def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
@@ -15,10 +13,25 @@ def home(request):
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
 
+# login purpose
 def login(request):
     user_type=request.GET.get('profile-type', 'Customer')
     return render(request, 'app\login_signup\login.html',{'type': user_type})
-      
+
+# create_account purpose
+def create_account(request):
+    return render(request, 'app\login_signup\sign-up.html')
+
+# customer A/c registration steps
+def customer_register_step1(request):
+    return render(request, 'app\login_signup\\register\customer\step1.html')
+
+def customer_register_step2(request):
+    return render(request, 'app\login_signup\\register\customer\step2.html')
+
+# Business A/c registration steps
+
+
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
