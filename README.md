@@ -10,7 +10,7 @@
 
 ## Project Description
 CareHub:
-Motivation behind the project
+Motivation behind the project:
 ----------------------------------------
 Our project, CareHub, addresses the prevalent issues faced by people in Bangladesh when accessing beauty and wellness services. Long wait times, uncertainty about service availability, or difficulty in finding reliable providers in a new city are common frustrations. Time is a precious resource, and CareHub aims to honor that with a solution designed for both men and women.
 
