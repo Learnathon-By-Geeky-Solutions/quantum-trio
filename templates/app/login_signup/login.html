@@ -5,7 +5,7 @@
 
 <head>
     
-    <title>Book Now</title>
+    <title>Login</title>
     <meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -16,27 +16,44 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <div class="flex justify-between items-center mb-4 ml-4">
-                <a href="home" class="text-gray-700"><img src="../image/icon/left-arrow1.png" alt="" style="width: 30px; height: 30px;"></a>
-                <h1 class="text-2xl font-bold text-gray-700">Log In &nbsp;&nbsp;&nbsp;</h1>
-                <div></div> <!-- Empty div to balance the flex spacing -->
-            </div>
-            <div class="mb-8">
-                <p class="text-gray-600 text-center">Select user type</p>
-            </div>
-            <div class="space-y-4">
-                <a href="select_login.php?profile-type=Customer" class="block bg-pink-500 text-white p-4 rounded-lg text-center hover:bg-pink-600 transition duration-300">
-                    Customer profile<br><span class="text-sm text-pink-200">For customer only</span>
-                </a>
-                <a href="select_login.php?profile-type=Business" class="block bg-pink-500 text-white p-4 rounded-lg text-center hover:bg-pink-600 transition duration-300">
-                    Business profile<br><span class="text-sm text-pink-200">For business user only</span>
-                </a>
-                <a href="admin_login.php?profile-type=admin" class="block bg-pink-500 text-white p-4 rounded-lg text-center hover:bg-pink-600 transition duration-300">
-                    Admin<br><span class="text-sm text-pink-200">For admin only</span>
-                </a>
-            </div>
+            <a href="select_user" class="text-gray-700"><img src="{% static "app/image/icon/left-arrow.png" %}" alt=""
+                    style="width: 30px; height: 30px;"></a>
+
+            <h1 class="text-2xl font-bold mb-8 text-center text-gray-700">{{ type }} Login</h1>
+            <form method="post" action="">
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 font-bold mb-2">Email*</label>
+                    <input type="email" id="email" name="email" placeholder="........@gmail.com"
+                        value=""
+                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                        required>
+                    <div class="red-text" style="color:red">print error for </div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700 font-bold mb-2">Password*</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••"
+                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                        required>
+                    <div class="red-text" style="color:red"><?php echo $error['password']; ?></div>
+                </div>
+                <div class="mb-4">
+                    <!-- <label for="profile-type" class="block text-gray-700 font-bold mb-2">Profile Type*</label> -->
+                    <!-- <select id="profile-type" name="profile-type"
+                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                        required>
+                        <option value="">Select Profile Type</option>
+                        <option value="customer">Customer</option>
+                        <option value="business">Business</option>
+                    </select> -->
+                    <input type="hidden" id="profile-type" name="profile-type" value="<?php echo $type; ?>">
+                </div>
+                <button type="submit"
+                    class="bg-pink-600 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">Login</button>
+            </form>
+            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="create-account"
+                    class="text-pink-600 hover:underline">Create Account</a></p>
+            <p class="text-pink-600 hover:underline" align="center" style="cursor:pointer;"><a
+                    href="forget_password.php"> forgot password?</a></p>
         </div>
     </div>
 </body>
-
-</html>

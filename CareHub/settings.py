@@ -100,6 +100,7 @@ WSGI_APPLICATION = 'CareHub.wsgi.application'
 # superuser: rakib151p
 # email: rakib151p@gmail.com
 # pass: rakib1234
+# python manage.py createsuperuser use this command to create superuser
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",

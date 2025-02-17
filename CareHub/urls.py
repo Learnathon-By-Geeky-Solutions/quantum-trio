@@ -9,7 +9,12 @@ urlpatterns = [
     path('', views.home),
     path('home', views.home),
     # added by rakib for login purpose
+    path('select_user', views.select_user_type),
     path('login', views.login),
+    path('create-account',views.create_account),
+    path('customer-register-step1',views.customer_register_step1),
+    path('customer-register-step2',views.customer_register_step2),
+    
     path('contact', views.contact_us),
     path('search', views.search),
     path('booknow', views.book_now),
