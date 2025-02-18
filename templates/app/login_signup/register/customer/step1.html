@@ -36,7 +36,9 @@
                 <div></div> <!-- Empty div to balance the flex spacing -->
             </div>
 
-            <form action="" method="POST" onsubmit="return validateForm()">
+            <form action="step2" method="POST" onsubmit="return validateForm()">
+                {% csrf_token %}
+                
                 <div class="mb-4">
                     <label for="first-name" class="block text-gray-700 font-bold mb-2">First name *</label>
                     <input type="text" id="first-name" name="first-name"

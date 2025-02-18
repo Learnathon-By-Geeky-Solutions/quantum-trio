@@ -12,8 +12,18 @@ urlpatterns = [
     path('select_user', views.select_user_type),
     path('login', views.login),
     path('create-account',views.create_account),
-    path('customer-register-step1',views.customer_register_step1),
-    path('customer-register-step2',views.customer_register_step2),
+    # customer registration steps
+    path('register/customer/step1',views.customer_register_step1),
+    path('register/customer/step2',views.customer_register_step2,name='step2'),
+    # business registration steps
+    path('register/business/step1',views.business_register_step1),
+    path('register/business/step2',views.business_register_step2),
+    path('register/business/step3',views.business_register_step3),
+    path('register/business/step4',views.business_register_step4),
+    path('register/business/step5',views.business_register_step5),
+    path('register/business/step6',views.business_register_step6),
+    path('register/business/step7',views.business_register_step7),
+    path('register/business/step8',views.business_register_step8),
     
     path('contact', views.contact_us),
     path('search', views.search),

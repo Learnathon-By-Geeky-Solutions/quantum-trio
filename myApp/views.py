@@ -1,7 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
+
 def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
@@ -10,33 +12,70 @@ def home(request):
     return render(request, 'app/home.html')
 
 # added by rakib for login purpose
+
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
 
 # login purpose
+
 def login(request):
-    user_type=request.GET.get('profile-type', 'Customer')
-    return render(request, 'app\login_signup\login.html',{'type': user_type})
+    user_type = request.GET.get('profile-type', 'Customer')
+    return render(request, 'app\login_signup\login.html', {'type': user_type})
 
 # create_account purpose
+
 def create_account(request):
     return render(request, 'app\login_signup\sign-up.html')
 
-# customer A/c registration steps
+# customer A/c registration steps starts here
+
 def customer_register_step1(request):
     return render(request, 'app\login_signup\\register\customer\step1.html')
 
 def customer_register_step2(request):
     return render(request, 'app\login_signup\\register\customer\step2.html')
 
-# Business A/c registration steps
+# Business A/c registration steps starts here
+
+def business_register_step1(request):
+    return render(request, 'app\login_signup\\register\\business\step1.html')
+
+
+def business_register_step2(request):
+    return render(request, 'app\login_signup\\register\\business\step2.html')
+
+
+def business_register_step3(request):
+    return render(request, 'app\login_signup\\register\\business\step3.html')
+
+
+def business_register_step4(request):
+    return render(request, 'app\login_signup\\register\\business\step4.html')
+
+
+def business_register_step5(request):
+    return render(request, 'app\login_signup\\register\\business\step5.html')
+
+
+def business_register_step6(request):
+    return render(request, 'app\login_signup\\register\\business\step6.html')
+
+
+def business_register_step7(request):
+    return render(request, 'app\login_signup\\register\\business\step7.html')
+
+
+def business_register_step8(request):
+    return render(request, 'app\login_signup\\register\\business\step8.html')
 
 
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
+
 def search(request):
     return render(request, 'app\search.html')
+
 
 def service(request):
     return render(request, 'app\service.html')
@@ -56,42 +95,54 @@ def location(request):
 def explore_by_item(request):
     return render(request, 'app\explore_by_items.html')
 
-#For Salon Profile
+# For Salon Profile
+
+
 def view_salon_profile(request):
     return render(request, 'app\saloon_profile\dashboard.html')
 
-#For Salon Deshboard
+# For Salon Deshboard
+
+
 def view_dash_board(request):
     return render(request, 'app\salon_dashboard\index.html')
+
 
 def view_salon_gallery(request):
     return render(request, 'app\salon_dashboard\saloon_gallery.html')
 
+
 def view_saloon_calender(request):
     return render(request, 'app\salon_dashboard\saloon-calender.html')
+
 
 def view_saloon_stuff(request):
     return render(request, 'app\salon_dashboard\staffs.html')
 
+
 def view_settings(request):
     return render(request, 'app\salon_dashboard\saloon-setting.html')
+
 
 def view_notification(request):
     return render(request, 'app/salon_dashboard/notifications.html')
 
+
 def view_reviews(request):
     return render(request, 'app/salon_dashboard/reviews.html')
+
 
 def view_customers(request):
     return render(request, 'app/salon_dashboard/customers.html')
 
+
 def booking_slots(request):
     return render(request, 'app/salon_dashboard/booking-slots.html')
+
 
 def view_message(request):
     return render(request, 'app/salon_dashboard/message.html')
 
+
 def view_message_reply(request):
     return render(request, 'app/salon_dashboard/reply-message.html')
-
-
