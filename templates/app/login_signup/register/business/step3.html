@@ -3,13 +3,11 @@
 {% load static tailwind_tags %}
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop Address</title>
-  {% tailwind_css %}
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop addresses</title>
+    {% tailwind_css %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     #map {
       height: 400px;
@@ -29,7 +27,7 @@
           Enter Your Shop Address
         </h2>
       </div>
-      <form action="step4" method="POST" id="shopAddressForm">
+      <form action="step4.php" method="POST" id="shopAddressForm">
         {% csrf_token %}
         <div class="mb-4">
           <label for="district" class="block text-gray-700 font-bold mb-2">Select Your District *</label>
@@ -110,8 +108,7 @@
         </div>
         <div class="mb-4">
           <label for="area" class="block text-gray-700 font-bold mb-2">Shop Area *</label>
-          <input type="text" id="area" name="area" value="<?php if (isset($_SESSION['area']))
-            echo $_SESSION['area']; ?>"
+          <input type="text" id="area" name="area" value=""
             class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600" required />
         </div>
         <div class="mb-4">

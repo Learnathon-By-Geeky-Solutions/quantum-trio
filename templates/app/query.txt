@@ -1,0 +1,159 @@
+//insert division
+INSERT INTO public.divisions (division_name) VALUES
+('Dhaka'),
+('Chittagong'),
+('Khulna'),
+('Rajshahi'),
+('Barisal'),
+('Sylhet'),
+('Rangpur'),
+('Mymensingh');
+
+//insert districts
+INSERT INTO public."myApp_district" (name, division_id) VALUES
+('Dhaka', 1), 
+('Faridpur', 1), 
+('Gazipur', 1), 
+('Gopalganj', 1),
+('Kishoreganj', 1), 
+('Madaripur', 1), 
+('Manikganj', 1), 
+('Munshiganj', 1),
+('Narayanganj', 1), 
+('Narsingdi', 1), 
+('Rajbari', 1), 
+('Shariatpur', 1), 
+('Tangail', 1),
+('Bandarban', 2), 
+('Brahmanbaria', 2), 
+('Chandpur', 2), 
+('Chattogram', 2),
+('Cumilla', 2), 
+('Cox’s Bazar', 2), 
+('Feni', 2), 
+('Khagrachari', 2),
+('Lakshmipur', 2), 
+('Noakhali', 2), 
+('Rangamati', 2),
+('Bagerhat', 3), 
+('Chuadanga', 3), 
+('Jashore', 3), 
+('Jhenaidah', 3),
+('Khulna', 3), 
+('Kushtia', 3), 
+('Magura', 3), 
+('Meherpur', 3),
+('Narail', 3), 
+('Satkhira', 3),
+('Bogura', 4), 
+('Chapainawabganj', 4), 
+('Joypurhat', 4), 
+('Naogaon', 4),
+('Natore', 4), 
+('Pabna', 4), 
+('Rajshahi', 4), 
+('Sirajganj', 4),
+('Barguna', 5), 
+('Barishal', 5), 
+('Bhola', 5), 
+('Jhalokathi', 5),
+('Patuakhali', 5), 
+('Pirojpur', 5),
+('Habiganj', 6), 
+('Moulvibazar', 6), 
+('Sunamganj', 6), 
+('Sylhet', 6),
+('Dinajpur', 7), 
+('Gaibandha', 7), 
+('Kurigram', 7), 
+('Lalmonirhat', 7),
+('Nilphamari', 7), 
+('Panchagarh', 7), 
+('Rangpur', 7), 
+('Thakurgaon', 7),
+('Jamalpur', 8), 
+('Mymensingh', 8), 
+('Netrokona', 8), 
+('Sherpur', 8);
+
+//insert upazilla
+INSERT INTO public.upazilas (upazila_name, district_id) VALUES
+-- Dhaka Division (District ID: 1-13)
+('Dhamrai', 1), ('Dohar', 1), ('Keraniganj', 1), ('Nawabganj', 1), ('Savar', 1),
+('Alfadanga', 2), ('Bhanga', 2), ('Boalmari', 2), ('Charbhadrasan', 2), ('Faridpur Sadar', 2), ('Madhukhali', 2), ('Nagarkanda', 2), ('Sadarpur', 2), ('Saltha', 2),
+('Gazipur Sadar', 3), ('Kaliakair', 3), ('Kapasia', 3), ('Sreepur', 3), ('Kaliganj', 3),
+('Gopalganj Sadar', 4), ('Kashiani', 4), ('Kotalipara', 4), ('Muksudpur', 4), ('Tungipara', 4),
+('Bajitpur', 5), ('Bhairab', 5), ('Hossainpur', 5), ('Itna', 5), ('Karimganj', 5), ('Katiadi', 5), ('Kishoreganj Sadar', 5), ('Kuliarchar', 5), ('Mithamain', 5), ('Nikli', 5), ('Pakundia', 5), ('Tarail', 5),
+('Madaripur Sadar', 6), ('Rajoir', 6), ('Shibchar', 6),
+('Daulatpur', 7), ('Ghior', 7), ('Harirampur', 7), ('Manikganj Sadar', 7), ('Saturia', 7), ('Shibalaya', 7), ('Singair', 7),
+('Gazaria', 8), ('Lohajang', 8), ('Munshiganj Sadar', 8), ('Serajdikhan', 8), ('Sreenagar', 8), ('Tongibari', 8),
+('Araihazar', 9), ('Bandar', 9), ('Narayanganj Sadar', 9), ('Rupganj', 9), ('Sonargaon', 9),
+('Belabo', 10), ('Monohardi', 10), ('Narsingdi Sadar', 10), ('Palash', 10), ('Raipura', 10), ('Shibpur', 10),
+('Baliakandi', 11), ('Goalanda', 11), ('Kalukhali', 11), ('Pangsha', 11), ('Rajbari Sadar', 11),
+('Bhedarganj', 12), ('Damudya', 12), ('Gosairhat', 12), ('Naria', 12), ('Shariatpur Sadar', 12), ('Zajira', 12),
+('Basail', 13), ('Bhuapur', 13), ('Delduar', 13), ('Dhanbari', 13), ('Ghatail', 13), ('Gopalpur', 13), ('Kalihati', 13), ('Madhupur', 13), ('Mirzapur', 13), ('Nagarpur', 13), ('Sakhipur', 13), ('Tangail Sadar', 13),
+
+-- Chattogram Division (District ID: 14-24)
+('Bandarban Sadar', 14), ('Lama', 14), ('Thanchi', 14), ('Ali Kadam', 14), ('Ruma', 14), ('Rowangchhari', 14), ('Naikhongchhari', 14),
+('Akhaura', 15), ('Ashuganj', 15), ('Bancharampur', 15), ('Bijoynagar', 15), ('Brahmanbaria Sadar', 15), ('Kasba', 15), ('Nabinagar', 15), ('Sarail', 15),
+('Chandpur Sadar', 16), ('Faridganj', 16), ('Haimchar', 16), ('Hajiganj', 16), ('Kachua', 16), ('Matlab North', 16), ('Matlab South', 16), ('Shahrasti', 16),
+('Anwara', 17), ('Banshkhali', 17), ('Boalkhali', 17), ('Chandanaish', 17), ('Fatikchhari', 17), ('Hathazari', 17), ('Lohagara', 17), ('Mirsharai', 17), ('Patiya', 17), ('Rangunia', 17), ('Raozan', 17), ('Sandwip', 17), ('Satkania', 17), ('Sitakunda', 17), ('Chattogram Sadar', 17),
+('Barura', 18), ('Brahmanpara', 18), ('Burichang', 18), ('Cumilla Sadar', 18), ('Cumilla Sadar South', 18), ('Daudkandi', 18), ('Debidwar', 18), ('Homna', 18), ('Laksam', 18), ('Meghna', 18), ('Muradnagar', 18), ('Nangalkot', 18), ('Titas', 18),
+('Chakaria', 19), ('Cox’s Bazar Sadar', 19), ('Kutubdia', 19), ('Maheshkhali', 19), ('Pekua', 19), ('Ramu', 19), ('Teknaf', 19), ('Ukhia', 19),
+
+-- Barishal Division (District ID: 25-30)
+('Barishal Sadar', 25), ('Babuganj', 25), ('Agailjhara', 25), ('Bakerganj', 25), ('Banaripara', 25), ('Gaurnadi', 25), ('Hizla', 25), ('Mehendiganj', 25), ('Muladi', 25), ('Wazirpur', 25),
+('Bhola Sadar', 26), ('Borhanuddin', 26), ('Char Fasson', 26), ('Daulatkhan', 26), ('Lalmohan', 26), ('Manpura', 26), ('Tazumuddin', 26),
+('Jhalokathi Sadar', 27), ('Kathalia', 27), ('Nalchity', 27), ('Rajapur', 27),
+('Bauphal', 28), ('Dashmina', 28), ('Dumki', 28), ('Galachipa', 28), ('Kalapara', 28), ('Mirzaganj', 28), ('Patuakhali Sadar', 28), ('Rangabali', 28),
+('Amtali', 29), ('Barguna Sadar', 29), ('Betagi', 29), ('Bamna', 29), ('Patharghata', 29), ('Taltali', 29),
+('Bhandaria', 30), ('Kawkhali', 30), ('Mathbaria', 30), ('Nazirpur', 30), ('Pirojpur Sadar', 30), ('Nesarabad', 30), ('Indurkani', 30),
+
+-- Khulna Division (District ID: 31-39)
+('Bagherhat Sadar', 31), ('Chitalmari', 31), ('Fakirhat', 31), ('Kachua', 31), ('Mollahat', 31), ('Mongla', 31), ('Morrelganj', 31), ('Rampal', 31), ('Sarankhola', 31),
+('Chuadanga Sadar', 32), ('Alamdanga', 32), ('Damurhuda', 32), ('Jibannagar', 32),
+('Jashore Sadar', 33), ('Abhaynagar', 33), ('Bagherpara', 33), ('Chaugachha', 33), ('Jhikargachha', 33), ('Keshabpur', 33), ('Manirampur', 33), ('Sharsha', 33),
+('Jhenaidah Sadar', 34), ('Harinakunda', 34), ('Kaliganj', 34), ('Kotchandpur', 34), ('Maheshpur', 34), ('Shailkupa', 34),
+('Khulna Sadar', 35), ('Batiaghata', 35), ('Dacope', 35), ('Dumuria', 35), ('Koyra', 35), ('Paikgachha', 35), ('Phultala', 35), ('Rupsha', 35), ('Terokhada', 35),
+('Kushtia Sadar', 36), ('Bheramara', 36), ('Daulatpur', 36), ('Khoksa', 36), ('Mirpur', 36),
+('Magura Sadar', 37), ('Mohammadpur', 37), ('Shalikha', 37), ('Sreepur', 37),
+('Meherpur Sadar', 38), ('Gangni', 38), ('Mujibnagar', 38),
+('Narail Sadar', 39), ('Kalia', 39), ('Lohagara', 39),
+
+-- Rajshahi Division (District ID: 40-46)
+('Bagmara', 40), ('Boalia', 40), ('Charghat', 40), ('Durgapur', 40), ('Godagari', 40), ('Mohanpur', 40), ('Paba', 40), ('Puthia', 40), ('Tanore', 40),
+('Bholahat', 41), ('Gomastapur', 41), ('Nachole', 41), ('Chapai Nawabganj Sadar', 41), ('Shibganj', 41),
+('Niamatpur', 42), ('Manda', 42), ('Atrai', 42), ('Raninagar', 42), ('Naogaon Sadar', 42), ('Badalgachhi', 42), ('Mahadebpur', 42), ('Dhamoirhat', 42), ('Porsha', 42), ('Sapahar', 42),
+('Adamdighi', 43), ('Bogra Sadar', 43), ('Dhunat', 43), ('Dupchanchia', 43), ('Gabtali', 43), ('Kahaloo', 43), ('Nandigram', 43), ('Sariakandi', 43), ('Shajahanpur', 43), ('Sherpur', 43), ('Shibganj', 43),
+('Joypurhat Sadar', 44), ('Akkelpur', 44), ('Kalai', 44), ('Khetlal', 44), ('Panchbibi', 44),
+('Natore Sadar', 45), ('Baraigram', 45), ('Bagatipara', 45), ('Lalpur', 45), ('Singra', 45), ('Gurudaspur', 45), ('Naldanga', 45),
+('Sirajganj Sadar', 46), ('Belkuchi', 46), ('Chowhali', 46), ('Kamarkhanda', 46), ('Kazipur', 46), ('Raiganj', 46), ('Shahjadpur', 46), ('Tarash', 46), ('Ullapara', 46),
+
+-- Rangpur Division (District ID: 47-53)
+('Dinajpur Sadar', 47), ('Birampur', 47), ('Birganj', 47), ('Birol', 47), ('Chirirbandar', 47), ('Kaharole', 47), ('Khansama', 47), ('Nawabganj', 47), ('Parbatipur', 47),
+('Gaibandha Sadar', 48), ('Fulchhari', 48), ('Gobindaganj', 48), ('Palashbari', 48), ('Sadullapur', 48), ('Sundarganj', 48),
+('Kurigram Sadar', 49), ('Bhurungamari', 49), ('Chilmari', 49), ('Fulbari', 49), ('Nageshwari', 49), ('Rajarhat', 49), ('Rowmari', 49), ('Ulipur', 49),
+('Lalmonirhat Sadar', 50), ('Aditmari', 50), ('Hatibandha', 50), ('Kaliganj', 50), ('Patgram', 50),
+('Nilphamari Sadar', 51), ('Dimla', 51), ('Domar', 51), ('Jaldhaka', 51), ('Kishoreganj', 51), ('Saidpur', 51),
+('Panchagarh Sadar', 52), ('Atwari', 52), ('Boda', 52), ('Debiganj', 52), ('Tetulia', 52),
+('Rangpur Sadar', 53), ('Badarganj', 53), ('Gangachara', 53), ('Kaunia', 53), ('Mithapukur', 53), ('Pirgacha', 53), ('Pirganj', 53), ('Taraganj', 53),
+
+-- Mymensingh Division (District ID: 54-64)
+('Mymensingh Sadar', 54), ('Bhaluka', 54), ('Dhobaura', 54), ('Fulbaria', 54), ('Gafargaon', 54), ('Gauripur', 54), ('Haluaghat', 54), ('Ishwarganj', 54), ('Muktagachha', 54), ('Nandail', 54), ('Phulpur', 54),
+('Netrokona Sadar', 55), ('Atpara', 55), ('Barhatta', 55), ('Durgapur', 55), ('Kalmakanda', 55), ('Kendua', 55), ('Madan', 55), ('Mohanganj', 55), ('Purbadhala', 55),
+
+-- Mymensingh Division (District ID: 56-64)
+('Jamalpur Sadar', 56), ('Bakshiganj', 56), ('Dewanganj', 56), ('Islampur', 56), ('Madarganj', 56), ('Melandaha', 56), ('Sarishabari', 56),
+('Sherpur Sadar', 57), ('Jhenaigati', 57), ('Nakla', 57), ('Nalitabari', 57), ('Sreebardi', 57),
+
+-- Sylhet Division (District ID: 58-61)
+('Sylhet Sadar', 58), ('Balaganj', 58), ('Beanibazar', 58), ('Bishwanath', 58), ('Companiganj', 58), ('Dakshin Surma', 58), ('Fenchuganj', 58), ('Golapganj', 58), ('Gowainghat', 58), ('Jaintiapur', 58), ('Kanaighat', 58), ('Zakiganj', 58), ('Osmaninagar', 58),
+('Moulvibazar Sadar', 59), ('Barlekha', 59), ('Juri', 59), ('Kamalganj', 59), ('Kulaura', 59), ('Rajnagar', 59), ('Sreemangal', 59),
+('Habiganj Sadar', 60), ('Ajmiriganj', 60), ('Bahubal', 60), ('Baniachong', 60), ('Chunarughat', 60), ('Lakhai', 60), ('Madhabpur', 60), ('Nabiganj', 60),
+('Sunamganj Sadar', 61), ('Bishwambarpur', 61), ('Chatak', 61), ('Dakshin Sunamganj', 61), ('Derai', 61), ('Dharampasha', 61), ('Dowarabazar', 61), ('Jagannathpur', 61), ('Jamalganj', 61), ('Shantiganj', 61), ('Shalla', 61), ('Tahirpur', 61),
+
+-- Chattogram Division (District ID: 62-64)
+('Chattogram Sadar', 62), ('Anwara', 62), ('Banshkhali', 62), ('Boalkhali', 62), ('Chandanaish', 62), ('Fatikchhari', 62), ('Hathazari', 62), ('Lohagara', 62), ('Mirsharai', 62), ('Patiya', 62), ('Rangunia', 62), ('Raozan', 62), ('Sandwip', 62), ('Satkania', 62), ('Sitakunda', 62),
+('Cox- Bazar Sadar', 63), ('Chakaria', 63), ('Kutubdia', 63), ('Maheshkhali', 63), ('Pekua', 63), ('Ramu', 63), ('Teknaf', 63), ('Ukhia', 63),
+('Bandarban Sadar', 64), ('Ali Kadam', 64), ('Lama', 64), ('Naikhongchhari', 64), ('Rowangchhari', 64), ('Ruma', 64), ('Thanchi', 64);
+

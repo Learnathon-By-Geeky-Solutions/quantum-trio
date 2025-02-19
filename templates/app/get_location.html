@@ -1,0 +1,105 @@
+{% comment %} 
+This is a testing purpose file only 
+please avoid it 
+I tried to fetch all the location details using the location latitude and longitude
+but it using geolocation it may be not possible cause geolocation doesnt provide me the accurate 
+location pointer
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>          
+   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Location</title>
+</head>
+<body>
+    {{ data.country }}
+    {{ data.division }}
+    {{ data.city }}
+    {{ data.village }}
+    {{ data.postcode }}
+    {{ data.latitude }}
+    {{ data.longitude }}
+    <h2>Fetch Latitude & Longitude</h2>
+    <button type="button" onclick="getLocation()">Get My Location</button>
+    
+    <form action="" method="GET">
+        <input type="hidden" name="lat" id="lat">
+        <input type="hidden" name="lon" id="lon">
+        
+        <p><strong>Latitude:</strong> <span id="latitude">N/A</span></p>
+        <p><strong>Longitude:</strong> <span id="longitude">N/A</span></p>
+
+        <button type="submit">Submit Location</button>
+    </form>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            
+            // Set values in hidden input fields
+            document.getElementById("lat").value = lat;
+            document.getElementById("lon").value = lon;
+
+            // Display on page
+            document.getElementById("latitude").innerText = lat;
+            document.getElementById("longitude").innerText = lon;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+
+{% comment %} <script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+  
+    function showPosition(position) {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        
+        // Send this data to your Django backend
+        fetch(`/get-location/?lat=${latitude}&lon=${longitude}`)
+            .then(response => response.json())
+            .then(data => console.log("User Location:", data))
+            .catch(error => console.log("Error:", error));
+    }
+  
+    function showError(error) {
+        alert("Error getting location: " + error.message);
+    }
+  
+    getLocation(); // Call the function when the page loads
+  </script> {% endcomment %}
+</body>
+</html>
