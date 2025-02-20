@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-{% load static %} {% load static tailwind_tags %}
+{% load static %} 
+{% load static tailwind_tags %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -49,13 +50,15 @@
           <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
           <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
           <div class="grid-container">
-            <div class="grid-item" onclick="selectService(this)">
-              <input type="checkbox" id="" name="services[]" value=" " class="hidden" />
-              <label for="">
-                <img src="" alt=" " />
-                <span></span>
-              </label>
-            </div>
+            {% for service in services%}
+                <div class="grid-item" onclick="selectService(this)">
+                <input type="checkbox" id="{{ service.id }} " name="services[]" value="' . $row['service_name'] . '" class="hidden">
+                <label for="{{ service.id }} ">
+                <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="Service Image">
+                <span>{{ service.name }} </span>
+                </label>
+                </div>
+            {% endfor %}      
             <div class="ji"></div>
           </div>
           <button type="submit" class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue</button>

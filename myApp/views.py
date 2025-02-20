@@ -179,7 +179,9 @@ def business_register_step4(request):
                 'latitude':request.POST.get("latitude", ""),
                 'longitude':request.POST.get("longitude",""),
         }
-    return render(request, 'app\login_signup\\register\\business\step4.html')
+    service=Service.objects.all().values('id', 'name')
+    print(service)
+    return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
 
 def business_register_step5(request):
