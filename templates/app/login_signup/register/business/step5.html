@@ -20,25 +20,28 @@
             <h2 class="text-2xl font-bold text-center mb-4">Add Items to Services</h2>
 
             <div id="services">
-                
-                    <div class="service mb-4">
-                        <label class="block font-bold mb-2">Service: </label>
-                        <label class="block font-bold mb-2">Items</label>
-                        <div class="items">
-                            <div class="item mb-2 flex">
-                                <select name="items[index][name][]"
-                                    class="block w-1/2 p-2 border rounded mb-2 mr-2 item-select">
-                                    <option value="">Select an item</option>
-                                    
-                                        <option value=""></option>
-                                    
-                                </select>
-                                <input type="number" name="items[index][price][]"
-                                    class="block w-1/2 p-2 border rounded mb-2 item-price" placeholder="Enter price">
-                            </div>
+                {% for service in services %}
+                <div class="service mb-4">
+                    <label class="block font-bold mb-2">Service:{{ service.service__name }} </label>
+                    <label class="block font-bold mb-2">Items</label>
+                    <div class="items">
+                        <div class="item mb-2 flex">
+                            <select name="items[<?= $index ?>][name][]"
+                                class="block w-1/2 p-2 border rounded mb-2 mr-2 item-select">
+                                <option value="">Select an item</option>
+                                
+                                {% for item in service.service_names %}
+                                    <option value="{{ item }}"> {{ item }} </option>
+                                {% endfor %}
+                                
+                            </select>
+                            <input type="number" name="items[<?= $index ?>][price][]"
+                                class="block w-1/2 p-2 border rounded mb-2 item-price" placeholder="Enter price">
                         </div>
-                        <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2">Add Item</button>
                     </div>
+                    <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2">Add Item</button>
+                </div>
+                {% endfor %}
                 {% comment %} other services  {% endcomment %}
                     <div class="service mb-4">
                         <label class="block font-bold mb-2">Service: </label>

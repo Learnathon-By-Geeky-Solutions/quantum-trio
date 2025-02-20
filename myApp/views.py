@@ -129,13 +129,14 @@ def business_register_step3(request):
         user['gender'] = request.POST.get("gender", "")
         # print(user)
 
-        request.session["user"] = {
+        request.session["user"].update({
             'business_name': request.POST.get("business_name", ""),
             'business_title': request.POST.get("business_title", ""),
             'website': request.POST.get("website", ""),
             'business_info': request.POST.get("business_info", ""),
             'gender': request.POST.get("gender", ""),
-        }
+        })
+        request.session.modified = True #update the session variable
     return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 
@@ -167,7 +168,7 @@ def business_register_step4(request):
         user['latitude']=request.POST.get("latitude", "")
         user['longitude']=request.POST.get("longitude","")
         # print(user)
-        request.session["user"] = {
+        request.session["user"].update({
                 'district': request.POST.get("district", ""),
                 'upazilla': request.POST.get("upazilla", ""),
                 'area': request.POST.get("area", ""),
@@ -178,14 +179,26 @@ def business_register_step4(request):
                 'landmark5':landmark5,
                 'latitude':request.POST.get("latitude", ""),
                 'longitude':request.POST.get("longitude",""),
-        }
+        })
+        request.session.modified = True  #update the session variable
     service=Service.objects.all().values('id', 'name')
-    print(service)
+    # print(service)
     return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
 
 def business_register_step5(request):
-    return render(request, 'app\login_signup\\register\\business\step5.html')
+    if request.method =='POST':
+        services = request.POST.getlist("services[]", []) #posts only the id's of service
+        # Fetch available services
+        available_services = Item.objects.values('service__id','service__name').annotate(service_names=ArrayAgg('name'))
+        # print(available_services)
+        # Convert IDs to strings for comparison
+        matching_services = [
+            service for service in available_services if str(service['service__id']) in services
+        ]
+        print(matching_services)  # Debug output
+    # print(request.session['user'])
+    return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
 
 
 def business_register_step6(request):

@@ -29,18 +29,15 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transform: scale(1.05);
       }
-      
       .grid-item img {
         max-width: 50px;
         margin-bottom: 8px;
       }
-      
       .ji {
         margin-top: 16px;
       }
     </style>
   </head>
-
   <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
       <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
@@ -52,10 +49,10 @@
           <div class="grid-container">
             {% for service in services%}
                 <div class="grid-item" onclick="selectService(this)">
-                <input type="checkbox" id="{{ service.id }} " name="services[]" value="' . $row['service_name'] . '" class="hidden">
+                <input type="checkbox" id="{{ service.id }} " name="services[]" value="{{ service.id }}" class="hidden">
                 <label for="{{ service.id }} ">
-                <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="Service Image">
-                <span>{{ service.name }} </span>
+                  <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="Service Image">
+                  <span>{{ service.name }} </span>
                 </label>
                 </div>
             {% endfor %}      
@@ -67,7 +64,6 @@
     </div>
     <script>
       let selectedServices = []
-      
       function selectService(element) {
         const checkbox = element.querySelector('input[type="checkbox"]')
         const index = selectedServices.indexOf(element)
