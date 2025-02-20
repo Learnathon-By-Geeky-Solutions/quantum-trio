@@ -1,13 +1,16 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.models import User
+
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 # for geolocation purpose
 from django.http import JsonResponse
 from geopy.geocoders import Nominatim
+
 # use this to import any data from database
-# from .models import person
+from .models import *
+from django.contrib.postgres.aggregates import ArrayAgg
 
 #This is a testing purpose only please avoid the function
 # I tried to fetch all the location details using the location latitude and longitude
@@ -107,6 +110,9 @@ def business_register_step2(request):
 
 
 def business_register_step3(request):
+    district=District.objects.all().values('id', 'name')
+    upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    # print(upazilla)
     user = {
         'business_name':'',
         'business_title':'',
@@ -121,7 +127,7 @@ def business_register_step3(request):
         user['website'] = request.POST.get("website", "")
         user['business_info'] = request.POST.get("business_info", "")
         user['gender'] = request.POST.get("gender", "")
-        print(user)
+        # print(user)
 
         request.session["user"] = {
             'business_name': request.POST.get("business_name", ""),
@@ -130,10 +136,49 @@ def business_register_step3(request):
             'business_info': request.POST.get("business_info", ""),
             'gender': request.POST.get("gender", ""),
         }
-    return render(request, 'app\login_signup\\register\\business\step3.html')
+    return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 
 def business_register_step4(request):
+    # for debugging purpose only
+    user = {
+        'district':'',
+        'upazilla':'',
+        'area':'',
+        'landmark1':'',
+        'landmark2':'',
+        'landmark3':'',
+        'landmark4':'',
+        'landmark5':'',
+        'latitude':'',
+        'longitude':''
+    }
+    if request.method == "POST":
+        user['district']=request.POST.get("district","")
+        user['upazilla']=request.POST.get("upazilla","")
+        user['area']=request.POST.get("area","")
+        landmarks = request.POST.getlist("landmarks[]")  # Retrieves all landmarks as a list
+        # Extract values safely
+        landmark1=user['landmark1']= landmarks[0] if len(landmarks[0]) > 0 else ""
+        landmark2=user['landmark2']= landmarks[1] if len(landmarks[1]) > 0 else ""
+        landmark3=user['landmark3']= landmarks[2] if len(landmarks[2]) > 0 else ""
+        landmark4=user['landmark4']= landmarks[3] if len(landmarks[3]) > 0 else ""
+        landmark5=user['landmark5']= landmarks[4] if len(landmarks[4]) > 0 else ""
+        user['latitude']=request.POST.get("latitude", "")
+        user['longitude']=request.POST.get("longitude","")
+        # print(user)
+        request.session["user"] = {
+                'district': request.POST.get("district", ""),
+                'upazilla': request.POST.get("upazilla", ""),
+                'area': request.POST.get("area", ""),
+                'landmark1':landmark1,
+                'landmark2':landmark2,
+                'landmark3':landmark3,
+                'landmark4':landmark4,
+                'landmark5':landmark5,
+                'latitude':request.POST.get("latitude", ""),
+                'longitude':request.POST.get("longitude",""),
+        }
     return render(request, 'app\login_signup\\register\\business\step4.html')
 
 

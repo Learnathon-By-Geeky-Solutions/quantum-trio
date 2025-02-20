@@ -38,3 +38,15 @@ class Landmark(models.Model):
     def __str__(self):
         return f"{self.name}, {self.area.name}"
     
+class Services(models.Model):
+    name=models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.name}"
+    
+class Items(models.Model):
+    name=models.CharField(max_length=50)
+    item_description=models.CharField(max_length=500, null=True, blank=True)
+    service=models.ForeignKey(Services, on_delete=models.CASCADE, related_name="items")
+    def __str__(self):
+        return f"{self.name},{self.service.name}"

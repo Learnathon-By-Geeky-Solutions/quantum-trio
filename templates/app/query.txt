@@ -141,8 +141,6 @@ INSERT INTO public.upazilas (upazila_name, district_id) VALUES
 -- Mymensingh Division (District ID: 54-64)
 ('Mymensingh Sadar', 54), ('Bhaluka', 54), ('Dhobaura', 54), ('Fulbaria', 54), ('Gafargaon', 54), ('Gauripur', 54), ('Haluaghat', 54), ('Ishwarganj', 54), ('Muktagachha', 54), ('Nandail', 54), ('Phulpur', 54),
 ('Netrokona Sadar', 55), ('Atpara', 55), ('Barhatta', 55), ('Durgapur', 55), ('Kalmakanda', 55), ('Kendua', 55), ('Madan', 55), ('Mohanganj', 55), ('Purbadhala', 55),
-
--- Mymensingh Division (District ID: 56-64)
 ('Jamalpur Sadar', 56), ('Bakshiganj', 56), ('Dewanganj', 56), ('Islampur', 56), ('Madarganj', 56), ('Melandaha', 56), ('Sarishabari', 56),
 ('Sherpur Sadar', 57), ('Jhenaigati', 57), ('Nakla', 57), ('Nalitabari', 57), ('Sreebardi', 57),
 
@@ -151,9 +149,4 @@ INSERT INTO public.upazilas (upazila_name, district_id) VALUES
 ('Moulvibazar Sadar', 59), ('Barlekha', 59), ('Juri', 59), ('Kamalganj', 59), ('Kulaura', 59), ('Rajnagar', 59), ('Sreemangal', 59),
 ('Habiganj Sadar', 60), ('Ajmiriganj', 60), ('Bahubal', 60), ('Baniachong', 60), ('Chunarughat', 60), ('Lakhai', 60), ('Madhabpur', 60), ('Nabiganj', 60),
 ('Sunamganj Sadar', 61), ('Bishwambarpur', 61), ('Chatak', 61), ('Dakshin Sunamganj', 61), ('Derai', 61), ('Dharampasha', 61), ('Dowarabazar', 61), ('Jagannathpur', 61), ('Jamalganj', 61), ('Shantiganj', 61), ('Shalla', 61), ('Tahirpur', 61),
-
--- Chattogram Division (District ID: 62-64)
-('Chattogram Sadar', 62), ('Anwara', 62), ('Banshkhali', 62), ('Boalkhali', 62), ('Chandanaish', 62), ('Fatikchhari', 62), ('Hathazari', 62), ('Lohagara', 62), ('Mirsharai', 62), ('Patiya', 62), ('Rangunia', 62), ('Raozan', 62), ('Sandwip', 62), ('Satkania', 62), ('Sitakunda', 62),
-('Cox- Bazar Sadar', 63), ('Chakaria', 63), ('Kutubdia', 63), ('Maheshkhali', 63), ('Pekua', 63), ('Ramu', 63), ('Teknaf', 63), ('Ukhia', 63),
-('Bandarban Sadar', 64), ('Ali Kadam', 64), ('Lama', 64), ('Naikhongchhari', 64), ('Rowangchhari', 64), ('Ruma', 64), ('Thanchi', 64);
-
+;
