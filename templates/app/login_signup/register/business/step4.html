@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-{% load static %} {% load static tailwind_tags %}
+{% load static %} 
+{% load static tailwind_tags %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Service Selection</title>
     {% tailwind_css %}
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <style>
       .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 16px;
       }
-
+      
       .grid-item {
         border: 1px solid #e5e7eb;
         border-radius: 8px;
@@ -25,18 +23,18 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
       }
-
+      
       .grid-item.selected {
         background-color: #f9fafb;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transform: scale(1.05);
       }
-
+      
       .grid-item img {
         max-width: 50px;
         margin-bottom: 8px;
       }
-
+      
       .ji {
         margin-top: 16px;
       }
@@ -46,85 +44,62 @@
   <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
       <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
-        <form class="form" action="step5.php" method="POST" id="serviceForm">
-            {% csrf_token %}
-          <a
-            href=""
-            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
-          >
-            &larr;
-          </a>
-          <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">
-            What types of services do you offer?
-          </h1>
-          <p class="text-center text-gray-600 mb-8">
-            Choose your primary and up to 4 related service types
-          </p>
+        <form class="form" action="step5" method="POST" id="serviceForm">
+          {% csrf_token %}
+          <a href="step3" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">&larr;</a>
+          <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
+          <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
           <div class="grid-container">
-            <div class="grid-item" onclick="selectService(this)">
-              <input
-                type="checkbox"
-                id=""
-                name="services[]"
-                value=" "
-                class="hidden"
-              />
-              <label for="">
-                <img src="" alt=" " />
-                <span> </span>
-              </label>
-            </div>
-            <div class="ji">
-              </div>
+            {% for service in services%}
+                <div class="grid-item" onclick="selectService(this)">
+                <input type="checkbox" id="{{ service.id }} " name="services[]" value="' . $row['service_name'] . '" class="hidden">
+                <label for="{{ service.id }} ">
+                <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="Service Image">
+                <span>{{ service.name }} </span>
+                </label>
+                </div>
+            {% endfor %}      
+            <div class="ji"></div>
           </div>
-          <button
-            type="submit"
-            class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6"
-          >
-            Continue
-          </button>
+          <button type="submit" class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue</button>
         </form>
       </div>
     </div>
     <script>
-      let selectedServices = [];
-
+      let selectedServices = []
+      
       function selectService(element) {
-        const checkbox = element.querySelector('input[type="checkbox"]');
-        const index = selectedServices.indexOf(element);
+        const checkbox = element.querySelector('input[type="checkbox"]')
+        const index = selectedServices.indexOf(element)
         if (index > -1) {
-          selectedServices.splice(index, 1);
-          element.classList.remove("selected");
-          checkbox.checked = false;
+          selectedServices.splice(index, 1)
+          element.classList.remove('selected')
+          checkbox.checked = false
         } else {
           if (selectedServices.length < 4) {
-            selectedServices.push(element);
-            element.classList.add("selected");
-            checkbox.checked = true;
+            selectedServices.push(element)
+            element.classList.add('selected')
+            checkbox.checked = true
           }
         }
-
+      
         selectedServices.forEach((el, i) => {
-          el.setAttribute("data-order", i + 1);
-        });
+          el.setAttribute('data-order', i + 1)
+        })
       }
-
-      document
-        .getElementById("serviceForm")
-        .addEventListener("submit", function (event) {
-          if (selectedServices.length === 0) {
-            event.preventDefault();
-            alert("Please select at least one service.");
-            return;
-          }
-          const selectedServiceNames = selectedServices.map(
-            (item) => item.querySelector('input[type="checkbox"]').value
-          );
-          console.log("Selected services:", selectedServiceNames);
-
-          // Optionally, you can submit the form if you want to proceed after logging the data
-          this.submit();
-        });
+      
+      document.getElementById('serviceForm').addEventListener('submit', function (event) {
+        if (selectedServices.length === 0) {
+          event.preventDefault()
+          alert('Please select at least one service.')
+          return
+        }
+        const selectedServiceNames = selectedServices.map((item) => item.querySelector('input[type="checkbox"]').value)
+        console.log('Selected services:', selectedServiceNames)
+      
+        // Optionally, you can submit the form if you want to proceed after logging the data
+        this.submit()
+      })
     </script>
   </body>
 </html>

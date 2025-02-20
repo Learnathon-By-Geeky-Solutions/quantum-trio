@@ -1,9 +1,44 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
+from django.contrib.auth.models import User
+
 from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+# for geolocation purpose
+from django.http import JsonResponse
+from geopy.geocoders import Nominatim
+
+# use this to import any data from database
+from .models import *
+from django.contrib.postgres.aggregates import ArrayAgg
+
+#This is a testing purpose only please avoid the function
+# I tried to fetch all the location details using the location latitude and longitude
+# but it using geolocation it may be not possible cause geolocation doesnt provide me the accurate 
+# location pointer
+def get_location(request):
+    data={}
+    if request.method =='GET':
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+        if lat and lon:
+            geolocator = Nominatim(user_agent="geoapi")
+            location = geolocator.reverse((lat, lon), exactly_one=True)
+            address = location.raw.get('address', {})
+            data = {
+                "country": address.get("country"),
+                "division": address.get("state"),
+                "city": address.get("city") or address.get("town") or address.get("village"),
+                "village":address.get("village"),
+                "postcode": address.get("postcode"),
+                "latitude": lat,
+                "longitude": lon
+            }
+            # return JsonResponse(data)
+        # return JsonResponse({"error": "Invalid coordinates"}, status=400)
+    return render(request, 'app/get_location.html',{'data':data})
 
 # Create your views here.
-
 def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
@@ -13,10 +48,12 @@ def home(request):
 
 # added by rakib for login purpose
 
+
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
 
 # login purpose
+
 
 def login(request):
     user_type = request.GET.get('profile-type', 'Customer')
@@ -24,13 +61,16 @@ def login(request):
 
 # create_account purpose
 
+
 def create_account(request):
     return render(request, 'app\login_signup\sign-up.html')
 
 # customer A/c registration steps starts here
 
+
 def customer_register_step1(request):
     return render(request, 'app\login_signup\\register\customer\step1.html')
+
 
 def customer_register_step2(request):
     return render(request, 'app\login_signup\\register\customer\step2.html')
@@ -40,17 +80,108 @@ def customer_register_step2(request):
 def business_register_step1(request):
     return render(request, 'app\login_signup\\register\\business\step1.html')
 
-
 def business_register_step2(request):
+    # data = list(person.objects.values())  
+    # print(data)
+    user = {
+        'first-name': '',
+        'last-name': '',
+        'email': '',
+        'password': '',
+        'mobile-number': '',
+    }
+    if request.method == "POST":
+        # user['first_name'] = request.POST.get("first-name", "")
+        # user['last_name'] = request.POST.get("last-name", "")
+        # user['email'] = request.POST.get("email", "")
+        # user['password'] = request.POST.get(
+        #     "password", "")  # Encrypt before storing!
+        # user['mobile_number'] = request.POST.get("mobile-number", "")
+        # Debugging: Print data to verify
+        # print(user)
+        request.session["user"] = {
+            'first-name': request.POST.get("first-name", ""),
+            'last-name': request.POST.get("last-name", ""),
+            'email': request.POST.get("email", ""),
+            'password': request.POST.get("password", ""),
+            'mobile-number': request.POST.get("mobile-number", ""),
+        }
     return render(request, 'app\login_signup\\register\\business\step2.html')
 
 
 def business_register_step3(request):
-    return render(request, 'app\login_signup\\register\\business\step3.html')
+    district=District.objects.all().values('id', 'name')
+    upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    # print(upazilla)
+    user = {
+        'business_name':'',
+        'business_title':'',
+        'website':'',
+        'business_info':'',
+        'gender':''
+    }
+    if request.method == "POST":
+        # debugging purpose only
+        user['business_name'] = request.POST.get("business_name", "")
+        user['business_title'] = request.POST.get("business_title", "")
+        user['website'] = request.POST.get("website", "")
+        user['business_info'] = request.POST.get("business_info", "")
+        user['gender'] = request.POST.get("gender", "")
+        # print(user)
+
+        request.session["user"] = {
+            'business_name': request.POST.get("business_name", ""),
+            'business_title': request.POST.get("business_title", ""),
+            'website': request.POST.get("website", ""),
+            'business_info': request.POST.get("business_info", ""),
+            'gender': request.POST.get("gender", ""),
+        }
+    return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 
 def business_register_step4(request):
-    return render(request, 'app\login_signup\\register\\business\step4.html')
+    # for debugging purpose only
+    user = {
+        'district':'',
+        'upazilla':'',
+        'area':'',
+        'landmark1':'',
+        'landmark2':'',
+        'landmark3':'',
+        'landmark4':'',
+        'landmark5':'',
+        'latitude':'',
+        'longitude':''
+    }
+    if request.method == "POST":
+        user['district']=request.POST.get("district","")
+        user['upazilla']=request.POST.get("upazilla","")
+        user['area']=request.POST.get("area","")
+        landmarks = request.POST.getlist("landmarks[]")  # Retrieves all landmarks as a list
+        # Extract values safely
+        landmark1=user['landmark1']= landmarks[0] if len(landmarks[0]) > 0 else ""
+        landmark2=user['landmark2']= landmarks[1] if len(landmarks[1]) > 0 else ""
+        landmark3=user['landmark3']= landmarks[2] if len(landmarks[2]) > 0 else ""
+        landmark4=user['landmark4']= landmarks[3] if len(landmarks[3]) > 0 else ""
+        landmark5=user['landmark5']= landmarks[4] if len(landmarks[4]) > 0 else ""
+        user['latitude']=request.POST.get("latitude", "")
+        user['longitude']=request.POST.get("longitude","")
+        # print(user)
+        request.session["user"] = {
+                'district': request.POST.get("district", ""),
+                'upazilla': request.POST.get("upazilla", ""),
+                'area': request.POST.get("area", ""),
+                'landmark1':landmark1,
+                'landmark2':landmark2,
+                'landmark3':landmark3,
+                'landmark4':landmark4,
+                'landmark5':landmark5,
+                'latitude':request.POST.get("latitude", ""),
+                'longitude':request.POST.get("longitude",""),
+        }
+    service=Service.objects.all().values('id', 'name')
+    print(service)
+    return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
 
 def business_register_step5(request):

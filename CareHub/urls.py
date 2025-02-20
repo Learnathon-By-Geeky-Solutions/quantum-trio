@@ -5,6 +5,7 @@ from django import views
 from myApp import views
 
 urlpatterns = [
+    path('get-location/', views.get_location),
     path('admin/', admin.site.urls),
     path('', views.home),
     path('home', views.home),
