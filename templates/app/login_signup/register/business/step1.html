@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Business Account</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% tailwind_css %}
     <script>
         function validateForm() {
@@ -34,11 +33,10 @@
                 <h2 class="text-xl font-bold text-gray-700">Create Your Business Account</h2>
                 <div></div> <!-- Empty div to balance the flex spacing -->
             </div>
-            <div>
-                <h3>
-                    <center><b>Owner Details only*</b></center>
-                </h3>
+            <div class="text-center">
+                <h3 class="font-bold">Owner Details Only*</h3>
             </div>
+            
             <form action="step2" method="POST" onsubmit="return validateForm()">
                 {% csrf_token %}
                 <div class="mb-4">

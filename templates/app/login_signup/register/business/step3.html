@@ -3,7 +3,7 @@
 {% comment %} {% for upazilla in Upazilla %}
     {{ upazilla.district__name }}
         {% for index in upazilla.upazilla_names %}
-            <li>{{ index }}</li>
+            {{ index }}
         {% endfor %}
 {% endfor %} {% endcomment %}
 
@@ -16,7 +16,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop addresses</title>
     {% tailwind_css %}
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     #map {
       height: 400px;
