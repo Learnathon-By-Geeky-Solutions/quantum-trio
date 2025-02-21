@@ -44,7 +44,10 @@ def home(request):
         # Return a 405 Method Not Allowed response for any non-GET requests
         return HttpResponseNotAllowed(['GET'])
 
-    return render(request, 'app/home.html')
+    return render(request, 'app/home.html', {'review': 333})
+
+
+
 
 # added by rakib for login purpose
 
