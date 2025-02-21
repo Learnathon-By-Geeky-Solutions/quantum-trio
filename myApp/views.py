@@ -4,39 +4,10 @@ from django.contrib.auth.models import User
 
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
-# for geolocation purpose
-from django.http import JsonResponse
-from geopy.geocoders import Nominatim
 
 # use this to import any data from database
 from .models import *
 from django.contrib.postgres.aggregates import ArrayAgg
-
-#This is a testing purpose only please avoid the function
-# I tried to fetch all the location details using the location latitude and longitude
-# but it using geolocation it may be not possible cause geolocation doesnt provide me the accurate 
-# location pointer
-def get_location(request):
-    data={}
-    if request.method =='GET':
-        lat = request.GET.get('lat')
-        lon = request.GET.get('lon')
-        if lat and lon:
-            geolocator = Nominatim(user_agent="geoapi")
-            location = geolocator.reverse((lat, lon), exactly_one=True)
-            address = location.raw.get('address', {})
-            data = {
-                "country": address.get("country"),
-                "division": address.get("state"),
-                "city": address.get("city") or address.get("town") or address.get("village"),
-                "village":address.get("village"),
-                "postcode": address.get("postcode"),
-                "latitude": lat,
-                "longitude": lon
-            }
-            # return JsonResponse(data)
-        # return JsonResponse({"error": "Invalid coordinates"}, status=400)
-    return render(request, 'app/get_location.html',{'data':data})
 
 # Create your views here.
 def home(request):

@@ -2,14 +2,14 @@ from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured 
 from decouple import config
-
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static')
 
-
+load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -93,14 +93,13 @@ WSGI_APPLICATION = 'CareHub.wsgi.application'
 # follow this video(consequent 2 video): https://www.youtube.com/watch?v=d--mEqEUybA
 # superuser: rakib151p
 # email: rakib151p@gmail.com
-# pass: rakib1234
 # python manage.py createsuperuser use this command to create superuser
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "carehub_db", #database name
         "USER": "postgres",   #username
-        "PASSWORD": "1234",   #password
+        "PASSWORD": os.getenv('DATABASE_PASSWORD'),   #password
         "HOST": "127.0.0.1",
         "PORT": "5432",
     }
