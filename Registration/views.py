@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotAllowed
+# from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 # for geolocation purpose
-from django.http import JsonResponse
-from geopy.geocoders import Nominatim
+# from django.http import JsonResponse
+# from geopy.geocoders import Nominatim
 
 # use this to import any data from database
 # -----------------------------------------
@@ -28,6 +28,7 @@ def customer_register_step2(request):
 
 # Business A/c registration steps starts here
 # -------------------------------------------
+@csrf_protect
 def business_register_step1(request):
     return render(request, 'app\login_signup\\register\\business\step1.html')
 
@@ -152,21 +153,55 @@ def business_register_step5(request):
         # Convert IDs to strings for comparison
         matching_services = [
             service for service in available_services if str(service['service__id']) in services
-        ]
+        ] 
         print(matching_services)  # Debug output
     # print(request.session['user'])
     return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
 
 def business_register_step6(request):
-    if request.method=='POST':
-        pass
+    if request.method == "POST":
+        # items=request.POST.getlist('items')
+        items = {key: request.POST.getlist(key) for key in request.POST if key.startswith("items")}
+        print(items)
+        request.session["user"].update({
+                'items':items,
+        })
+        request.session.modified = True
+        # print(request.session['user'])
     return render(request, 'app\login_signup\\register\\business\step6.html')
 
 
 def business_register_step7(request):
-    return render(request, 'app\login_signup\\register\\business\step7.html')
+    members=1;
+    # first get all the details of selected items 
+    items=request.session['user']['items'];
+    count=1
+    item=list()
+    for i in items:
+        if(count%2): #take only the items name 
+            for j in items.get(i):
+                print(j)
+                item.append(j)
+        count+=1
+    # print(item)
+    if request.method=='POST':
+        members=request.POST.get('members')
+        print(members)
+    return render(request, 'app\login_signup\\register\\business\step7.html',{'members':range(0,int(members)),'items':item})
 
 
 def business_register_step8(request):
-    return render(request, 'app\login_signup\\register\\business\step8.html')
+    if request.method=="POST":
+        members = {key: request.POST.getlist(key) for key in request.POST if key.startswith("member")}
+        # for member in members:
+        #     print(members.get(member))
+        # pictures has not handled yet
+        request.session["user"].update({
+                'items':members,
+        })
+        request.session.modified = True
+        # print(request.session["user"])
+    days_of_week = ['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+    return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
 

@@ -26,7 +26,7 @@
                     <label class="block font-bold mb-2">Items</label>
                     <div class="items">
                         <div class="item mb-2 flex">
-                            <select name="items[{{ forloop.counter }}][name][]"
+                            <select name="items[{{ forloop.counter }}][name][]" 
                                 class="block w-1/2 p-2 border rounded mb-2 mr-2 item-select">
                                 {% comment %} <option value="">Select an item</option> {% endcomment %}
                                 {% for item in service.service_names %}

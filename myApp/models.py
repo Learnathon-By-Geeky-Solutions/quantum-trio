@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# class person(models.Model):
-#     name=models.CharField(max_length=100)
-#     age=models.PositiveIntegerField()
-    
 # # Models for location purpose so that we can work on original locations
 class Division(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -49,4 +45,4 @@ class Item(models.Model):
     item_description=models.CharField(max_length=800, null=True, blank=True)
     service=models.ForeignKey(Service, on_delete=models.CASCADE, related_name="items")
     def __str__(self):
-        return f"{self.name},{self.service.name}"
+        return f"{self.name},   {self.service.name}"

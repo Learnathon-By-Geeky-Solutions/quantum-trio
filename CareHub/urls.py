@@ -10,7 +10,6 @@ urlpatterns = [
     # added by rakib for login purpose
     path('select_user', views.select_user_type),
     path('login', views.login),
-    
     path('contact', views.contact_us),
     path('search', views.search),
     path('booknow', views.book_now),
@@ -29,7 +28,6 @@ urlpatterns = [
     path('booking-slots', views.booking_slots),
     path('message', views.view_message),
     path('message-reply', views.view_message_reply),
-    
 ]
 
 
