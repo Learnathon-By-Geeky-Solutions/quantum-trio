@@ -37,20 +37,12 @@
                     <div class="red-text" style="color:red"><?php echo $error['password']; ?></div>
                 </div>
                 <div class="mb-4">
-                    <!-- <label for="profile-type" class="block text-gray-700 font-bold mb-2">Profile Type*</label> -->
-                    <!-- <select id="profile-type" name="profile-type"
-                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                        required>
-                        <option value="">Select Profile Type</option>
-                        <option value="customer">Customer</option>
-                        <option value="business">Business</option>
-                    </select> -->
                     <input type="hidden" id="profile-type" name="profile-type" value="<?php echo $type; ?>">
                 </div>
                 <button type="submit"
                     class="bg-pink-600 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">Login</button>
             </form>
-            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="create-account"
+            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="register"
                     class="text-pink-600 hover:underline">Create Account</a></p>
             <p class="text-pink-600 hover:underline" align="center" style="cursor:pointer;"><a
                     href="forget_password.php"> forgot password?</a></p>

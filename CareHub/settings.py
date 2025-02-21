@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'livereload',
     'tailwind',
     'theme',
+    'Registration',
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -87,13 +88,6 @@ WSGI_APPLICATION = 'CareHub.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 # to use postpreSQL install postgreSQL first then install psycopg2 using pip install psycopg2 in your virtual environment
 # follow this video(consequent 2 video): https://www.youtube.com/watch?v=d--mEqEUybA

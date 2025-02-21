@@ -1,30 +1,18 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from django import views
 from myApp import views
-
+# from Registration import views as register
 urlpatterns = [
     path('get-location/', views.get_location),
     path('admin/', admin.site.urls),
     path('', views.home),
     path('home', views.home),
+    path('register/',include('Registration.urls')),
     # added by rakib for login purpose
     path('select_user', views.select_user_type),
     path('login', views.login),
-    path('create-account',views.create_account),
-    # customer registration steps
-    path('register/customer/step1',views.customer_register_step1),
-    path('register/customer/step2',views.customer_register_step2,name='step2'),
-    # business registration steps
-    path('register/business/step1',views.business_register_step1),
-    path('register/business/step2',views.business_register_step2),
-    path('register/business/step3',views.business_register_step3),
-    path('register/business/step4',views.business_register_step4),
-    path('register/business/step5',views.business_register_step5),
-    path('register/business/step6',views.business_register_step6),
-    path('register/business/step7',views.business_register_step7),
-    path('register/business/step8',views.business_register_step8),
     
     path('contact', views.contact_us),
     path('search', views.search),

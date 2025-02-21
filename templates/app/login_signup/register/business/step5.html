@@ -22,49 +22,28 @@
             <div id="services">
                 {% for service in services %}
                 <div class="service mb-4">
-                    <label class="block font-bold mb-2">Service:{{ service.service__name }} </label>
+                    <label class="block font-bold mb-2">Service: {{ service.service__name }} </label>
                     <label class="block font-bold mb-2">Items</label>
                     <div class="items">
                         <div class="item mb-2 flex">
-                            <select name="items[<?= $index ?>][name][]"
+                            <select name="items[{{ forloop.counter }}][name][]"
                                 class="block w-1/2 p-2 border rounded mb-2 mr-2 item-select">
-                                <option value="">Select an item</option>
-                                
+                                {% comment %} <option value="">Select an item</option> {% endcomment %}
                                 {% for item in service.service_names %}
                                     <option value="{{ item }}"> {{ item }} </option>
                                 {% endfor %}
-                                
+
                             </select>
-                            <input type="number" name="items[<?= $index ?>][price][]"
+                            <input type="number" name="items[{{ forloop.counter }}][price][]"
                                 class="block w-1/2 p-2 border rounded mb-2 item-price" placeholder="Enter price">
                         </div>
                     </div>
                     <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2">Add Item</button>
                 </div>
                 {% endfor %}
-                {% comment %} other services  {% endcomment %}
-                    <div class="service mb-4">
-                        <label class="block font-bold mb-2">Service: </label>
-                        <label class="block font-bold mb-2">Items</label>
-                        <div class="items">
-                            <div class="item mb-2 flex">
-                                <select name="other[index][name][]"
-                                    class="block w-1/2 p-2 border rounded mb-2 mr-2 item-select">
-                                    <option value="">Select an item</option>
-                                    <?php foreach ($items_list[$other_service] as $item): ?>
-                                        <option value=""></option>
-                                    
-                                </select>
-                                <input type="number" name="other[index][price][]"
-                                    class="block w-1/2 p-2 border rounded mb-2 item-price" placeholder="Enter price">
-                            </div>
-                        </div>
-                        <button type="button" class="add-item bg-pink-600 text-white p-2 rounded mt-2">Add Item</button>
-                    </div>
-                
             </div>
             <button type="submit"
-                class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue</button>
+                class="submit bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue</button>
         </form>
     </div>
 
@@ -118,6 +97,12 @@
                     if (!hasSelectedItem) {
                         e.preventDefault(); // Prevent form submission
                         alert(`Please select at least one item for ${services[i].querySelector('.font-bold').textContent}.`);
+                        return;
+                    }
+                    const itemSelects = Array.from(itemsDiv.querySelectorAll('.item-select'));
+                    const selectedValues = itemSelects.map(select => select.value);
+                    if (new Set(selectedValues).size !== selectedValues.length) {
+                        alert('An item has already been selected. Please choose a different item.');
                         return;
                     }
                 }
