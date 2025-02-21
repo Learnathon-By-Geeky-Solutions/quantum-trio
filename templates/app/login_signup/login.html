@@ -4,56 +4,65 @@
 <html lang="en">
 
 <head>
-    
     <title>Login</title>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	{% tailwind_css %}
-    {% comment %} <link rel="stylesheet" href="{% static 'app/css/book_now.css' %}" /> {% endcomment %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% tailwind_css %}
 </head>
 
-<body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <a href="select_user" class="text-gray-700"><img src="{% static "app/image/icon/left-arrow.png" %}" alt=""
-                    style="width: 30px; height: 30px;"></a>
-
-            <h1 class="text-2xl font-bold mb-8 text-center text-gray-700">{{ type }} Login</h1>
-            <form method="post" action="">
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700 font-bold mb-2">Email*</label>
-                    <input type="email" id="email" name="email" placeholder="........@gmail.com"
-                        value=""
-                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                        required>
-                    <div class="red-text" style="color:red">print error for </div>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700 font-bold mb-2">Password*</label>
-                    <input type="password" id="password" name="password" placeholder="••••••••"
-                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                        required>
-                    <div class="red-text" style="color:red"><?php echo $error['password']; ?></div>
-                </div>
-                <div class="mb-4">
-                    <!-- <label for="profile-type" class="block text-gray-700 font-bold mb-2">Profile Type*</label> -->
-                    <!-- <select id="profile-type" name="profile-type"
-                        class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                        required>
-                        <option value="">Select Profile Type</option>
-                        <option value="customer">Customer</option>
-                        <option value="business">Business</option>
-                    </select> -->
-                    <input type="hidden" id="profile-type" name="profile-type" value="<?php echo $type; ?>">
-                </div>
-                <button type="submit"
-                    class="bg-pink-600 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">Login</button>
-            </form>
-            <p class="text-center text-gray-600 mt-4">Don't have an account? <a href="create-account"
-                    class="text-pink-600 hover:underline">Create Account</a></p>
-            <p class="text-pink-600 hover:underline" align="center" style="cursor:pointer;"><a
-                    href="forget_password.php"> forgot password?</a></p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white p-10 rounded-xl shadow-xl w-full max-w-md">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="select_user" class="text-gray-700">
+                <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="Back" class="w-8 h-8">
+            </a>
         </div>
+
+        <!-- Login Header -->
+        <h1 class="text-3xl font-bold text-center text-gray-700 mb-6">{{ type }} Login</h1>
+
+        <!-- Login Form -->
+        <form method="post" action="">
+            <div class="space-y-5">
+                <!-- Email Field -->
+                <div>
+                    <label for="email" class="block text-gray-700 font-semibold mb-2">Email*</label>
+                    <input type="email" id="email" name="email" placeholder="your-email@gmail.com"
+                        class="border border-gray-300 p-4 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                        required>
+                    <p class="text-red-600 text-sm mt-2">print error for email</p>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-gray-700 font-semibold mb-2">Password*</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••"
+                        class="border border-gray-300 p-4 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                        required>
+                    <p class="text-red-600 text-sm mt-2">print error for password</p>
+                </div>
+
+                <!-- Hidden Profile Type -->
+                <input type="hidden" id="profile-type" name="profile-type" value="{{ type }}">
+
+                <!-- Login Button -->
+                <button type="submit"
+                    class="bg-pink-600 text-white py-3 px-6 w-full rounded-lg hover:bg-pink-700 transition duration-300">
+                    Login
+                </button>
+            </div>
+        </form>
+
+        <!-- Additional Links -->
+        <p class="text-center text-gray-600 mt-6">
+            Don't have an account? <a href="create-account" class="text-pink-600 hover:underline">Create Account</a>
+        </p>
+        <p class="text-center mt-4">
+            <a href="" class="text-pink-600 hover:underline">Forgot Password?</a>
+        </p>
     </div>
 </body>
+
+</html>
