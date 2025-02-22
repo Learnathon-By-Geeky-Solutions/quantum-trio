@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from .models import Division,District
 
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
@@ -60,7 +61,9 @@ def book_now(request):
 
 
 def location(request):
-    return render(request, 'app\location.html')
+    divisions = Division.objects.all()  # Fetch all Division objects
+    districts = District.objects.all()
+    return render(request, 'app/location.html', {'divisions': divisions, 'districts': districts})
 
 
 def explore_by_item(request):
