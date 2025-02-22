@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.shortcuts import render
 # from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
+
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 # for geolocation purpose
@@ -32,6 +34,7 @@ def customer_register_step2(request):
 def business_register_step1(request):
     return render(request, 'app\login_signup\\register\\business\step1.html')
 
+@require_http_methods(["GET", "POST"])
 def business_register_step2(request):
     # data = list(person.objects.values())  
     # print(data)
@@ -61,6 +64,7 @@ def business_register_step2(request):
     return render(request, 'app\login_signup\\register\\business\step2.html')
 
 
+@require_http_methods(["GET", "POST"])
 def business_register_step3(request):
     district=District.objects.all().values('id', 'name')
     upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
@@ -92,6 +96,7 @@ def business_register_step3(request):
     return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 
+@require_http_methods(["GET", "POST"])
 def business_register_step4(request):
     # for debugging purpose only
     # user = {
@@ -144,6 +149,7 @@ def business_register_step4(request):
     return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
 
+@require_http_methods(["GET", "POST"])
 def business_register_step5(request):
     if request.method =='POST':
         services = request.POST.getlist("services[]", []) #posts only the id's of service
@@ -158,6 +164,8 @@ def business_register_step5(request):
     # print(request.session['user'])
     return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
 
+
+@require_http_methods(["GET", "POST"])
 def business_register_step6(request):
     if request.method == "POST":
         # items=request.POST.getlist('items')
@@ -171,6 +179,7 @@ def business_register_step6(request):
     return render(request, 'app\login_signup\\register\\business\step6.html')
 
 
+@require_http_methods(["GET", "POST"])
 def business_register_step7(request):
     members=1;
     # first get all the details of selected items 
@@ -190,6 +199,7 @@ def business_register_step7(request):
     return render(request, 'app\login_signup\\register\\business\step7.html',{'members':range(0,int(members)),'items':item})
 
 
+@require_http_methods(["GET", "POST"])
 def business_register_step8(request):
     if request.method=="POST":
         members = {key: request.POST.getlist(key) for key in request.POST if key.startswith("member")}
