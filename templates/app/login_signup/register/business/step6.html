@@ -35,7 +35,7 @@
                 {% csrf_token %}
                 <div class="mb-4">
                     <input type="number" name="members" id="members" class="p-4 border rounded w-full text-center"
-                        min="0" placeholder="Enter the exact number of members" required>
+                        min="1" placeholder="Enter the exact number of members" required>
                 </div>
                 <button type="submit"
                     class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">Continue</button>
@@ -43,15 +43,19 @@
         </div>
     </div>
 
-    <script>
+    {% comment %} <script>
         document.getElementById('memberForm').addEventListener('submit', function (event) {
             const members = document.getElementById('membersInput');
             if (members.value === '') {
                 event.preventDefault();
                 alert('Please enter the number of members.');
             }
+            if(members.value==0){
+                event.preventDefault();
+                alert('Please enter a number more than 0.');
+            }
         });
-    </script>
+    </script> {% endcomment %}
 
 </body>
 

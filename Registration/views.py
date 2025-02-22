@@ -4,12 +4,8 @@ from django.shortcuts import render
 # from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-
-from django.http import JsonResponse
-from django.contrib.auth.hashers import make_password
-# for geolocation purpose
 # from django.http import JsonResponse
-# from geopy.geocoders import Nominatim
+from django.contrib.auth.hashers import make_password
 
 # use this to import any data from database
 # -----------------------------------------
@@ -54,6 +50,10 @@ def business_register_step2(request):
         # user['mobile_number'] = request.POST.get("mobile-number", "")
         # Debugging: Print data to verify
         # print(user)
+
+        #email check logic will be here
+        #
+        #
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -148,22 +148,60 @@ def business_register_step4(request):
     # print(service)
     return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
+# def business_register_step5(request):
+#     if request.session["user"].get("services") is not None:
+#         services=list(request.session["user"].keys()).index("services")
+#     else:
+#         print("Key is missing or has None as value")
+#         services=list()
+    
+#     if request.method =='POST':
+#         services = request.POST.getlist("services[]", []) #posts only the id's of service
+#         request.session["user"].update({'services':services,})
+#         request.session.modified = True
+#     # Fetch available services
+#     available_services = Item.objects.values('service__id','service__name').annotate(service_names=ArrayAgg('name'))
+#     # print(available_services)
+#     # Convert IDs to strings for comparison
+#     matching_services=[]
+#     if services.count>0:
+#         matching_services = [
+#             service for service in available_services if str(service['service__id']) in services
+#         ] 
+    
+#     print()
+#     # print(matching_services)  # Debug output
+#     # print(request.session['user'])
+#     return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
 
-@require_http_methods(["GET", "POST"])
 def business_register_step5(request):
-    if request.method =='POST':
-        services = request.POST.getlist("services[]", []) #posts only the id's of service
-        # Fetch available services
-        available_services = Item.objects.values('service__id','service__name').annotate(service_names=ArrayAgg('name'))
-        # print(available_services)
-        # Convert IDs to strings for comparison
+    # Ensure session key exists to avoid KeyError
+    user_data = request.session.get("user", {})
+    
+    # Retrieve services from session if available, else set an empty list
+    services = user_data.get("services", [])
+
+    if request.method == 'POST':
+        services = request.POST.getlist("services[]", [])  # Posts only the IDs of services
+        user_data["services"] = services  # Update session data
+        request.session["user"] = user_data
+        request.session.modified = True
+
+    # Fetch available services
+    available_services = Item.objects.values('service__id', 'service__name').annotate(service_names=ArrayAgg('name'))
+
+    # Convert IDs to strings for comparison and filter matching services
+    matching_services = []
+    if len(services) > 0:  # Correct way to check non-empty list
         matching_services = [
             service for service in available_services if str(service['service__id']) in services
-        ] 
-        print(matching_services)  # Debug output
-    # print(request.session['user'])
-    return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
+        ]
 
+    # Debugging (optional)
+    print("Matching Services:", matching_services)
+    print("Session Data:", request.session.get("user"))
+
+    return render(request, 'app/login_signup/register/business/step5.html', {'services': matching_services})
 
 @require_http_methods(["GET", "POST"])
 def business_register_step6(request):
@@ -179,13 +217,26 @@ def business_register_step6(request):
     return render(request, 'app\login_signup\\register\\business\step6.html')
 
 
-@require_http_methods(["GET", "POST"])
 def business_register_step7(request):
-    members=1;
+    user_data = request.session.get("user", {})
+    
+    # Retrieve members from session if available, else set an empty list
+    members = user_data.get("members", 1)
+
     # first get all the details of selected items 
     items=request.session['user']['items'];
     count=1
     item=list()
+
+    # there will be two list for each service domain one is selected items another is prices 
+    # like you selected service domain 'A' so it will contain two list these are item_names and price
+    # {
+    # 'items[1][name ][]': ['Hair Coloring'],
+    #                          ^
+    #                          |
+    # 'items[1][price][]': ['120']
+    # }
+    print(items)
     for i in items:
         if(count%2): #take only the items name 
             for j in items.get(i):
@@ -195,6 +246,8 @@ def business_register_step7(request):
     # print(item)
     if request.method=='POST':
         members=request.POST.get('members')
+        request.session["user"].update({'members':members})
+        request.session.modified=True
         print(members)
     return render(request, 'app\login_signup\\register\\business\step7.html',{'members':range(0,int(members)),'items':item})
 
