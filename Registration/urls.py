@@ -15,4 +15,6 @@ urlpatterns = [
     path('business/step6',views.business_register_step6),
     path('business/step7',views.business_register_step7),
     path('business/step8',views.business_register_step8),
+    path('business/submit',views.business_submit),
+    
 ]

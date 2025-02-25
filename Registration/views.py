@@ -1,5 +1,5 @@
 from django.shortcuts import render
-# from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 # from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
@@ -58,7 +58,7 @@ def business_register_step2(request):
 
         # email check logic 
         # since password will be validate in frontend so we just need to check does the email exist or not
-        if shop_profile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
+        if ShopProfile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
             return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
 
@@ -228,39 +228,55 @@ def business_register_step6(request):
 
 @require_http_methods(["POST"])
 def business_register_step7(request):
-    user_data = request.session.get("user", {})
-    
-    # Retrieve members from session if available, else set an empty list
-    members = user_data.get("members", 1)
+    try:
+        user_data = request.session.get("user", {})
+        
+        # Retrieve members from session if available, else set an empty list
+        members = user_data.get("members", 1)
 
-    # first get all the details of selected items 
-    items=request.session['user']['items'];
-    count=1
-    item=list()
+        # first get all the details of selected items 
+        items=request.session['user']['items'];
+        # count=1
+        # item=list()
 
-    # there will be two list for each service domain one is selected items another is prices 
-    # like you selected service domain 'A' so it will contain two list these are item_names and price
-    # {
-    # 'items[1][name ][]': ['Hair Coloring'],
-    #                          ^
-    #                          |
-    # 'items[1][price][]': ['120']
-    # }
-    print(items)
-    for i in items:
-        if(count%2): #take only the items name 
-            for j in items.get(i):
-                print(j)
-                item.append(j)
-        count+=1
-    # print(item)
-    if request.method=='POST':
-        members=request.POST.get('members')
-        request.session["user"].update({'members':members})
-        request.session.modified=True
-        print(members)
-    return render(request, 'app\login_signup\\register\\business\step7.html',{'members':range(0,int(members)),'items':item})
+        # there will be two list for each service domain one is selected items another is prices 
+        # like you selected service domain 'A' so it will contain two list these are item_names and price
+        # {
+        # 'items[1][name ][]': ['Hair Coloring'],
+        #                          ^
+        #                          |
+        # 'items[1][price][]': ['120']
+        # }
+        # print(items)
+        # for i in items:
+        #     if(count%2): #take only the items name 
+        #         for j in items.get(i):
+        #             print(j)
+        #             item.append(j)
+        #     count+=1
+        item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
+    except:
+        print(f"KeyError: Missing key in session data - {e}")
+        user_data = {}  # Reset user_data if corrupted
+        members = 1
+        item = []
 
+    print(item)
+
+    if request.method == 'POST':
+        try:
+            members = int(request.POST.get('members', 1))
+            request.session["user"].update({'members': members})
+            request.session.modified = True
+            print("Updated Members:", members)
+        except ValueError as e:
+            print(f"ValueError: Invalid members input - {e}")
+            members = 1  # Fallback to 1 if invalid input
+
+    return render(request, 'app/login_signup/register/business/step7.html', {
+        'members': range(int(members)),
+        'items': item
+    })
 
 @require_http_methods(["POST"])
 def business_register_step8(request):
@@ -278,6 +294,17 @@ def business_register_step8(request):
 
     return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
 
-def final(request):
+def business_submit(request):
     if(request.method=='POST'):
-        pass
+        # print(request.POST)
+        formatted_schedule = {}
+        for day, times in request.POST.get("schedule", {}).items():
+            start_time = times.get("start")
+            end_time = times.get("end")
+            formatted_schedule[day] = {"start": start_time, "end": end_time}
+        print(request.POST.get('schedule[Tuesday][end]'))
+        # Print formatted schedule
+        # print("Schedule Data:", formatted_schedule)
+        
+
+    return HttpResponse("Registered")
