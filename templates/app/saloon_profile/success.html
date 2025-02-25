@@ -1,62 +1,53 @@
-
 <!DOCTYPE html>
-{% load static tailwind_tags %}
+{% load static %}
+{% load tailwind_tags %}
 <html lang="en">
 
 <head>
-    
     <title>Order Success - CareHub</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-md text-center m-4">
+        <!-- Success Icon -->
+        <div class="mb-6">
+            <img src="{% static 'app/image/icon/success.png' %}" alt="Success" class="w-16 h-16 mx-auto">
+        </div>
+        
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Order Confirmed!</h1>
+        <p class="text-gray-600 mb-6">
+            Thank you for choosing RadiantHub. Your appointment has been successfully booked at your selected salon.
+        </p>
+        
+        <!-- Booking Details -->
+        <div class="bg-gray-50 rounded-lg p-6 text-left mb-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-3">Booking Details</h2>
+            <p><strong>Salon Name:</strong> Elite Barber Shop, Comilla, Debidwar</p>
+            <p><strong>Service:</strong> {{ service_name }}</p>
+            <p><strong>Date:</strong> {{ appointment_date }}</p>
+            <p><strong>Time:</strong> {{ appointment_time }}</p>
+            <p><strong>Worker Name:</strong> {{ worker_name }}</p>
+            <p><strong>Worker Expertise:</strong> {{ worker_expertise }}</p>
+            <p><strong>Total Amount:</strong> BDT {{ total_amount }}</p>
+        </div>
 
-    <!-- Container for the success message -->
-    <div class="min-h-screen flex flex-col justify-center items-center">
-        <div class="bg-pink-100 rounded-lg shadow-lg p-10 max-w-md text-center">
-            <!-- Success Icon -->
-            <div class="text-green-500 mb-6">
-                <img src="../image/icon/success.png" alt="" class="w-16 h-16 mx-auto">
-            </div>
-            <h1 class="text-2xl font-bold text-gray-800 mb-4">Order Confirmed!</h1>
-            <p class="text-gray-600 mb-6">
-                Thank you for choosing RadiantHub. Your appointment has been successfully booked at your selected salon.
-            </p>
-            <div class="bg-gray-50 rounded-lg p-4 text-left mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Booking Details</h2>
-                <p><strong>Salon Name:</strong> <?php echo $shop_name; ?> (<?php echo $shop_city; ?>,
-                    <?php echo $shop_state; ?>)</p>
-                <p><strong>Service:</strong> <?php echo $item_name; ?> (<?php echo $item_description; ?>)</p>
-                <p><strong>Date:</strong> <?php echo $selected_date; ?></p>
-                <p><strong>Time:</strong> <?php echo $selected_time; ?></p>
-                <p><strong>Worker Name:</strong> <?php echo $worker_name; ?></p>
-                <p><strong>Worker Expertise:</strong> <?php echo $worker_expertise; ?></p>
-                <p><strong>Total Amount:</strong> BDT <?php echo $item_price; ?></p>
-            </div>
-            <a href="../home.php"
-                class="mr-2 inline-block px-6 py-2 bg-pink-400 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">Back
-                to Home</a>
-            <?php
-            $pdfUrl = "payment_receipt.php?" .
-                "shop_name=" . urlencode($shop_name) .
-                "&item_name=" . urlencode($item_name) .
-                "&selected_date=" . urlencode($selected_date) .
-                "&selected_time=" . urlencode($selected_time) .
-                "&item_price=" . urlencode($item_price) .
-                "&customer_name=" . urlencode($customer_name) .
-                "&customer_email=" . urlencode($customer_email) .
-                "&customer_mobile=" . urlencode($customer_mobile);
-            ?>
-            <a href="<?php echo $pdfUrl; ?>"
-                class="ml-2 inline-block px-6 py-2 bg-pink-400 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">Print
-                payment slip</a>
+        <!-- Action Buttons -->
+        <div class="flex justify-center space-x-4">
+            <a href="{% url 'home' %}" 
+               class="px-6 py-3 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">
+                Back to Home
+            </a>
+            <a href="{% url 'print_payment_slip' %}" 
+               class="px-6 py-3 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">
+                Print Payment Slip
+            </a>
         </div>
     </div>
-
 </body>
 
 </html>
