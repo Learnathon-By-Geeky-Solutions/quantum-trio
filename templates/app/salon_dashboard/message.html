@@ -11,106 +11,9 @@
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
-    <!-- Include Tailwind CSS -->
-
-
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
     <!-- Include Chart.js for graphs/charts -->
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        #dashboard {
-            height: 100vh;
-            scrollbar-width: none;
-
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #00014E;
-            width: 250px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .sidebar li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            background-color: #00E081;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            width: 1625px;
-            box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.1);
-            /* border:1px solid black; */
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 0;
-            color: rgb(0, 0, 0);
-        }
-
-        /* .container{
-            background-color: red;
-        } */
-        * {
-            font-family: cursive;
-        }
-    </style>
+    
 </head>
 
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
@@ -128,15 +31,6 @@
                         <p class="mt-2">Thanks for reaching</p>
                         <p class="mb-0">
                                     </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">10 feb 2025 2:10 PM</span></div></a>
-                 
-                <!-- <h4 class="font-bold text-lg">Well done!</h4> -->
-                <!-- <p class="mt-2">Aww yeah, you successfully read this important alert message. This example text is
-                        going to run a
-                        bit longer so that you can see how spacing within an alert works with this kind of content.</p>
-                    <hr class="my-4 border-t-2 border-green-400">
-                    <p class="mb-0">Admin, RadientHub BD
-                    </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">Time and date</span> -->
-
             </div>
         </main>
 </body>
