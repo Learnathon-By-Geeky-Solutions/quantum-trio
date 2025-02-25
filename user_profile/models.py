@@ -33,4 +33,3 @@ class user_profile(models.Model):
     def generate_random_password(self, length=12):
         """Generates a random password (useful for password resets)."""
         return get_random_string(length)
-
