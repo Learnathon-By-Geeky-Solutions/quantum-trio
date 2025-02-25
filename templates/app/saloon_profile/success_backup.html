@@ -27,25 +27,16 @@
             </p>
             <div class="bg-gray-50 rounded-lg p-4 text-left mb-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-2">Booking Details</h2>
-                <p><strong>Salon Name:</strong><?php echo $shop_name; ?></p>
-                <p><strong>Service:</strong> <?php echo $item_name; ?></p>
-                <p><strong>Date:</strong> <?php echo $selected_date; ?></p>
-                <p><strong>Time:</strong> <?php echo $selected_time; ?></p>
-                <p><strong>Total Amount:</strong> BDT <?php echo $item_price; ?></p>
+                <p><strong>Salon Name:</strong>Elite barber Shop</p>
+                <p><strong>Service:</strong> Hair cut</p>
+                <p><strong>Date:</strong> 25/2/2025</p>
+                <p><strong>Time:</strong> 12.27 am</p>
+                <p><strong>Total Amount:</strong> BDT 100</p>
             </div>
-            <a href="../home.php"
+            <a href="#"
                 class="mr-2 inline-block px-6 py-2 bg-pink-400 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">Back
                 to Home</a>
-            <?php
-            $pdfUrl = "payment_receipt.php?" .
-                "shop_name=" . urlencode($shop_name) .
-                "&item_name=" . urlencode($item_name) .
-                "&selected_date=" . urlencode($selected_date) .
-                "&selected_time=" . urlencode($selected_time) .
-                "&item_price=" . urlencode($item_price) .
-                "&customer_name=" . urlencode($customer_id); // Add customer name if available
             
-            ?>
             <a href="<?php echo $pdfUrl; ?>"
                 class="ml-2 inline-block px-6 py-2 bg-pink-400 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">Print
                 payment slip</a>

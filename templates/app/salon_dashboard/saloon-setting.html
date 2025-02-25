@@ -1,5 +1,7 @@
 
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 
 <head>
@@ -7,99 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Setting</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
-    <!-- Include Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Include Chart.js for graphs/charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        #dashboard {
-            height: 100vh;
-            scrollbar-width: none;
-
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #00014E;
-            width: 250px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar li img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .sidebar li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            background-color: #00E081;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            width: 1625px;
-            box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.1);
-            /* border:1px solid black; */
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 0;
-            color: rgb(0, 0, 0);
-        }
-        *{
-            font-family: cursive;
-        }
-    </style>
+   
 </head>
 
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">

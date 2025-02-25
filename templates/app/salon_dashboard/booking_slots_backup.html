@@ -1,5 +1,7 @@
 
 <!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
 <html lang="en">
 
 <head>
@@ -7,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saloon Appointments</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
-    <!-- Include Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    {% tailwind_css %}
+    
     <!-- Include Chart.js for graphs/charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
