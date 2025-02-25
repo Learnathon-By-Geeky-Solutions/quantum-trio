@@ -2,7 +2,7 @@
 from django.db import models
 from myApp.models import *
 from user_profile.models import *
-class shop_profile(models.Model):
+class ShopProfile(models.Model):
     # Shop Profile Fields
     shop_name = models.CharField(max_length=255)
     shop_title = models.CharField(max_length=255, blank=True, null=True)
@@ -34,8 +34,8 @@ class shop_profile(models.Model):
     def __str__(self): 
         return self.shop_name
     
-class shop_gallery(models.Model):
-    shop = models.ForeignKey(shop_profile, related_name="gallery", on_delete=models.CASCADE)  # Link to Shop
+class ShopGallery(models.Model):
+    shop = models.ForeignKey(ShopProfile, related_name="gallery", on_delete=models.CASCADE)  # Link to Shop
     image = models.ImageField(upload_to='shop_gallery/', blank=True, null=True)  # Image field
     description = models.CharField(max_length=255, blank=True, null=True)  # Optional description for the image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Time when image is uploaded
@@ -43,7 +43,7 @@ class shop_gallery(models.Model):
     def __str__(self):
         return f"Image for {self.shop.name} - {self.id}"
 
-class Shop_worker(models.Model):
+class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, unique=True)  # Ensures unique phone numbers
@@ -54,8 +54,8 @@ class Shop_worker(models.Model):
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
     
-class shop_service(models.Model):
-    shop = models.ForeignKey(shop_profile, related_name="services", on_delete=models.CASCADE)  # Shop providing the service
+class ShopService(models.Model):
+    shop = models.ForeignKey(ShopProfile, related_name="services", on_delete=models.CASCADE)  # Shop providing the service
     service = models.ForeignKey(Service, related_name="shops", on_delete=models.CASCADE)  # Service provided by the shop
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Price of the service at this shop (could be different per shop)
     availability = models.BooleanField(default=True)  # Is this service available at the shop?
@@ -63,9 +63,9 @@ class shop_service(models.Model):
     def __str__(self):
         return f"{self.shop.name} - {self.service.name}"
 
-class Shop_review(models.Model):
-    shop = models.ForeignKey(shop_profile, related_name="reviews", on_delete=models.CASCADE)  # The shop being reviewed
-    user = models.ForeignKey(user_profile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
+class ShopReview(models.Model):
+    shop = models.ForeignKey(ShopProfile, related_name="reviews", on_delete=models.CASCADE)  # The shop being reviewed
+    user = models.ForeignKey(UserProfile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True, null=True)  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
@@ -76,7 +76,7 @@ class Shop_review(models.Model):
     def __str__(self):
         return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
 
-class shop_schedule(models.Model):
+class ShopSchedule(models.Model):
     DAYS_OF_WEEK = [
         ('Sunday', 'Sunday'),
         ('Monday', 'Monday'),
@@ -86,7 +86,7 @@ class shop_schedule(models.Model):
         ('Friday', 'Friday'),
         ('Saturday', 'Saturday'),
     ]
-    shop = models.ForeignKey(shop_profile, related_name="schedule", on_delete=models.CASCADE)  # The shop being reviewed
+    shop = models.ForeignKey(ShopProfile, related_name="schedule", on_delete=models.CASCADE)  # The shop being reviewed
     day_of_week=models.CharField(max_length=10, choices=DAYS_OF_WEEK)
     start=models.TimeField()
     end=models.TimeField()

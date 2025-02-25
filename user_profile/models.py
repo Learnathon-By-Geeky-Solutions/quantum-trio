@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password, check_password
 
-class user_profile(models.Model):
+class UserProfile(models.Model):
     # user_id = models.AutoField(primary_key=True)  # Unique ID
     username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
