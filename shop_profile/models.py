@@ -3,7 +3,7 @@ from django.db import models
 from myApp.models import *
 from user_profile.models import *
 from PIL import Image
-class ShopProfile(models.Model):
+class ShopProfile(models.Model): 
     # Shop Profile Fields
     shop_name = models.CharField(max_length=255)
     shop_title = models.CharField(max_length=255, blank=True, null=True)
@@ -12,7 +12,8 @@ class ShopProfile(models.Model):
     shop_owner = models.CharField(max_length=255, blank=True, null=True)
     shop_customer_count = models.IntegerField(default=0)
     status = models.BooleanField(default=True)  # Is the shop active?
- 
+    # password
+    password = models.CharField(max_length=512)
     # Contact Information
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
     shop_email = models.EmailField(blank=True, null=True)
