@@ -11,7 +11,7 @@ class shop_profile(models.Model):
     shop_owner = models.CharField(max_length=255, blank=True, null=True)
     shop_customer_count = models.IntegerField(default=0)
     status = models.BooleanField(default=True)  # Is the shop active?
-
+ 
     # Contact Information
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
     shop_email = models.EmailField(blank=True, null=True)
@@ -30,17 +30,8 @@ class shop_profile(models.Model):
     
     # Additional Info
     member_since = models.DateField(auto_now_add=True)
-    
-    # Address Details
-    shop_address = models.CharField(max_length=255, blank=True, null=True)
 
-    # Shop Type/Category
-    shop_category = models.CharField(max_length=255, blank=True, null=True)
-
-    # Shop Services (can be extended with a Foreign Key to a Service model)
-    shop_services = models.TextField(blank=True, null=True)
-
-    def __str__(self):
+    def __str__(self): 
         return self.shop_name
     
 class shop_gallery(models.Model):
@@ -85,3 +76,17 @@ class Shop_review(models.Model):
     def __str__(self):
         return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
 
+class shop_schedule(models.Model):
+    DAYS_OF_WEEK = [
+        ('Sunday', 'Sunday'),
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+    ]
+    shop = models.ForeignKey(shop_profile, related_name="schedule", on_delete=models.CASCADE)  # The shop being reviewed
+    day_of_week=models.CharField(max_length=10, choices=DAYS_OF_WEEK)
+    start=models.TimeField()
+    end=models.TimeField()

@@ -6,10 +6,12 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 # from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
-
+from django.views.decorators.http import require_POST
 # use this to import any data from database
 # -----------------------------------------
 from myApp.models import *
+from shop_profile.models import *
+
 from django.contrib.postgres.aggregates import ArrayAgg
 
 # Create your views here.
@@ -27,9 +29,12 @@ def customer_register_step2(request):
 # Business A/c registration steps starts here
 # -------------------------------------------
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def business_register_step1(request):
-    return render(request, 'app\login_signup\\register\\business\step1.html')
+    message=''
+    return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
 
+@csrf_protect
 @require_http_methods(["GET", "POST"])
 def business_register_step2(request):
     # data = list(person.objects.values())  
@@ -51,9 +56,12 @@ def business_register_step2(request):
         # Debugging: Print data to verify
         # print(user)
 
-        #email check logic will be here
-        #
-        #
+        # email check logic 
+        # since password will be validate in frontend so we just need to check does the email exist or not
+        if shop_profile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
+            message='The email exist.'
+            return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -63,7 +71,7 @@ def business_register_step2(request):
         }
     return render(request, 'app\login_signup\\register\\business\step2.html')
 
-
+@csrf_protect
 @require_http_methods(["GET", "POST"])
 def business_register_step3(request):
     district=District.objects.all().values('id', 'name')
@@ -95,7 +103,7 @@ def business_register_step3(request):
         request.session.modified = True #update the session variable
     return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
-
+@csrf_protect
 @require_http_methods(["GET", "POST"])
 def business_register_step4(request):
     # for debugging purpose only
@@ -173,7 +181,8 @@ def business_register_step4(request):
 #     # print(matching_services)  # Debug output
 #     # print(request.session['user'])
 #     return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
-
+@csrf_protect
+@require_http_methods(["POST"])
 def business_register_step5(request):
     # Ensure session key exists to avoid KeyError
     user_data = request.session.get("user", {})
@@ -203,7 +212,8 @@ def business_register_step5(request):
 
     return render(request, 'app/login_signup/register/business/step5.html', {'services': matching_services})
 
-@require_http_methods(["GET", "POST"])
+@csrf_protect
+@require_POST
 def business_register_step6(request):
     if request.method == "POST":
         # items=request.POST.getlist('items')
@@ -216,7 +226,7 @@ def business_register_step6(request):
         # print(request.session['user'])
     return render(request, 'app\login_signup\\register\\business\step6.html')
 
-
+@require_http_methods(["POST"])
 def business_register_step7(request):
     user_data = request.session.get("user", {})
     
@@ -252,7 +262,7 @@ def business_register_step7(request):
     return render(request, 'app\login_signup\\register\\business\step7.html',{'members':range(0,int(members)),'items':item})
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def business_register_step8(request):
     if request.method=="POST":
         members = {key: request.POST.getlist(key) for key in request.POST if key.startswith("member")}
@@ -268,3 +278,6 @@ def business_register_step8(request):
 
     return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
 
+def final(request):
+    if(request.method=='POST'):
+        pass

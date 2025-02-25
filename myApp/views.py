@@ -50,7 +50,8 @@ def search(request):
 
 
 def service(request):
-    return render(request, 'app\service.html')
+    services=Service.objects.all()
+    return render(request, 'app\service.html',{'services':services})
 
 
 def book_now(request):

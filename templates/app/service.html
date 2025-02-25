@@ -27,72 +27,14 @@
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Available Services</h2>
                 <section class="photo-slider">
                     <div class="slider-container">
+                        {% for service in services%}
                         <div class="slide">
                             <a href="">
-                                <div class="under_img">Body Treatments</div>
-                                <img src="{% static 'app/image/services photo/1.jpg' %}" alt="Body Treatments">
-                            </a>
+                                <div class="under_img">{{ service.name }}</div>
+                                <img src="{% static 'app/image/services photo/'|add:service.id|add:'.jpg' %}" alt="{{ service.id }}">
+                            </a> 
                         </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Educational Services</div>
-                                <img src="{% static 'app/image/services photo/2.jpg' %}" alt="Educational Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Facial Services</div>
-                                <img src="{% static 'app/image/services photo/3.jpg' %}" alt="Facial Services">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Grooming Services (For Men)</div>
-                                <img src="{% static 'app/image/services photo/10.avif' %}" alt="Grooming Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Hair Services</div>
-                                <img src="{% static 'app/image/services photo/11.avif' %}" alt="Hair Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Miscellaneous Services</div>
-                                <img src="{% static 'app/image/services photo/9.jpg' %}" alt="Miscellaneous Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Nail Services</div>
-                                <img src="{% static 'app/image/services photo/8.jpg' %}" alt="Nail Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Retail Products</div>
-                                <img src="{% static 'app/image/services photo/7.jpg' %}" alt="Retail Products" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Spa Services</div>
-                                <img src="{% static 'app/image/services photo/6.jpg' %}" alt="Spa Services" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Specialized Treatments</div>
-                                <img src="{% static 'app/image/services photo/12.avif' %}" alt="Specialized Treatments" class="fit-img">
-                            </a>
-                        </div>
-                        <div class="slide">
-                            <a href="">
-                                <div class="under_img">Wellness Services</div>
-                                <img src="{% static 'app/image/services photo/5.jpg' %}" alt="Wellness Services" class="fit-img">
-                            </a>
-                        </div>
+                        {%endfor%}
                     </div>
                     <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
                     <button class="next" onclick="changeSlide(1)">&#10095;</button>
