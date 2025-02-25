@@ -26,7 +26,10 @@ def customer_register_step1(request):
     return render(request, 'app\login_signup\\register\customer\step1.html')
 
 def customer_register_step2(request):
-    return render(request, 'app\login_signup\\register\customer\step2.html')
+    district=District.objects.all().values('id', 'name')
+    upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    
+    return render(request, 'app\login_signup\\register\customer\step2.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 # Business A/c registration steps starts here
 # -------------------------------------------
