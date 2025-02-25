@@ -2,6 +2,7 @@
 from django.db import models
 from myApp.models import *
 from user_profile.models import *
+from PIL import Image
 class ShopProfile(models.Model):
     # Shop Profile Fields
     shop_name = models.CharField(max_length=255)
@@ -15,7 +16,7 @@ class ShopProfile(models.Model):
     # Contact Information
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
     shop_email = models.EmailField(blank=True, null=True)
-
+    shop_website = models.URLField(blank=True, null=True, max_length=200)
     # Location Fields (For geolocation)
     shop_state = models.CharField(max_length=100, blank=True, null=True)
     shop_city = models.CharField(max_length=100, blank=True, null=True)
@@ -31,12 +32,20 @@ class ShopProfile(models.Model):
     # Additional Info
     member_since = models.DateField(auto_now_add=True)
 
+    def update_rating(self, new_rating):
+        """Updates the shop rating while ensuring it stays within a valid range (0.00 to 5.00)."""
+        if 0.00 <= new_rating <= 5.00:
+            self.shop_rating = round(new_rating, 2)  # Round to 2 decimal places
+            self.save()
+            return True
+        return False  # Invalid rating
+
     def __str__(self): 
         return self.shop_name
     
 class ShopGallery(models.Model):
-    shop = models.ForeignKey(ShopProfile, related_name="gallery", on_delete=models.CASCADE)  # Link to Shop
-    image = models.ImageField(upload_to='shop_gallery/', blank=True, null=True)  # Image field
+    shop = models.ForeignKey(ShopProfile, related_name="shopgallery", on_delete=models.CASCADE)  # Link to Shop
+    image = models.ImageField(upload_to='ShopGallery/', blank=True, null=True)  # Image field
     description = models.CharField(max_length=255, blank=True, null=True)  # Optional description for the image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Time when image is uploaded
 
@@ -45,26 +54,26 @@ class ShopGallery(models.Model):
 
 class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, unique=True)  # Ensures unique phone numbers
-    profile_pic = models.ImageField(upload_to='worker_profiles/', blank=True, null=True)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)  # Ensures unique phone numbers
+    profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, null=True)
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
-    expertise = models.ManyToManyField(Item, related_name="experts")
-
+    expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
+    shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
+    
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
     
 class ShopService(models.Model):
-    shop = models.ForeignKey(ShopProfile, related_name="services", on_delete=models.CASCADE)  # Shop providing the service
-    service = models.ForeignKey(Service, related_name="shops", on_delete=models.CASCADE)  # Service provided by the shop
+    shop = models.ForeignKey(ShopProfile, related_name="shopservice", on_delete=models.CASCADE)  # Shop providing the service
+    item = models.ForeignKey(Item, related_name="shopservices", on_delete=models.CASCADE)  # Service provided by the shop
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Price of the service at this shop (could be different per shop)
-    availability = models.BooleanField(default=True)  # Is this service available at the shop?
-
+    
     def __str__(self):
-        return f"{self.shop.name} - {self.service.name}"
+        return f"{self.shop.shop_name} - {self.item.name}"
 
 class ShopReview(models.Model):
-    shop = models.ForeignKey(ShopProfile, related_name="reviews", on_delete=models.CASCADE)  # The shop being reviewed
+    shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
     user = models.ForeignKey(UserProfile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True, null=True)  # Optional text review
@@ -86,7 +95,9 @@ class ShopSchedule(models.Model):
         ('Friday', 'Friday'),
         ('Saturday', 'Saturday'),
     ]
-    shop = models.ForeignKey(ShopProfile, related_name="schedule", on_delete=models.CASCADE)  # The shop being reviewed
+    shop = models.ForeignKey(ShopProfile, related_name="shopschedule", on_delete=models.CASCADE)  # The shop being reviewed
     day_of_week=models.CharField(max_length=10, choices=DAYS_OF_WEEK)
     start=models.TimeField()
     end=models.TimeField()
+    def __str__(self):
+        return f"{self.shop.shop_name} for {self.day_of_week}"

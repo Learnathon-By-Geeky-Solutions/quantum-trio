@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("shop_profile", "0001_initial"),
-        ("user_profile", "0002_alter_user_profile_options_and_more"),
+        # ("user_profile", "0002_alter_user_profile_options_and_more"),
     ]
 
     operations = [
