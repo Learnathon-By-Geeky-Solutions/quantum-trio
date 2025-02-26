@@ -24,9 +24,13 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
       }
+      .grid-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
       
       .grid-item.selected {
-        background-color: #f9fafb;
+        background-color:rgb(24, 210, 80);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transform: scale(1.05);
       }
@@ -40,12 +44,14 @@
     </style>
   </head>
   <body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
+    <div class="min-h-screen flex items-center justify-center p-5">
+      <div class="bg-white p-8 rounded-lg shadow-lg w-1/2 max-w-3xl p-5 ">
         <form class="form" action="step5" method="POST" id="serviceForm">
           {% csrf_token %}
-          <a href="step3" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">&larr;</a>
-          <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
+          <a href="step3">
+            <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
+         </a>
+           <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
           <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
           <div class="grid-container">
             {% for service in services%}
