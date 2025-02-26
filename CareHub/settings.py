@@ -153,7 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
     'Registration.backends.Authenticate',
-    'django.contrib.auth.backends.ModelBackend',  # Fallback to the default backend
+    # 'django.contrib.auth.backends.ModelBackend',  # Fallback to the default backend
 ]
 
 MEDIA_URL='/media/'
