@@ -56,6 +56,7 @@ def business_register_step2(request):
             'email': request.POST.get("email", ""),
             'password': make_password(request.POST.get("password", "")),
             'mobile-number': request.POST.get("mobile-number", ""),
+            'password': make_password(request.POST.get('password')),
         }
     return render(request, 'app\login_signup\\register\\business\step2.html')
 
@@ -249,7 +250,7 @@ def business_submit(request):
                     shop_title = user_details['business_title'],
                     shop_info = user_details['business_info'],
                     shop_owner = user_details['first-name']+' '+user_details['last-name'],
-                    
+                    password=user_details['password'],
                     # Contact Information
                     mobile_number = user_details['mobile-number'],
                     shop_email = user_details['email'],
@@ -305,13 +306,13 @@ def business_submit(request):
                 try:
                     items=user_details['items']
                     """How many items the shop provides"""
-                    count = len({key.split('[')[1].split(']')[0] for key in items if 'name' in key})
-                    print(count)
+                    # count = len({key.split('[')[1].split(']')[0] for key in items if 'name' in key})
+                    # print(count)
                     item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
                     print(item)
                     price = [price for key, price_list in items.items() if 'price' in key for price in price_list]
                     print(price)
-                    for index in range(count):
+                    for index in range(len(item)):
                         service=ShopService.objects.create(
                             shop=shop,
                             item=Item.objects.get(name=item[index]),

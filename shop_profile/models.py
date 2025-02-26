@@ -40,7 +40,11 @@ class ShopProfile(models.Model):
             self.save()
             return True
         return False  # Invalid rating
-
+    
+    def check_password(self, raw_password):
+        """Checks if the given password matches the stored hashed password."""
+        return check_password(raw_password, self.password)
+    
     def __str__(self): 
         return self.shop_name
     

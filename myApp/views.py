@@ -6,9 +6,9 @@ from django.http import JsonResponse
 # use this to import any data from database
 from .models import *
 from django.contrib.postgres.aggregates import ArrayAgg
-from Registration.backends import Authenticate
 from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 def home(request):
     if request.method != 'GET':
@@ -20,6 +20,26 @@ def home(request):
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
 
+"""user defined authenticate function"""
+def authenticate(username=None, password=None, type=None, **kwargs):
+        if not username or not password or not type:
+            return None  # Ensure all required parameters are provided
+
+        try:
+            if type == 'user':
+                user = UserProfile.objects.filter(email=username).first()
+                if user and user.check_password(password):
+                    return user
+
+            elif type == 'shop':
+                shop = ShopProfile.objects.filter(shop_email=username).first()
+                if shop and shop.check_password(password):
+                    return shop
+
+        except ObjectDoesNotExist:  
+            return None  
+        return None
+
 # login purpose
 def login(request):
     error=''
@@ -27,9 +47,10 @@ def login(request):
     if request.method=='POST':
         email = request.POST.get('email', '').strip() 
         password = request.POST.get('password', '').strip()
+        print(email,password)
         if user_type=='User':
-            if UserProfile.objects.filter(email=email):
-                user=Authenticate.authenticate(email,password,'user')
+            if UserProfile.objects.filter(email=email).exists():
+                user=authenticate(email,password,'user')
                 if isinstance(user,UserProfile):
                     print("You are right.")
                 else:
@@ -38,9 +59,11 @@ def login(request):
                 print('The email is not registered.')
 
         else:
+            print('does exist:',ShopProfile.objects.filter(shop_email=email).exists())
             if ShopProfile.objects.filter(shop_email=email).exists():
-                shop = Authenticate.authenticate(email, password, 'shop')
+                
                 shop=ShopProfile.objects.filter(shop_email=email)
+                shop = authenticate(email, password, 'shop')
                 if isinstance(shop, ShopProfile): 
                     print("You are right.")
                     error='You are right.'
