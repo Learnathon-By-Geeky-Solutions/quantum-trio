@@ -9,6 +9,9 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
+from functools import wraps
+from django.contrib import messages
 # Create your views here.
 def home(request):
     if request.method != 'GET':
@@ -40,7 +43,32 @@ def authenticate(username=None, password=None, type=None, **kwargs):
             return None  
         return None
 
-# login purpose
+"""This is user defined decorator"""
+def login_required_custom(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('user_id') :
+            messages.error(request, "You must be logged in to access this page.")
+            return redirect('/login')  # Redirect to login page if not authenticated
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+"""This function will create a session instance name user_id and shop_id"""
+def log_in( request,username,type):
+    try:
+        if type=='user':
+            user = UserProfile.objects.get(username=username)
+            request.session['user_id'] = user.id
+            return True, "Login successful!"
+        else:
+            user = ShopProfile.objects.get(shop_email=username)
+            request.session['shop_id'] = user.id
+            return True, "Login successful!"
+
+    except User.DoesNotExist:
+        return False, "User does not exist"
+
+"""Login method"""
 def login(request):
     error=''
     user_type = request.GET.get('profile-type', 'Customer')
@@ -53,6 +81,12 @@ def login(request):
                 user=authenticate(email,password,'user')
                 if isinstance(user,UserProfile):
                     print("You are right.")
+                    check,_=log_in(request, email,'user')
+                    if check:
+                        return redirect("home")
+                        
+                    else:
+                        print("You are right.")
                 else:
                     print('You are wrong.') 
             else:
@@ -67,6 +101,12 @@ def login(request):
                 if isinstance(shop, ShopProfile): 
                     print("You are right.")
                     error='You are right.'
+                    check,_=log_in(request, email,'shop')
+                    if check:
+                        # request.session.flush()
+                        return HttpResponse("home")
+                    else:
+                        print("You are right.")
                 else:
                     print("You are wrong.") 
                     error='You are wrong.'
@@ -81,7 +121,7 @@ def create_account(request):
     return render(request, 'app\login_signup\sign-up.html')
 
 # customer A/c registration steps starts here
-
+@login_required_custom
 def contact_us(request):
     return render(request, 'app\contact_us.html')
 
