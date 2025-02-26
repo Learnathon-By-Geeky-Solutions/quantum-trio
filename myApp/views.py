@@ -1,15 +1,14 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from .models import Division,District
-
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
-
 # use this to import any data from database
 from .models import *
 from django.contrib.postgres.aggregates import ArrayAgg
-
+from Registration.backends import Authenticate
+from user_profile.models import UserProfile
+from shop_profile.models import ShopProfile
 # Create your views here.
 def home(request):
     if request.method != 'GET':
@@ -18,21 +17,40 @@ def home(request):
 
     return render(request, 'app/home.html', {'review': 333})
 
-
-
-
-# added by rakib for login purpose
-
-
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
 
 # login purpose
-
-
 def login(request):
+    error=''
     user_type = request.GET.get('profile-type', 'Customer')
-    return render(request, 'app\login_signup\login.html', {'type': user_type})
+    if request.method=='POST':
+        email = request.POST.get('email', '').strip() 
+        password = request.POST.get('password', '').strip()
+        if user_type=='User':
+            if UserProfile.objects.filter(email=email):
+                user=Authenticate.authenticate(email,password,'user')
+                if isinstance(user,UserProfile):
+                    print("You are right.")
+                else:
+                    print('You are wrong.') 
+            else:
+                print('The email is not registered.')
+
+        else:
+            if ShopProfile.objects.filter(shop_email=email).exists():
+                shop = Authenticate.authenticate(email, password, 'shop')
+                shop=ShopProfile.objects.filter(shop_email=email)
+                if isinstance(shop, ShopProfile): 
+                    print("You are right.")
+                    error='You are right.'
+                else:
+                    print("You are wrong.") 
+                    error='You are wrong.'
+            else:
+                print("The email is not registered.")
+                error='The email is not registered.'
+    return render(request, 'app\login_signup\login.html', {'type': user_type,'message':error})
 
 # create_account purpose
 
@@ -48,7 +66,7 @@ def contact_us(request):
 def search(request):
     return render(request, 'app\search.html')
 
-
+ 
 def service(request):
     services=Service.objects.all()
     return render(request, 'app\service.html',{'services':services})

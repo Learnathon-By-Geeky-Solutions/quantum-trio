@@ -1,17 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
-# from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-# from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.http import require_POST
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from io import BytesIO
+from django.conf import settings
 # use this to import any data from database
 # -----------------------------------------
 from myApp.models import *
 from shop_profile.models import *
-
 from django.contrib.postgres.aggregates import ArrayAgg
 
 # Create your views here.
@@ -24,7 +26,10 @@ def customer_register_step1(request):
     return render(request, 'app\login_signup\\register\customer\step1.html')
 
 def customer_register_step2(request):
-    return render(request, 'app\login_signup\\register\customer\step2.html')
+    district=District.objects.all().values('id', 'name')
+    upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    
+    return render(request, 'app\login_signup\\register\customer\step2.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 # Business A/c registration steps starts here
 # -------------------------------------------
@@ -37,31 +42,14 @@ def business_register_step1(request):
 @csrf_protect
 @require_http_methods(["GET", "POST"])
 def business_register_step2(request):
-    # data = list(person.objects.values())  
-    # print(data)
-    # user = {
-    #     'first-name': '',
-    #     'last-name': '',
-    #     'email': '',
-    #     'password': '',
-    #     'mobile-number': '',
-    # }
+    
     if request.method == "POST":
-        # user['first_name'] = request.POST.get("first-name", "")
-        # user['last_name'] = request.POST.get("last-name", "")
-        # user['email'] = request.POST.get("email", "")
-        # user['password'] = request.POST.get(
-        #     "password", "")  # Encrypt before storing!
-        # user['mobile_number'] = request.POST.get("mobile-number", "")
-        # Debugging: Print data to verify
-        # print(user)
-
-        # email check logic 
-        # since password will be validate in frontend so we just need to check does the email exist or not
+        
+        """email check logic 
+        since password will be validate in frontend so we just need to check does the email exist or not"""
         if ShopProfile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
             return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
-
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -76,23 +64,8 @@ def business_register_step2(request):
 def business_register_step3(request):
     district=District.objects.all().values('id', 'name')
     upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    # print(upazilla)
-    # user = {
-    #     'business_name':'',
-    #     'business_title':'',
-    #     'website':'',
-    #     'business_info':'',
-    #     'gender':''
-    # }
+    
     if request.method == "POST":
-        # debugging purpose only
-        # user['business_name'] = request.POST.get("business_name", "")
-        # user['business_title'] = request.POST.get("business_title", "")
-        # user['website'] = request.POST.get("website", "")
-        # user['business_info'] = request.POST.get("business_info", "")
-        # user['gender'] = request.POST.get("gender", "")
-        # print(user)
-
         request.session["user"].update({
             'business_name': request.POST.get("business_name", ""),
             'business_title': request.POST.get("business_title", ""),
@@ -106,39 +79,17 @@ def business_register_step3(request):
 @csrf_protect
 @require_http_methods(["GET", "POST"])
 def business_register_step4(request):
-    # for debugging purpose only
-    # user = {
-    #     'district':'',
-    #     'upazilla':'',
-    #     'area':'',
-    #     'landmark1':'',
-    #     'landmark2':'',
-    #     'landmark3':'',
-    #     'landmark4':'',
-    #     'landmark5':'',
-    #     'latitude':'',
-    #     'longitude':''
-    # }
     if request.method == "POST":
-        # user['district']=request.POST.get("district","")
-        # user['upazilla']=request.POST.get("upazilla","")
-        # user['area']=request.POST.get("area","")
-        landmarks = request.POST.getlist("landmarks[]")  # Retrieves all landmarks as a list
-        # Extract values safely
-        # user['landmark1']= landmarks[0] if len(landmarks[0]) > 0 else ""
-        # user['landmark2']= landmarks[1] if len(landmarks[1]) > 0 else ""
-        # user['landmark3']= landmarks[2] if len(landmarks[2]) > 0 else ""
-        # user['landmark4']= landmarks[3] if len(landmarks[3]) > 0 else ""
-        # user['landmark5']= landmarks[4] if len(landmarks[4]) > 0 else ""
         
+        """Retrieves all landmarks as a list"""
+        landmarks = request.POST.getlist("landmarks[]") 
+
+        """Now process"""
         landmark1= landmarks[0] if len(landmarks[0]) > 0 else ""
         landmark2= landmarks[1] if len(landmarks[1]) > 0 else ""
         landmark3= landmarks[2] if len(landmarks[2]) > 0 else ""
         landmark4= landmarks[3] if len(landmarks[3]) > 0 else ""
         landmark5= landmarks[4] if len(landmarks[4]) > 0 else ""
-        # user['latitude']=request.POST.get("latitude", "")
-        # user['longitude']=request.POST.get("longitude","")
-        # print(user)
         request.session["user"].update({
                 'district': request.POST.get("district", ""),
                 'upazilla': request.POST.get("upazilla", ""),
@@ -153,41 +104,15 @@ def business_register_step4(request):
         })
         request.session.modified = True  #update the session variable
     service=Service.objects.all().values('id', 'name')
-    # print(service)
     return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
 
-# def business_register_step5(request):
-#     if request.session["user"].get("services") is not None:
-#         services=list(request.session["user"].keys()).index("services")
-#     else:
-#         print("Key is missing or has None as value")
-#         services=list()
-    
-#     if request.method =='POST':
-#         services = request.POST.getlist("services[]", []) #posts only the id's of service
-#         request.session["user"].update({'services':services,})
-#         request.session.modified = True
-#     # Fetch available services
-#     available_services = Item.objects.values('service__id','service__name').annotate(service_names=ArrayAgg('name'))
-#     # print(available_services)
-#     # Convert IDs to strings for comparison
-#     matching_services=[]
-#     if services.count>0:
-#         matching_services = [
-#             service for service in available_services if str(service['service__id']) in services
-#         ] 
-    
-#     print()
-#     # print(matching_services)  # Debug output
-#     # print(request.session['user'])
-#     return render(request, 'app\login_signup\\register\\business\step5.html',{'services':matching_services})
 @csrf_protect
 @require_http_methods(["POST"])
 def business_register_step5(request):
-    # Ensure session key exists to avoid KeyError
+    """Ensure session key exists to avoid KeyError"""
     user_data = request.session.get("user", {})
     
-    # Retrieve services from session if available, else set an empty list
+    """Retrieve services from session if available, else set an empty list"""
     services = user_data.get("services", [])
 
     if request.method == 'POST':
@@ -196,10 +121,10 @@ def business_register_step5(request):
         request.session["user"] = user_data
         request.session.modified = True
 
-    # Fetch available services
+    """Fetch available services"""
     available_services = Item.objects.values('service__id', 'service__name').annotate(service_names=ArrayAgg('name'))
 
-    # Convert IDs to strings for comparison and filter matching services
+    """Convert IDs to strings for comparison and filter matching services"""
     matching_services = []
     if len(services) > 0:  # Correct way to check non-empty list
         matching_services = [
@@ -207,9 +132,8 @@ def business_register_step5(request):
         ]
 
     # Debugging (optional)
-    print("Matching Services:", matching_services)
-    print("Session Data:", request.session.get("user"))
-
+    """print("Matching Services:", matching_services)
+    print("Session Data:", request.session.get("user"))"""
     return render(request, 'app/login_signup/register/business/step5.html', {'services': matching_services})
 
 @csrf_protect
@@ -223,88 +147,191 @@ def business_register_step6(request):
                 'items':items,
         })
         request.session.modified = True
-        # print(request.session['user'])
     return render(request, 'app\login_signup\\register\\business\step6.html')
 
-@require_http_methods(["POST"])
+@csrf_protect
+@require_POST
 def business_register_step7(request):
     try:
         user_data = request.session.get("user", {})
         
-        # Retrieve members from session if available, else set an empty list
+        """Retrieve members from session if available, else set an empty list"""
         members = user_data.get("members", 1)
 
-        # first get all the details of selected items 
+        """first get all the details of selected items """
         items=request.session['user']['items'];
-        # count=1
-        # item=list()
-
-        # there will be two list for each service domain one is selected items another is prices 
-        # like you selected service domain 'A' so it will contain two list these are item_names and price
-        # {
-        # 'items[1][name ][]': ['Hair Coloring'],
-        #                          ^
-        #                          |
-        # 'items[1][price][]': ['120']
-        # }
-        # print(items)
-        # for i in items:
-        #     if(count%2): #take only the items name 
-        #         for j in items.get(i):
-        #             print(j)
-        #             item.append(j)
-        #     count+=1
         item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
     except:
         print(f"KeyError: Missing key in session data - {e}")
         user_data = {}  # Reset user_data if corrupted
-        members = 1
-        item = []
 
     print(item)
 
     if request.method == 'POST':
         try:
             members = int(request.POST.get('members', 1))
-            request.session["user"].update({'members': members})
+            request.session["user"].update({'member': members})
             request.session.modified = True
             print("Updated Members:", members)
         except ValueError as e:
             print(f"ValueError: Invalid members input - {e}")
             members = 1  # Fallback to 1 if invalid input
-
+    print(members,item)
     return render(request, 'app/login_signup/register/business/step7.html', {
         'members': range(int(members)),
         'items': item
     })
 
-@require_http_methods(["POST"])
+@csrf_protect
+@require_POST
 def business_register_step8(request):
     if request.method=="POST":
         members = {key: request.POST.getlist(key) for key in request.POST if key.startswith("member")}
-        # for member in members:
-        #     print(members.get(member))
-        # pictures has not handled yet
+        worker_image=[]
+        for key in request.FILES:
+            if key.startswith("member"):
+                uploaded_files = request.FILES.getlist(key)  # Get all images for this key
+                
+                saved_paths = []
+                for uploaded_file in uploaded_files:
+                    # Define the file path where it will be saved
+                    file_path = f"temp/{uploaded_file.name}"
+                    full_path = os.path.join("media", file_path)  # Adjust based on MEDIA settings
+                    
+                    # Save the file
+                    default_storage.save(full_path, ContentFile(uploaded_file.read()))
+
+                    # Append the saved file path instead of the file object
+                    saved_paths.append(file_path)
+                worker_image.append(saved_paths)  # Store the list of file paths
+
+        print(worker_image)
         request.session["user"].update({
-                'items':members,
+                'members':members,
+                'worker_image':worker_image,
         })
         request.session.modified = True
-        # print(request.session["user"])
     days_of_week = ['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
     return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
 
+@csrf_protect
+@require_POST
 def business_submit(request):
     if(request.method=='POST'):
-        # print(request.POST)
-        formatted_schedule = {}
-        for day, times in request.POST.get("schedule", {}).items():
-            start_time = times.get("start")
-            end_time = times.get("end")
-            formatted_schedule[day] = {"start": start_time, "end": end_time}
-        print(request.POST.get('schedule[Tuesday][end]'))
-        # Print formatted schedule
-        # print("Schedule Data:", formatted_schedule)
-        
 
+        """process the schedule first"""
+        schedule_data = request.POST  # QueryDict
+        schedule = {}
+        for day in ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+            start_time = schedule_data.get(f"schedule[{day}][start]", "").strip()
+            end_time = schedule_data.get(f"schedule[{day}][end]", "").strip()
+            # Only save the day if it has valid start or end time
+            if start_time or end_time:
+                schedule[day] = {"start": start_time, "end": end_time}
+        # print("Filtered Schedule:", schedule)  # Debugging output
+        
+        try:
+            user_details=request.session['user']
+            try:
+                """creating shop profile"""
+                shop = ShopProfile.objects.create(
+                    shop_name = user_details['business_name'],
+                    shop_title = user_details['business_title'],
+                    shop_info = user_details['business_info'],
+                    shop_owner = user_details['first-name']+' '+user_details['last-name'],
+                    
+                    # Contact Information
+                    mobile_number = user_details['mobile-number'],
+                    shop_email = user_details['email'],
+                    shop_website = user_details['website'],
+                    # Location Fields (For geolocation)
+                    shop_state = user_details['district'],
+                    shop_city = user_details['upazilla'],
+                    shop_area = user_details['area'],
+                    latitude = user_details['latitude'],
+                    longitude = user_details['longitude'],
+                    shop_landmark_1 = user_details['landmark1'],
+                    shop_landmark_2 = user_details['landmark2'],
+                    shop_landmark_3 = user_details['landmark3'],
+                    shop_landmark_4 = user_details['landmark4'],
+                    shop_landmark_5 = user_details['landmark5'],
+                )
+        
+                print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
+                # print(user_details['members'])
+                
+                """creating worker profile under the shop"""
+                try:
+                    member_details=user_details['members']
+                    worker_image=user_details['worker_image']
+                    # print(worker_image)
+                    for index in range(user_details['member']):
+                        img_path=img_path = os.path.join(settings.BASE_DIR,"BASE_DIR","media", "media", worker_image[index][0])
+                        img=Image.open(img_path)
+                        # print(img)
+                        image_name = img_path.split("/")[-1] 
+                        # print(image_name)
+                        img_io = BytesIO()
+                        img.save(img_io, format=img.format)  # Preserve original format (JPEG, PNG, etc.)
+                        img_bytes = img_io.getvalue()
+                        worker = ShopWorker.objects.create(
+                            name = member_details.get(f'member[{index}][name]', [''])[0],
+                            email = member_details.get(f'member[{index}][email]', [''])[0],
+                            phone = member_details.get(f'member[{index}][contact]', [''])[0],
+                            experience = member_details.get(f'member[{index}][experience]', [''])[0],
+                            shop = shop
+                        )
+                        
+                        worker.profile_pic.save(image_name, ContentFile(img_bytes))
+                        # # Assign ManyToManyField expertise
+                        expertise_values = member_details.get(f'member[{index}][expertise][]', [])
+                        selected_expertise = Item.objects.filter(name__in=expertise_values)  # Assuming 'name' is unique
+                        worker.expertise.set(selected_expertise)  # Set ManyToMany relationship
+                        worker.save()
+                except Exception as e:
+                    print(f"❌ Error: {e}")
+
+                """inserting the services provided by the shop in ShopService table along with prices"""
+                try:
+                    items=user_details['items']
+                    """How many items the shop provides"""
+                    count = len({key.split('[')[1].split(']')[0] for key in items if 'name' in key})
+                    print(count)
+                    item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
+                    print(item)
+                    price = [price for key, price_list in items.items() if 'price' in key for price in price_list]
+                    print(price)
+                    for index in range(count):
+                        service=ShopService.objects.create(
+                            shop=shop,
+                            item=Item.objects.get(name=item[index]),
+                            price=price[index]
+                        )
+                        service.save()
+                    
+                except Exception as e:
+                    print(f"❌ Error: {e}")
+
+                """inserting the shop schedule into the ShopSchedule table"""
+                try:
+                    print("Filtered Schedule:", schedule)
+                    for day, time in schedule.items():
+                        # print(f"{day}: Start - {time['start']}, End - {time['end']}")
+                        shop_schedule=ShopSchedule.objects.create(
+                            shop=shop,
+                            day_of_week=day,
+                            start=time['start'],
+                            end=time['end']
+                        )
+                        shop_schedule.save()
+
+                except Exception as e:
+                    print(f"❌ Error: {e}")
+
+            except Exception as e:
+                print(f"❌ Error: {e}")
+
+        except KeyError as e:
+            HttpResponse("Registered")
     return HttpResponse("Registered")

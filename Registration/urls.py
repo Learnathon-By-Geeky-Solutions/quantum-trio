@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from Registration import views
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.select_user_type),
     # user registration steps
@@ -17,4 +19,4 @@ urlpatterns = [
     path('business/step8',views.business_register_step8),
     path('business/submit',views.business_submit),
     
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
