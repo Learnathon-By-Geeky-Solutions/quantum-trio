@@ -169,7 +169,16 @@ def business_register_step7(request):
 
     if request.method == 'POST':
         try:
-            members = int(request.POST.get('members', 1))
+            members_input = request.POST.get('members', '1')
+            members = int(members_input)
+
+            # Set a reasonable limit to prevent excessive values
+            if members < 1:
+                members = 1
+            elif members > 10:  # Set max limit (adjust as needed)
+                members = 10
+
+            # Update session
             request.session["user"].update({'member': members})
             request.session.modified = True
             print("Updated Members:", members)
