@@ -9,7 +9,7 @@ urlpatterns = [
     path('register/',include('Registration.urls')),
     # added by rakib for login purpose
     path('select_user', views.select_user_type),
-    path('login', views.login),
+    path('login', views.log_in),
     path('contact', views.contact_us),
     path('search', views.search),
     path('booknow', views.book_now),

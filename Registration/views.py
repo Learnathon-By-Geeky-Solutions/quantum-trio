@@ -15,7 +15,8 @@ from django.conf import settings
 from myApp.models import *
 from shop_profile.models import *
 from django.contrib.postgres.aggregates import ArrayAgg
-
+from django.contrib.auth import get_user_model
+temp_user=get_user_model()
 # Create your views here.
 def select_user_type(request):
     return render(request, 'app\login_signup\sign-up.html')
@@ -47,7 +48,7 @@ def business_register_step2(request):
         
         """email check logic 
         since password will be validate in frontend so we just need to check does the email exist or not"""
-        if ShopProfile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
+        if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
             return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
         request.session["user"] = {
@@ -244,16 +245,26 @@ def business_submit(request):
         try:
             user_details=request.session['user']
             try:
+                user=temp_user.objects.create(
+                    email='rashed151q@gmail.com',
+                    password=user_details['password'],
+                    user_type='shop',
+                )
+                user.save()
+            # except Exception as e:
+            #         print(f"❌ Error: {e}")  
+            # try:
                 """creating shop profile"""
                 shop = ShopProfile.objects.create(
+                    user=user,
                     shop_name = user_details['business_name'],
                     shop_title = user_details['business_title'],
                     shop_info = user_details['business_info'],
                     shop_owner = user_details['first-name']+' '+user_details['last-name'],
-                    password=user_details['password'],
+                    # password=user_details['password'],
                     # Contact Information
                     mobile_number = user_details['mobile-number'],
-                    shop_email = user_details['email'],
+                    # shop_email = user_details['email'],
                     shop_website = user_details['website'],
                     # Location Fields (For geolocation)
                     shop_state = user_details['district'],
@@ -268,7 +279,7 @@ def business_submit(request):
                     shop_landmark_5 = user_details['landmark5'],
                 )
         
-                print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
+                # print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
                 # print(user_details['members'])
                 
                 """creating worker profile under the shop"""

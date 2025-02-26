@@ -3,8 +3,64 @@ from django.db import models
 from myApp.models import *
 from user_profile.models import *
 from PIL import Image
+from django.db import models
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, password=None, user_type="user"):
+        if not email:
+            raise ValueError("Users must have an email address")
+        user = self.model(
+            email=self.normalize_email(email),
+            user_type=user_type,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None):
+        user = self.create_user(
+            email=email,
+            password=password,
+            user_type="admin",
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+class MyUser(AbstractBaseUser):
+    USER_TYPE_CHOICES = [
+        ("user", "User"),
+        ("shop", "Shop Owner"),
+        ("admin", "Admin"),
+    ]
+
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default="user")
+
+    objects = MyUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return f"{self.email} ({self.get_user_type_display()})"
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        return self.is_admin
+
 class ShopProfile(models.Model): 
     # Shop Profile Fields
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)
     shop_title = models.CharField(max_length=255, blank=True, null=True)
     shop_info = models.TextField(blank=True, null=True)
@@ -12,11 +68,8 @@ class ShopProfile(models.Model):
     shop_owner = models.CharField(max_length=255, blank=True, null=True)
     shop_customer_count = models.IntegerField(default=0)
     status = models.BooleanField(default=True)  # Is the shop active?
-    # password
-    password = models.CharField(max_length=512)
-    # Contact Information
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
-    shop_email = models.EmailField(blank=True, null=True)
+    # shop_email = models.EmailField(blank=True, null=True)
     shop_website = models.URLField(blank=True, null=True, max_length=200)
     # Location Fields (For geolocation)
     shop_state = models.CharField(max_length=100, blank=True, null=True)
@@ -46,7 +99,7 @@ class ShopProfile(models.Model):
         return check_password(raw_password, self.password)
     
     def __str__(self): 
-        return self.shop_name
+        return self.shop_owner
     
 class ShopGallery(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopgallery", on_delete=models.CASCADE)  # Link to Shop
@@ -79,13 +132,13 @@ class ShopService(models.Model):
 
 class ShopReview(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
-    user = models.ForeignKey(UserProfile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
+    # user = models.ForeignKey(UserProfile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True, null=True)  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
 
-    class Meta:
-        unique_together = ('shop', 'user')  # Ensures a user can only review a shop once
+    # class Meta:
+    #     unique_together = ('shop', 'user')  # Ensures a user can only review a shop once
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
