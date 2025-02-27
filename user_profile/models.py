@@ -3,14 +3,21 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password, check_password
 from shop_profile.models import MyUser
 class UserProfile(models.Model):
-    # user_id = models.AutoField(primary_key=True)  # Unique ID
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="user_profile")
-    first_name = models.CharField(max_length=150, unique=True)
-    last_name = models.CharField(max_length=150, unique=True)
-    # email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, unique=True, null=True, blank=True)
-    # password = models.CharField(max_length=255)  # Hashed password storage
-    address = models.TextField(null=True, blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    user_state = models.CharField(max_length=100, blank=True, null=True)
+    user_city = models.CharField(max_length=100, blank=True, null=True)
+    user_area = models.CharField(max_length=100, blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
@@ -22,7 +29,7 @@ class UserProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.username
+        return self.user.email
 
     def set_password(self, raw_password):
         """Hashes the password and stores it."""

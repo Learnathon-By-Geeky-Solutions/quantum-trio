@@ -2,7 +2,7 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +55,7 @@
                     <input type="email" id="email" name="email"
                         class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
                         required>
-                    <div class="red-text" style="color:red"></div>
+                    <div class="red-text" style="color:red">{{ message }}</div>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-gray-700 font-bold mb-2">Password *</label>

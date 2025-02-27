@@ -27,7 +27,8 @@
                 <h2 class="text-xl font-bold items-center text-gray-700">Your Address&nbsp;</h2>
                 <div></div> 
             </div>
-            <form action="" method="POST" id="shopAddressForm">
+            <form action="submit" method="POST" id="shopAddressForm">
+                {% csrf_token %}
                 <div class="mb-4">
                     <label for="district" class="block text-gray-700 font-bold mb-2">Select Your District *</label>
                     <select id="district" name="district" 
@@ -37,7 +38,7 @@
                         {% for dist in district %}
                             <option value="{{ dist.name }}">{{ dist.name }}</option>
                         {% endfor %}
-                    </select>
+                    </select> 
                 </div>
                 <div class="mb-4">
                     <label for="upazilla" class="block text-gray-700 font-bold mb-2">Select your upazilla *</label>

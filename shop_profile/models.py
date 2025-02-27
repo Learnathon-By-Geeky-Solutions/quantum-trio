@@ -60,6 +60,11 @@ class MyUser(AbstractBaseUser):
 
 class ShopProfile(models.Model): 
     # Shop Profile Fields
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)
     shop_title = models.CharField(max_length=255, blank=True, null=True)
@@ -67,6 +72,7 @@ class ShopProfile(models.Model):
     shop_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     shop_owner = models.CharField(max_length=255, blank=True, null=True)
     shop_customer_count = models.IntegerField(default=0)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     status = models.BooleanField(default=True)  # Is the shop active?
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
     # shop_email = models.EmailField(blank=True, null=True)
@@ -118,7 +124,7 @@ class ShopWorker(models.Model):
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
-    
+    rating=models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
     

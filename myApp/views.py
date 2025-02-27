@@ -34,19 +34,19 @@ def log_in(request):
         password = request.POST.get('password')
         # Authenticate the user
         user = authenticate(request, username=email, password=password)
-        print(user.email)
+        # print(user.email)
         print(request.user.is_authenticated)
-        
+        print(user)
         if user is not None:
             login(request, user)
             """Redirect to user profile or Landing page"""
             if user.user_type=='shop':
-                redirect('/home/')
-                print('shop')
-                """Redirect to Shop profile Dashboard """
+                return redirect('/home/')
+                
             elif user.user_type=='user':
                 print('User')
-                """Redirect to Admin page"""
+                return redirect('home')
+                
             else:
                 print('Admin')  
         else:

@@ -32,8 +32,13 @@
                         <div class="slide">
                             <a href="">
                                 <div class="under_img">{{ service.name }}</div>
-                                <img src="{% static 'app/image/services photo/'|add:service.id|add:'.jpg' %}" alt="{{ service.id }}">
+                                <img src="/static/app/image/ServicesPhoto/{{ service.id }}.jpg" alt="{{ service.id }}">
                             </a> 
+                            <p>
+                                {% comment %} {{ '/static/app/image/services photo/'|add:service.id|add:'.jpg' }} {% endcomment %}
+                                rakib
+                            </p>
+                            
                         </div>
                         {%endfor%}
                     </div>

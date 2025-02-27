@@ -46,7 +46,16 @@
             <a href="booknow" class="text-gray-700 hover:text-pink-600">Book Now</a>
             <a href="location" class="text-gray-700 hover:text-pink-600">Locations</a>
             <a href="contact" class="text-gray-700 hover:text-pink-600">Contact Us</a>
-            <a href="select_user" class="text-gray-700 hover:text-pink-600">Login</a>
+            {% if user.is_authenticated %}
+                {% if user.user_type == "shop" %}
+                    <a href="login" class="text-gray-700 hover:text-pink-600">Dashboard</a>
+                {% else %}
+                    <a href="login" class="text-gray-700 hover:text-pink-600">Profile</a>
+                {% endif %}
+                <a href="{% url 'login' %}" class="text-gray-700 hover:text-red-600">Logout</a>
+            {% else %}
+                <a href="{% url 'select_user' %}" class="text-gray-700 hover:text-pink-600">Login</a>
+            {% endif %}
         </nav>
     </div>
 </header>
