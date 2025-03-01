@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 # use this to import any data from database
 from .models import *
+from shop_profile.models import *
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -17,8 +18,9 @@ def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
         return HttpResponseNotAllowed(['GET'])
+    shop=ShopProfile.objects.all()
 
-    return render(request, 'app/home.html', {'review': 333})
+    return render(request, 'app/home.html', {'review': 333,'shops':shop})
 
 def select_user_type(request):
     return render(request, 'app\login_signup\select_user_type.html')
@@ -41,7 +43,7 @@ def log_in(request):
             login(request, user)
             """Redirect to user profile or Landing page"""
             if user.user_type=='shop':
-                return redirect('/home/')
+                return redirect('home')
                 
             elif user.user_type=='user':
                 print('User')
@@ -55,7 +57,9 @@ def log_in(request):
             user_type = 'customer'  
 
     return render(request, 'app/login_signup/login.html', {'type': user_type, 'message': error})
-
+def log_out(request):
+    logout(request)
+    return redirect('login');
 # create_account purpose
 def create_account(request):
     return render(request, 'app\login_signup\sign-up.html')

@@ -2,14 +2,16 @@ from django.contrib import admin
 from django.urls import path,include
 from django import views
 from myApp import views
-urlpatterns = [
+urlpatterns = [ 
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
     path('home', views.home,name='home'),
     path('register/',include('Registration.urls'),name='register'),
+    path('user/',include('user_profile.urls'),name='user-profile'),
     # added by rakib for login purpose
     path('select_user', views.select_user_type,name='select_user'),
     path('login', views.log_in,name='login'),
+    path('logout',views.log_out,name='logout'),
     path('contact', views.contact_us,name='contact'),
     path('search', views.search,name='search'),
     path('booknow', views.book_now,name='booknow'),
