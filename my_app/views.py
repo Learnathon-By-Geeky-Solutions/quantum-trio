@@ -64,6 +64,17 @@ def log_out(request):
 def create_account(request):
     return render(request, 'app\login_signup\sign-up.html')
 
+"""Shop profile view for customer end"""
+def shop_profile(request):
+    if request.method=='GET':
+        id=request.GET.get('shop_id')
+        shop = ShopProfile.objects.get(id=id)
+        workers = ShopWorker.objects.filter(shop=shop)
+        for worker in workers:
+            print(worker.name)
+        return HttpResponse(id)
+    return HttpResponseNotAllowed('Not allowed')
+
 """Added login requred only for testing purpose"""
 @login_required  
 def contact_us(request):
