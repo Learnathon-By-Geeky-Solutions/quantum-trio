@@ -18,18 +18,18 @@ from django.contrib.postgres.aggregates import ArrayAgg
 
 # Create your views here.
 def select_user_type(request):
-    return render(request, 'app\login_signup\sign-up.html')
+    return render(request, 'app/login_signup/sign-up.html')
 
 # Customer A/c registration steps starts here
 # -------------------------------------------
 def customer_register_step1(request):
-    return render(request, 'app\login_signup\\register\customer\step1.html')
+    return render(request, 'app/login_signup/register/customer/step1.html')
 
 def customer_register_step2(request):
     district=District.objects.all().values('id', 'name')
     upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     
-    return render(request, 'app\login_signup\\register\customer\step2.html',{'district':list(district),'Upazilla':list(upazilla)})
+    return render(request, 'app/login_signup/register/customer/step2.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 # Business A/c registration steps starts here
 # -------------------------------------------
@@ -37,7 +37,7 @@ def customer_register_step2(request):
 @require_http_methods(["GET", "POST"])
 def business_register_step1(request):
     message=''
-    return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+    return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -49,7 +49,7 @@ def business_register_step2(request):
         since password will be validate in frontend so we just need to check does the email exist or not"""
         if ShopProfile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
-            return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+            return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -58,7 +58,7 @@ def business_register_step2(request):
             'mobile-number': request.POST.get("mobile-number", ""),
             'password': make_password(request.POST.get('password')),
         }
-    return render(request, 'app\login_signup\\register\\business\step2.html')
+    return render(request, 'app/login_signup/register/business/step2.html')
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -75,7 +75,7 @@ def business_register_step3(request):
             'gender': request.POST.get("gender", ""),
         })
         request.session.modified = True #update the session variable
-    return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
+    return render(request, 'app/login_signup/register/business/step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -105,7 +105,7 @@ def business_register_step4(request):
         })
         request.session.modified = True  #update the session variable
     service=Service.objects.all().values('id', 'name')
-    return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
+    return render(request, 'app/login_signup/register/business/step4.html',{'services':service})
 
 @csrf_protect
 @require_http_methods(["POST"])
@@ -148,7 +148,7 @@ def business_register_step6(request):
                 'items':items,
         })
         request.session.modified = True
-    return render(request, 'app\login_signup\\register\\business\step6.html')
+    return render(request, 'app/login_signup/register/business/step6.html')
 
 @csrf_protect
 @require_POST
@@ -223,7 +223,7 @@ def business_register_step8(request):
         request.session.modified = True
     days_of_week = ['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
-    return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
+    return render(request, 'app/login_signup/register/business/step8.html',{'days_of_week':days_of_week})
 
 @csrf_protect
 @require_POST
