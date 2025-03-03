@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 INSERT INTO public."my_app_division" (name) VALUES
+=======
+INSERT INTO public."myApp_division" (name) VALUES
+>>>>>>> 47361a3b9f061c1c0fd6ebe06d18c1df9252f2bc
 ('Dhaka'),
 ('Chittagong'),
 ('Khulna'),
@@ -10,7 +14,11 @@ INSERT INTO public."my_app_division" (name) VALUES
 ('Mymensingh');
 
 
+<<<<<<< HEAD
 INSERT INTO public."my_app_district" (name, division_id) VALUES
+=======
+INSERT INTO public."myApp_district" (name, division_id) VALUES
+>>>>>>> 47361a3b9f061c1c0fd6ebe06d18c1df9252f2bc
 ('Dhaka', 1), 
 ('Faridpur', 1), 
 ('Gazipur', 1), 
@@ -77,7 +85,11 @@ INSERT INTO public."my_app_district" (name, division_id) VALUES
 ('Sherpur', 8);
 
 
+<<<<<<< HEAD
 INSERT INTO public."my_app_upazilla"(name, district_id) VALUES
+=======
+INSERT INTO public."myApp_upazilla"(name, district_id) VALUES
+>>>>>>> 47361a3b9f061c1c0fd6ebe06d18c1df9252f2bc
 -- Dhaka Division (District ID: 1-13)
 ('Dhamrai', 1), ('Dohar', 1), ('Keraniganj', 1), ('Nawabganj', 1), ('Savar', 1),
 ('Alfadanga', 2), ('Bhanga', 2), ('Boalmari', 2), ('Charbhadrasan', 2), ('Faridpur Sadar', 2), ('Madhukhali', 2), ('Nagarkanda', 2), ('Sadarpur', 2), ('Saltha', 2),
@@ -151,7 +163,11 @@ INSERT INTO public."my_app_upazilla"(name, district_id) VALUES
 ('Sunamganj Sadar', 61), ('Bishwambarpur', 61), ('Chatak', 61), ('Dakshin Sunamganj', 61), ('Derai', 61), ('Dharampasha', 61), ('Dowarabazar', 61), ('Jagannathpur', 61), ('Jamalganj', 61), ('Shantiganj', 61), ('Shalla', 61), ('Tahirpur', 61)
 ;
 
+<<<<<<< HEAD
 INSERT INTO public."my_app_service"(name)
+=======
+INSERT INTO public."myApp_service"(name)
+>>>>>>> 47361a3b9f061c1c0fd6ebe06d18c1df9252f2bc
 VALUES
 ('Hair Services'),
 ('Facial Services'),
