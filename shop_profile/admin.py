@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import MyUser, ShopProfile, ShopGallery, ShopWorker, ShopService, ShopReview, ShopSchedule
 
 admin.site.register(MyUser)# Register your models here.
 admin.site.register(ShopProfile)

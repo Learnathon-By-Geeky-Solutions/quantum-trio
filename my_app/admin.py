@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import Division, District, Upazilla, Area, Landmark, Service, Item
 # Register your models here.
 admin.site.register(Division)
 admin.site.register(District)

@@ -12,9 +12,9 @@ from io import BytesIO
 from django.conf import settings
 # use this to import any data from database
 # -----------------------------------------
-from my_app.models import *
-from shop_profile.models import *
-from user_profile.models import *
+from my_app.models import District, Division, Service, Item, Upazilla, Area, Landmark
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopSchedule
+from user_profile.models import UserProfile    
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.auth import get_user_model
 temp_user=get_user_model()
@@ -26,7 +26,7 @@ def select_user_type(request):
 # -------------------------------------------
 def customer_register_step1(request):
     message=''
-    return render(request, 'app\login_signup\\register\customer\step1.html',{'message':message})
+    return render(request, 'app/login_signup/register/customer/step1.html',{'message':message})
 
 def customer_register_step2(request):
     district=District.objects.all().values('id', 'name')
@@ -38,7 +38,7 @@ def customer_register_step2(request):
         since password will be validate in frontend so we just need to check does the email exist or not"""
         if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
-            return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+            return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -48,7 +48,8 @@ def customer_register_step2(request):
             'gender':request.POST.get("gender", "Male"),
         }
         
-    return render(request, 'app\login_signup\\register\customer\step2.html',{'district':list(district),'Upazilla':list(upazilla)})
+    return render(request, 'app/login_signup/register/customer/step2.html',{'district':list(district),'Upazilla':list(upazilla)})
+
 @require_POST
 def customer_submit(request):
     if request.method == 'POST':
@@ -111,9 +112,8 @@ def business_register_step2(request):
             'email': request.POST.get("email", ""),
             'password': make_password(request.POST.get("password", "")),
             'mobile-number': request.POST.get("mobile-number", ""),
-            'password': make_password(request.POST.get('password')),
         }
-    return render(request, 'app\login_signup\\register\\business\step2.html')
+    return render(request, 'app/login_signup/register/business/step2.html')
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -196,7 +196,6 @@ def business_register_step5(request):
 @require_POST
 def business_register_step6(request):
     if request.method == "POST":
-        # items=request.POST.getlist('items')
         items = {key: request.POST.getlist(key) for key in request.POST if key.startswith("items")}
         print(items)
         request.session["user"].update({
@@ -217,7 +216,7 @@ def business_register_step7(request):
         """first get all the details of selected items """
         items=request.session['user']['items'];
         item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
-    except:
+    except KeyError as e:
         print(f"KeyError: Missing key in session data - {e}")
         user_data = {}  # Reset user_data if corrupted
 
@@ -318,7 +317,6 @@ def business_submit(request):
                     # password=user_details['password'],
                     # Contact Information
                     mobile_number = user_details['mobile-number'],
-                    # shop_email = user_details['email'],
                     shop_website = user_details['website'],
                     # Location Fields (For geolocation)
                     shop_state = user_details['district'],
@@ -332,10 +330,6 @@ def business_submit(request):
                     shop_landmark_4 = user_details['landmark4'],
                     shop_landmark_5 = user_details['landmark5'],
                 )
-        
-                # print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
-                # print(user_details['members'])
-                
                 """creating worker profile under the shop"""
                 try:
                     member_details=user_details['members']
@@ -371,7 +365,6 @@ def business_submit(request):
                 try:
                     items=user_details['items']
                     """How many items the shop provides"""
-                    # count = len({key.split('[')[1].split(']')[0] for key in items if 'name' in key})
                     # print(count)
                     item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
                     print(item)
