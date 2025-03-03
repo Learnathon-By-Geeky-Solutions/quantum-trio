@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
@@ -14,8 +14,10 @@ from django.conf import settings
 # -----------------------------------------
 from myApp.models import *
 from shop_profile.models import *
+from user_profile.models import *
 from django.contrib.postgres.aggregates import ArrayAgg
-
+from django.contrib.auth import get_user_model
+temp_user=get_user_model()
 # Create your views here.
 def select_user_type(request):
     return render(request, 'app/login_signup/sign-up.html')
@@ -23,14 +25,75 @@ def select_user_type(request):
 # Customer A/c registration steps starts here
 # -------------------------------------------
 def customer_register_step1(request):
+<<<<<<< HEAD
     return render(request, 'app/login_signup/register/customer/step1.html')
+=======
+    message=''
+    return render(request, 'app\login_signup\\register\customer\step1.html',{'message':message})
+>>>>>>> 4585fc974c611af5d862db9a7922dcb1395b22ed
 
 def customer_register_step2(request):
     district=District.objects.all().values('id', 'name')
     upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     
+<<<<<<< HEAD
     return render(request, 'app/login_signup/register/customer/step2.html',{'district':list(district),'Upazilla':list(upazilla)})
+=======
+    if request.method == "POST":
+        
+        """email check logic 
+        since password will be validate in frontend so we just need to check does the email exist or not"""
+        if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
+            message='The email exist.'
+            return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+        request.session["user"] = {
+            'first-name': request.POST.get("first-name", ""),
+            'last-name': request.POST.get("last-name", ""),
+            'email': request.POST.get("email", ""),
+            'password': make_password(request.POST.get("password", "")),
+            'mobile-number': request.POST.get("mobile-number", ""),
+            'gender':request.POST.get("gender", "Male"),
+        }
+        
+    return render(request, 'app\login_signup\\register\customer\step2.html',{'district':list(district),'Upazilla':list(upazilla)})
+@require_POST
+def customer_submit(request):
+    if request.method == 'POST':
+        try:
+            user_details = request.session.get('user')  # Use `.get()` to avoid KeyError
+            if not user_details:
+                raise ValueError("User session details are missing.")
+            
+            user = MyUser(
+                email=user_details['email'],
+                password=user_details['password'],
+                user_type='user',
+            )
+            # user.set_password(user_details['password'])  # Hash password
+            user.save()
+>>>>>>> 4585fc974c611af5d862db9a7922dcb1395b22ed
 
+            try:
+                user_profile = UserProfile.objects.create(
+                    user=user,
+                    first_name=user_details.get('first-name', ''),  # Use `.get()` for safety
+                    last_name=user_details.get('last-name', ''),
+                    gender=user_details.get('gender', ''),
+                    phone_number=user_details.get('mobile-number', ''),
+                    user_state=request.POST.get('district', ''),
+                    user_city=request.POST.get('upazilla', ''),
+                    user_area=request.POST.get('area', ''),
+                    latitude=request.POST.get('latitude', None),
+                    longitude=request.POST.get('longitude', None),
+                )
+                user_profile.save()
+                request.session.flush()   #pbkdf2_sha256$870000$P6dgX7e0bRUMDUFZbpcEtH$J7fMWHJjEOJ6GeOaORDNiTNVFr7vcii7upyF22QNSQc=
+                return redirect("/login") #pbkdf2_sha256$870000$35UjOIAoGl9Krej9H8I2o3$2H9QJSJakSofxjA2ZomkBZwr3QdRaO9QTxXBnvGMXfU=
+            except Exception as e:        #pbkdf2_sha256$870000$rWApXZtm7Pm9phSO05hkP9$0huOR0W/qmiUQJE/lWnLer1cJ4NILqMLuP2imScBRng=
+                print(f"Error creating user profile: {e}")
+        except Exception as e:
+            print(f"Error creating user: {e}")
+    return HttpResponse("Failed")
 # Business A/c registration steps starts here
 # -------------------------------------------
 @csrf_protect
@@ -47,7 +110,7 @@ def business_register_step2(request):
         
         """email check logic 
         since password will be validate in frontend so we just need to check does the email exist or not"""
-        if ShopProfile.objects.filter(shop_email__iexact=request.POST.get("email")).exists():
+        if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
             return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
         request.session["user"] = {
@@ -244,16 +307,26 @@ def business_submit(request):
         try:
             user_details=request.session['user']
             try:
+                user=temp_user.objects.create(
+                    email=user_details['email'],
+                    password=user_details['password'],
+                    user_type='shop',
+                )
+                user.save()
+            # except Exception as e:
+            #         print(f"❌ Error: {e}")  
+            # try:
                 """creating shop profile"""
                 shop = ShopProfile.objects.create(
+                    user=user,
                     shop_name = user_details['business_name'],
                     shop_title = user_details['business_title'],
                     shop_info = user_details['business_info'],
                     shop_owner = user_details['first-name']+' '+user_details['last-name'],
-                    password=user_details['password'],
+                    # password=user_details['password'],
                     # Contact Information
                     mobile_number = user_details['mobile-number'],
-                    shop_email = user_details['email'],
+                    # shop_email = user_details['email'],
                     shop_website = user_details['website'],
                     # Location Fields (For geolocation)
                     shop_state = user_details['district'],
@@ -268,7 +341,7 @@ def business_submit(request):
                     shop_landmark_5 = user_details['landmark5'],
                 )
         
-                print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
+                # print(f"✅ Shop Created: shop_id: {shop.id},{shop.shop_name}, Email: {shop.shop_email}")
                 # print(user_details['members'])
                 
                 """creating worker profile under the shop"""

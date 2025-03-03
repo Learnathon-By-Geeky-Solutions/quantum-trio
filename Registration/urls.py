@@ -8,6 +8,7 @@ urlpatterns = [
     # user registration steps
     path('customer/step1',views.customer_register_step1),
     path('customer/step2',views.customer_register_step2,name='step2'),
+    path('customer/submit',views.customer_submit),
     # business registration steps
     path('business/step1',views.business_register_step1),
     path('business/step2',views.business_register_step2),

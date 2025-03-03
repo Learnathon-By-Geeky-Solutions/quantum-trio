@@ -17,6 +17,7 @@
     </style>
 </head>
 
+<<<<<<< HEAD
 <body class="bg-gray-100 flex items-center justify-center min-h-screen ">
     <div class="bg-white p-10 rounded-2xl shadow-lg max-w-lg ">
         <div class="flex items-center justify-between mb-6">
@@ -27,6 +28,20 @@
             <div class="w-8"></div> <!-- Empty div for spacing balance -->
         </div>
             <form action="" method="POST" id="shopAddressForm">
+=======
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center ">
+        <div class="bg-white p-8 rounded-lg shadow-lg  max-w-2xl w-1/2">
+            <div class="flex justify-between items-center mb-4">
+                <a href="step1" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">
+                    &larr;
+                </a>
+                <h2 class="text-xl font-bold items-center text-gray-700">Your Address&nbsp;</h2>
+                <div></div> 
+            </div>
+            <form action="submit" method="POST" id="shopAddressForm">
+                {% csrf_token %}
+>>>>>>> 4585fc974c611af5d862db9a7922dcb1395b22ed
                 <div class="mb-4">
                     <label for="district" class="block text-gray-700 font-bold mb-2">Select Your District *</label>
                     <select id="district" name="district" 
@@ -36,7 +51,7 @@
                         {% for dist in district %}
                             <option value="{{ dist.name }}">{{ dist.name }}</option>
                         {% endfor %}
-                    </select>
+                    </select> 
                 </div>
                 <div class="mb-4">
                     <label for="upazilla" class="block text-gray-700 font-bold mb-2">Select your upazilla *</label>

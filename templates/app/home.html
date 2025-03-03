@@ -133,62 +133,17 @@
                     image: "{% static 'app/image/shop/1.jpg' %}",
                     link: "saloon_profile",
                 },
-                {
-                    title: "Glamour Parlour",
-                    rating: 4.5,
-                    reviews: 200,
-                    location: "Chittagong",
-                    category: "Women's Beauty",
-                    image: "{% static 'app/image/shop/2.jpg' %}",
-                    link: "saloon_profile",
-                },
-                {
-                    title: "Luxury Spa",
-                    rating: 4.7,
-                    reviews: 150,
-                    location: "Sylhet",
-                    category: "Spa Services",
-                    image: "{% static 'app/image/shop/3.avif' %}",
-                    link: "saloon_profile",
-                },
-                {
-                    title: "Urban Style Salon",
-                    rating: 4.6,
-                    reviews: 180,
-                    location: "Rajshahi",
-                    category: "Men's Grooming",
-                    image: "{% static 'app/image/shop/1.jpg' %}",
-                    link: "saloon_profile",
-                },
-                {
-                    title: "Easy for Gentle",
-                    rating: 4.6,
-                    reviews: 180,
-                    location: "Lakshmipur",
-                    category: "Men's Grooming",
-                    image: "{% static 'app/image/shop/2.jpg' %}",
-                    link: "saloon_profile",
-                },
-                {
-                    title: "Golden Touch Beauty Lounge",
-                    rating: 4.9,
-                    reviews: 250,
-                    location: "Khulna",
-                    category: "Women's Beauty",
-                    image: "{% static 'app/image/shop/5.webp' %}",
-                    link: "saloon_profile/dashboard.html?shop_id=5",
-                },
-                {
-                    title: "Blissful Retreat Spa",
-                    rating: 4.8,
-                    reviews: {{review}},
-                    location: "Barisal",
-                    category: "Spa and Wellness",
-                    image: "{% static 'app/image/shop/4.jpg' %}",
-                    link: "saloon_profile/dashboard.html?shop_id=6",
-                },
-
-
+                {% for shop in shops %}
+                    {
+                        title: "{{ shop.shop_name|escapejs }}",
+                        rating: {{ shop.shop_rating }},
+                        reviews: {{ shop.shop_customer_count }},
+                        location: "{{ shop.shop_city|escapejs }}",
+                        category: "{{ shop.category|escapejs }}",
+                        image: "{% static 'app/image/shop/' %}{{ shop.image }}",
+                        link: "saloon_profile?shop_id={{ shop.id }}",
+                    },
+                {% endfor %}
             ];
 
             const carousel = document.getElementById("carousel-3");

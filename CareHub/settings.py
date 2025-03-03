@@ -152,9 +152,11 @@ STATICFILES_DIRS=[STATIC_DIR,]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-    'Registration.backends.Authenticate',
-    # 'django.contrib.auth.backends.ModelBackend',  # Fallback to the default backend
+    # 'Registration.backends.Authenticate',
+    'django.contrib.auth.backends.ModelBackend',  # Fallback to the default backend
 ]
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join('BASE_DIR','media')
+
+AUTH_USER_MODEL = "shop_profile.MyUser"
