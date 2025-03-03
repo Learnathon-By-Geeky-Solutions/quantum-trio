@@ -141,7 +141,7 @@
                         location: "{{ shop.shop_city|escapejs }}",
                         category: "{{ shop.category|escapejs }}",
                         image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                        link: "saloon_profile?shop_id={{ shop.id }}",
+                        link: "shop_profile?shop_id={{ shop.id }}",
                     },
                 {% endfor %}
             ];

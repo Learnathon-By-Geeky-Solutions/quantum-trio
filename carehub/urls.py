@@ -1,13 +1,15 @@
 from django.contrib import admin
 from django.urls import path,include
 from django import views
-from myApp import views
+from my_app import views
 urlpatterns = [ 
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
     path('home', views.home,name='home'),
-    path('register/',include('Registration.urls'),name='register'),
+    path('register/', include('registration.urls'), name='register'),
     path('user/',include('user_profile.urls'),name='user-profile'),
+    path('dashboard/',include('shop_profile.urls'),name='shop_dashboard'),
+    
     # added by rakib for login purpose
     path('select_user', views.select_user_type,name='select_user'),
     path('login', views.log_in,name='login'),
@@ -18,7 +20,8 @@ urlpatterns = [
     path('location', views.location,name='location'),
     path('service', views.service,name='service'),
     path('explore_by_items', views.explore_by_item,name='explore_by_item'),
-    path('saloon_profile', views.view_salon_profile),
+    # path('saloon_profile', views.view_salon_profile),
+    path('shop_profile', views.shop_profile,name='shop_profile'),
     path('salon_dashboard', views.view_dash_board),
     path('salon_gallery', views.view_salon_gallery),
     path('saloon_calender', views.view_saloon_calender),

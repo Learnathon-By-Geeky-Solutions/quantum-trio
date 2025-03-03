@@ -12,7 +12,7 @@ from io import BytesIO
 from django.conf import settings
 # use this to import any data from database
 # -----------------------------------------
-from myApp.models import *
+from my_app.models import *
 from shop_profile.models import *
 from user_profile.models import *
 from django.contrib.postgres.aggregates import ArrayAgg

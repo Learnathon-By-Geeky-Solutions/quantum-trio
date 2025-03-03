@@ -36,11 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myApp',
+    'my_app',
     'livereload',
     'tailwind',
     'theme',
-    'Registration',
+    'registration',
     'user_profile',
     'shop_profile',
     'booking',
@@ -68,7 +68,7 @@ MIDDLEWARE = [
 #     'livereload.middleware.LiveReloadScript',
 # ]
 
-ROOT_URLCONF = 'CareHub.urls'
+ROOT_URLCONF = 'carehub.urls'
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'CareHub.wsgi.application'
+WSGI_APPLICATION = 'carehub.wsgi.application'
 
 
 # Database
@@ -152,7 +152,7 @@ STATICFILES_DIRS=[STATIC_DIR,]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-    # 'Registration.backends.Authenticate',
+    # 'registration.backends.Authenticate',
     'django.contrib.auth.backends.ModelBackend',  # Fallback to the default backend
 ]
 

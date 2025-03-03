@@ -1,5 +1,5 @@
-//insert division
-INSERT INTO public."myApp_division" (name) VALUES
+
+INSERT INTO public."my_app_division" (name) VALUES
 ('Dhaka'),
 ('Chittagong'),
 ('Khulna'),
@@ -9,8 +9,8 @@ INSERT INTO public."myApp_division" (name) VALUES
 ('Rangpur'),
 ('Mymensingh');
 
-//insert districts
-INSERT INTO public."myApp_district" (name, division_id) VALUES
+
+INSERT INTO public."my_app_district" (name, division_id) VALUES
 ('Dhaka', 1), 
 ('Faridpur', 1), 
 ('Gazipur', 1), 
@@ -76,8 +76,8 @@ INSERT INTO public."myApp_district" (name, division_id) VALUES
 ('Netrokona', 8), 
 ('Sherpur', 8);
 
-//insert upazilla
-INSERT INTO public."myApp_upazilla"(name, district_id) VALUES
+
+INSERT INTO public."my_app_upazilla"(name, district_id) VALUES
 -- Dhaka Division (District ID: 1-13)
 ('Dhamrai', 1), ('Dohar', 1), ('Keraniganj', 1), ('Nawabganj', 1), ('Savar', 1),
 ('Alfadanga', 2), ('Bhanga', 2), ('Boalmari', 2), ('Charbhadrasan', 2), ('Faridpur Sadar', 2), ('Madhukhali', 2), ('Nagarkanda', 2), ('Sadarpur', 2), ('Saltha', 2),
@@ -91,7 +91,7 @@ INSERT INTO public."myApp_upazilla"(name, district_id) VALUES
 ('Belabo', 10), ('Monohardi', 10), ('Narsingdi Sadar', 10), ('Palash', 10), ('Raipura', 10), ('Shibpur', 10),
 ('Baliakandi', 11), ('Goalanda', 11), ('Kalukhali', 11), ('Pangsha', 11), ('Rajbari Sadar', 11),
 ('Bhedarganj', 12), ('Damudya', 12), ('Gosairhat', 12), ('Naria', 12), ('Shariatpur Sadar', 12), ('Zajira', 12),
-('Basail', 13), ('Bhuapur', 13), ('Delduar', 13), ('Dhanbari', 13), ('Ghatail', 13), ('Gopalpur', 13), ('Kalihati', 13), ('Madhupur', 13), ('Mirzapur', 13), ('Nagarpur', 13), ('Sakhipur', 13), ('Tangail Sadar', 13)
+('Basail', 13), ('Bhuapur', 13), ('Delduar', 13), ('Dhanbari', 13), ('Ghatail', 13), ('Gopalpur', 13), ('Kalihati', 13), ('Madhupur', 13), ('Mirzapur', 13), ('Nagarpur', 13), ('Sakhipur', 13), ('Tangail Sadar', 13),
 
 -- Chattogram Division (District ID: 14-24)
 ('Bandarban Sadar', 14), ('Lama', 14), ('Thanchi', 14), ('Ali Kadam', 14), ('Ruma', 14), ('Rowangchhari', 14), ('Naikhongchhari', 14),
@@ -148,10 +148,10 @@ INSERT INTO public."myApp_upazilla"(name, district_id) VALUES
 ('Sylhet Sadar', 58), ('Balaganj', 58), ('Beanibazar', 58), ('Bishwanath', 58), ('Companiganj', 58), ('Dakshin Surma', 58), ('Fenchuganj', 58), ('Golapganj', 58), ('Gowainghat', 58), ('Jaintiapur', 58), ('Kanaighat', 58), ('Zakiganj', 58), ('Osmaninagar', 58),
 ('Moulvibazar Sadar', 59), ('Barlekha', 59), ('Juri', 59), ('Kamalganj', 59), ('Kulaura', 59), ('Rajnagar', 59), ('Sreemangal', 59),
 ('Habiganj Sadar', 60), ('Ajmiriganj', 60), ('Bahubal', 60), ('Baniachong', 60), ('Chunarughat', 60), ('Lakhai', 60), ('Madhabpur', 60), ('Nabiganj', 60),
-('Sunamganj Sadar', 61), ('Bishwambarpur', 61), ('Chatak', 61), ('Dakshin Sunamganj', 61), ('Derai', 61), ('Dharampasha', 61), ('Dowarabazar', 61), ('Jagannathpur', 61), ('Jamalganj', 61), ('Shantiganj', 61), ('Shalla', 61), ('Tahirpur', 61),
+('Sunamganj Sadar', 61), ('Bishwambarpur', 61), ('Chatak', 61), ('Dakshin Sunamganj', 61), ('Derai', 61), ('Dharampasha', 61), ('Dowarabazar', 61), ('Jagannathpur', 61), ('Jamalganj', 61), ('Shantiganj', 61), ('Shalla', 61), ('Tahirpur', 61)
 ;
-//11 service domains
-INSERT INTO public."myApp_service"(name)
+
+INSERT INTO public."my_app_service"(name)
 VALUES
 ('Hair Services'),
 ('Facial Services'),
@@ -165,7 +165,7 @@ VALUES
 ('Educational Services'),
 ('Miscellaneous Services');
 
-INSERT INTO public."myApp_item" (name, service_id) VALUES
+INSERT INTO public."my_app_item" (name, service_id) VALUES
 ('Nutritional Counseling', 9),
 ('Hair Coloring', 1),
 ('Highlights and Lowlights', 1),

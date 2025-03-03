@@ -1,6 +1,6 @@
 # from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
-from myApp.models import *
+from my_app.models import *
 from user_profile.models import *
 from PIL import Image
 from django.db import models
