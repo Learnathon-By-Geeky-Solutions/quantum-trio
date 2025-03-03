@@ -63,10 +63,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 ]
-# #for livereload: Auto Reload
-# MIDDLEWARE += [
-#     'livereload.middleware.LiveReloadScript',
-# ]
 
 ROOT_URLCONF = 'carehub.urls'
 
