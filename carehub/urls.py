@@ -14,6 +14,7 @@ urlpatterns = [
     path('select_user', views.select_user_type,name='select_user'),
     path('login', views.log_in,name='login'),
     path('logout',views.log_out,name='logout'),
+    
     path('contact', views.contact_us,name='contact'),
     path('search', views.search,name='search'),
     path('booknow', views.book_now,name='booknow'),
