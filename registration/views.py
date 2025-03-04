@@ -1,3 +1,4 @@
+from tkinter import Image
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
@@ -10,27 +11,31 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from io import BytesIO
 from django.conf import settings
+
+
 # use this to import any data from database
 # -----------------------------------------
 from my_app.models import District, Division, Service, Item, Upazilla, Area, Landmark
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopSchedule
+from shop_profile.models import MyUser, ShopProfile, ShopWorker, ShopService, ShopSchedule
 from user_profile.models import UserProfile    
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.auth import get_user_model
 temp_user=get_user_model()
+
+
 # Create your views here.
 def select_user_type(request):
-    return render(request, 'app\login_signup\sign-up.html')
+    return render(request, 'app/login_signup/sign-up.html')
 
 # Customer A/c registration steps starts here
 # -------------------------------------------
 def customer_register_step1(request):
-    message=''
+    message = ''
     return render(request, 'app/login_signup/register/customer/step1.html',{'message':message})
 
 def customer_register_step2(request):
-    district=District.objects.all().values('id', 'name')
-    upazilla=Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     
     if request.method == "POST":
         
@@ -105,7 +110,7 @@ def business_register_step2(request):
         since password will be validate in frontend so we just need to check does the email exist or not"""
         if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
-            return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+            return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -130,7 +135,7 @@ def business_register_step3(request):
             'gender': request.POST.get("gender", ""),
         })
         request.session.modified = True #update the session variable
-    return render(request, 'app\login_signup\\register\\business\step3.html',{'district':list(district),'Upazilla':list(upazilla)})
+    return render(request, 'app/login_signup/register/business/step3.html',{'district':list(district),'Upazilla':list(upazilla)})
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -160,7 +165,7 @@ def business_register_step4(request):
         })
         request.session.modified = True  #update the session variable
     service=Service.objects.all().values('id', 'name')
-    return render(request, 'app\login_signup\\register\\business\step4.html',{'services':service})
+    return render(request, 'app/login_signup/register/business/step4.html',{'services':service})
 
 @csrf_protect
 @require_http_methods(["POST"])
@@ -202,7 +207,7 @@ def business_register_step6(request):
                 'items':items,
         })
         request.session.modified = True
-    return render(request, 'app\login_signup\\register\\business\step6.html')
+    return render(request, 'app/login_signup/register/business/step6.html')
 
 @csrf_protect
 @require_POST
@@ -214,7 +219,7 @@ def business_register_step7(request):
         members = user_data.get("members", 1)
 
         """first get all the details of selected items """
-        items=request.session['user']['items'];
+        items=request.session['user']['items']
         item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
     except KeyError as e:
         print(f"KeyError: Missing key in session data - {e}")
@@ -277,7 +282,7 @@ def business_register_step8(request):
         request.session.modified = True
     days_of_week = ['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
-    return render(request, 'app\login_signup\\register\\business\step8.html',{'days_of_week':days_of_week})
+    return render(request, 'app/login_signup/register/business/step8.html',{'days_of_week':days_of_week})
 
 @csrf_protect
 @require_POST
@@ -402,4 +407,4 @@ def business_submit(request):
 
         except KeyError as e:
             HttpResponse("Registered")
-    return HttpResponse("Registered")
+    return redirect("/login")

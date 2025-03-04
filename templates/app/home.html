@@ -131,7 +131,7 @@
                     location: "Dhaka",
                     category: "Men's Haircut",
                     image: "{% static 'app/image/shop/1.jpg' %}",
-                    link: "saloon_profile",
+                    link: "salon-profile",
                 },
                 {% for shop in shops %}
                     {
@@ -141,7 +141,7 @@
                         location: "{{ shop.shop_city|escapejs }}",
                         category: "{{ shop.category|escapejs }}",
                         image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                        link: "shop_profile?shop_id={{ shop.id }}",
+                        link: "salon-profile?shop_id={{ shop.id }}",
                     },
                 {% endfor %}
             ];
