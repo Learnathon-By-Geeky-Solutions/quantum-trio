@@ -48,7 +48,7 @@
             <a href="contact" class="text-gray-700 hover:text-pink-600">Contact Us</a>
             {% if user.is_authenticated %}
                 {% if user.user_type == "shop" %}
-                    <a href="" class="text-gray-700 hover:text-pink-600">Dashboard</a>
+                    <a href="dashboard" class="text-gray-700 hover:text-pink-600">Dashboard</a>
                 {% elif user.user_type == "user" %}
                     <a href="" class="text-gray-700 hover:text-pink-600">{{ user.email }}</a>
                 {% else %}

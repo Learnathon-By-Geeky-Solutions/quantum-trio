@@ -14,11 +14,7 @@ INSERT INTO public."myApp_division" (name) VALUES
 ('Mymensingh');
 
 
-<<<<<<< HEAD
 INSERT INTO public."my_app_district" (name, division_id) VALUES
-=======
-INSERT INTO public."myApp_district" (name, division_id) VALUES
->>>>>>> 47361a3b9f061c1c0fd6ebe06d18c1df9252f2bc
 ('Dhaka', 1), 
 ('Faridpur', 1), 
 ('Gazipur', 1), 
