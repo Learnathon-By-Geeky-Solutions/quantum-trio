@@ -1,7 +1,5 @@
-# from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
-from my_app.models import *
-from user_profile.models import *
+from my_app.models import Item
 from PIL import Image
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
@@ -67,27 +65,27 @@ class ShopProfile(models.Model):
     ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)
-    shop_title = models.CharField(max_length=255, blank=True, null=True)
-    shop_info = models.TextField(blank=True, null=True)
+    shop_title = models.CharField(max_length=255, blank=True)
+    shop_info = models.TextField(blank=True)
     shop_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
-    shop_owner = models.CharField(max_length=255, blank=True, null=True)
+    shop_owner = models.CharField(max_length=255, blank=True)
     shop_customer_count = models.IntegerField(default=0)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
     status = models.BooleanField(default=True)  # Is the shop active?
-    mobile_number = models.CharField(max_length=15, blank=True, null=True)
+    mobile_number = models.CharField(max_length=15, blank=True)
     # shop_email = models.EmailField(blank=True, null=True)
-    shop_website = models.URLField(blank=True, null=True, max_length=200)
+    shop_website = models.URLField(blank=True, max_length=200)
     # Location Fields (For geolocation)
-    shop_state = models.CharField(max_length=100, blank=True, null=True)
-    shop_city = models.CharField(max_length=100, blank=True, null=True)
-    shop_area = models.CharField(max_length=100, blank=True, null=True)
+    shop_state = models.CharField(max_length=100, blank=True)
+    shop_city = models.CharField(max_length=100, blank=True)
+    shop_area = models.CharField(max_length=100, blank=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    shop_landmark_1 = models.CharField(max_length=255, blank=True, null=True)
-    shop_landmark_2 = models.CharField(max_length=255, blank=True, null=True)
-    shop_landmark_3 = models.CharField(max_length=255, blank=True, null=True)
-    shop_landmark_4 = models.CharField(max_length=255, blank=True, null=True)
-    shop_landmark_5 = models.CharField(max_length=255, blank=True, null=True)
+    shop_landmark_1 = models.CharField(max_length=255, blank=True)
+    shop_landmark_2 = models.CharField(max_length=255, blank=True)
+    shop_landmark_3 = models.CharField(max_length=255, blank=True)
+    shop_landmark_4 = models.CharField(max_length=255, blank=True)
+    shop_landmark_5 = models.CharField(max_length=255, blank=True)
     
     # Additional Info
     member_since = models.DateField(auto_now_add=True)
@@ -110,7 +108,7 @@ class ShopProfile(models.Model):
 class ShopGallery(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopgallery", on_delete=models.CASCADE)  # Link to Shop
     image = models.ImageField(upload_to='ShopGallery/', blank=True, null=True)  # Image field
-    description = models.CharField(max_length=255, blank=True, null=True)  # Optional description for the image
+    description = models.CharField(max_length=255, blank=True)  # Optional description for the image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Time when image is uploaded
 
     def __str__(self):
@@ -138,14 +136,9 @@ class ShopService(models.Model):
 
 class ShopReview(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
-    # user = models.ForeignKey(UserProfile, related_name="shop_reviews", on_delete=models.CASCADE)  # The user who gave the review
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
-    review = models.TextField(blank=True, null=True)  # Optional text review
+    review = models.TextField(blank=True)  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
-
-    # class Meta:
-    #     unique_together = ('shop', 'user')  # Ensures a user can only review a shop once
-
     def __str__(self):
         return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
 
