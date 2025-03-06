@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotAllowed,JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from shop_profile.models import *
-import calendar
-from datetime import datetime
 from django.utils.safestring import mark_safe
 user=get_user_model()
 def profile(request): 
@@ -30,46 +28,10 @@ def gallery(request):
 
     img=ShopGallery.objects.all()
     return render(request,'app/salon_dashboard/saloon-gallery.html',{'image':img,'message':message})
-class CustomHTMLCalendar(calendar.HTMLCalendar):
-
-    def formatday(self, day, weekday, month, year):
-        if day == 0:
-            return '<td class="bg-gray-200">&nbsp;</td>'  # Empty cell for padding
-        
-        # Generate the date string
-        date_str = f"{year:04d}-{month:02d}-{day:02d}"
-        
-        # Create a link for each date
-        return f'''
-        <td class="border p-2 text-center">
-            <a href="?date={date_str}" class="text-blue-600 hover:text-blue-800">{day}</a>
-        </td>
-        '''
-
-    def formatmonth(self, year, month):
-        cal_html = super().formatmonth(year, month)
-        return mark_safe(f'<table class="w-full border-collapse border border-gray-300">{cal_html}</table>')
 
 def calender(request):
-    # Get current date
-    today = datetime.now()
-    
-    # Get month and year from GET request, otherwise use current month & year
-    month = int(request.GET.get('month', today.month))
-    year = int(request.GET.get('year', today.year))
+    return render(request, 'app/salon_dashboard/saloon-calender.html')
 
-    # Create the calendar with clickable dates
-    # cal = CustomHTMLCalendar().formatmonth(year, month)
-    cal = CustomHTMLCalendar().formatmonth(year, month)
-    # Get the selected date from the GET request
-    selected_date = request.GET.get('date', None)
-
-    return render(request, 'app/salon_dashboard/salon_calendar.html', {
-        'calendar': cal,
-        'month': month,
-        'year': year,
-        'selected_date': selected_date,  # Send the selected date to the template
-    })
 def slots(request):
     return render(request,'app/salon_dashboard/booking-slots.html')
 
