@@ -90,7 +90,6 @@
                 document.querySelectorAll('.book-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const bookingId = button.getAttribute('data-booking-id');
-                        // alert(bookingId);
                         if (confirm('Are you sure you want to mark this booking as completed?')) {
                             fetch('update_status.html', {
                                 method: 'POST',

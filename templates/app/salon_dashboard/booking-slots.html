@@ -111,7 +111,7 @@
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
                     <div class="container">
                         <div class="schedule-container">
-                            <img src="{% static "app/image/founder/2.jpg" %}" alt="Rakib\'s Photo" class="workers_photo">
+                            <img src="{% static "app/image/founder/2.jpg" %}" alt="worker_pic" class="workers_photo">
                             <h3 class="worker-title">Md Rakibul Islam's Schedule</h3>
                             <div class="time-slot">
                                     <h5>1.00 pm to 2.00 pm</h5>
@@ -168,7 +168,7 @@
                 document.querySelectorAll('.book-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const bookingId = button.getAttribute('data-booking-id');
-                        // alert(bookingId);
+                        
                         if (confirm('Are you sure you want to mark this booking as completed?')) {
                             fetch('update_status.php', {
                                 method: 'POST',
