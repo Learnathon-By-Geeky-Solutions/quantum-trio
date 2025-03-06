@@ -6,11 +6,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Salon Calender</title>
+    <title>Salon Calendar</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
-    
 </head>
 
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
@@ -26,26 +25,24 @@
                 <div class="container1">
                     <div class="row">
                         <div class="col-md-12">
-                            <?php
-                            $timezone = new DateTimeZone('Asia/Dhaka');
-                            $current_date_time_bd = new DateTime('now', $timezone);
-                            $dateComponents = getdate();
-                            if (isset($_GET['month']) && isset($_GET['year'])) {
-                                $month = $_GET['month'];
-                                $year = $_GET['year'];
-                            } else {
-                                $month = $dateComponents['mon'];
-                                $year = $dateComponents['year'];
-                            }
+                            <h2 class="text-xl font-bold mb-4 text-center">
+                                Calendar for {{ month }}/{{ year }}
+                            </h2>
+                            
+                            <div class="text-center mb-4">
+                                <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                                <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                            </div>
 
-                            echo build_calendar($month, $year);
-                            ?>
+                            <div class="calendar border border-gray-300 p-4 bg-white">
+                                {{ calendar|safe }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-
+    </div>
 
 </body>
 

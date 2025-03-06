@@ -35,24 +35,30 @@
                 </div>
 
                 <!-- Hidden form for uploading images -->
-                <form id="uploadForm" action="" method="POST" enctype="multipart/form-data"
+                <form id="uploadForm" method="POST" enctype="multipart/form-data"
                     class="hidden">
-                    <input type="hidden" name="shop_id" value="<?php echo $_SESSION['shop_id']; ?>">
+                    {% csrf_token %}
+                    <input type="hidden" name="shop_id" value="{% if user.is_authenticated %}{{ user }}{% endif %}">
                     <input type="file" name="image" id="imageInput" accept="image/*" class="hidden"
                         onchange="this.form.submit()">
                 </form>
-
+ 
                 <div class="grid grid-cols-2 gap-4">
    
-       
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden relative">
-            <img src="' . $row['image'] . '" alt="Shop Image" class="w-full h-450px object-cover">
-            
-            <form action="" method="POST" style="position: absolute; top: 10px; right: 10px;">
-            <input type="hidden" name="img_id" value="' . $row['img_id'] . '">
-           <button type="submit" name="delete_image" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">Delete</button>';
-            </form>
-
+                    {%for img in image%}
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden relative">
+                        <img src="{{ BASE_DIR }}.{{ img.image.url }}" alt="Shop Image" class="w-full h-450px object-cover">
+                        
+                        <form action="" method="POST" style="position: absolute; top: 10px; right: 10px;">
+                            {% csrf_token %}
+                            <input type="hidden" name="img_id" value="{{ img.id }}">
+                            <button type="submit" name="delete_image" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
+                                Delete
+                            </button>
+                        </form>
+               
+                        </div>
+                    {%endfor%}
             </div>
        
     
@@ -60,7 +66,11 @@
 
             </div>
         </main>
-
+        {% if message == 'success' %}
+        <script>
+            alert("You successfully uploaded an image.");
+        </script>
+        {% endif %}
         <script>
     // When the add image button is clicked, trigger the file input dialog
     document.getElementById('addImageBtn').addEventListener('click', function() {

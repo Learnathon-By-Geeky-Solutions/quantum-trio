@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path,include
 from django import views
 from shop_profile import views
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [ 
     path('', views.profile,name='shop_profile'),
     path('gallery', views.gallery,name='shop_gallery'),
@@ -14,3 +16,6 @@ urlpatterns = [
     path('notifications', views.notification,name='shop_notifications'),
     path('settings', views.setting,name='shop_setting'),
 ]
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
