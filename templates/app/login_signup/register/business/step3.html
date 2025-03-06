@@ -67,34 +67,32 @@
         </div>
         
         <div class="mb-4">
-          <table>
-            <tr>
-              <td>
-                <label for="latitude" class="block text-gray-700 font-bold mb-2">Latitude *</label>
-              </td>
-              <td>
-                <input type="text" id="latitude" name="latitude"
-                  class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                  required />
-              </td>
-              <td>
-                <!-- </div>
-                  <div class="mb-4"> -->
-                <label for="longitude" class="block text-gray-700 font-bold mb-2">Longitude *</label>
-              </td>
-              <td>
-                <input type="text" id="longitude" name="longitude"
-                  class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                  required />
-              </td>
-              <td>
-                <button type="button"
-                  class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300"
-                  onclick="getLocation()">Get My Location</button>
-              </td>
-            </tr>
-          </table>
+          <div class="flex flex-wrap items-center space-x-4">
+            <!-- Latitude -->
+            <div class="flex flex-col">
+              <label for="latitude" class="text-gray-700 font-bold mb-1">Latitude *</label>
+              <input type="text" id="latitude" name="latitude"
+                class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:border-pink-600 w-40"
+                required />
+            </div>
+        
+            <!-- Longitude -->
+            <div class="flex flex-col">
+              <label for="longitude" class="text-gray-700 font-bold mb-1">Longitude *</label>
+              <input type="text" id="longitude" name="longitude"
+                class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:border-pink-600 w-40"
+                required />
+            </div>
+        
+            <!-- Get Location Button -->
+            <div>
+              <button type="button"
+                class="bg-pink-500 text-white p-2 px-4 rounded-lg hover:bg-pink-700 transition duration-300"
+                onclick="getLocation()">Get My Location</button>
+            </div>
+          </div>
         </div>
+        
 
         <button type="submit"
           class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300">
