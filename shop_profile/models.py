@@ -1,6 +1,5 @@
 from django.db import models
 from my_app.models import Item
-from PIL import Image
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
@@ -73,9 +72,7 @@ class ShopProfile(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
     status = models.BooleanField(default=True)  # Is the shop active?
     mobile_number = models.CharField(max_length=15, blank=True)
-    # shop_email = models.EmailField(blank=True, null=True)
     shop_website = models.URLField(blank=True, max_length=200)
-    # Location Fields (For geolocation)
     shop_state = models.CharField(max_length=100, blank=True)
     shop_city = models.CharField(max_length=100, blank=True)
     shop_area = models.CharField(max_length=100, blank=True)
@@ -116,7 +113,7 @@ class ShopGallery(models.Model):
 
 class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField() 
     phone = models.CharField(max_length=15)  # Ensures unique phone numbers
     profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, null=True)
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
