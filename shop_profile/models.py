@@ -116,7 +116,7 @@ class ShopGallery(models.Model):
 
 class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField() 
     phone = models.CharField(max_length=15)  # Ensures unique phone numbers
     profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, null=True)
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers

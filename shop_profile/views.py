@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed,JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from shop_profile.models import *
@@ -77,12 +77,41 @@ def message(request):
     return render(request,'app/salon_dashboard/message.html')
 
 def staffs(request):
-    worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
-    shop_worker=list(worker.all())
-    for worker in shop_worker:
-        print(worker.name)
-        print(worker.email)
-    return render(request,'app/salon_dashboard/staffs.html',{'shop_worker':shop_worker})
+    if request.method == "POST":
+        worker_id = request.POST.get('id')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        experience = request.POST.get('experience')
+        expertise_ids = request.POST.getlist('expertise') 
+        profile_pic = request.FILES.get('profile_pic')
+        """ Fetch expertise items in one query """
+        expertise_items = Item.objects.filter(id__in=expertise_ids) 
+        try:
+            worker = ShopWorker.objects.get(id=worker_id)
+            worker.name = name
+            worker.email = email
+            worker.phone = phone
+            worker.experience = experience
+            if expertise_items.exists():  # Only update if there are valid expertise items
+                worker.expertise.set(expertise_items)
+            if profile_pic:  # Only update profile_pic if a new file is uploaded delete first then upload
+                if worker.profile_pic:  
+                    worker.profile_pic.delete(save=False)
+                worker.profile_pic = profile_pic
+            worker.save()
+            return JsonResponse({"message": "Worker updated successfully"}, status=200)
+
+        except ShopWorker.DoesNotExist:
+            return JsonResponse({"error": "Worker not found"}, status=404)
+
+    workers = ShopWorker.objects.filter(shop=request.user.shop_profile)
+    items = ShopService.objects.filter(shop=request.user.shop_profile)
+
+    return render(request, 'app/salon_dashboard/staffs.html', {
+        'shop_worker': workers,
+        'items': items
+    })
 
 def customers(request):
     return render(request,'app/salon_dashboard/customers.html')
