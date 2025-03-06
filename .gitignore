@@ -1,5 +1,5 @@
 
-media/
+BASE_DIR/
 
 venv/
 *.sqlite3
