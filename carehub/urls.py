@@ -10,7 +10,8 @@ urlpatterns = [
     path('user/',include('user_profile.urls'),name='user-profile'),
     #"""redirect to Shop profile"""
     path('dashboard/',include('shop_profile.urls'),name='shop_dashboard'),
-    # added by rakib for login purpose
+    path('book/',include('booking.urls'),name='book'),
+
     path('select_user', views.select_user_type,name='select_user'),
     path('login', views.log_in,name='login'),
     path('logout',views.log_out,name='logout'),
@@ -21,7 +22,6 @@ urlpatterns = [
     path('location', views.location,name='location'),
     path('service', views.service,name='service'),
     path('explore_by_items', views.explore_by_item,name='explore_by_item'),
-    path('salon-profile', views.view_salon_profile),
     path('salon-profile', views.shop_profile,name='salon-profile'),
     path('salon_dashboard', views.view_dash_board),
     path('salon_gallery', views.view_salon_gallery),

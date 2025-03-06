@@ -122,7 +122,7 @@ class ShopWorker(models.Model):
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
-    rating=models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    rating=models.DecimalField(max_digits=2, decimal_places=2, default=0.0)
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
     

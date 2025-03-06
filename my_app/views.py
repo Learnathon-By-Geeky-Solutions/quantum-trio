@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
@@ -5,7 +6,7 @@ from django.http import JsonResponse
 
 # use this to import any data from database
 from .models import District, Division, Service
-from shop_profile.models import ShopProfile, ShopWorker
+from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -67,40 +68,27 @@ def create_account(request):
     return render(request, 'app/login_signup/sign-up.html')
 
 """Shop profile view for customer end"""
-def view_salon_profile(request):
-    return render(request, 'app/saloon_profile/dashboard.html')
+# def view_salon_profile(request):
+#     return render(request, 'app/saloon_profile/dashboard.html')
+
 def shop_profile(request):
     if request.method == 'GET':
         shop_id = request.GET.get('shop_id')
-
         # Validate shop_id
         if not shop_id or not shop_id.isdigit():
             return JsonResponse({"error": "Invalid shop ID"}, status=400)
 
         shop_id = int(shop_id)  # Convert to integer safely
 
-        # Fetch the shop profile safely
-        shop = get_object_or_404(ShopProfile, id=shop_id)
-
-        # Retrieve workers related to the shop
-        workers = ShopWorker.objects.filter(shop=shop)
-        worker_names = [worker.name for worker in workers]
-
-        # Prepare query parameters for redirection
-        query_params = urlencode({
-            "shop_id": shop.id,
-            "shop_name": shop.shop_name,
-            "workers": ",".join(worker_names)  # Convert list to comma-separated string
+        shop = ShopProfile.objects.filter(id=shop_id).first()  # Fetch as object
+        service = ShopService.objects.filter(shop=shop_id)
+        workers = ShopWorker.objects.filter(shop=shop_id)
+ 
+    return render(request, 'app/saloon_profile/dashboard.html', {
+             "shop": shop, 
+             "shop_services": service,
+             "shop_workers": workers
         })
-
-        # Redirect to the desired URL with query parameters
-        return render(request, 'app/saloon_profile/dashboard.html', {
-            "shop_id": shop.id,
-            "shop_name": shop.shop_name,
-            "workers": ",".join(worker_names)
-        })
-
-    return HttpResponseNotAllowed(['GET'])
 
 """Added login requred only for testing purpose"""
 @login_required  
@@ -127,13 +115,6 @@ def location(request):
 
 def explore_by_item(request):
     return render(request, 'app/explore_by_items.html')
-
-# For Salon Profile
-
-
-
-
-# For Salon Deshboard
 
 
 def view_dash_board(request):
