@@ -14,17 +14,17 @@ Motivation behind the project:
 ----------------------------------------
 Our project, CareHub, addresses the prevalent issues faced by people in Bangladesh when accessing beauty and wellness services. Long wait times, uncertainty about service availability, or difficulty in finding reliable providers in a new city are common frustrations. Time is a precious resource, and CareHub aims to honor that with a solution designed for both men and women.
 
-##Tech Stack
+## Tech Stack
 
-#Frontend
+# Frontend
 Framework: Html, tailwind css, javascript
 
-#Backend
+# Backend
 Framework: Django Framework
 
-#Database: PostgreSQL
+# : PostgreSQL
 
-#Project Management: Asana
+# Project Management: Asana
 https://app.asana.com/0/1209363821145650/1209363827689666
 
 
