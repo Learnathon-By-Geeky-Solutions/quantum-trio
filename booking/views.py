@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 
 # Create your views here.
+@require_http_methods(["GET", "POST"])
 def index(request):
     if request.method == 'POST':
         # Retrieve form data
