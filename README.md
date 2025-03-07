@@ -24,7 +24,7 @@ Framework: Django Framework
 
 ### Database : PostgreSQL
 
-# Project Management: Asana
+## Project Management: Asana
 https://app.asana.com/0/1209363821145650/1209363827689666
 
 
@@ -51,10 +51,13 @@ Features
 ## Initial Entity Relationship Diagram(ER)
 ![alt text](CareHUB.drawio.png)
 
-## .env file
+## 🔑 Environment Variables (.env)  
+
+Create a `.env` file in the project root and add the following: 
+```bash
 DJANGO_SECRET_KEY = <your-secret-key>
 DATABASE_PASSWORD = <your-sdb-password>
-
+```
 ## Development Guidelines
 1. Create feature branches
 2. Make small, focused commits
