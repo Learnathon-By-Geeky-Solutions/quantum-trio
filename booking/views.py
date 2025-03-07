@@ -4,21 +4,26 @@ from shop_profile.models import ShopProfile, ShopWorker, ShopService
 
 # Create your views here.
 @require_http_methods(["GET", "POST"])
-def index(request):
+def booking_step_1(request):
     if request.method == 'POST':
         # Retrieve form data
         item_id = request.POST.get('item_id')
-        item_price = request.POST.get('item_price')
         shop_id = request.POST.get('shop_id')
 
         shop = ShopProfile.objects.filter(id=shop_id).first()
-        service = ShopService.objects.filter(shop=shop_id, id=item_id).first()
-        #service_name = service.item 
+        service = ShopService.objects.filter(shop=shop_id, item_id=item_id).first()
+
         workers = ShopWorker.objects.filter(shop=shop_id)
-        
+        expertise_worker = []
+        for worker in workers:
+            
+            #if worker.expertise.filter(name=service.item.name).exists():
+            for expertise in worker.expertise.all():
+                if expertise.name == service.item.name:
+                    expertise_worker.append(worker)
 
     return render(request, 'app/booking/book_step_1.html',{
         "shop": shop, 
-        "service": service,
-        # "shop_workers": workers, 
+         "service": service,
+         "workers": expertise_worker, 
     })
