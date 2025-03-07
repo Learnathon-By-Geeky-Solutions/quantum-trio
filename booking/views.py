@@ -26,4 +26,5 @@ def booking_step_1(request):
         "shop": shop, 
          "service": service,
          "workers": expertise_worker, 
+         
     })

@@ -43,7 +43,7 @@ class Service(models.Model):
     
 class Item(models.Model):
     name=models.CharField(max_length=100)
-    item_description=models.CharField(max_length=800, blank=True)
+    item_description=models.CharField(max_length=800, blank=True, default="No description available")
     service=models.ForeignKey(Service, on_delete=models.CASCADE, related_name="items")
     def __str__(self):
         return f"{self.name},   {self.service.name}"
