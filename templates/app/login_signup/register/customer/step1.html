@@ -8,19 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Customer Profile</title>
     {% tailwind_css %}
-    <script>
-        function validateForm() {
-            var password = document.getElementById('password').value;
-            var passwordError = document.getElementById('passwordError');
-            if (password.length < 6) {
-                passwordError.textContent = "Password must be at least 6 characters long.";
-                return false;
-            } else {
-                passwordError.textContent = "";
-            }
-            return true;
-        }
-    </script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
@@ -35,7 +22,7 @@
         </div>
 
         <!-- Form -->
-        <form action="step2" method="POST" onsubmit="return validateForm()">
+        <form id="signupForm" action="step2" method="POST">
             {% csrf_token %}
 
             <!-- First Name -->
@@ -69,7 +56,7 @@
                 <input type="password" id="password" name="password"
                     class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
                     required>
-                <div id="passwordError" class="text-red-500 mt-1"></div>
+                <div id="passwordError" class="text-red-500 mt-1" aria-live="polite"></div>
             </div>
 
             <!-- Mobile Number -->
@@ -120,6 +107,28 @@
             </button>
         </form>
     </div>
+
+    <!-- JavaScript at the Bottom -->
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('passwordError');
+            const MIN_PASSWORD_LENGTH = 6;
+
+            // Validate password
+            if (password.length < MIN_PASSWORD_LENGTH) {
+                passwordError.textContent = `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`;
+                return;
+            } else {
+                passwordError.textContent = ""; // Clear error message
+            }
+
+            this.submit(); // Submit the form if validation passes
+        });
+    </script>
+
 </body>
 
 </html>
