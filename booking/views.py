@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
+from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
+@csrf_protect
 @require_http_methods(["GET", "POST"])
 def booking_step_1(request):
     if request.method == 'POST':
@@ -22,9 +24,13 @@ def booking_step_1(request):
                 if expertise.name == service.item.name:
                     expertise_worker.append(worker)
 
-    return render(request, 'app/booking/book_step_1.html',{
+    return render(request, 'app/booking/book-step-1.html',{
         "shop": shop, 
          "service": service,
          "workers": expertise_worker, 
-         
+
     })
+
+@csrf_protect
+def booking_step_2(request):
+    return render(request, 'app/booking/book-step-2.html')

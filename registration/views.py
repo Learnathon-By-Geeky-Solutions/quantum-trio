@@ -389,7 +389,6 @@ def business_submit(request):
                 try:
                     print("Filtered Schedule:", schedule)
                     for day, time in schedule.items():
-                        pass
                         print(f"{day}: Start - {time['start']}, End - {time['end']}")
                         shop_schedule=ShopSchedule.objects.create(
                             shop=shop,

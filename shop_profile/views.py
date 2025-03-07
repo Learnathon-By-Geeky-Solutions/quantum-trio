@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from shop_profile.models import *
+from shop_profile.models import ShopGallery, ShopWorker, ShopService
 from django.utils.safestring import mark_safe
 user=get_user_model()
 def profile(request): 

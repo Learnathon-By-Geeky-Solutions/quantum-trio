@@ -47,7 +47,7 @@
    
                     {%for img in image%}
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden relative">
-                        <img src="{{ BASE_DIR }}.{{ img.image.url }}" alt="Shop Image" class="w-full h-450px object-cover">
+                        <img src="{{ BASE_DIR }}.{{ img.image.url }}" alt="Shop" class="w-full h-450px object-cover">
                         
                         <form action="" method="POST" style="position: absolute; top: 10px; right: 10px;">
                             {% csrf_token %}
