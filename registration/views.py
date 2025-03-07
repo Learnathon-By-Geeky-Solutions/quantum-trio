@@ -1,4 +1,4 @@
-from tkinter import Image
+from PIL import Image
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
@@ -265,8 +265,7 @@ def business_register_step8(request):
                 for uploaded_file in uploaded_files:
                     # Define the file path where it will be saved
                     file_path = f"temp/{uploaded_file.name}"
-                    full_path = os.path.join("media", file_path)  # Adjust based on MEDIA settings
-                    
+                    full_path = os.path.join(settings.MEDIA_ROOT, file_path)  # Adjust based on MEDIA settings
                     # Save the file
                     default_storage.save(full_path, ContentFile(uploaded_file.read()))
 
@@ -341,11 +340,11 @@ def business_submit(request):
                     worker_image=user_details['worker_image']
                     # print(worker_image)
                     for index in range(user_details['member']):
-                        img_path=img_path = os.path.join(settings.BASE_DIR,"BASE_DIR","media", "media", worker_image[index][0])
+                        img_path = os.path.join(settings.BASE_DIR,"media", worker_image[index][0])
                         img=Image.open(img_path)
-                        # print(img)
+                        print(img)
                         image_name = img_path.split("/")[-1] 
-                        # print(image_name)
+                        print(image_name)
                         img_io = BytesIO()
                         img.save(img_io, format=img.format)  # Preserve original format (JPEG, PNG, etc.)
                         img_bytes = img_io.getvalue()
@@ -390,7 +389,8 @@ def business_submit(request):
                 try:
                     print("Filtered Schedule:", schedule)
                     for day, time in schedule.items():
-                        # print(f"{day}: Start - {time['start']}, End - {time['end']}")
+                        pass
+                        print(f"{day}: Start - {time['start']}, End - {time['end']}")
                         shop_schedule=ShopSchedule.objects.create(
                             shop=shop,
                             day_of_week=day,
