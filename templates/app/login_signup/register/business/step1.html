@@ -10,29 +10,36 @@
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <script>
-        function validateForm() {
-            var password = document.getElementById('password').value;
-            var passwordError = document.getElementById('passwordError');
-            if (password.length < 6) {
-                passwordError.textContent = "Password must be at least 6 characters long.";
-                return false; 
-            } else {
-                passwordError.textContent = ""; 
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('registrationForm');
+            const passwordField = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+
+            form.addEventListener('submit', function (event) {
+                if (!validatePassword(passwordField.value)) {
+                    event.preventDefault();  // Prevent form submission if validation fails
+                    passwordError.textContent = "Password must be at least 6 characters long.";
+                } else {
+                    passwordError.textContent = "";
+                }
+            });
+
+            function validatePassword(password) {
+                return password.length >= 6;
             }
-            return true;
-        }
+        });
     </script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen px-6 py-10">
-    <div class="bg-white p-10 rounded-2xl shadow-lg  max-w-lg m-6">
+    <div class="bg-white p-10 rounded-2xl shadow-lg max-w-lg m-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <a href="../">
                 <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="Back" class="w-8 h-8">
             </a>
             <h2 class="text-2xl font-bold text-gray-700">Create Your Business Account</h2>
-            <div></div> 
+            <div></div>
         </div>
 
         <div class="text-center mb-6">
@@ -40,7 +47,7 @@
         </div>
 
         <!-- Form -->
-        <form action="step2" method="POST" onsubmit="return validateForm()">
+        <form id="registrationForm" action="step2" method="POST">
             {% csrf_token %}
             
             <!-- First Name -->
@@ -73,7 +80,7 @@
                 <label for="password" class="block text-gray-700 font-medium mb-2">Password *</label>
                 <input type="password" id="password" name="password" value=""
                     class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
+                    required minlength="6">
                 <p id="passwordError" class="text-red-600 text-sm mt-1"></p>
             </div>
 

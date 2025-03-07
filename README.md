@@ -14,23 +14,20 @@ Motivation behind the project:
 ----------------------------------------
 Our project, CareHub, addresses the prevalent issues faced by people in Bangladesh when accessing beauty and wellness services. Long wait times, uncertainty about service availability, or difficulty in finding reliable providers in a new city are common frustrations. Time is a precious resource, and CareHub aims to honor that with a solution designed for both men and women.
 
-Imagine a job holder with a demanding 9-to-5 schedule. After a long day, they barely have time to unwind, let alone spend hours waiting for a grooming session. For them, every minute counts. Now consider a student juggling classes, assignments, and social commitments—planning even a simple outing can feel overwhelming.
+## Tech Stack
 
-Or picture another scenario: you suddenly learn about an important meeting or have a wedding or a major event coming up. You need to look your best, but time is not on your side. Whether it’s a quick touch-up, a complete makeover, or a specialized beauty treatment, the urgency adds to the stress.
+### Frontend
+Framework: Html, tailwind css, javascript
 
-CareHub is designed to address these real-life challenges for everyone. Our platform goes beyond salon services, offering a comprehensive range of beauty and wellness solutions tailored to your needs. Whether it’s hairstyling, skincare, makeup, or even home services for special occasions, CareHub provides access to the best service providers.
+### Backend
+Framework: Django Framework
 
-With real-time availability, customizable booking slots, and the convenience of home services, CareHub ensures you can manage your beauty and wellness needs effortlessly. It’s about saving time, reducing stress, and making top-quality services accessible to everyone—because beauty and confidence should be for all.
+### Database : PostgreSQL
 
-Project-Overview
-----------------
-CareHub BD is a comprehensive platform designed to solve the common
-challenges faced by salon and parlour customers in Bangladesh. It allows users to easily find, book,
-and manage salon and parlour services with customizable options. By providing advanced search
-and filtering, real-time booking management, expert selection, and communication
-tools, CareHub BD ensures a seamless experience for both customers and shop
-owners. The platform's focus on convenience, transparency, and user satisfaction
-makes it a transformative solution for the salon industry.
+## Project Management: Asana
+https://app.asana.com/0/1209363821145650/1209363827689666
+
+
 
 Features
 --------
@@ -54,6 +51,13 @@ Features
 ## Initial Entity Relationship Diagram(ER)
 ![alt text](CareHUB.drawio.png)
 
+## 🔑 Environment Variables (.env)  
+
+Create a `.env` file in the project root and add the following: 
+```bash
+DJANGO_SECRET_KEY = <your-secret-key>
+DATABASE_PASSWORD = <your-sdb-password>
+```
 ## Development Guidelines
 1. Create feature branches
 2. Make small, focused commits
