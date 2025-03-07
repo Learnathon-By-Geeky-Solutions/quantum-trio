@@ -16,13 +16,13 @@ Our project, CareHub, addresses the prevalent issues faced by people in Banglade
 
 ## Tech Stack
 
-# Frontend
+### Frontend
 Framework: Html, tailwind css, javascript
 
-# Backend
+### Backend
 Framework: Django Framework
 
-# : PostgreSQL
+### Database : PostgreSQL
 
 # Project Management: Asana
 https://app.asana.com/0/1209363821145650/1209363827689666
