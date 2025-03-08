@@ -67,9 +67,6 @@ def log_out(request):
 def create_account(request):
     return render(request, 'app/login_signup/sign-up.html')
 
-"""Shop profile view for customer end"""
-# def view_salon_profile(request):
-#     return render(request, 'app/saloon_profile/dashboard.html')
 
 def shop_profile(request):
     if request.method == 'GET':

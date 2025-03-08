@@ -64,25 +64,25 @@ class ShopProfile(models.Model):
     ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)
-    shop_title = models.CharField(max_length=255, blank=True)
-    shop_info = models.TextField(blank=True)
+    shop_title = models.CharField(max_length=255, blank=True,default='')
+    shop_info = models.TextField(max_length=255,blank=True,default='')
     shop_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
-    shop_owner = models.CharField(max_length=255, blank=True)
+    shop_owner = models.CharField(max_length=255, blank=True,default='')
     shop_customer_count = models.IntegerField(default=0)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True,default="Other")
     status = models.BooleanField(default=True)  # Is the shop active?
-    mobile_number = models.CharField(max_length=15, blank=True)
-    shop_website = models.URLField(blank=True, max_length=200)
-    shop_state = models.CharField(max_length=100, blank=True)
-    shop_city = models.CharField(max_length=100, blank=True)
-    shop_area = models.CharField(max_length=100, blank=True)
+    mobile_number = models.CharField(max_length=15, blank=True,default='')
+    shop_website = models.URLField(blank=True, max_length=200,default='')
+    shop_state = models.CharField(max_length=100, blank=True,default='')
+    shop_city = models.CharField(max_length=100, blank=True,default='')
+    shop_area = models.CharField(max_length=100, blank=True,default='')
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    shop_landmark_1 = models.CharField(max_length=255, blank=True)
-    shop_landmark_2 = models.CharField(max_length=255, blank=True)
-    shop_landmark_3 = models.CharField(max_length=255, blank=True)
-    shop_landmark_4 = models.CharField(max_length=255, blank=True)
-    shop_landmark_5 = models.CharField(max_length=255, blank=True)
+    shop_landmark_1 = models.CharField(max_length=255, blank=True,default='')
+    shop_landmark_2 = models.CharField(max_length=255, blank=True,default='')
+    shop_landmark_3 = models.CharField(max_length=255, blank=True,default='')
+    shop_landmark_4 = models.CharField(max_length=255, blank=True,default='')
+    shop_landmark_5 = models.CharField(max_length=255, blank=True,default='')
     
     # Additional Info
     member_since = models.DateField(auto_now_add=True)
@@ -105,7 +105,7 @@ class ShopProfile(models.Model):
 class ShopGallery(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopgallery", on_delete=models.CASCADE)  # Link to Shop
     image = models.ImageField(upload_to='ShopGallery/', blank=True, null=True)  # Image field
-    description = models.CharField(max_length=255, blank=True)  # Optional description for the image
+    description = models.CharField(max_length=255, blank=True, default="No description available")  # Optional description for the image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Time when image is uploaded
 
     def __str__(self):
@@ -115,7 +115,7 @@ class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField() 
     phone = models.CharField(max_length=15)  # Ensures unique phone numbers
-    profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, default='default-profile.jpg')
     experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
@@ -134,7 +134,7 @@ class ShopService(models.Model):
 class ShopReview(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
-    review = models.TextField(blank=True)  # Optional text review
+    review = models.TextField(blank=True,default='')  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
     def __str__(self):
         return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
