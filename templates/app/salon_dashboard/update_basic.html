@@ -23,64 +23,56 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                <div class="header flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Setting</h2>
-                    <div class="notification flex items-center" style="margin-right:40px;">
-                        <img src="../image/shop/<?php echo $_SESSION['shop_id']; ?>.jpeg" alt="Notification Icon"
-                            class="w-8 h-8 rounded-full mr-2">
-                        <h3 class="text-base font-bold"><?php echo $_SESSION['shop_name']; ?>&nbsp;</h3>
-                        <a href="../logout.php"><img src="../image/icon/logout.png" alt="logout"
-                                class="w-8 h-8 rounded-full mr-2"></a>
-                    </div>
-                </div>
+                {% include "app/salon_dashboard/header.html" %}
+
                 <div class="flex justify-center items-center min-h-screen">
                     <form action="" method="POST" class="bg-white p-6 rounded-lg shadow-md">
                         <div class="mb-4">
                             <label for="shop_name" class="block text-sm font-medium">Shop Name:</label>
                             <input type="text" name="shop_name" id="shop_name"
-                                value="<?php echo $_SESSION['shop_name']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="shop_title" class="block text-sm font-medium">Shop Title:</label>
                             <input type="text" name="shop_title" id="shop_title"
-                                value="<?php echo $_SESSION['shop_title']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="shop_info" class="block text-sm font-medium">Shop Info:</label>
                             <textarea name="shop_info" id="shop_info" rows="3"
-                                class="border border-gray-300 p-2 w-full"><?php echo $_SESSION['shop_info']; ?></textarea>
+                                class="border border-gray-300 p-2 w-full"></textarea>
                         </div>
 
                         <div class="mb-4">
                             <label for="shop_email" class="block text-sm font-medium">Email:</label>
                             <input type="email" name="shop_email" id="shop_email"
-                                value="<?php echo $_SESSION['shop_email']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="mobile_number" class="block text-sm font-medium">Mobile Number:</label>
                             <input type="text" name="mobile_number" id="mobile_number"
-                                value="<?php echo $_SESSION['mobile_number']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="shop_state" class="block text-sm font-medium">State:</label>
                             <input type="text" name="shop_state" id="shop_state"
-                                value="<?php echo $_SESSION['shop_state']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="shop_city" class="block text-sm font-medium">City:</label>
                             <input type="text" name="shop_city" id="shop_city"
-                                value="<?php echo $_SESSION['shop_city']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
                             <label for="shop_area" class="block text-sm font-medium">Area:</label>
                             <input type="text" name="shop_area" id="shop_area"
-                                value="<?php echo $_SESSION['shop_area']; ?>" required
+                                value="" required
                                 class="border border-gray-300 p-2 w-full">
                         </div>
                         <div class="mb-4">
@@ -89,19 +81,19 @@
                                 *</label>
                             <input type="text" id="landmark1" name="landmark_1"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="<?php echo $_SESSION['shop_landmark_1']; ?>" required />
+                                value="" required />
                             <input type="text" id="landmark2" name="landmark_2"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="<?php echo $_SESSION['shop_landmark_2']; ?>" required />
+                                value="" required />
                             <input type="text" id="landmark3" name="landmark_3"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="<?php echo $_SESSION['shop_landmark_3']; ?>" required />
+                                value="" required />
                             <input type="text" id="landmark4" name="landmark_4"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="<?php echo $_SESSION['shop_landmark_4']; ?>" />
+                                value="" />
                             <input type="text" id="landmark5" name="landmark_5"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="<?php echo $_SESSION['shop_landmark_5']; ?>" />
+                                value="" />
                         </div>
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Update Shop</button>
                     </form>

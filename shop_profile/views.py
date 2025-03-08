@@ -85,4 +85,5 @@ def notification(request):
     return render(request,'app/salon_dashboard/notifications.html')
 
 def setting(request):
-    return render(request,'app/salon_dashboard/settings.html')
+    return render(request,'app/salon_dashboard/update_basic.html')
+
