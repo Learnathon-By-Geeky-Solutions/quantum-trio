@@ -1,7 +1,7 @@
 from django.db import models
-from my_app.models import *
-from user_profile.models import *
-from shop_profile.models import *
+from my_app.models import Item
+from user_profile.models import UserProfile
+from shop_profile.models import ShopProfile, ShopWorker
 from django.utils import timezone
 class BookingSlot(models.Model):
     user = models.ForeignKey(UserProfile, related_name="bookingslot", on_delete=models.CASCADE)
@@ -27,7 +27,7 @@ class BookingSlot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     """If needed any notes"""
-    notes = models.TextField(blank=True, null=True) 
+    notes = models.TextField(blank=True) 
 
     def __str__(self):
         return f"Booking by {self.user} at {self.shop} on {self.date} {self.time}"
