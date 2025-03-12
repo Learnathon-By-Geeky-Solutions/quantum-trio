@@ -124,15 +124,6 @@
 
         <script>
             const recommendations = [
-                {
-                    title: "Elite Barber Shop",
-                    rating: 4.8,
-                    reviews: 120,
-                    location: "Dhaka",
-                    category: "Men's Haircut",
-                    image: "{% static 'app/image/shop/1.jpg' %}",
-                    link: "salon-profile",
-                },
                 {% for shop in shops %}
                     {
                         title: "{{ shop.shop_name|escapejs }}",

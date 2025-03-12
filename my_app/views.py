@@ -88,7 +88,7 @@ def shop_profile(request):
         })
 
 """Added login requred only for testing purpose"""
-@login_required  
+  
 def contact_us(request):
     return render(request, 'app/contact_us.html')
 
