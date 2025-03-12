@@ -308,9 +308,6 @@ def business_submit(request):
                     user_type='shop',
                 )
                 user.save()
-            # except Exception as e:
-            #         print(f"❌ Error: {e}")  
-            # try:
                 """creating shop profile"""
                 shop = ShopProfile.objects.create(
                     user=user,
@@ -318,7 +315,7 @@ def business_submit(request):
                     shop_title = user_details['business_title'],
                     shop_info = user_details['business_info'],
                     shop_owner = user_details['first-name']+' '+user_details['last-name'],
-                    # password=user_details['password'],
+                    
                     # Contact Information
                     mobile_number = user_details['mobile-number'],
                     shop_website = user_details['website'],
@@ -338,7 +335,7 @@ def business_submit(request):
                 try:
                     member_details=user_details['members']
                     worker_image=user_details['worker_image']
-                    # print(worker_image)
+                    
                     for index in range(user_details['member']):
                         img_path = os.path.join(settings.BASE_DIR,"media", worker_image[index][0])
                         img=Image.open(img_path)
@@ -369,7 +366,7 @@ def business_submit(request):
                 try:
                     items=user_details['items']
                     """How many items the shop provides"""
-                    # print(count)
+                    
                     item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
                     print(item)
                     price = [price for key, price_list in items.items() if 'price' in key for price in price_list]
