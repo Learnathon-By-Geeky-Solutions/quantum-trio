@@ -21,7 +21,7 @@ def home(request):
         return HttpResponseNotAllowed(['GET'])
     shop=ShopProfile.objects.all()
     male_item=Item.objects.all()
-    female_item=Item.objects.get()
+    # female_item=Item.objects.get()
     return render(request, 'app/home.html', {'review': 333,'shops':shop})
 
 def select_user_type(request):
