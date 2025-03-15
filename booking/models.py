@@ -23,7 +23,7 @@ class BookingSlot(models.Model):
         ('paid', 'Paid'),
     ]
     payment_status = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default='unpaid')
-    """When the booking is booked"""
+    """When the booking is"""
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     """If needed any notes"""
