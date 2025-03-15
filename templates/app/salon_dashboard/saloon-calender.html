@@ -30,12 +30,23 @@
                             </h2>
                             
                             <div class="text-center mb-4">
-                                <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
-                                <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                                {% if month == 1 %}
+                                    <a href="?month=12&year={{ year|add:-1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                                {% else %}
+                                    <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                                {% endif %}
+
+                                <span class="px-4 py-2 font-bold text-gray-800">{{ month_name }} {{ year }}</span>
+
+                                {% if month == 12 %}
+                                    <a href="?month=1&year={{ year|add:1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                                {% else %}
+                                    <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                                {% endif %}
                             </div>
 
                             <div class="calendar border border-gray-300 p-4 bg-white">
-                                {{ calendar|safe }}
+                                {{ cal|safe }}
                             </div>
                         </div>
                     </div>
@@ -45,5 +56,27 @@
     </div>
 
 </body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get all table cells containing a date
+    document.querySelectorAll("td").forEach((cell) => {
+        let date = cell.innerText.trim(); // Get the date number
 
+        // Check if the cell contains a valid date (not empty or a non-breaking space)
+        if (date && !isNaN(date)) {
+            let month = 1; // Change this dynamically based on the current month
+            let year = 2027; // Change this dynamically based on the current year
+
+            // Create a new anchor element
+            let link = document.createElement("a");
+            link.href = `?date=${year}-${month.toString().padStart(2, "0")}-${date.padStart(2, "0")}`;
+            link.innerText = date; // Keep the date text
+
+            // Replace the text with the link inside the cell
+            cell.innerHTML = "";
+            cell.appendChild(link);
+        }
+    });
+});
+</script>
 </html>

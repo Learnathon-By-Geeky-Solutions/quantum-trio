@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.contrib.postgres.aggregates import ArrayAgg
 # use this to import any data from database
-from .models import District,Upazilla, Division, Service, Area
+from .models import District,Upazilla, Division, Service, Area,Item
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -20,7 +20,8 @@ def home(request):
         # Return a 405 Method Not Allowed response for any non-GET requests
         return HttpResponseNotAllowed(['GET'])
     shop=ShopProfile.objects.all()
-
+    male_item=Item.objects.all()
+    female_item=Item.objects.get()
     return render(request, 'app/home.html', {'review': 333,'shops':shop})
 
 def select_user_type(request):
@@ -87,8 +88,6 @@ def shop_profile(request):
              "shop_workers": workers
         })
 
-"""Added login requred only for testing purpose"""
-  
 def contact_us(request):
     return render(request, 'app/contact_us.html')
 

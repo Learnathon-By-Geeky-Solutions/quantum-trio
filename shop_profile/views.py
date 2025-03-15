@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from shop_profile.models import ShopGallery, ShopWorker, ShopService
 from django.utils.safestring import mark_safe
+from datetime import datetime
+# import calendar
+from calendar import HTMLCalendar
 user=get_user_model()
 def profile(request): 
     return render(request,'app/salon_dashboard/index.html')
@@ -30,7 +33,17 @@ def gallery(request):
     return render(request,'app/salon_dashboard/saloon-gallery.html',{'image':img,'message':message})
 
 def calender(request):
-    return render(request, 'app/salon_dashboard/saloon-calender.html')
+    month=datetime.now().month
+    year=datetime.now().year
+    
+    # print(cal)
+    if request.method=="GET":
+        month=int(request.GET.get('month'))
+        year=int(request.GET.get('year'))
+
+    cal=HTMLCalendar().formatmonth(year,month)
+    print(cal)
+    return render(request, 'app/salon_dashboard/saloon-calender.html',{'cal':cal,'month':month,'year':year})
 
 def slots(request):
     return render(request,'app/salon_dashboard/booking-slots.html')
