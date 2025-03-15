@@ -51,16 +51,16 @@
                 </div>
 
                 <div class="flex flex-wrap -mx-2" id="worker-selection">
-                    {% if workers %}
+                    {% if workers %} 
                         {% for worker in workers %}
                             <div class="professional-card border p-4 mx-2 mb-4 rounded-lg text-center w-full sm:w-1/2 lg:w-1/3">
-                                <img class="mx-auto rounded-full h-16 w-16 mb-2" src="{% if worker.profile_pic %}{{ worker.profile_pic.url }}{% else %}/static/default-profile.jpg{% endif %}" alt="{{ worker.name }}">
+                                <img class="mx-auto rounded-full h-16 w-16 mb-2" src="{{ worker.profile_pic.url}}">
                                 <p class="text-gray-700 font-semibold">{{ worker.name }}</p>
                                 <p class="text-yellow-500 text-sm">⭐ {{ worker.rating }}</p>
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p>No workers found for this shop.</p>
+                        <p>No workers found for this Service</p>
                     {% endif %}
                 </div>
             </div>
@@ -85,15 +85,15 @@
                 <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
 
                 <hr class="my-4">+
-                <p class="text-lg font-bold">Total: <span class="text-green-600">BDT: {{ service.price }} TK</span></p>
+                <p class="text-lg font-bold">Total: <span class="text-green-600">BDT: {{ service.price }} TK {{ worker.id }}</span></p>
 
                 <form id="worker-selection-form" action="booking-step-2" method="POST" class="hidden">
                     {% csrf_token %}
                     <input type="hidden" name="shop_id" value="{{ shop.id }}">
                     <input type="hidden" name="item_id" value="{{ service.item.id }}">
                     <input type="hidden" name="worker_id" id="worker-id-input" value="{{ worker.id }}">
-                    <input type="hidden" name="item_price" value="{{ service.price }}">
-                    <input type="hidden" name="item_description" value="{{ service.item_description }}">
+                    {% comment %} <input type="hidden" name="item_price" value="{{ service.price }}">
+                    <input type="hidden" name="item_description" value="{{ service.item_description }}"> {% endcomment %}
                 </form>
 
                 <button id="continue-button" disabled

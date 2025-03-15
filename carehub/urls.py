@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.urls import path,include
 from django import views
+from carehub import settings
 from my_app import views
+from django.conf.urls.static import static
+
 urlpatterns = [ 
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
@@ -36,4 +39,5 @@ urlpatterns = [
     path('message', views.view_message),
     path('message-reply', views.view_message_reply),
 ]
-
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
