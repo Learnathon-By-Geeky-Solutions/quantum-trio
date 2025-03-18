@@ -50,7 +50,7 @@
                 {% if user.user_type == "shop" %}
                     <a href="dashboard" class="text-gray-700 hover:text-pink-600">Dashboard</a>
                 {% elif user.user_type == "user" %}
-                    <a href="" class="text-gray-700 hover:text-pink-600">{{ user.email }}</a>
+                    <a href="user" class="text-gray-700 hover:text-pink-600">{{ user.user_profile.first_name}} {{user.user_profile.last_name }}</a>
                 {% else %}
                     <a href="/admin" class="text-gray-700 hover:text-pink-600">Admin</a>
                 {% endif %}

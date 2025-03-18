@@ -10,9 +10,11 @@ urlpatterns = [
     path('', views.home,name='home'),
     path('home', views.home,name='home'),
     path('register/', include('registration.urls'), name='register'),
-    path('user/',include('user_profile.urls'),name='user-profile'),
-    #"""redirect to Shop profile"""
+    # redirect to Shop profile
     path('dashboard/',include('shop_profile.urls'),name='shop_dashboard'),
+    # redirect to user profile
+    path('user/',include('user_profile.urls'),name='user_profile'),
+    
     path('book/',include('booking.urls'),name='book'),
 
     path('select_user', views.select_user_type,name='select_user'),
