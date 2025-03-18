@@ -4,44 +4,31 @@
 <html lang="en">
 
 <head>
-    
     <title>Select Professional</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% tailwind_css %}
     <style>
         .professional-card {
             background-color: white;
             width: 100%;
             cursor: pointer;
+            transition: all 0.2s ease-in-out;
         }
 
         .professional-card.selected {
             border-color: pink;
-            box-shadow: 0 0 5px 5px pink;
-        }
-
-        @media (min-width: 1080px) {
-            .professional-card {
-                width: calc(33.33% - 1rem);
-            }
-        }
-
-        @media (min-width: 1900px) {
-            .professional-card {
-                width: calc(25% - 1rem);
-            }
+            box-shadow: 0 0 5px 1px black;
         }
     </style>
 </head>
 
 <body class="bg-gray-100">
-    <div class="max-w-screen-xl mx-auto p-3 m-6">
+    <div class="p-3 m-6">
         <div class="flex flex-row lg:flex-row lg:space-x-6">
-            
-            <!-- Worker Information Section (Left 2/3) -->
+
+            <!-- Worker Selection -->
             <div class="w-full lg:w-2/3">
                 <div class="flex items-center space-x-4 mb-8 p-5">
                     <a href="/salon-profile?shop_id={{ shop.id }}">
@@ -50,92 +37,95 @@
                     <h2 class="text-4xl font-bold text-gray-800">Select Your Desired Barber</h2>
                 </div>
 
-                <div class="flex flex-wrap -mx-2" id="worker-selection">
-                    {% if workers %} 
-                        {% for worker in workers %}
-                            <div class="professional-card border p-4 mx-2 mb-4 rounded-lg text-center w-full sm:w-1/2 lg:w-1/3">
-                                <img class="mx-auto rounded-full h-16 w-16 mb-2" src="{{ worker.profile_pic.url}}">
-                                <p class="text-gray-700 font-semibold">{{ worker.name }}</p>
-                                <p class="text-yellow-500 text-sm">⭐ {{ worker.rating }}</p>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No workers found for this Service</p>
-                    {% endif %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="worker-selection">
+                    {% for worker in workers %}
+                        <div class="professional-card border p-4 rounded-lg text-center cursor-pointer"
+                            data-worker-id="{{ worker.id }}">
+                            <img class="mx-auto rounded-full h-16 w-16 mb-2" src="{{ worker.profile_pic.url }}">
+                            <p class="text-gray-700 font-semibold">{{ worker.name }}</p>
+                            <p class="text-yellow-500 text-sm">⭐ Rating: {{ worker.rating }}</p>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
 
-            <!-- Salon Information Section (Right 1/3) -->
-            <div class="w-1/3 lg:w-1/3 bg-white p-6 shadow-md rounded-lg mt-6 lg:mt-0">
+            <!-- Booking Summary -->
+            <div class="w-full lg:w-1/3 bg-white p-6 shadow-md rounded-lg mt-6 lg:mt-0">
                 <h1 class="text-4xl font-bold mb-4">{{ shop.shop_name }}</h1>
-
-                <p class="text-gray-700">
-                    {{ shop.shop_rating }} ⭐ {{ shop.shop_customer_count }} reviews
-                </p>
-                <p class="text-gray-500 text-2xl">♦️ {{ shop.shop_state }}, {{ shop.shop_city }}, {{ shop.shop_area }}</p>
+                <p class="text-gray-700">{{ shop.shop_rating }} ⭐ {{ shop.shop_customer_count }} reviews</p>
+                <p class="text-gray-500 text-2xl">📍 {{ shop.shop_state }}, {{ shop.shop_city }}, {{ shop.shop_area }}</p>
                 <p class="text-gray-500">
                     {{ shop.shop_landmark_1 }}, {{ shop.shop_landmark_2 }}, {{ shop.shop_landmark_3 }}
                 </p>
                 <hr class="my-4">
 
-                <p class="text-gray-700 font-semibold">
-                    {{ service.item }}
-                </p>
-                <p class="text-gray-500">Time: 1 hour (approx) • {{ service.item_description }}</p>
-                <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
+                <p class="text-gray-700 font-semibold">{{ service.item }}</p>
+                <p class="text-gray-500">Duration: 1 hour • {{ service.item_description }}</p>
+                <p class="text-gray-700 font-bold mt-4">Price: BDT {{ service.price }} TK</p>
 
-                <hr class="my-4">+
-                <p class="text-lg font-bold">Total: <span class="text-green-600">BDT: {{ service.price }} TK {{ worker.id }}</span></p>
+                <hr class="my-4">
+                <p class="text-lg font-bold">Selected Worker: <span id="selected-worker-id" class="text-green-600">None</span></p>
 
-                <form id="worker-selection-form" action="booking-step-2" method="POST" class="hidden">
+                <!-- Fixed Form -->
+                <form id="worker-selection-form" action="booking-step-2" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="shop_id" value="{{ shop.id }}">
                     <input type="hidden" name="item_id" value="{{ service.item.id }}">
-                    <input type="hidden" name="worker_id" id="worker-id-input" value="{{ worker.id }}">
-                    {% comment %} <input type="hidden" name="item_price" value="{{ service.price }}">
-                    <input type="hidden" name="item_description" value="{{ service.item_description }}"> {% endcomment %}
+                    <input type="hidden" name="worker_id" id="worker-id-input" value="">
                 </form>
 
                 <button id="continue-button" disabled
-                    class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">Continue</button>
+                    class="w-full bg-gray-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
+                    Continue
+                </button>
             </div>
-
         </div>
     </div>
 
-
-
     <script>
-        const cards = document.querySelectorAll('.professional-card');
-        const continueButton = document.getElementById('continue-button');
-        const workerIdInput = document.getElementById('worker-id-input');
-        let selectedCard = null;
+        document.addEventListener("DOMContentLoaded", function () {
+            const cards = document.querySelectorAll('.professional-card');
+            const continueButton = document.getElementById('continue-button');
+            const workerIdInput = document.getElementById('worker-id-input');
+            const selectedWorkerIdDisplay = document.getElementById('selected-worker-id');
+            const form = document.getElementById('worker-selection-form');
 
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                // Remove selection from previous card
-                if (selectedCard) {
-                    selectedCard.classList.remove('selected');
+            let selectedWorkerId = null;
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Remove previous selection
+                    document.querySelectorAll('.professional-card').forEach(c => c.classList.remove('selected'));
+
+                    // Mark new selection
+                    card.classList.add('selected');
+
+                    // Get Worker ID
+                    selectedWorkerId = card.getAttribute('data-worker-id');
+
+                    // Update the hidden input field
+                    workerIdInput.value = selectedWorkerId;
+
+                    // Update UI
+                    selectedWorkerIdDisplay.textContent = `ID: ${selectedWorkerId}`;
+
+                    // Enable the continue button
+                    continueButton.disabled = false;
+                    continueButton.classList.remove('bg-gray-400');
+                    continueButton.classList.add('bg-black');
+                });
+            });
+
+            continueButton.addEventListener('click', function (event) {
+                if (!selectedWorkerId) {
+                    alert("Please select a worker before continuing.");
+                    event.preventDefault(); // Prevent submission if no worker is selected
+                    return;
                 }
 
-                // Mark the clicked card as selected
-                selectedCard = card;
-                selectedCard.classList.add('selected');
-
-                // Enable the continue button
-                continueButton.disabled = false;
-                continueButton.classList.remove('bg-gray-400');
-                continueButton.classList.add('bg-black');
-
-                // Set the worker_id in the hidden form
-                workerIdInput.value = card.getAttribute('data-worker-id');
+                console.log("Submitting form with worker_id:", selectedWorkerId);
+                form.submit();
             });
-        });
-
-        continueButton.addEventListener('click', () => {
-            if (selectedCard) {
-                document.getElementById('worker-selection-form').submit();
-            }
         });
     </script>
 </body>
