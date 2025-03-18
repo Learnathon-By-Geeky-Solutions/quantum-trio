@@ -32,6 +32,7 @@ def booking_step_1(request):
     })
 
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def booking_step_2(request):
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
@@ -42,12 +43,12 @@ def booking_step_2(request):
 
         worker = ShopWorker.objects.filter(shop=shop_id).first()
 
-        print("worker id : ", worker_id)
+        print("worker name : ", worker.name)
 
     
     return render(request, 'app/booking/book-step-2.html',{
         "shop": shop, 
          "service": service,
-         #"workers": worker, 
+         "worker": worker, 
 
     })
