@@ -4,13 +4,13 @@
 <html lang="en">
 
 <head>
-    
+
     <title>CareHUB home</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	{% tailwind_css %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
 
 </head>
@@ -37,11 +37,8 @@
                         </button>
                     </div>
                 </form>
-                
-
             </div>
         </div>
-       
         <div class="wave water"></div>
         <div class="wave water"></div>
         <div class="wave water"></div>
@@ -80,7 +77,6 @@
         </div>
 
         <section class="py-12">
-           
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
                     Featured Salons and Parlours
@@ -88,36 +84,24 @@
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
                         <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
-                            <button
-                                class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                            <button class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                                 onclick="scrollCarousel('carousel-3', -300)"
                                 onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', -300); event.preventDefault(); }"
-                                aria-label="Scroll left"
-                            >
-                                <img
-                                    src="{% static 'app/image/icon/left-arrow1.png' %}"
-                                    alt="Scroll left"
-                                    class="w-8 h-8 opacity-75 hover:opacity-100"
-                                />
+                                aria-label="Scroll left">
+                                <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
+                                    class="w-8 h-8 opacity-75 hover:opacity-100" />
                             </button>
                         </div>
                         <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-3">
-                            <button
-                                class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                            <button class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
                                 onclick="scrollCarousel('carousel-3', 300)"
                                 onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-                                aria-label="Scroll right"
-                            >
-                                <img
-                                    src="{% static 'app/image/icon/right-arrow.png' %}"
-                                    alt="Scroll right"
-                                    class="w-8 h-8 opacity-75 hover:opacity-100"
-                                />
+                                aria-label="Scroll right">
+                                <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
+                                    class="w-8 h-8 opacity-75 hover:opacity-100" />
                             </button>
                         </div>
-                        
                     </div>
-                    
                 </div>
             </div>
         </section>
@@ -134,16 +118,16 @@
                     link: "salon-profile",
                 },
                 {% for shop in shops %}
-                    {
-                        title: "{{ shop.shop_name|escapejs }}",
-                        rating: {{ shop.shop_rating }},
-                        reviews: {{ shop.shop_customer_count }},
-                        location: "{{ shop.shop_city|escapejs }}",
-                        category: "{{ shop.category|escapejs }}",
+            {
+                title: "{{ shop.shop_name|escapejs }}",
+                    rating: { { shop.shop_rating } },
+                reviews: { { shop.shop_customer_count } },
+                location: "{{ shop.shop_city|escapejs }}",
+                    category: "{{ shop.category|escapejs }}",
                         image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                        link: "salon-profile?shop_id={{ shop.id }}",
+                            link: "salon-profile?shop_id={{ shop.id }}",
                     },
-                {% endfor %}
+            {% endfor %}
             ];
 
             const carousel = document.getElementById("carousel-3");
@@ -186,7 +170,6 @@
                 </h4>
                 <div class="relative">
                     <div id="carousel-1" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
-
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
 
@@ -224,7 +207,7 @@
                         </div>
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-        
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/4.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -236,7 +219,7 @@
                         </div>
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-        
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/5.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -246,10 +229,7 @@
                                 </h3>
                             </a>
                         </div>
-
                     </div>
-
-
                     <!-- Navigation buttons -->
                     <div class="absolute inset-y-0 left-0 flex items-center pl-2">
                         <button id="leftBtn-1"
@@ -269,17 +249,15 @@
                     </div>
                 </div>
             </div>
-
             <div class="mb-12">
                 <h4 class="text-3xl font-bold text-left text-gray-800 mb-6">
                     Female Services
                 </h4>
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
-
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-                               
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/5.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -291,7 +269,7 @@
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-                                
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/4.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -303,7 +281,7 @@
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-        
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/1.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -315,7 +293,7 @@
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-        
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/2.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -327,7 +305,7 @@
                         </div>
                         <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
                             <a href="explore_by_items">
-        
+
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/1.jpg' %}" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -337,7 +315,6 @@
                                 </h3>
                             </a>
                         </div>
-
                     </div>
                     <!-- Navigation buttons -->
                     <div class="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -359,7 +336,6 @@
                 </div>
             </div>
         </div>
-
         <!--Female-->
         <script>
             function scrollCarousel(carouselId, scrollOffset) {
@@ -398,7 +374,6 @@
             updateNavigationButtons("carousel-2", "leftBtn-2", "rightBtn-2");
             updateNavigationButtons("carousel-3", "leftBtn-3", "rightBtn-3");
         </script>
-
         <!--Male-->
         <script>
             function scrollCarousel(carouselId, scrollOffset) {
@@ -435,7 +410,7 @@
         </script>
 
         <section class="py-12">
-            
+
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
                     Reviews
@@ -459,7 +434,6 @@
                                     <p class="text-gray-600 text-sm">Dhaka</p>
                                 </div>
                             </div>
-
                         </div>
                         <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
                             <div class="flex items-center mb-4">
@@ -514,67 +488,46 @@
                                     <p class="text-gray-600 text-sm">Dhaka</p>
                                 </div>
                             </div>
-
-
-
                             <!-- Left Arrow -->
-<div class="absolute inset-y-0 left-0 flex items-center">
-    <button
-      class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-      onclick="scrollCarousel('carousel-7', -300)"
-      aria-label="Scroll left"
-    >
-      <img
-        src="{% static 'app/image/icon/left-arrow1.png' %}"
-        alt="Scroll left"
-        class="w-8 h-8 opacity-75 hover:opacity-100"
-      />
-    </button>
-  </div>
-  
-  <!-- Right Arrow -->
-  <div class="absolute inset-y-0 right-0 flex items-center">
-    <button
-      class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-      onclick="scrollCarousel('carousel-7', 300)"
-      aria-label="Scroll right"
-    >
-      <img
-        src="{% static 'app/image/icon/right-arrow.png' %}"
-        alt="Scroll right"
-        class="w-8 h-8 opacity-75 hover:opacity-100"
-      />
-    </button>
-  </div>
-  
+                            <div class="absolute inset-y-0 left-0 flex items-center">
+                                <button
+                                    class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                                    onclick="scrollCarousel('carousel-7', -300)" aria-label="Scroll left">
+                                    <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
+                                        class="w-8 h-8 opacity-75 hover:opacity-100" />
+                                </button>
+                            </div>
+                            <!-- Right Arrow -->
+                            <div class="absolute inset-y-0 right-0 flex items-center">
+                                <button
+                                    class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                                    onclick="scrollCarousel('carousel-7', 300)" aria-label="Scroll right">
+                                    <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
+                                        class="w-8 h-8 opacity-75 hover:opacity-100" />
+                                </button>
+                            </div>
                         </div>
                     </div>
         </section>
 
-      
         <div class="container mx-auto px-4 py-7">
-        
-
             <h2 class="text-2xl font-bold text-center mb-8">
                 Review About Our Platform
             </h2>
+
             <button id="writeReviewBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">
                 Write a Review
             </button>
 
             <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-          
             <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
                     <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
-                    
+
                     <form id="reviewForm" action="submit_review.html" method="POST">
-                        
                         <input type="text" id="reviewerName" name="reviewer_name"
                             class="w-full border p-2 rounded-lg mb-4" readonly value=""
                             placeholder="please enter your name" />
-
-                       
                         <div class="flex mb-4">
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
@@ -582,7 +535,7 @@
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
                         </div>
-                        
+
                         <input type="hidden" id="rating" name="rating" value="" required />
 
                         <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4"
@@ -599,12 +552,10 @@
                     </form>
                 </div>
             </div>
-
             <div id="reviewsContainer" class="mt-8 space-y-4">
-             
             </div>
         </div>
-     
+
         <div class="py-16 text-center">
             <h2 class="text-3xl font-bold text-black">
                 Wellcome to CareHUB :The Future of Beauty & Wellness
@@ -685,7 +636,6 @@
     </section>
     {% include "app/footer.html" %}
     <!-- Footer -->
-
 </body>
 
 </html>
