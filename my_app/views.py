@@ -3,9 +3,9 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
-
+from django.contrib.postgres.aggregates import ArrayAgg
 # use this to import any data from database
-from .models import District, Division, Service
+from .models import District,Upazilla, Division, Service, Area,Item
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -20,7 +20,8 @@ def home(request):
         # Return a 405 Method Not Allowed response for any non-GET requests
         return HttpResponseNotAllowed(['GET'])
     shop=ShopProfile.objects.all()
-
+    male_item=Item.objects.all()
+    # female_item=Item.objects.get()
     return render(request, 'app/home.html', {'review': 333,'shops':shop})
 
 def select_user_type(request):
@@ -87,8 +88,6 @@ def shop_profile(request):
              "shop_workers": workers
         })
 
-"""Added login requred only for testing purpose"""
-@login_required  
 def contact_us(request):
     return render(request, 'app/contact_us.html')
 
@@ -100,10 +99,47 @@ def service(request):
     return render(request, 'app/service.html',{'services':services})
 
 def book_now(request):
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+
+    print(area)
     if request.method == 'GET':
-        return render(request, 'app/book_now.html')
+        return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area})
     else:
         return HttpResponseNotAllowed(['GET'])
+    
+def fetch_shop(request):
+    district = request.GET.get('district', '')
+    upazila = request.GET.get('upazila', '')
+    area = request.GET.get('area', '')
+    limit = int(request.GET.get('limit', 9))
+    offset = int(request.GET.get('offset', 0))
+    print(district,upazila,area)
+    salons = ShopProfile.objects.all()
+    if district:
+        salons = salons.filter(shop_state=district)
+    if upazila:
+        salons = salons.filter(shop_city=upazila)
+    if area:
+        salons = salons.filter(shop_area=area)
+
+    salons = salons[offset:offset + limit]
+    
+    salon_list = [
+        {
+            'shop_id': salon.id,
+            'shop_name': salon.shop_name,
+            'shop_rating': salon.shop_rating,
+            'shop_customer_count': salon.shop_customer_count,
+            'shop_city': salon.shop_city,
+            'shop_title': salon.shop_title,
+            # 'image': salon.shop_picture.url if salon.shop_picture else '',  # Ensure media URLs work
+        }
+        for salon in salons
+    ]
+    
+    return JsonResponse(salon_list, safe=False)
 
 def location(request):
     divisions = Division.objects.all()  # Fetch all Division objects

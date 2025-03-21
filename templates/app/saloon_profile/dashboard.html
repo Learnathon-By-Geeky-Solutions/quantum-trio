@@ -376,11 +376,13 @@
         <div class="bg-gradient-to-r from-pink-100 to-pink-200 p-6 rounded-lg shadow-lg text-center transform transition hover:scale-105 duration-300">
             <div class="mb-4 flex justify-center items-center">
                 <img 
-                src="{% if worker.profile_pic %}{{ worker.profile_pic.url }}{% else %}{% static 'path/to/default-profile.jpg' %}{% endif %}" 
+                src="{{ worker.profile_pic.url}}" 
                 alt="Expert Person" 
                 class="w-24 h-24 rounded-full shadow-md border-4 border-pink-500"
             />
+            
             </div>
+           
             <h3 class="text-2xl font-bold text-gray-800">{{worker.name}}</h3>
             <p class="mt-1 text-sm text-gray-600">Rating  {% for _ in "123" %}
                 <span>&#9733;</span> <!-- Filled star -->
@@ -391,15 +393,15 @@
                 <span>&#9734;</span> <!-- Empty star -->
             {% endfor %} </p>
             <p class="mt-4 text-gray-700 text-left">
-                <span class="font-semibold">Expert in:</span>
-                <ul class="list-disc list-inside mt-2">
-                    {% for item in worker.expertise.all %} 
+            <span class="font-semibold">Expert in:</span>
+            <ul class="list-disc list-inside mt-2">
+                {% for item in worker.expertise.all %} 
                     <li>{{ item.name }}</li> 
                 {% empty %}
                     <li>No expertise listed</li>
                 {% endfor %}     
                     
-                </ul>
+            </ul>
             </p>
         </div>
         {% endfor %}

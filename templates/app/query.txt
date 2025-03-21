@@ -165,6 +165,10 @@ VALUES
 ('Educational Services'),
 ('Miscellaneous Services');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5c378786ef63f29594ab4e3640184a3682d9d85
 ALTER TABLE public."my_app_item" ALTER COLUMN item_description SET DEFAULT 'No description available';
 
 INSERT INTO public."my_app_item" (name, service_id) VALUES

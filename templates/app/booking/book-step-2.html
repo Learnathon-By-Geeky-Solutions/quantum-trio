@@ -56,96 +56,81 @@
 
 <body class="bg-gray-100">
     <div class="max-w-screen-xl mx-auto p-6 lg:p-8">
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <div class="lg:w-5/6">
-                <div class="flex items-center space-x-4 mb-8">
-                    <a href="javascript:window.history.back()">
-                        <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="Go back" class="w-8 h-8">
-                    </a>
-                    <h2 class="text-4xl font-bold text-gray-800">Select Your Desired Time</h2>
+        <div class="flex items-center space-x-4 mb-8">
+            <a href="javascript:window.history.back()">
+                <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="Go back" class="w-8 h-8">
+            </a>
+            <h2 class="text-4xl font-bold text-gray-800">Select Your Desired Time</h2>
+        </div>
+
+        <div class="flex flex-row gap-4 p-4">
+            <!-- Time Selection Section -->
+            <div class="bg-white p-8 rounded-lg shadow-md w-1/2 items-center">
+                <!-- Month and Year -->
+                <div class="flex justify-between  mb-4 p-5 bg-gray-200 rounded-lg">
+                    
+                    <button id="prev-month" class="text-gray-500 text-lg font-semibold">&lt;</button>
+                    <span id="month-year" class="text-lg font-semibold">October 2024</span>
+                    <button id="next-month" class="text-gray-500 text-lg font-semibold">&gt;</button>
+                    
                 </div>
-
-                <!-- Time Selection Section -->
-                <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg mx-auto">
-                    <!-- Month and Year -->
-                    <div class="flex justify-between items-center mb-4">
-                        <span id="month-year" class="text-lg font-semibold">October 2024</span>
-                        <div class="space-x-4">
-                            <button id="prev-month" class="text-gray-500">&lt;</button>
-                            <button id="next-month" class="text-gray-500">&gt;</button>
-                        </div>
-                    </div>
-
-                    <!-- Date Selection -->
-                    <div id="date-buttons" class="grid grid-cols-7 gap-2 mb-6"></div>
-                    <div>
-                        <label type="hideden" name="selected_date" id="fetch_selected_date"></label>
+        
+                <!-- Date Selection -->
+                <div class="px-5 mx-2 items-center justify-between">
+                    <div id="date-buttons" class=" flex justify-between w-full space-x-2"></div>
+                    <div class="bg-gray-200  mt-4 w-1/3">
+                        <label type="hidden" name="selected_date" id="fetch_selected_date"></label>
                         <input type="hidden" name="selected_date" id="fetch_selected_date">
                         <label name="selected_time" id="fetch_selected_time"></label>
-                         <input type="hidden" id="fetch_selected_time" name="selected_time">
+                        <input type="hidden" id="fetch_selected_time" name="selected_time">
                     </div>
                     <!-- Time Slot dynamic -->
-                    <div id="time-slots">
-
-                    </div>
-                    
+                    <div id="time-slots" class=" items-center justify-between bg-gray-200"></div>
+            
                     <input type="hidden" id="selected-time" name="selected-time">
                 </div>
             </div>
-
+        
             <!-- Shop and Service Details -->
-            <div class="lg:w-2/6 bg-white p-6 shadow-md rounded-lg mt-6 lg:mt-0">
-                <h1 class="text-4xl font-bold mb-4">Shop name</h1>
-                    <p class="text-gray-700 ">
-                        4 ⭐ 100 customer 50 review
-                    </p>
-                    <p class="text-gray-500 text-2xl">shop city</p>
-                    <p class="text-gray-500">
-                        {{ shop.shop_area }}, {{ shop.shop_landmark_1 }}, {{ shop.shop_landmark_2 }}
-                    </p>
-                    <hr class="my-4">
-
-                    <p class="text-gray-700 font-semibold">
-                        {% if service %}
-                            <h3 class="text-lg text-2xl font-bold mb-4">{{ service.item_name }}</h3>
-                        {% endif %}
-                    </p>
-                    <p class="text-gray-500">
-                        Your desired Expert: 
-                        {% if worker %}
-                            {{ worker.worker_name }}
-                        {% else %}
-                            No worker selected.
-                        {% endif %}
-                    </p>
-                        <p class="text-gray-500">
-                            Time: 1 hour (approx) &bull; {{ service.item_description }}
-                        </p>
+            <div class="bg-white p-6 rounded-lg shadow-md w-1/2">
+                <h1 class="text-4xl font-bold mb-4">{{shop.shop_name}}</h1>
+                <p class="text-gray-700">4 ⭐ 100 customer 50 review</p>
+                <p class="text-gray-500 text-2xl">shop city</p>
+                <p class="text-gray-500">{{ shop.shop_area }}, {{ shop.shop_landmark_1 }}, {{ shop.shop_landmark_2 }}</p>
+                <hr class="my-4">
+                <p class="text-gray-700 font-semibold">
+                    {% if service %}
+                    <h3 class="text-lg text-2xl font-bold mb-4">{{ service.item_name }}</h3>
+                    {% endif %}
+                </p>
+                <p class="text-gray-500">Your desired Expert:{{ worker.name }}</p>
+                <p class="text-gray-500">Time: 1 hour (approx) &bull; {{ service.item_description }}</p>
+                <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
+                <hr class="my-4">
         
-                        <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
-        
-                        <hr class="my-4">
-        
-                        <p class="text-lg font-bold">Total: 
-                            <span class="text-green-600">BDT: {{ service.price }} TK</span>
-                        </p>
-                        {% csrf_token %}
-                {% comment %} <form id="worker-selection-form" action="success.php" method="POST">
-                    <input id="shop_id" type="hidden" name="shop_id" value="<?php echo $shop_id; ?>">
-                    <input id="worker_id" type="hidden" name="worker_id" value="<?php echo $worker_id; ?>">
-                    <input id="item_id" type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+                <p class="text-lg font-bold">Total:
+                    <span class="text-green-600">BDT: {{ service.price }} TK</span>
+                </p>
+                {% csrf_token %}
+                <form id="worker-selection-form" action="" method="POST">
+                    <input id="shop_id" type="hidden" name="shop_id" value="{{shop.id}}">
+                    <input id="worker_id" type="hidden" name="worker_id" value="{{worker_id}}">
+                    <input id="item_id" type="hidden" name="item_id" value="{{item_id}}">
                     <input id="selected_time_id" type="hidden" name="selected_time_id" value="">
                     <input id="selected_date_id" type="hidden" name="selected_date_id" value="">
                     <input id="check" type="hidden" name="check" value="1">
                     <button id="confirmButton"
-                        class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">Confirm</button>
+                        class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
+                        Confirm
+                    </button>
                 </form>
                 <button id="continue-button" disabled
-                    class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">Continue</button>
-             {% endcomment %}
-            
-                </div>
+                    class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
+                    Continue
+                </button>
+            </div>
         </div>
+        
     </div>
 
     <script>
@@ -158,15 +143,15 @@
             let worker_id = document.getElementById('worker_id').value;
             let item_id = document.getElementById('item_id').value;
 
-            // Define the time slots to add
+            console.log('Shop ID:', shop_id);
+
             let timeSlots = [];
 
-            fetch(`available_slots.php?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
+            fetch(`/available_slots/?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
                 .then(response => response.json())
                 .then(resultSlots => {
                     timeSlots.push(...resultSlots);
-                    // alert(resultSlots); // Log the result to see what you get
-                    // Get the container where the time slots will be added
+                     alert(resultSlots);
                     const timeSlotsContainer = document.getElementById('time-slots');
                     timeSlotsContainer.innerHTML = ''; // Clear previous slots
                     // Create and append each time slot

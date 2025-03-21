@@ -1,0 +1,23 @@
+<div id="sidebar" class="w-64 bg-white shadow-md p-4 m-4">
+    <a href="#" id="mma" class="block text-lg font-semibold text-gray-800 mb-2">Manage My Account</a>
+    <ul class="space-y-2">
+        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Profile</a></li>
+        <li><a href="" class="block text-gray-700 hover:text-pink-600">Address of Booking</a></li>
+        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Reviews</a></li>
+        <li>
+            <a href="" id="mymessage" class="block text-gray-700 hover:text-pink-600">
+                My Messages
+                {% if request.user.profile.unseen_messages > 0 %}
+                    <span class="text-red-500">({{ request.user.profile.unseen_messages }})</span>
+                {% endif %}
+            </a>
+        </li>
+        <li><a href="" id="mma" class="block text-gray-700 hover:text-pink-600">My Booking</a></li>
+        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Cancellations</a></li>
+        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Notifications</a></li>
+    </ul>
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="block text-gray-700 hover:text-pink-600 text-xl mt-4">Logout</a>
+    {% endif %}
+</div>
