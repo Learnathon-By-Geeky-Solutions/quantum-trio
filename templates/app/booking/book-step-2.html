@@ -143,15 +143,15 @@
             let worker_id = document.getElementById('worker_id').value;
             let item_id = document.getElementById('item_id').value;
 
-            // Define the time slots to add
+            console.log('Shop ID:', shop_id);
+
             let timeSlots = [];
 
-            fetch(`available_slots?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
+            fetch(`/available_slots/?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
                 .then(response => response.json())
                 .then(resultSlots => {
                     timeSlots.push(...resultSlots);
-                    // alert(resultSlots); // Log the result to see what you get
-                    // Get the container where the time slots will be added
+                     alert(resultSlots);
                     const timeSlotsContainer = document.getElementById('time-slots');
                     timeSlotsContainer.innerHTML = ''; // Clear previous slots
                     // Create and append each time slot

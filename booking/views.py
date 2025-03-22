@@ -1,5 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
+from booking.models import BookingSlot
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.views.decorators.csrf import csrf_protect
 
@@ -52,3 +54,16 @@ def booking_step_2(request):
          "worker": worker, 
 
     })
+
+def available_slots(request):
+    shop_id = request.GET.get('shop_id')
+    worker_id = request.GET.get('worker_id')
+    item_id = request.GET.get('item_id')
+    date = request.GET.get('date')
+
+    if not (shop_id and worker_id and item_id and date):
+        return JsonResponse({"error": "Missing parameters"}, status=400)
+
+    slots = BookingSlot.objects.filter(shop_id=shop_id, worker_id=worker_id, item_id=item_id, date=date).values_list('time', flat=True)
+    
+    return JsonResponse(list(slots), safe=False)

@@ -18,9 +18,7 @@
         font-weight: bolder;
     }
     
-    .t {
-        font-size: 50px;
-    }
+    
     h1 {
         font-weight: 800;
     }
@@ -39,7 +37,7 @@
 
 <header id="navbar" class="bg-white shadow">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="home" class="t text-2xl font-bold text-pink-700">CareHUB BD</a>
+        <a href="home" class="text-5xl font-bold text-pink-700">CareHUB BD</a>
         <nav class="space-x-6">
             <a href="home" class="text-gray-700 hover:text-pink-600">Home</a>
             <a href="service" class="text-gray-700 hover:text-pink-600">Services</a>
@@ -50,7 +48,7 @@
                 {% if user.user_type == "shop" %}
                     <a href="dashboard" class="text-gray-700 hover:text-pink-600">Dashboard</a>
                 {% elif user.user_type == "user" %}
-                    <a href="user" class="text-gray-700 hover:text-pink-600">{{ user.user_profile.first_name}} {{user.user_profile.last_name }}</a>
+                    <a href="myprofile" class="text-gray-700 hover:text-pink-600">{{ user.user_profile.first_name}} {{user.user_profile.last_name }}</a>
                 {% else %}
                     <a href="/admin" class="text-gray-700 hover:text-pink-600">Admin</a>
                 {% endif %}
