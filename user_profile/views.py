@@ -8,3 +8,6 @@ def address(request):
 
 def reviews(request):
     return render(request,'app/customer_profile/reviews.html')
+
+def addressofbooking(request):
+    return render(request,'app/customer_profile/addressofbooking.html')
