@@ -15,3 +15,6 @@ def addressofbooking(request):
 
 def myreviews(request):
     return render(request,'app/customer_profile/myreviews.html')
+
+def mybooking(request):
+    return render(request,'app/customer_profile/mybooking.html')
