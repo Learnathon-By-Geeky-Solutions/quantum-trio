@@ -44,8 +44,84 @@
         <div class="wave water"></div>
         <div class="wave water"></div>
         <!-- don't do anything here -->
+        <button onclick="toggleChat()"
+            class="fixed bottom-6 right-6 bg-red-500 hover:bg-red-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+            💬
+        </button>
+        <div id="chatPopup" class="hidden fixed bottom-16 right-66 w-80 bg-white shadow-xl rounded-lg">
+            <div class="bg-red-500 text-white p-4 flex justify-between items-center rounded-t-lg">
+                <span class="text-lg font-semibold">Chat with us</span>
+                <button onclick="toggleChat()" class="text-lg">✖</button>
+            </div>
+
+            <div id="chatBody" class="h-64 overflow-y-auto p-4 flex flex-col space-y-2">
+                <!-- Initial bot message -->
+                <div class="flex justify-start">
+                    <div class="bg-red-500 p-2 rounded-lg max-w-[75%]">
+                        🤖 <strong>Bot:</strong> Hello! How can I help you?
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 flex space-x-2 border-t">
+                <input id="userInput" type="text" placeholder="Type a message..."
+                    class="flex-1 border text-black rounded-lg p-2 focus:outline-none">
+                <button onclick="sendMessage()"
+                    class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700">Send</button>
+            </div>
+        </div>
     </section>
 
+    <script>
+        function toggleChat() {
+            let chatPopup = document.getElementById("chatPopup");
+            chatPopup.classList.toggle("hidden");
+        }
+    
+        function sendMessage() {
+            let userInput = document.getElementById("userInput").value;
+            let chatBody = document.getElementById("chatBody");
+    
+            if (userInput.trim() !== "") {
+                // Add User Message (Right Side)
+                let userMsg = `
+                    <div class="flex justify-end">
+                        <div class="bg-blue-500 text-white p-2 rounded-lg max-w-[75%]">
+                            <strong>You:</strong> ${userInput}
+                        </div>
+                    </div>`;
+                chatBody.innerHTML += userMsg;
+    
+                document.getElementById("userInput").value = ""; 
+    
+                // Fetch Bot Response from API
+                fetch(`/chatbot/api/chat/?message=${userInput}`)
+                    .then(response => {
+                        console.log('Response:', response); 
+                        return response.json();  // Parse response as JSON
+                    })
+                    .then(data => {
+                        console.log('Data received from API:', data);  
+                        if (data && data.bot_response) {
+                            // Add Bot Response (Left Side)
+                            let botMsg = `
+                                <div class="flex justify-start">
+                                    <div class="bg-gray-200 p-2 rounded-lg max-w-[75%]">
+                                        🤖 <strong>Bot:</strong> ${data.bot_response}
+                                    </div>
+                                </div>`;
+                            chatBody.innerHTML += botMsg;
+                            chatBody.scrollTop = chatBody.scrollHeight; 
+                        } else {
+                            console.error("No bot response received from API.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data from API:", error);
+                    });
+            }
+        }
+    </script>
+    
     <section id="bg">
         <!-- How It Works Section -->
         <div class="container mx-auto px-4 mid">
@@ -107,19 +183,19 @@
         </section>
 
         <script>
-            const recommendations = [
-                {% for shop in shops %}
-            {
-                title: "{{ shop.shop_name|escapejs }}",
-                    rating: { { shop.shop_rating } },
-                reviews: { { shop.shop_customer_count } },
-                location: "{{ shop.shop_city|escapejs }}",
-                    category: "{{ shop.category|escapejs }}",
-                        image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                            link: "salon-profile?shop_id={{ shop.id }}",
-                    },
-            {% endfor %}
-            ];
+            // const recommendations = [
+            //     {% for shop in shops %}
+            // {
+            //     title: "{{ shop.shop_name|escapejs }}",
+            //     rating: { { shop.shop_rating } },
+            //     reviews: { { shop.shop_customer_count } },
+            //     location: "{{ shop.shop_city|escapejs }}",
+            //     category: "{{ shop.category|escapejs }}",
+            //     image: "{% static 'app/image/shop/' %}{{ shop.image }}",
+            //     link: "salon-profile?shop_id={{ shop.id }}",
+            // },
+            // {% endfor %}
+            // ];
 
             const carousel = document.getElementById("carousel-3");
 

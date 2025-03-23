@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'user_profile',
     'shop_profile',
     'booking',
+    'chatbot',
 ]
 
 TAILWIND_APP_NAME = 'theme'
