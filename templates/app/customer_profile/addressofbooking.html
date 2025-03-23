@@ -11,387 +11,89 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	{% tailwind_css %}
-
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-        body {
-            background-color: #F4F4F4;
-        }
-
-
-        #navbar {
-            z-index: 1;
-            width: 100%;
-            margin-bottom: 20px;
-            background-color: #FFFFFF;
-        }
-
-        .text-gray-700 {
-            font-weight: bolder;
-        }
-
-        .t {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 50px;
-            color: #C71585;
-        }
-
-        #sidebar {
-            flex-direction: column;
-            justify-content: center;
-            margin: 20px 0 0 30px;
-            width: 300px;
-        }
-
-
-        #sidebar ul li a {
-            text-decoration: none;
-            line-height: 35px;
-            font-size: larger;
-            margin-left: 20px;
-            margin-top: 40px;
-            color: #4A5568;
-            transition: color 0.3s;
-        }
-
-        #sidebar ul li a:hover {
-            color: #C71585;
-        }
-
-        #sidebar ul li {
-            text-decoration: none;
-            list-style-type: none;
-        }
-
-        #mma {
-            font-size: 27.9px;
-            text-decoration: none;
-            color: #C71585;
-
-        }
-
-
-        #undernavbar {
-            display: flex;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            margin-top: 50px;
-        }
-
-
-        .card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            /* margin-bottom: 10px; */
-            margin-top: 78px;
-            margin-left: 80px;
-            height: 330px;
-            width: 55%;
-            /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            color: #C71585;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-
-        button {
-            height: 35px;
-            text-align: center;
-        }
-
-        #B {
-            font-size: larger;
-            font-weight: bolder;
-        }
-
-        #tittlemnm {
-            font-size: x-large;
-            color: #C71585;
-            margin: 50px 0 0 340px;
-        }
-
-        #name {
-            margin: 0 0 0 670px;
-        }
-
-        footer {
-            height: 358px;
-            background-color: #1F2937;
-            width: 100vw;
-        }
-
-        .card h3 {
-            font-size: 2rem;
-            color: #C71585;
-            font-weight: 900;
-            position: relative;
-            bottom: 93.8px;
-            right: 20px;
-        }
-
-        .arrow {
-            position: absolute;
-            right: 100px;
-        }
-
-        .navs {
-            background-color: #FFFFFF;
-            width: 100vw;
-            height: 65px;
-            box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
-            display: flex;
-
-        }
-
-        .radiant {
-            font-size: 42px;
-            font-weight: 900;
-            margin-left: 90px;
-            color: #C71585;
-        }
-
-        .login_name {
-            font-weight: 900;
-        }
-
-        .relation {
-            margin-top: -6px;
-            padding-left: 10px;
-        }
-
-        .together {
-            display: flex;
-            margin-top: 20px;
-            margin-left: 600px;
-        }
-
-        li {
-            font-size: 21px;
-        }
-
-        * {
-            font-family: cursive;
-        }
-
-        .gri {
-            position: relative;
-            bottom: 70px;
-
-        }
-
-        #btn {
-            position: relative;
-            bottom: 70px;
-            height: 45px;
-        }
-    </style>
+    
 </head>
 
 <body>
-    <div class="navs">
-        <div class="radiant">
-            <a href="../home.php">RadiantHub BD</a>
-        </div>
-        <div class="together">
-            <div class="login">
-                <a href="" id="name" class="login_name">
-                </a>
-            </div>
-            <div class="relation">
-                <button class="arrow_bottom" onclick="toggleDropdown()">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                        </path>
-                    </svg>
-                </button>
-
-                <!-- Dropdown Menu -->
-                <div id="dropdownMenu"
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden">
-                    <a href="../home.php" class="text-2xl font-bold hover:text-pink-600"
-                        style="font-size:16px;margin:0 0 0 15px;">Home</a><br>
-                    <a href="My_profile.php" class="text-2xl font-bold hover:text-pink-600"
-                        style="font-size:16px;margin:0 0 0 15px;">Profile</a><br>
-                    <a href="addressofbooking.php" class="text-2xl font-bold hover:text-pink-600"
-                        style="font-size:16px;margin:0 0 0 15px;">Book & address</a><br>
-                    <a href="myreviews.php" class="text-2xl font-bold hover:text-pink-600"
-                        style="font-size:16px;margin:0 0 0 15px;">Review</a><br>
-                    <a href="mycancellations.php" class="text-2xl font-bold hover:text-pink-600"
-                        style="font-size:16px;margin:0 0 0 15px;">Cancel products</a><br>
-                    <?php
-                    if (isset($_SESSION['type'])) {
-                        echo '<a href="../logout.php" class="text-gray-700 hover:text-pink-600 " style="font-size:16px;margin:0 0 0 15px;">Logout</a>';
-                    }
-                    ?>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+    {% include 'app/customer_profile/navbar.html' %}
     <script>
         function toggleDropdown() {
             document.getElementById('dropdownMenu').classList.toggle('hidden');
         }
     </script>
-
-
-    <!-- <h2 id="tittlemnm">Address of Booking</h2> -->
-    <section id="undernavbar">
-        <div id="sidebar">
-            <a href="#" id="mma">Manage My Account</a>
-            <ul>
-            <li><a href="My_profile.php">My Profile</a></li>
-                <li><a href="addressofbooking.php">Address of Booking</a></li>
-                <li><a href="myreviews.php">My Reviews</a></li>
-                <li><a href="" id="mymessage">My Messages<?php if ($_SESSION['unseen'] > 0): ?>
-                            <span class="unseen-count" style="color: red;">(<?php echo $_SESSION['unseen']; ?>)</span>
-                        <?php endif; ?></a></li>
-                <li><a href="mybooking.php" id="mma">My booking</a></li>
-                <li><a href="mycancellations.php">My Cancellations</a></li>
-                <li><a href="Notifications.php">My Notifications</a></li>
-            </ul>
-            <?php
-            if (isset($_SESSION['type'])) {
-                echo '<a href="../logout.php" class="text-gray-700 hover:text-pink-600 " style="font-size:30px;margin:0 0 0 20px; line-height:50px;">Logout</a>';
-            }
-            ?>
+    <section id="undernavbar" class="flex">
+        <div class="w-1/4">
+            {% include 'app/customer_profile/sidebar.html' %}
         </div>
-        <!-- <div id="box1"> -->
+        <div class="w-3/4 p-4">
+            <div class="card max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-2xl font-semibold mb-4">Address of Booking</h3>
+                <form action="" method="POST">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <!-- District Dropdown -->
+                        <div>
+                            <label for="district" class="font-semibold">District</label>
+                            <select id="district" name="district"
+                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                                required>
+                                <option disabled selected>Select District</option>
+                                <option value="Bagerhat">Bagerhat</option>
+                                <option value="Bandarban">Bandarban</option>
+                                <option value="Barguna">Barguna</option>
+                                <option value="Barishal">Barishal</option>
+                                <option value="Bhola">Bhola</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="upazilla" class="font-semibold">Upazilla</label>
+                            <select id="upazilla" name="upazilla"
+                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
+                                required>
+                                <option value="" disabled selected>Select Upazilla</option>
+                            </select>
+                        </div>
+    
+                        <div>
+                            <label for="area" class="font-semibold">Area</label>
+                            <input type="text" id="area" name="area" class="text-gray-600 w-full p-2 border rounded"
+                                value="" required>
+                        </div>
 
-        <div class="card">
-            <h3>Address of Booking</h3>
-            <form action="" method="POST">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 gri">
-                    <div>
-                        <label for="district" class="font-semibold">District</label>
-                        <!-- <input type="text" id="district" name="district" class="text-gray-600 w-full p-2 border rounded"
-                            value="" required> -->
-                        <select id="district" name="district"
-                            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                            required>
-                            <option disabled selected><?php echo $_SESSION['district']; ?></option>
-                            <option value="Bagerhat">Bagerhat</option>
-                            <option value="Bandarban">Bandarban</option>
-                            <option value="Barguna">Barguna</option>
-                            <option value="Barishal">Barishal</option>
-                            <option value="Bhola">Bhola</option>
-                            <option value="Bogura">Bogura</option>
-                            <option value="Brahmanbaria">Brahmanbaria</option>
-                            <option value="Chandpur">Chandpur</option>
-                            <option value="Chattogram">Chattogram</option>
-                            <option value="Chuadanga">Chuadanga</option>
-                            <option value="Cox's Bazar">Cox_s_Bazar</option>
-                            <option value="Cumilla">Cumilla</option>
-                            <option value="Dhaka">Dhaka</option>
-                            <option value="Dinajpur">Dinajpur</option>
-                            <option value="Faridpur">Faridpur</option>
-                            <option value="Feni">Feni</option>
-                            <option value="Gaibandha">Gaibandha</option>
-                            <option value="Gazipur">Gazipur</option>
-                            <option value="Gopalganj">Gopalganj</option>
-                            <option value="Habiganj">Habiganj</option>
-                            <option value="Jamalpur">Jamalpur</option>
-                            <option value="Jashore">Jashore</option>
-                            <option value="Jhalokathi">Jhalokathi</option>
-                            <option value="Jhenaidah">Jhenaidah</option>
-                            <option value="Khagrachhari">Khagrachhari</option>
-                            <option value="Khulna">Khulna</option>
-                            <option value="Kishoreganj">Kishoreganj</option>
-                            <option value="Kurigram">Kurigram</option>
-                            <option value="Kushtia">Kushtia</option>
-                            <option value="Lakshmipur">Lakshmipur</option>
-                            <option value="Lalmonirhat">Lalmonirhat</option>
-                            <option value="Madaripur">Madaripur</option>
-                            <option value="Magura">Magura</option>
-                            <option value="Manikganj">Manikganj</option>
-                            <option value="Meherpur">Meherpur</option>
-                            <option value="Moulvibazar">Moulvibazar</option>
-                            <option value="Munshiganj">Munshiganj</option>
-                            <option value="Mymensingh">Mymensingh</option>
-                            <option value="Naogaon">Naogaon</option>
-                            <option value="Narail">Narail</option>
-                            <option value="Narayanganj">Narayanganj</option>
-                            <option value="Narsingdi">Narsingdi</option>
-                            <option value="Natore">Natore</option>
-                            <option value="Netrokona">Netrokona</option>
-                            <option value="Nilphamari">Nilphamari</option>
-                            <option value="Noakhali">Noakhali</option>
-                            <option value="Pabna">Pabna</option>
-                            <option value="Panchagarh">Panchagarh</option>
-                            <option value="Patuakhali">Patuakhali</option>
-                            <option value="Pirojpur">Pirojpur</option>
-                            <option value="Rajbari">Rajbari</option>
-                            <option value="Rajshahi">Rajshahi</option>
-                            <option value="Rangamati">Rangamati</option>
-                            <option value="Rangpur">Rangpur</option>
-                            <option value="Satkhira">Satkhira</option>
-                            <option value="Shariatpur">Shariatpur</option>
-                            <option value="Sherpur">Sherpur</option>
-                            <option value="Sirajganj">Sirajganj</option>
-                            <option value="Sunamganj">Sunamganj</option>
-                            <option value="Sylhet">Sylhet</option>
-                            <option value="Tangail">Tangail</option>
-                            <option value="Thakurgaon">Thakurgaon</option>
-                        </select>
+                        <div>
+                            <label for="latitude" class="font-semibold">Latitude</label>
+                            <input type="text" id="latitude" name="latitude" class="text-gray-600 w-full p-2 border rounded"
+                                value="" required>
+                        </div>
+    
+                        <div>
+                            <label for="longitude" class="font-semibold">Longitude</label>
+                            <input type="text" id="longitude" name="longitude"
+                                class="text-gray-600 w-full p-2 border rounded"
+                                value="" required>
+                        </div>
+    
+                        <div>
+                            <label for="longitude" class="font-semibold">&nbsp;</label>
+                            <button type="button"
+                                class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300"
+                                onclick="getLocation()">Get My Location</button>
+                        </div>
                     </div>
-                    <div>
-                        <label for="upazilla" class="font-semibold">Upazilla</label>
-                        <!-- <input type="text" id="upazilla" name="upazilla" class="text-gray-600 w-full p-2 border rounded"
-                            value="" required> -->
-                        <select id="upazilla" name="upazilla"
-                            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                            required>
-                            <option value="" disabled selected><?php echo $_SESSION['upazilla']; ?></option>
-                        </select>
+    
+                    <!-- Keep Changes Button -->
+                    <div class="flex space-x-4">
+                        <button name="submit" id="btn"
+                            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Keep changes</button>
                     </div>
-                    <div>
-                        <label for="area" class="font-semibold">Area</label>
-                        <input type="text" id="area" name="area" class="text-gray-600 w-full p-2 border rounded"
-                            value="<?php echo $_SESSION['area']; ?>" required>
-                    </div>
-                    <div>
-                        <label for="latitude" class="font-semibold">Latitude</label>
-                        <input type="text" id="latitude" name="latitude" class="text-gray-600 w-full p-2 border rounded"
-                            value="<?php echo $_SESSION['latitude']; ?>" required>
-                    </div>
-                    <div>
-                        <label for="longitude" class="font-semibold">Longitude</label>
-                        <input type="text" id="longitude" name="longitude"
-                            class="text-gray-600 w-full p-2 border rounded"
-                            value="<?php echo $_SESSION['longitude']; ?>" required>
-                    </div>
-                    <div>
-                        <label for="longitude" class="font-semibold">&nbsp;</label>
-                        <button type="button"
-                            class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300"
-                            onclick="getLocation()">Get My Location</button>
-                    </div>
-                </div>
-                <div class="flex space-x-4">
-                    <button name="submit" id="btn"
-                        class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Keep
-                        changes</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-        <!-- </div> -->
-
     </section>
-    <!-- <footer class="bg-gray-800 text-white py-6">
-
+    <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
-                
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -429,10 +131,7 @@
                 </div>
             </div>
         </div>
-
-
-
-    </footer> -->
+    </footer>
 </body>
 <script>
     const citiesBydistrict = {
