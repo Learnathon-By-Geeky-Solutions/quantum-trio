@@ -18,3 +18,9 @@ def myreviews(request):
 
 def mybooking(request):
     return render(request,'app/customer_profile/mybooking.html')
+
+def mycancellations(request):
+    return render(request,'app/customer_profile/mycancellations.html')
+
+def mynotifications(request):
+    return render(request,'app/customer_profile/mynotifications.html')

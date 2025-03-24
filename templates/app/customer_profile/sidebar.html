@@ -14,8 +14,8 @@
             </a>
         </li>
         <li><a href="{% url 'mybooking' %}" id="mma" class="block text-gray-700 hover:text-pink-600">My Booking</a></li>
-        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Cancellations</a></li>
-        <li><a href="" class="block text-gray-700 hover:text-pink-600">My Notifications</a></li>
+        <li><a href="{% url 'mycancellations' %}" class="block text-gray-700 hover:text-pink-600">My Cancellations</a></li>
+        <li><a href="{% url 'mynotifications' %}" class="block text-gray-700 hover:text-pink-600">My Notifications</a></li>
     </ul>
 
     {% if request.user.is_authenticated %}

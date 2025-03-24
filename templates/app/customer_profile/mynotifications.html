@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+{% load tailwind_tags %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadiantHub BD</title>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+
+<body class="bg-gray-100">
+    {% include 'app/customer_profile/navbar.html' %}
+    
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+    </script>
+    
+    <section id="undernavbar" class="flex">
+        <div class="w-1/4">
+            {% include 'app/customer_profile/sidebar.html' %}
+        </div>
+
+        <div class="w-3/4 p-4">
+            <h3 class="text-2xl font-bold text-pink-700 mb-6">My Notifications</h3>
+
+            <!-- Notifications Table -->
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-pink-500 text-white">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Serial</th>
+                            <th class="px-4 py-2 text-left">Subject</th>
+                            <th class="px-4 py-2 text-left">Message</th>
+                            <th class="px-4 py-2 text-left">Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        <!-- Demo data rows -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">1</td>
+                            <td class="px-4 py-2">Your booking has been confirmed!</td>
+                            <td class="px-4 py-2">Your appointment at RadiantHub has been confirmed for 20th March 2025 at 10:00 AM.</td>
+                            <td class="px-4 py-2">2025-03-18 09:45:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2</td>
+                            <td class="px-4 py-2">New update on your service!</td>
+                            <td class="px-4 py-2">There has been an update on your service. Please check your dashboard for more details.</td>
+                            <td class="px-4 py-2">2025-03-19 12:30:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">3</td>
+                            <td class="px-4 py-2">Reminder: Your appointment is tomorrow</td>
+                            <td class="px-4 py-2">Just a reminder that your appointment is tomorrow at RadiantHub at 11:00 AM.</td>
+                            <td class="px-4 py-2">2025-03-19 16:00:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">4</td>
+                            <td class="px-4 py-2">Feedback Request</td>
+                            <td class="px-4 py-2">We would love to hear about your experience at RadiantHub. Please leave a review!</td>
+                            <td class="px-4 py-2">2025-03-20 08:00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </section>
+    {% include 'app/footer.html' %}
+</body>
+
+</html>
