@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My bookings</title>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #F4F4F4;
+            font-family: 'Inter', sans-serif;
+        }
+        .text-gray-700 {
+            font-weight: bolder;
+        }
+
+        .t {
+            /* font-family: 'Times New Roman', Times, serif; */
+            font-family: cursive;
+            font-size: 50px;
+            color: #C71585;
+        }
+
+        #sidebar {
+            flex-direction: column;
+            justify-content: center;
+            margin: 20px 0 0 30px;
+            width: 300px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            line-height: 35px;
+            font-size: larger;
+            margin-left: 20px;
+            color: #4A5568;
+            transition: color 0.3s;
+        }
+
+        #sidebar ul li a:hover {
+            color: #C71585;
+        }
+
+        #sidebar ul li {
+            text-decoration: none;
+            list-style-type: none;
+        }
+
+        #mma {
+            font-size: 27.9px;
+            text-decoration: none;
+            color: #C71585;
+            margin-right: 40px;
+        }
+        #undernavbar {
+            display: flex;
+            border-radius: 20px;
+            margin-bottom: 80px;
+            margin-top: 50px;
+            /* Increased margin-bottom for more space */
+        }
+        #box1 {
+            /* background-color: #FFFFFF; */
+            width: 61%;
+            height: 500px;
+            border-radius: 10px;
+            margin-left: 180px;
+            /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
+
+        }
+        #box1 h1 {
+            font-size: 2rem;
+            color: #C71585;
+            font-weight: 900;
+            position: relative;
+            bottom: 20px;
+        }
+        img {
+            height: 100px;
+            width: 140px;
+            margin: 10px 0 0 60px;
+        }
+        .tables {
+            height: 700px;
+            width: 1400px;
+            margin-top: 40px;
+            margin-left: 80px;
+            border-radius: 20px;
+        }
+
+        #profile_edit {
+            margin-left: 20px;
+            margin-top: 2px;
+            padding: 10px 0 0 8px;
+            height: 300px;
+            width: 300px;
+            border-radius: 10px;
+        }
+
+        .navs {
+            background-color: #FFFFFF;
+            width: 100vw;
+            height: 65px;
+            box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+            display: flex;
+
+        }
+
+        .radiant {
+            font-size: 42px;
+            font-weight: 900;
+            margin-left: 90px;
+            color: #C71585;
+        }
+
+        .login_name {
+            font-weight: 900;
+        }
+
+        .relation {
+            padding-top: 3px;
+            padding-left: 10px;
+        }
+
+        .together {
+            display: flex;
+            margin-top: 20px;
+            margin-left: 600px;
+        }
+
+        li {
+            font-size: 21px;
+        }
+
+        .arrow {
+            position: absolute;
+            right: 100px;
+        }
+
+        #tittlemnm {
+            font-size: x-large;
+            color: #C71585;
+            margin: 50px 0 0 340px;
+        }
+
+        footer {
+            background-color: #2D3748;
+            color: #F7FAFC;
+            padding: 20px;
+            width: 100vw;
+        }
+
+        footer a {
+            color: #E2E8F0;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #C71585;
+        }
+
+        footer .grid div {
+            margin-bottom: 20px;
+        }
+
+        footer .grid div h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        footer .grid div p {
+            color: #A0AEC0;
+        }
+
+        footer .grid div ul li a {
+            color: #A0AEC0;
+        }
+
+        /* button {
+            height: 15px;
+            text-align: center;
+        } */
+
+        #B {
+            font-size: larger;
+            font-weight: bolder;
+        }
+
+        #name {
+            margin: 0 0 0 670px;
+        }
+
+        * {
+            font-family: cursive;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    {% include 'app/customer_profile/navbar.html' %}
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+    </script>
+
+    <section class="flex">
+        <div class="w-1/4">
+            {% include 'app/customer_profile/sidebar.html' %}
+        </div>
+
+        <div class="w-3/4 p-4">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Address of Booking</h3>
+        </div>
+    </section>
+
+    <!-- Overlay for Modal -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black opacity-80 z-40"></div>
+
+    <!-- Rating Modal Structure -->
+    <div id="legal_notice" class="max-w-md mx-auto bg-white p-4 shadow-md z-50 fixed inset-0 m-auto hidden"
+        style="width: 50%; height: fit-content;">
+        <h2 class="text-xl font-semibold mb-4">Rate the Expert:</h2>
+        <form action="" method="POST" id="ratingForm">
+            <div class="mb-4">
+                <label for="to" class="block text-sm font-medium">To:</label>
+                <input type="text" id="to" name="To" required class="border border-gray-300 p-2 w-full" disabled>
+                <input type="hidden" id="To" name="to">
+            </div>
+
+            <!-- Star Rating System -->
+            <div class="flex mb-4">
+                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
+                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
+                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
+                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
+                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
+            </div>
+
+            <!-- Hidden Rating Input -->
+            <input type="hidden" id="rating" name="rating" value="" required>
+
+            <div class="flex justify-between">
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded" name="submit">Send</button>
+                <button type="button" class="bg-red-500 text-white p-2 rounded" id="cancelBtn">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- CSS to Style the Stars and Modal -->
+    <style>
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .text-yellow-500 {
+            color: #FFD700;
+            /* Gold color */
+        }
+
+        /* Modal & Overlay */
+        #overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <!-- JavaScript for Modal and Form Handling -->
+    <script>
+        // Function to show the rating form
+        function rating(booking_id) {
+            document.getElementById('to').value = 'booking ID: ' + booking_id; // Display booking ID in the disabled field
+            document.getElementById('To').value = booking_id; // Hidden field for actual booking ID
+            document.getElementById('legal_notice').style.display = 'block'; // Show modal
+            document.getElementById('overlay').classList.remove('hidden'); // Show overlay
+        }
+
+        // Function to handle the cancel button
+        function cancelEmail() {
+            if (confirm('Are you sure you want to cancel?')) {
+                // Clear the form
+                document.getElementById('to').value = '';
+                document.getElementById('To').value = '';
+                document.getElementById('rating').value = '';
+
+                // Hide modal and overlay
+                document.getElementById('legal_notice').style.display = 'none';
+                document.getElementById('overlay').classList.add('hidden');
+            }
+        }
+
+        // Function to handle clicks outside of the modal
+        window.onclick = function (event) {
+            var legalNoticeDiv = document.getElementById('legal_notice');
+            var overlayDiv = document.getElementById('overlay');
+            if (event.target == overlayDiv) {
+                legalNoticeDiv.style.display = 'none'; // Hide modal
+                overlayDiv.classList.add('hidden'); // Hide overlay
+            }
+        }
+
+        // Handling stars for rating
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+
+            // Set up click event listener for each star
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const selectedRating = parseInt(star.getAttribute('data-value'));
+
+                    // Update hidden input value
+                    ratingInput.value = selectedRating;
+
+                    // Reset all stars to gray
+                    stars.forEach(s => s.classList.remove('text-yellow-500'));
+
+                    // Highlight all stars up to the selected one
+                    for (let i = 0; i < selectedRating; i++) {
+                        stars[i].classList.add('text-yellow-500');
+                    }
+                });
+            });
+        });
+
+        // Cancel button listener
+        document.getElementById('cancelBtn').addEventListener('click', cancelEmail);
+
+        // Form submission handler
+        document.getElementById('ratingForm').addEventListener('submit', function (event) {
+            const rating = document.getElementById('rating').value;
+            if (rating === '') {
+                alert('Please select a rating before submitting.');
+                event.preventDefault(); // Stop form from submitting
+            }
+        });
+    </script>
+</body>
+</html>

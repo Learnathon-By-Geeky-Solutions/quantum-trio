@@ -7,5 +7,5 @@ urlpatterns = [
     # path('reviews', views.reviews,name='reviews'),
     path('addressofbooking', views.addressofbooking,name='addressofbooking'),
     path('myreviews', views.myreviews,name='myreviews'),
-   
+    path('mybooking', views.mybooking,name='mybooking'),
 ]
