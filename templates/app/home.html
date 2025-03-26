@@ -106,13 +106,13 @@
             </div>
         </section>
 
-        <!-- <script>
+        <script>
             const recommendations = [
                 {% for shop in shops %}
             {
                 title: "{{ shop.shop_name|escapejs }}",
-                    rating: { { shop.shop_rating } },
-                reviews: { { shop.shop_customer_count } },
+                rating: "{{ shop.shop_rating }}",
+                reviews: "{{ shop.shop_customer_count }}",
                 location: "{{ shop.shop_city|escapejs }}",
                     category: "{{ shop.category|escapejs }}",
                         image: "{% static 'app/image/shop/' %}{{ shop.image }}",
@@ -148,7 +148,7 @@
                 const carousel = document.getElementById(carouselId);
                 carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
             }
-        </script> -->
+        </script>
 
         <div class="container mx-auto px-6 mb-12">
             <!-- Popular Services -->
