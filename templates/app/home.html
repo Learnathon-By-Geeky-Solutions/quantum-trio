@@ -80,6 +80,7 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
                     Featured Salons and Parlours
+                    
                 </h2>
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
@@ -107,48 +108,49 @@
         </section>
 
         <script>
+        <script>
             const recommendations = [
                 {% for shop in shops %}
-            {
-                title: "{{ shop.shop_name|escapejs }}",
-                rating: "{{ shop.shop_rating }}",
-                reviews: "{{ shop.shop_customer_count }}",
-                location: "{{ shop.shop_city|escapejs }}",
-                    category: "{{ shop.category|escapejs }}",
-                        image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                            link: "salon-profile?shop_id={{ shop.id }}",
+                    {
+                        title: "{{ shop.shop_name|escapejs }}",
+                            rating: "{{ shop.shop_rating }}",
+                        reviews: "{{ shop.shop_customer_count }}",
+                        location: "{{ shop.shop_city|escapejs }}",
+                            category: "{{ shop.category|escapejs }}",
+                                image: "{% static 'app/image/shop/' %}{{ shop.image }}",
+                                    link: "salon-profile?shop_id={{ shop.id }}",
                     },
-            {% endfor %}
+                {% endfor %}
             ];
-
+            
             const carousel = document.getElementById("carousel-3");
 
             recommendations.forEach((recommendation) => {
-                const card = document.createElement("a");
-                card.href = recommendation.link;
-                card.className =
-                    "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
+                 const card = document.createElement("a");
+                 card.href = recommendation.link;
+                 card.className =
+                     "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
 
-                card.innerHTML = `
-                    <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
-                    <div class="p-4 cards">
-                        <h3 class="text-lg font-semibold">${recommendation.title}</h3>
-                        <p class="mt-2 text-sm text-gray-600">
-                            <span class="font-bold text-yellow-500">${recommendation.rating} &#9733;</span>
-                            (${recommendation.reviews} reviews)
-                        </p>
-                        <p class="mt-2 text-sm text-gray-600">${recommendation.location}</p>
-                        <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
-                    </div>
-                `;
-                carousel.appendChild(card);
-            });
+                 card.innerHTML = `
+                     <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
+                     <div class="p-4 cards">
+                         <h3 class="text-lg font-semibold">${recommendation.title}</h3>
+                         <p class="mt-2 text-sm text-gray-600">
+                             <span class="font-bold text-yellow-500">${recommendation.rating} &#9733;</span>
+                             (${recommendation.reviews} reviews)
+                         </p>
+                         <p class="mt-2 text-sm text-gray-600">${recommendation.location}</p>
+                         <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
+                     </div>
+                 `;
+                 carousel.appendChild(card);
+             });
 
             function scrollCarousel(carouselId, scrollAmount) {
                 const carousel = document.getElementById(carouselId);
                 carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
             }
-        </script>
+        </script> -->
 
         <div class="container mx-auto px-6 mb-12">
             <!-- Popular Services -->
@@ -161,65 +163,19 @@
                 </h4>
                 <div class="relative">
                     <div id="carousel-1" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
+                        {% for item in male %}
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
+                            <a href="explore_by_items?item={{item.name}}">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/2.jpg' %}" alt=""
+                                    <img src="{% static 'app/image/item/' %}{{ item.name }}.png" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for male
+                                    {{item.name}}
                                 </h3>
                             </a>
                         </div>
-                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for male
-                                </h3>
-                            </a>
-                        </div>
-
-                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/3.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for male
-                                </h3>
-                            </a>
-                        </div>
-                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/4.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for Female
-                                </h3>
-                            </a>
-                        </div>
-                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/5.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for Female
-                                </h3>
-                            </a>
-                        </div>
+                        {% endfor %}
                     </div>
                     <!-- Navigation buttons -->
                     <div class="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -246,66 +202,19 @@
                 </h4>
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
+                        {% for item in female %}
+                        <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
+                            <a href="explore_by_items?item={{item.name}}">
                                 <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/5.jpg' %}" alt=""
+                                    <img src="{% static 'app/image/item/' %}{{ item.name }}.png" alt=""
                                         class="w-100 h-24 object-cover" />
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800">
-                                    Facial for Female
+                                    {{item.name}}
                                 </h3>
                             </a>
                         </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/4.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair spa for Female
-                                </h3>
-                            </a>
-                        </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for Female
-                                </h3>
-                            </a>
-                        </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/2.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for Female
-                                </h3>
-                            </a>
-                        </div>
-                        <div class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items">
-
-                                <div class="flex justify-center items-center mb-4">
-                                    <img src="{% static 'app/image/item/1.jpg' %}" alt=""
-                                        class="w-100 h-24 object-cover" />
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-800">
-                                    Hair Cut for Female
-                                </h3>
-                            </a>
-                        </div>
+                        {% endfor %}
                     </div>
                     <!-- Navigation buttons -->
                     <div class="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -599,7 +508,7 @@
             stars.forEach((star) => {
                 star.addEventListener("click", () => {
                     selectedRating = parseInt(star.getAttribute("data-value"));
-                    ratingInput.value = selectedRating; // Set hidden rating input value
+                    ratingInput.value = selectedRating; 
                     stars.forEach((s) => s.classList.remove("text-yellow-500"));
                     for (let i = 0; i < selectedRating; i++) {
                         stars[i].classList.add("text-yellow-500");
@@ -612,8 +521,8 @@
             });
             function resetStars() {
                 selectedRating = 0;
-                stars.forEach((s) => s.classList.remove("text-yellow-500"));
-                ratingInput.value = ""; // Clear hidden rating input
+                star.forEach((s) => s.classList.remove("text-yellow-500"));
+                ratingInput.value = "";
                 reviewText.value = "";
                 charCount.textContent = "0 / 500";
             }

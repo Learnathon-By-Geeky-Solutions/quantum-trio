@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+# from shop_profile.models import ShopProfile
+# from user_profile.models import UserProfile
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # # Models for location purpose so that we can work on original locations
 class Division(models.Model):
@@ -53,3 +56,14 @@ class Item(models.Model):
     gender=models.CharField(max_length=10,choices=GENDER_CHOICES,default='Both')
     def __str__(self):
         return f"{self.name},   {self.service.name}"
+
+class ReviewCarehub(models.Model):
+    reviewer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # Stores the model type (MyUser or ShopProfile)
+    reviewer_id = models.PositiveIntegerField()  # Stores the actual ID of the reviewer
+    reviewer = GenericForeignKey("reviewer_type", "reviewer_id")  # Links to either MyUser or ShopProfile
+    comment = models.CharField(max_length=255)  # Increased max length for better user flexibility
+    rating = models.DecimalField(max_digits=3, decimal_places=1)  # Allows ratings like 4.5, 3.0, etc.
+    created_at = models.DateTimeField(auto_now_add=True)  # To track when the review was made
+    def __str__(self):
+        return f"Review by {self.user} - {self.rating}/5"
+
