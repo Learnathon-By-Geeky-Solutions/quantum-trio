@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Inbox</title>
+    {% tailwind_css %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    {% include 'app/customer_profile/navbar.html' %}
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+    </script>
+
+    <section class="flex">
+        <div class="w-1/4">
+            {% include 'app/customer_profile/sidebar.html' %}
+        </div>
+        <div class="w-3/4 p-4">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6">My Messages</h3>
+            <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+
+                <!-- Demo Message 1 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon A</h4>
+                        <p class="mt-2">Your appointment has been confirmed for tomorrow at 3 PM.</p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-20 14:30</span>
+                    </div>
+                </a>
+
+                <!-- Demo Message 2 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon B</h4>
+                        <p class="mt-2">We have a special offer for you on your next visit. Check it out!</p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-19 11:30</span>
+                    </div>
+                </a>
+
+                <!-- Demo Message 3 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon C</h4>
+                        <p class="mt-2">We missed you at your last appointment! Please reschedule at your convenience.
+                        </p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-18 16:00</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+    {% include 'app/footer.html' %}
+
+</body>
+
+</html>

@@ -4,15 +4,16 @@
         <li><a href="{% url 'user' %}" class="block text-gray-700 hover:text-pink-600">My Profile</a></li>
         <li><a href="{% url 'addressofbooking' %}" class="block text-gray-700 hover:text-pink-600">Address of Booking</a></li>
         <li><a href="{% url 'myreviews' %}" class="block text-gray-700 hover:text-pink-600">My Reviews</a></li>
-
-        <li>
+    
+        <!-- <li>
             <a href="" id="mymessage" class="block text-gray-700 hover:text-pink-600">
                 My Messages
                 {% if request.user.profile.unseen_messages > 0 %}
                     <span class="text-red-500">({{ request.user.profile.unseen_messages }})</span>
                 {% endif %}
             </a>
-        </li>
+        </li> -->
+        <li><a href="{% url 'mymessage' %}" id="mma" class="block text-gray-700 hover:text-pink-600">My Message</a></li>
         <li><a href="{% url 'mybooking' %}" id="mma" class="block text-gray-700 hover:text-pink-600">My Booking</a></li>
         <li><a href="{% url 'mycancellations' %}" class="block text-gray-700 hover:text-pink-600">My Cancellations</a></li>
         <li><a href="{% url 'mynotifications' %}" class="block text-gray-700 hover:text-pink-600">My Notifications</a></li>
