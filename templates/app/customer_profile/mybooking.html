@@ -2,213 +2,19 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My bookings</title>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <title>My Bookings</title>
     {% tailwind_css %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- <style>
-        body {
-            background-color: #F4F4F4;
-            font-family: 'Inter', sans-serif;
-        }
-        .text-gray-700 {
-            font-weight: bolder;
-        }
-
-        .t {
-            /* font-family: 'Times New Roman', Times, serif; */
-            font-family: cursive;
-            font-size: 50px;
-            color: #C71585;
-        }
-
-        #sidebar {
-            flex-direction: column;
-            justify-content: center;
-            margin: 20px 0 0 30px;
-            width: 300px;
-        }
-
-        #sidebar ul li a {
-            text-decoration: none;
-            line-height: 35px;
-            font-size: larger;
-            margin-left: 20px;
-            color: #4A5568;
-            transition: color 0.3s;
-        }
-
-        #sidebar ul li a:hover {
-            color: #C71585;
-        }
-
-        #sidebar ul li {
-            text-decoration: none;
-            list-style-type: none;
-        }
-
-        #mma {
-            font-size: 27.9px;
-            text-decoration: none;
-            color: #C71585;
-            margin-right: 40px;
-        }
-        #undernavbar {
-            display: flex;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            margin-top: 50px;
-            /* Increased margin-bottom for more space */
-        }
-        #box1 {
-            /* background-color: #FFFFFF; */
-            width: 61%;
-            height: 500px;
-            border-radius: 10px;
-            margin-left: 180px;
-            /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
-
-        }
-        #box1 h1 {
-            font-size: 2rem;
-            color: #C71585;
-            font-weight: 900;
-            position: relative;
-            bottom: 20px;
-        }
-        img {
-            height: 100px;
-            width: 140px;
-            margin: 10px 0 0 60px;
-        }
-        .tables {
-            height: 700px;
-            width: 1400px;
-            margin-top: 40px;
-            margin-left: 80px;
-            border-radius: 20px;
-        }
-
-        #profile_edit {
-            margin-left: 20px;
-            margin-top: 2px;
-            padding: 10px 0 0 8px;
-            height: 300px;
-            width: 300px;
-            border-radius: 10px;
-        }
-
-        .navs {
-            background-color: #FFFFFF;
-            width: 100vw;
-            height: 65px;
-            box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
-            display: flex;
-
-        }
-
-        .radiant {
-            font-size: 42px;
-            font-weight: 900;
-            margin-left: 90px;
-            color: #C71585;
-        }
-
-        .login_name {
-            font-weight: 900;
-        }
-
-        .relation {
-            padding-top: 3px;
-            padding-left: 10px;
-        }
-
-        .together {
-            display: flex;
-            margin-top: 20px;
-            margin-left: 600px;
-        }
-
-        li {
-            font-size: 21px;
-        }
-
-        .arrow {
-            position: absolute;
-            right: 100px;
-        }
-
-        #tittlemnm {
-            font-size: x-large;
-            color: #C71585;
-            margin: 50px 0 0 340px;
-        }
-
-        footer {
-            background-color: #2D3748;
-            color: #F7FAFC;
-            padding: 20px;
-            width: 100vw;
-        }
-
-        footer a {
-            color: #E2E8F0;
-            transition: color 0.3s;
-        }
-
-        footer a:hover {
-            color: #C71585;
-        }
-
-        footer .grid div {
-            margin-bottom: 20px;
-        }
-
-        footer .grid div h3 {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-        }
-
-        footer .grid div p {
-            color: #A0AEC0;
-        }
-
-        footer .grid div ul li a {
-            color: #A0AEC0;
-        }
-
-        /* button {
-            height: 15px;
-            text-align: center;
-        } */
-
-        #B {
-            font-size: larger;
-            font-weight: bolder;
-        }
-
-        #name {
-            margin: 0 0 0 670px;
-        }
-
-        * {
-            font-family: cursive;
-        }
-    </style> -->
 </head>
 
 <body class="bg-gray-100">
     {% include 'app/customer_profile/navbar.html' %}
-    <script>
-        function toggleDropdown() {
-            document.getElementById('dropdownMenu').classList.toggle('hidden');
-        }
-    </script>
 
     <section class="flex">
         <div class="w-1/4">
@@ -216,7 +22,96 @@
         </div>
 
         <div class="w-3/4 p-4">
-            <h3 class="text-2xl font-bold text-pink-700 mb-6">My Booking</h3>
+            <h3 class="text-2xl font-bold text-pink-700 mb-6">My Bookings</h3>
+
+            <!-- Table displaying booking data -->
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-pink-500 text-white">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Booking Date</th>
+                            <th class="px-4 py-2 text-left">Shop Name</th>
+                            <th class="px-4 py-2 text-left">Item</th>
+                            <th class="px-4 py-2 text-left">Appointment Date</th>
+                            <th class="px-4 py-2 text-left">Time</th>
+                            <th class="px-4 py-2 text-left">Expert</th>
+                            <th class="px-4 py-2 text-left">Status</th>
+                            <th class="px-4 py-2 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        <!-- Demo Booking 1 -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2025-03-15</td>
+                            <td class="px-4 py-2">Salon A</td>
+                            <td class="px-4 py-2">Haircut</td>
+                            <td class="px-4 py-2">2025-03-16</td>
+                            <td class="px-4 py-2">3:00 PM</td>
+                            <td class="px-4 py-2">John Doe</td>
+                            <td class="px-4 py-2">Completed</td>
+                            <td class="px-4 py-2">
+                                <button onclick="rating(1)" class="text-blue-500 hover:text-blue-700">Rate</button>
+                            </td>
+                        </tr>
+
+                        <!-- Demo Booking 2 -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2025-03-17</td>
+                            <td class="px-4 py-2">Salon B</td>
+                            <td class="px-4 py-2">Facial</td>
+                            <td class="px-4 py-2">2025-03-18</td>
+                            <td class="px-4 py-2">2:00 PM</td>
+                            <td class="px-4 py-2">Jane Smith</td>
+                            <td class="px-4 py-2">Pending</td>
+                            <td class="px-4 py-2">
+                                <button onclick="rating(2)" class="text-blue-500 hover:text-blue-700">Rate</button>
+                            </td>
+                        </tr>
+
+                        <!-- Demo Booking 3 -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2025-03-20</td>
+                            <td class="px-4 py-2">Salon C</td>
+                            <td class="px-4 py-2">Massage</td>
+                            <td class="px-4 py-2">2025-03-21</td>
+                            <td class="px-4 py-2">5:00 PM</td>
+                            <td class="px-4 py-2">Michael Brown</td>
+                            <td class="px-4 py-2">Cancelled</td>
+                            <td class="px-4 py-2">
+                                <button onclick="rating(3)" class="text-blue-500 hover:text-blue-700">Rate</button>
+                            </td>
+                        </tr>
+
+                        <!-- Demo Booking 3 -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2025-03-20</td>
+                            <td class="px-4 py-2">Salon D</td>
+                            <td class="px-4 py-2">Massage</td>
+                            <td class="px-4 py-2">2025-03-21</td>
+                            <td class="px-4 py-2">5:00 PM</td>
+                            <td class="px-4 py-2">Michael Brown</td>
+                            <td class="px-4 py-2">Cancelled</td>
+                            <td class="px-4 py-2">
+                                <button onclick="rating(3)" class="text-blue-500 hover:text-blue-700">Rate</button>
+                            </td>
+                        </tr>
+
+                        <!-- Demo Booking 3 -->
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2025-03-20</td>
+                            <td class="px-4 py-2">Salon E</td>
+                            <td class="px-4 py-2">Massage</td>
+                            <td class="px-4 py-2">2025-03-21</td>
+                            <td class="px-4 py-2">5:00 PM</td>
+                            <td class="px-4 py-2">Michael Brown</td>
+                            <td class="px-4 py-2">Cancelled</td>
+                            <td class="px-4 py-2">
+                                <button onclick="rating(3)" class="text-blue-500 hover:text-blue-700">Rate</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
@@ -252,29 +147,8 @@
             </div>
         </form>
     </div>
+
     {% include 'app/footer.html' %}
-
-    <!-- CSS to Style the Stars and Modal -->
-    <!-- <style>
-        .star {
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .text-yellow-500 {
-            color: #FFD700;
-            /* Gold color */
-        }
-
-        /* Modal & Overlay */
-        #overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style> -->
 
     <!-- JavaScript for Modal and Form Handling -->
     <script>
