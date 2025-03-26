@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
+from django.db.models import Q
 from django.contrib.postgres.aggregates import ArrayAgg
 # use this to import any data from database
 from .models import District,Upazilla, Division, Service, Area,Item
@@ -20,9 +21,15 @@ def home(request):
         # Return a 405 Method Not Allowed response for any non-GET requests
         return HttpResponseNotAllowed(['GET'])
     shop=ShopProfile.objects.all()
-    male_item=Item.objects.all()
-    # female_item=Item.objects.get()
-    return render(request, 'app/home.html', {'review': 333,'shops':shop})
+    print(shop)
+    male_item = Item.objects.filter(Q(gender='Male') | Q(gender='Both')).values()
+    female_item = Item.objects.filter(Q(gender='Female') | Q(gender='Both')).values()
+    return render(request, 'app/home.html', {
+        'review': 333,
+        'shops':shop,
+        'male':male_item,
+        'female':female_item
+    })
 
 def select_user_type(request):
     return render(request, 'app/login_signup/select_user_type.html')

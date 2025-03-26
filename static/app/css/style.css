@@ -156,3 +156,6 @@ h1 {
         background-position-x: -1000px;
     }
 }
+.hidden {
+    display: none;
+}
