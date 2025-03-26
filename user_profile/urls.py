@@ -10,4 +10,5 @@ urlpatterns = [
     path('mybooking', views.mybooking,name='mybooking'),
     path('mycancellations', views.mycancellations,name='mycancellations'),
     path('mynotifications', views.mynotifications,name='mynotifications'),
+    path('mymessage', views.mymessage,name='mymessage'),
 ]

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Inbox</title>
+    {% tailwind_css %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+ 
+</head>
+
+<body class="bg-gray-100">
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+    </script>
+
+    <!-- <h2 id=" tittlemnm">My Profile</h2> -->
+    <section id="undernavbar">
+        <div class="w-1/4">
+            {% include 'app/customer_profile/sidebar.html' %}
+        </div>
+        <h3 class="box_title">My Messages</h3>
+        <div class="main-content p-4 flex-1" id="box1">
+            
+        <?php
+                // $shop_id = 121;
+                //SQL query to fetch all the conversations among customer and shops
+                $customer_id=$_SESSION['customer_id'];
+                $sql_user = "SELECT 
+                                m.message_id,
+                                m.shop_id,
+                                m.customer_id,
+                                m.message,
+                                m.date_and_time,
+                                shop.shop_name,
+                                shop.mobile_number,
+                                shop.shop_email
+                            FROM 
+                                message_table m
+                            JOIN 
+                                barber_shop shop ON shop.shop_id = m.shop_id
+                            WHERE 
+                                m.date_and_time = (
+                                    SELECT 
+                                        MAX(mt.date_and_time)
+                                    FROM 
+                                        message_table mt
+                                    WHERE 
+                                        mt.shop_id = m.shop_id AND mt.customer_id = '$customer_id'
+                                ) 
+                                AND m.customer_id = '$customer_id'
+                            ORDER BY 
+                                m.date_and_time DESC";
+
+
+                // $sql_notify = "SELECT * FROM notifications_by_admin WHERE shop_id='$shop_id' ORDER BY date_time desc";
+                $result_notify = mysqli_query($conn, $sql_user);
+                if ($result_notify->num_rows > 0) {
+                    while ($row_notify = $result_notify->fetch_assoc()) {
+                        echo '<a href="reply_message.php?shop_id='.$row_notify['shop_id'].'">';
+                        echo '<div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
+                        role="alert"><h4 class="font-bold text-lg">' . $row_notify['shop_name'] . '</h4>';
+                        // echo '<p class="mt-2">' . $row_notify['message'] . '</p>';
+                        echo '<p class="mb-0">' . $row_notify['message'] . '
+                                    </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">' . $row_notify['date_and_time'] . '</span></div></a>';
+                    }
+                }
+                ?>
+        </div>
+    </section>
+</body>
+
+</html>
+
+</html>

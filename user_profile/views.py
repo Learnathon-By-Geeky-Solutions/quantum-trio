@@ -80,3 +80,9 @@ def mycancellations(request):
 
 def mynotifications(request):
     return render(request,'app/customer_profile/mynotifications.html')
+
+def mynotifications(request):
+    return render(request,'app/customer_profile/mynotifications.html')
+
+def mymessage(request):
+    return render(request,'app/customer_profile/mymessage.html')
