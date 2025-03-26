@@ -62,8 +62,8 @@ class ReviewCarehub(models.Model):
     reviewer_id = models.PositiveIntegerField()  # Stores the actual ID of the reviewer
     reviewer = GenericForeignKey("reviewer_type", "reviewer_id")  # Links to either MyUser or ShopProfile
     comment = models.CharField(max_length=255)  # Increased max length for better user flexibility
-    rating = models.DecimalField(max_digits=3, decimal_places=1)  # Allows ratings like 4.5, 3.0, etc.
-    created_at = models.DateTimeField(auto_now_add=True)  # To track when the review was made
+    rating = models.DecimalField(max_digits=3, decimal_places=1)
+    created_at = models.DateTimeField(auto_now_add=True) 
     def __str__(self):
         return f"Review by {self.user} - {self.rating}/5"
 

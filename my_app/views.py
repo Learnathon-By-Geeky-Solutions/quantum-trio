@@ -5,8 +5,10 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.postgres.aggregates import ArrayAgg
+from django.contrib.contenttypes.models import ContentType
+
 # use this to import any data from database
-from .models import District,Upazilla, Division, Service, Area,Item
+from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -24,6 +26,7 @@ def home(request):
     print(shop)
     male_item = Item.objects.filter(Q(gender='Male') | Q(gender='Both')).values()
     female_item = Item.objects.filter(Q(gender='Female') | Q(gender='Both')).values()
+    reviews = ReviewCarehub.objects.all().order_by("-created_at")  # Get all reviews sorted by latest
 
     ##for review
     reviewer_name = "You are not allowed to give review."
@@ -34,7 +37,7 @@ def home(request):
             reviewer_name = f"{request.user.user_profile.first_name} {request.user.user_profile.last_name}"
 
     return render(request, 'app/home.html', {
-        'review': 333,
+        "reviews": reviews,
         'shops':shop,
         'male':male_item,
         'female':female_item,
@@ -42,8 +45,33 @@ def home(request):
     })
 def submit_review(request):
     # redirect("home")
-    return HttpResponse("it is from submit")
-    # pass
+    if request.method == "POST" and request.user.is_authenticated:
+        comment = request.POST.get("review", "").strip()
+        rating = request.POST.get("rating", "0").strip()
+
+        try:
+            rating = float(rating)  # Convert rating to float
+        except ValueError:
+            rating = 0.0  # Default value
+
+        # Determine reviewer type
+        if hasattr(request.user, "shop_profile"):
+            reviewer_instance = request.user.shop_profile
+        elif hasattr(request.user, "user_profile"):
+            reviewer_instance = request.user.user_profile
+        else:
+            return HttpResponse("Invalid reviewer", status=400)
+
+        # Create the review object
+        review = ReviewCarehub.objects.create(
+            reviewer_type=ContentType.objects.get_for_model(reviewer_instance),
+            reviewer_id=reviewer_instance.id,
+            comment=comment,
+            rating=rating
+        )
+        return HttpResponse("Review submitted successfully")
+    return HttpResponse("Invalid request", status=400)
+
 def select_user_type(request):
     return render(request, 'app/login_signup/select_user_type.html')
 

@@ -316,99 +316,42 @@
                 </h2>
                 <div class="relative">
                     <div id="carousel-7" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
+                        {% for review in reviews %}
                         <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
                             <div class="flex items-center mb-4">
                                 <div class="text-red-400">
-                                    <p>7:20 PM 1/5/2025</p>
+                                    <p>{{ review.created_at|date:"g:i A j/n/Y" }}</p> <!-- Format: 7:20 PM 1/5/2025 -->
                                 </div>
                             </div>
                             <p class="mt-2 text-gray-600">
-                                This is a great platform.Thanks to you
+                                {{ review.comment }}
                             </p>
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/1.jpg' %}" alt=""
+                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="Profile Picture"
                                     class="w-10 h-10 rounded-full mr-4" />
                                 <div>
-                                    <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
-                                    <p class="text-gray-600 text-sm">Dhaka</p>
+                                    <p class="text-gray-800 font-semibold">
+                                        {% if review.reviewer_type.model == "userprofile" %}
+                                            {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
+                                        {% elif review.reviewer_type.model == "shopprofile" %}
+                                            {{ review.reviewer.shop_name }}
+                                        {% else %}
+                                            Anonymous
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-gray-600 text-sm">
+                                        {% if review.reviewer_type.model == "userprofile" %}
+                                            Customer
+                                        {% elif review.reviewer_type.model == "shopprofile" %}
+                                            Shop Owner
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
-                            <div class="flex items-center mb-4">
-                                <div class="text-red-400">
-                                    <p>7:20 PM 1/5/2025</p>
-                                </div>
-                            </div>
-                            <p class="mt-2 text-gray-600">
-                                This is a great platform.Thanks to you
-                            </p>
-                            <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/2.jpg' %}" alt=""
-                                    class="w-10 h-10 rounded-full mr-4" />
-                                <div>
-                                    <p class="text-gray-800 font-semibold">Asfak Shahriur</p>
-                                    <p class="text-gray-600 text-sm">Lakkhipur</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
-                            <div class="flex items-center mb-4">
-                                <div class="text-red-400">
-                                    <p>7:20 PM 1/5/2025</p>
-                                </div>
-                            </div>
-                            <p class="mt-2 text-gray-600">
-                                This is a great platform.Thanks to you
-                            </p>
-                            <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/4.jpg' %}" alt=""
-                                    class="w-10 h-10 rounded-full mr-4" />
-                                <div>
-                                    <p class="text-gray-800 font-semibold">Israt Jahan Reshma</p>
-                                    <p class="text-gray-600 text-sm">Gopalgonj</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
-                            <div class="flex items-center mb-4">
-                                <div class="text-red-400">
-                                    <p>7:20 PM 1/5/2025</p>
-                                </div>
-                            </div>
-                            <p class="mt-2 text-gray-600">
-                                This is a great platform.Thanks to you
-                            </p>
-                            <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/3.jpg' %}" alt=""
-                                    class="w-10 h-10 rounded-full mr-4" />
-                                <div>
-                                    <p class="text-gray-800 font-semibold">Md Rakibul Islam</p>
-                                    <p class="text-gray-600 text-sm">Dhaka</p>
-                                </div>
-                            </div>
-                            <!-- Left Arrow -->
-                            <div class="absolute inset-y-0 left-0 flex items-center">
-                                <button
-                                    class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                                    onclick="scrollCarousel('carousel-7', -300)" aria-label="Scroll left">
-                                    <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
-                                        class="w-8 h-8 opacity-75 hover:opacity-100" />
-                                </button>
-                            </div>
-                            <!-- Right Arrow -->
-                            <div class="absolute inset-y-0 right-0 flex items-center">
-                                <button
-                                    class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                                    onclick="scrollCarousel('carousel-7', 300)" aria-label="Scroll right">
-                                    <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
-                                        class="w-8 h-8 opacity-75 hover:opacity-100" />
-                                </button>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
         </section>
-
         <div class="container mx-auto px-4 py-7">
             <h2 class="text-2xl font-bold text-center mb-8">
                 Review About Our Platform
