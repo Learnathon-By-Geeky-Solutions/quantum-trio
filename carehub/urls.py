@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
     path('home', views.home,name='home'),
+    path('submit_review',views.submit_review,name='submit_review'),
     path('register/', include('registration.urls'), name='register'),
 
     # redirect to Shop profile
