@@ -423,11 +423,12 @@
             <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
                     <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
-
-                    <form id="reviewForm" action="submit_review.html" method="POST">
+                    
+                    <form id="reviewForm" action="submit_review" method="POST">
+                    {% csrf_token %}
                         <input type="text" id="reviewerName" name="reviewer_name"
                             class="w-full border p-2 rounded-lg mb-4" readonly value=""
-                            placeholder="please enter your name" />
+                            placeholder="{{reviewer_name}}" />
                         <div class="flex mb-4">
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
                             <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>

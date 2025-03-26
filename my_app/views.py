@@ -24,13 +24,26 @@ def home(request):
     print(shop)
     male_item = Item.objects.filter(Q(gender='Male') | Q(gender='Both')).values()
     female_item = Item.objects.filter(Q(gender='Female') | Q(gender='Both')).values()
+
+    ##for review
+    reviewer_name = "You are not allowed to give review."
+    if request.user.is_authenticated:
+        if request.user.user_type == "shop":
+            reviewer_name = request.user.shop_profile.shop_name
+        elif request.user.user_type == "user":
+            reviewer_name = f"{request.user.user_profile.first_name} {request.user.user_profile.last_name}"
+
     return render(request, 'app/home.html', {
         'review': 333,
         'shops':shop,
         'male':male_item,
-        'female':female_item
+        'female':female_item,
+        'reviewer_name':reviewer_name,
     })
-
+def submit_review(request):
+    # redirect("home")
+    return HttpResponse("it is from submit")
+    # pass
 def select_user_type(request):
     return render(request, 'app/login_signup/select_user_type.html')
 
