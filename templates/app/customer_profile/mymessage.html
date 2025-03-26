@@ -9,7 +9,6 @@
     <title>My Inbox</title>
     {% tailwind_css %}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
- 
 </head>
 
 <body class="bg-gray-100">
@@ -20,62 +19,52 @@
         }
     </script>
 
-    <!-- <h2 id=" tittlemnm">My Profile</h2> -->
-    <section id="undernavbar">
+    <section id="undernavbar" class="flex">
         <div class="w-1/4">
             {% include 'app/customer_profile/sidebar.html' %}
         </div>
-        <h3 class="box_title">My Messages</h3>
-        <div class="main-content p-4 flex-1" id="box1">
-            
-        <?php
-                // $shop_id = 121;
-                //SQL query to fetch all the conversations among customer and shops
-                $customer_id=$_SESSION['customer_id'];
-                $sql_user = "SELECT 
-                                m.message_id,
-                                m.shop_id,
-                                m.customer_id,
-                                m.message,
-                                m.date_and_time,
-                                shop.shop_name,
-                                shop.mobile_number,
-                                shop.shop_email
-                            FROM 
-                                message_table m
-                            JOIN 
-                                barber_shop shop ON shop.shop_id = m.shop_id
-                            WHERE 
-                                m.date_and_time = (
-                                    SELECT 
-                                        MAX(mt.date_and_time)
-                                    FROM 
-                                        message_table mt
-                                    WHERE 
-                                        mt.shop_id = m.shop_id AND mt.customer_id = '$customer_id'
-                                ) 
-                                AND m.customer_id = '$customer_id'
-                            ORDER BY 
-                                m.date_and_time DESC";
+        <div class="w-3/4 p-4">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6">My Messages</h3>
+            <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
 
+                <!-- Demo Message 1 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon A</h4>
+                        <p class="mt-2">Your appointment has been confirmed for tomorrow at 3 PM.</p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-20 14:30</span>
+                    </div>
+                </a>
 
-                // $sql_notify = "SELECT * FROM notifications_by_admin WHERE shop_id='$shop_id' ORDER BY date_time desc";
-                $result_notify = mysqli_query($conn, $sql_user);
-                if ($result_notify->num_rows > 0) {
-                    while ($row_notify = $result_notify->fetch_assoc()) {
-                        echo '<a href="reply_message.php?shop_id='.$row_notify['shop_id'].'">';
-                        echo '<div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
-                        role="alert"><h4 class="font-bold text-lg">' . $row_notify['shop_name'] . '</h4>';
-                        // echo '<p class="mt-2">' . $row_notify['message'] . '</p>';
-                        echo '<p class="mb-0">' . $row_notify['message'] . '
-                                    </p><span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">' . $row_notify['date_and_time'] . '</span></div></a>';
-                    }
-                }
-                ?>
+                <!-- Demo Message 2 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon B</h4>
+                        <p class="mt-2">We have a special offer for you on your next visit. Check it out!</p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-19 11:30</span>
+                    </div>
+                </a>
+
+                <!-- Demo Message 3 -->
+                <a href="reply_message.html" class="block">
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 my-5 px-4 py-3 rounded relative"
+                        role="alert">
+                        <h4 class="font-bold text-lg">Salon C</h4>
+                        <p class="mt-2">We missed you at your last appointment! Please reschedule at your convenience.
+                        </p>
+                        <span id="current-time"
+                            class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">2025-03-18 16:00</span>
+                    </div>
+                </a>
+
+            </div>
         </div>
     </section>
-</body>
 
-</html>
+</body>
 
 </html>
