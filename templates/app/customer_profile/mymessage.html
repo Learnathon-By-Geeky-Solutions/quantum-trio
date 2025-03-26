@@ -12,14 +12,14 @@
 </head>
 
 <body class="bg-gray-100">
-
+    {% include 'app/customer_profile/navbar.html' %}
     <script>
         function toggleDropdown() {
             document.getElementById('dropdownMenu').classList.toggle('hidden');
         }
     </script>
 
-    <section id="undernavbar" class="flex">
+    <section class="flex">
         <div class="w-1/4">
             {% include 'app/customer_profile/sidebar.html' %}
         </div>
@@ -64,6 +64,7 @@
             </div>
         </div>
     </section>
+    {% include 'app/footer.html' %}
 
 </body>
 
