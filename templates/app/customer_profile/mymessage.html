@@ -8,11 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Inbox</title>
     {% tailwind_css %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100">
     {% include 'app/customer_profile/navbar.html' %}
+     
     <script>
         function toggleDropdown() {
             document.getElementById('dropdownMenu').classList.toggle('hidden');
@@ -24,9 +26,8 @@
             {% include 'app/customer_profile/sidebar.html' %}
         </div>
         <div class="w-3/4 p-4">
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6">My Messages</h3>
+            <h3 class="text-2xl font-bold text-pink-700 mb-6">My Messages</h3>
             <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
-
                 <!-- Demo Message 1 -->
                 <a href="reply_message.html" class="block">
                     <div class="bg-green-100 border border-green-400 text-green-700 my-5 px-4 py-3 rounded relative"
@@ -65,7 +66,6 @@
         </div>
     </section>
     {% include 'app/footer.html' %}
-
 </body>
 
 </html>
