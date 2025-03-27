@@ -5,6 +5,9 @@ from django.contrib.auth import get_user_model
 from shop_profile.models import ShopGallery, ShopWorker, ShopService
 from django.utils.safestring import mark_safe
 from datetime import datetime
+from django.contrib import messages
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 # import calendar
 from calendar import HTMLCalendar
 user=get_user_model()
@@ -87,6 +90,44 @@ def staffs(request):
         'shop_worker': workers,
         'items': items
     })
+def add_worker(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        phone = request.POST.get("phone", "").strip()
+        experience = request.POST.get("experience", "0").strip()
+        expertise = request.POST.getlist("expertise")  # Multiple selections
+        profile_pic = request.FILES.get("profile_pic")
+
+        # Validate inputs
+        if not name or not phone or not expertise:
+            messages.error(request, "Name, Mobile, and Expertise are required.")
+            return redirect("add_worker")
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                messages.error(request, "Invalid email format.")
+                return redirect("add_worker")
+
+        # Convert experience to an integer safely
+        try:
+            experience = int(float(experience))  # Handles decimal input
+        except ValueError:
+            messages.error(request, "Experience must be a number.")
+            return redirect("add_worker")
+        worker = ShopWorker.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            experience=experience,
+            profile_pic=profile_pic,
+            shop= request.user.shop_profile
+        )
+        worker.expertise.add(*expertise)
+        messages.success(request, "Worker added successfully!")
+        return redirect("shop_staffs") 
+    return render(request, "staffs")
 
 def customers(request):
     return render(request,'app/salon_dashboard/customers.html')

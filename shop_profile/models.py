@@ -68,6 +68,7 @@ class ShopProfile(models.Model):
     shop_info = models.TextField(max_length=255,blank=True,default='')
     shop_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     shop_owner = models.CharField(max_length=255, blank=True,default='')
+    shop_picture=models.ImageField(upload_to='ShopGallery/', blank=True, null=True)
     shop_customer_count = models.IntegerField(default=0)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True,default="Other")
     status = models.BooleanField(default=True)  # Is the shop active?
@@ -100,7 +101,7 @@ class ShopProfile(models.Model):
         return check_password(raw_password, self.password)
     
     def __str__(self): 
-        return self.shop_owner
+        return self.shop_name
     
 class ShopGallery(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopgallery", on_delete=models.CASCADE)  # Link to Shop
@@ -122,7 +123,7 @@ class ShopWorker(models.Model):
     rating=models.DecimalField(max_digits=2, decimal_places=2, default=0.0)
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
-    
+     
 class ShopService(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopservice", on_delete=models.CASCADE)  # Shop providing the service
     item = models.ForeignKey(Item, related_name="shopservices", on_delete=models.CASCADE)  # Service provided by the shop

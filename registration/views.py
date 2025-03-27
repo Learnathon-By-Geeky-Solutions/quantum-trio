@@ -349,7 +349,7 @@ def business_submit(request):
                             name = member_details.get(f'member[{index}][name]', [''])[0],
                             email = member_details.get(f'member[{index}][email]', [''])[0],
                             phone = member_details.get(f'member[{index}][contact]', [''])[0],
-                            experience = member_details.get(f'member[{index}][experience]', [''])[0],
+                            experience = round(float(member_details.get(f'member[{index}][experience]', ['0'])[0])),
                             shop = shop
                         )
                         

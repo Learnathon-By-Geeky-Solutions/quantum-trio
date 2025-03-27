@@ -44,6 +44,15 @@
                             </div>  
                         {%endfor%} 
                     </div>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div>
+                                <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" 
+                                    onclick="openAddModal()">Add Worker</button>
+                            </div> 
+                        </div>  
+                        
+                    </div>
             </div>
         </main>
         <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
@@ -102,7 +111,59 @@
                 </form>
             </div>
         </div>
+        <!--for add purpose-->
+        <div id="addModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+                <h2 class="text-xl font-bold mb-4">Add Worker</h2>
+                <form action="add_worker" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="addName" class="block text-gray-700">Full name</label>
+                        <input type="text" id="addName" name="name"
+                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="addEmail" class="block text-gray-700">Email Address</label>
+                        <input type="email" id="addEmail" name="email"
+                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                        <p id="emailError" style="color:red; display:none;">Please enter a valid email address.</p>
+                    </div>
 
+                    <div class="mb-4">
+                        <label for="addPhone" class="block text-gray-700">Mobile</label>
+                        <input type="text" id="addPhone" name="phone"
+                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="addExperience" class="block text-gray-700">Experience</label>
+                        <input type="text" id="addExperience" name="experience"
+                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="addExpertise" class="block text-gray-700">Experience Level</label>
+                        <select id="addExpertise" name="expertise" multiple class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                            {#  <option value="junior">Junior</option>  #}
+                            {%for item in items %}
+                            <option value="{{item.item.id}}">{{item.item.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="addImage" class="block text-gray-700">Profile Photo</label>
+                        <input name="profile_pic" type="file" id="addImage"
+                            class="w-full p-2 border border-gray-300 rounded mt-1" accept=".jpg,.jpeg,.png" required>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button"
+                            class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+                            onclick="closeAddModal()">Cancel</button>
+                        <button type="submit" name="submit"
+                            class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <script>
             function openEditModal(worker_id, name, email, mobile,experience) {
                 document.getElementById('worker_id').value = worker_id;
@@ -111,6 +172,15 @@
                 document.getElementById('editPhone').value = mobile;
                 document.getElementById('editExperience').value = experience;
                 document.getElementById('editModal').classList.remove('hidden');
+            }
+
+            function openAddModal(worker_id, name, email, mobile,experience) {
+                document.getElementById('worker_id').value = worker_id;
+                document.getElementById('editName').value = name;
+                document.getElementById('editEmail').value = email;
+                document.getElementById('editPhone').value = mobile;
+                document.getElementById('editExperience').value = experience;
+                document.getElementById('addModal').classList.remove('hidden');
             }
             document.getElementById('editEmail').addEventListener('input', function () {
                 var emailField = document.getElementById('editEmail');
@@ -132,7 +202,13 @@
                 document.getElementById('editExperience').value = '';
                 document.getElementById('editModal').classList.add('hidden');
             }
-
+            function closeAddModal() {
+                document.getElementById('addName').value = '';
+                document.getElementById('addEmail').value = '';
+                document.getElementById('addPhone').value = '';
+                document.getElementById('editExperience').value = '';
+                document.getElementById('addModal').classList.add('hidden');
+            }
             function previewImage(event) {
                 const reader = new FileReader();
                 reader.onload = function () {

@@ -25,11 +25,11 @@
     <section class="py-12">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
-                <?php echo 'Search result of ' . $item_name . ' '; ?>
+                Search result of {{item}}
             </h2>
             <!-- Dropdown Filters -->
             <div class="flex mb-8">
-                <input type="hidden" id="item_id" name="item_id" value="<?php echo $item_id; ?>">
+                <input type="hidden" id="item" name="item" value="{{item}}">
             </div>
             <!-- Salons Listing -->
             <div id="salonsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -43,47 +43,53 @@
     </section>
 
     <script>
-        let limit = 12;
+        let limit = 9;
         let offset = 0;
 
         function loadMoreSalons() {
-            const item_id = document.getElementById('item_id').value;
+            const item = document.getElementById('item').value;
             const timestamp = new Date().getTime(); // Add a timestamp to prevent caching
-            // alert(`District: ${district}\nUpazila: ${upazila}\nArea: ${area}\nTimestamp: ${timestamp}`);
-            // alert(`Item_id: ${item_id}\nTimestamp: ${timestamp}`);
 
-            fetch(`fetch_by_items.php?limit=${limit}&offset=${offset}&item_id=${item_id}&t=${timestamp}`)
+            fetch(`fetch_by_items?limit=${limit}&offset=${offset}&item=${item}&t=${timestamp}`)
                 .then(response => response.json())
-                .then(salons => {
-                    if (salons.length > 0) {
+                .then(data => {
+                    if (data.shop.length > 0) {
                         offset += limit;
                         const container = document.getElementById('salonsContainer');
-                        salons.forEach(salon => {
+
+                        data.shop.forEach(salon => {
                             const salonElement = `
-                                    <a href="saloon_profile/dashboard.php?shop_id=${salon.shop_id}">
-                                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
-                                            <img src="${salon.image}" alt="${salon.shop_name}" class="w-full h-48 object-cover">
-                                            <div class="p-4">
-                                                <h3 class="text-lg font-semibold">${salon.shop_name}</h3>
-                                                <p class="text-yellow-500">${salon.shop_rating} &#9733; (${salon.shop_customer_count} Customer)</p>
-                                                <p>${salon.shop_city}</p>
-                                                <p>${salon.shop_title}</p>
-                                                <p class="tier-badge">
-                                                    <span class="iconify" data-icon="mdi-crown" data-inline="false"></span> 
-                                                    ${salon.shop_tier}
-                                                </p>
-                                            </div>
+                                <a href="salon-profile?shop_id=${salon.shop_id}">
+                                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+                                        <img src="${salon.image}" alt="${salon.shop_name}" class="w-full h-48 object-cover">
+                                        <div class="p-4">
+                                            <h3 class="text-lg font-semibold">${salon.shop_name}</h3>
+                                            <p class="text-yellow-500">${salon.shop_rating} &#9733; (${salon.shop_customer_count} Customer)</p>
+                                            <p>${salon.shop_city}</p>
+                                            <p>${salon.shop_title}</p>
+                                            <p class="tier-badge">
+                                                <span class="iconify" data-icon="mdi-crown" data-inline="false"></span> 
+                                                shop tier here
+                                            </p>
                                         </div>
-                                    </a>`;
+                                    </div>
+                                </a>`;
                             container.insertAdjacentHTML('beforeend', salonElement);
                         });
+                        // Hide "See More" button if no page left
+                        if (!data.has_next) {
+                            document.getElementById('seeMoreBtn').style.display = 'none';
+                        }
                     } else {
-                        alert('no saloon found');
+                        alert('No salons found');
                     }
-                });
+                })
+                .catch(error => console.error('Error fetching salons:', error));
         }
+
         document.addEventListener('DOMContentLoaded', loadMoreSalons);
     </script>
+
 
     <!-- Footer -->
     {% include "app/footer.html" %}

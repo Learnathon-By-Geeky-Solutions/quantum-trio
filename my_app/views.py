@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.contenttypes.models import ContentType
-
+from django.core.paginator import Paginator
 # use this to import any data from database
 from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
@@ -186,9 +186,41 @@ def fetch_shop(request):
         }
         for salon in salons
     ]
-    
     return JsonResponse(salon_list, safe=False)
 
+def explore_by_items(request):
+    item=request.GET.get('item')
+    gender=request.GET.get('gender')
+    return render(request, 'app/explore_by_items.html',{'item':item})
+
+def fetch_by_items(request):
+    item=request.GET.get('item')
+    limit = int(request.GET.get('limit', 9))  # Default to 10 if no limit is provided
+    offset = int(request.GET.get('offset', 0))  # Default to 0 if no offset is provided
+    """Finding available shops of the desired service or item"""
+    shop=ShopProfile.objects.filter(shopservice__item__name=item)
+    print(shop)
+    paginator = Paginator(shop, limit)
+    shop_page = paginator.get_page(offset // limit + 1)  # Get the current page based on the offset
+    shop_data=[]
+    for temp in shop_page:
+        # print(temp.id)
+        shop_data.append({
+            'shop_id': temp.id,
+            'shop_name': temp.shop_name,
+            'shop_rating': temp.shop_rating,
+            'shop_customer_count': temp.shop_customer_count,
+            'shop_city': temp.shop_city,
+            'shop_title': temp.shop_title,
+            'image': temp.shop_picture.url if temp.shop_picture else '',
+            # 'shop_tier': temp.shop_tier,
+        })
+    response_data = {
+        'shop': shop_data,
+        'has_next': shop_page.has_next(),  # if there's another page
+        'has_previous': shop_page.has_previous(),  # if there's a previous page
+    }
+    return JsonResponse(response_data)
 def location(request):
     divisions = Division.objects.all()  # Fetch all Division objects
     districts = District.objects.all()
@@ -197,14 +229,11 @@ def location(request):
 def explore_by_item(request):
     return render(request, 'app/explore_by_items.html')
 
-
 def view_dash_board(request):
     return render(request, 'app/salon_dashboard/index.html')
 
-
 def view_salon_gallery(request):
     return render(request, 'app/salon_dashboard/saloon_gallery.html')
-
 
 def view_saloon_calender(request):
     return render(request, 'app/salon_dashboard/saloon-calender.html')

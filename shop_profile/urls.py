@@ -15,6 +15,7 @@ urlpatterns = [
     path('review', views.review,name='shop_review'),
     path('notifications', views.notification,name='shop_notifications'),
     path('settings', views.setting,name='shop_setting'),
+    path('add_worker', views.add_worker,name='add_worker'),
 ]
 # Serve media files during development
 if settings.DEBUG:

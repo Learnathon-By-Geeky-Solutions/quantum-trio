@@ -164,7 +164,7 @@
                     <div id="carousel-1" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
                         {% for item in male %}
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items?item={{item.name}}">
+                            <a href="explore_by_items?item={{item.name}}&gender={{item.gender}}">
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/' %}{{ item.name }}.png" alt=""
                                         class="w-100 h-24 object-cover" />
@@ -203,7 +203,7 @@
                     <div id="carousel-3" class="carousel flex space-x-6 overflow-x-auto no-scrollbar">
                         {% for item in female %}
                         <div class="text-center bg-white p-2 rounded-lg shadow-lg flex-none w-60 cards">
-                            <a href="explore_by_items?item={{item.name}}">
+                            <a href="explore_by_items?item={{item.name}}&gender={{item.gender}}">
                                 <div class="flex justify-center items-center mb-4">
                                     <img src="{% static 'app/image/item/' %}{{ item.name }}.png" alt=""
                                         class="w-100 h-24 object-cover" />
