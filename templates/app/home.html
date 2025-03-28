@@ -17,6 +17,7 @@
 
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
+
     <section id="wat" class="relative">
         <div id="backgroundinside"
             class="w-full h-screen bg-black bg-opacity-60 flex items-center justify-center bg-no-repeat bg-center"
@@ -24,14 +25,14 @@
             background-size: auto 100%;
           ">
             <div class="text-center px-4">
-                <div
-                    class="max-w-5xl mx-auto bg-gray-200 border rounded-lg shadow-2xl p-4 text-center">
+                <div class="max-w-5xl mx-auto bg-gray-200 border rounded-lg shadow-2xl p-4 text-center">
                     <h1
                         class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight">
                         Find and Book the Best
                         <span class="text-pink-700">Salons and Parlours</span>
                     </h1>
                 </div>
+        
                 <div>
                     <form action="" method="POST">
                         {% csrf_token %}
