@@ -17,7 +17,39 @@
 
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
-    <section id="wat">
+    <section id="wat" class="relative">
+        <div id="backgroundinside"
+            class="w-full h-screen bg-black bg-opacity-60 flex items-center justify-center bg-no-repeat bg-center"
+            style="background-image: url('https://salonbizsoftware.com/wp-content/uploads/2024/02/Stylists-doing-hair-at-salon-stations.jpg');
+            background-size: auto 100%;
+          ">
+            <div class="text-center px-4">
+                <div
+                    class="max-w-5xl mx-auto bg-gray-200 border border-pink-200 rounded-3xl shadow-2xl p-4 text-center">
+                    <h1
+                        class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight">
+                        Find and Book the Best
+                        <span class="text-pink-700">Salons and Parlours</span>
+                    </h1>
+                </div>
+                <div>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
+                            <input type="text" required placeholder="Enter your location or salon name" name="search"
+                                class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 shadow" />
+                            <button type="submit"
+                                class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 shadow">
+                                Search Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section id="wat">
         <div class="bg-black-400 bg-opacity-70 h-full flex items-center justify-center" id="backgroundinside">
             <div class="text-center text-white px-4">
                 <h1 id="weight" class="text-4xl md:text-6xl font-bold">
@@ -43,8 +75,7 @@
         <div class="wave water"></div>
         <div class="wave water"></div>
         <div class="wave water"></div>
-        <!-- don't do anything here -->
-    </section>
+    </section> -->
 
     <section id="bg">
         <!-- How It Works Section -->
@@ -80,7 +111,7 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
                     Featured Salons and Parlours
-                    
+
                 </h2>
                 <div class="relative">
                     <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
@@ -110,27 +141,27 @@
         <script>
             const recommendations = [
                 {% for shop in shops %}
-                    {
-                        title: "{{ shop.shop_name|escapejs }}",
-                        rating:"{{ shop.shop_rating }}",
+            {
+                title: "{{ shop.shop_name|escapejs }}",
+                    rating: "{{ shop.shop_rating }}",
                         reviews: "{{ shop.shop_customer_count }}",
-                        location: "{{ shop.shop_city|escapejs }}",
-                        category: "{{ shop.category|escapejs }}",
-                        image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                        link: "salon-profile?shop_id={{ shop.id }}",
+                            location: "{{ shop.shop_city|escapejs }}",
+                                category: "{{ shop.category|escapejs }}",
+                                    image: "{% static 'app/image/shop/' %}{{ shop.image }}",
+                                        link: "salon-profile?shop_id={{ shop.id }}",
                     },
-                {% endfor %}
+            {% endfor %}
             ];
-            
+
             const carousel = document.getElementById("carousel-3");
 
             recommendations.forEach((recommendation) => {
-                 const card = document.createElement("a");
-                 card.href = recommendation.link;
-                 card.className =
-                     "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
+                const card = document.createElement("a");
+                card.href = recommendation.link;
+                card.className =
+                    "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
 
-                 card.innerHTML = `
+                card.innerHTML = `
                      <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
                      <div class="p-4 cards">
                          <h3 class="text-lg font-semibold">${recommendation.title}</h3>
@@ -142,8 +173,8 @@
                          <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
                      </div>
                  `;
-                 carousel.appendChild(card);
-             });
+                carousel.appendChild(card);
+            });
 
             function scrollCarousel(carouselId, scrollAmount) {
                 const carousel = document.getElementById(carouselId);
@@ -332,18 +363,18 @@
                                 <div>
                                     <p class="text-gray-800 font-semibold">
                                         {% if review.reviewer_type.model == "userprofile" %}
-                                            {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
+                                        {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
                                         {% elif review.reviewer_type.model == "shopprofile" %}
-                                            {{ review.reviewer.shop_name }}
+                                        {{ review.reviewer.shop_name }}
                                         {% else %}
-                                            Anonymous
+                                        Anonymous
                                         {% endif %}
                                     </p>
                                     <p class="text-gray-600 text-sm">
                                         {% if review.reviewer_type.model == "userprofile" %}
-                                            Customer
+                                        Customer
                                         {% elif review.reviewer_type.model == "shopprofile" %}
-                                            Shop Owner
+                                        Shop Owner
                                         {% endif %}
                                     </p>
                                 </div>
@@ -365,9 +396,9 @@
             <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
                     <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
-                    
+
                     <form id="reviewForm" action="submit_review" method="POST">
-                    {% csrf_token %}
+                        {% csrf_token %}
                         <input type="text" id="reviewerName" name="reviewer_name"
                             class="w-full border p-2 rounded-lg mb-4" readonly value=""
                             placeholder="{{reviewer_name}}" />
@@ -451,7 +482,7 @@
             stars.forEach((star) => {
                 star.addEventListener("click", () => {
                     selectedRating = parseInt(star.getAttribute("data-value"));
-                    ratingInput.value = selectedRating; 
+                    ratingInput.value = selectedRating;
                     stars.forEach((s) => s.classList.remove("text-yellow-500"));
                     for (let i = 0; i < selectedRating; i++) {
                         stars[i].classList.add("text-yellow-500");
