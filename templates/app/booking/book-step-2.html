@@ -110,12 +110,14 @@
         
                 <p class="text-lg font-bold">Total:
                     <span class="text-green-600">BDT: {{ service.price }} TK</span>
+                    
                 </p>
-                {% csrf_token %}
-                <form id="worker-selection-form" action="" method="POST">
+                
+                <form id="worker-selection-form" action="success" method="POST">
+                    {% csrf_token %}
                     <input id="shop_id" type="hidden" name="shop_id" value="{{shop.id}}">
-                    <input id="worker_id" type="hidden" name="worker_id" value="{{worker_id}}">
-                    <input id="item_id" type="hidden" name="item_id" value="{{item_id}}">
+                    <input id="worker_id" type="hidden" name="worker_id" value="{{worker.id}}">
+                    <input id="item_id" type="hidden" name="item_id" value="{{service.id}}">
                     <input id="selected_time_id" type="hidden" name="selected_time_id" value="">
                     <input id="selected_date_id" type="hidden" name="selected_date_id" value="">
                     <input id="check" type="hidden" name="check" value="1">
@@ -143,11 +145,11 @@
             let worker_id = document.getElementById('worker_id').value;
             let item_id = document.getElementById('item_id').value;
 
-            console.log('Shop ID:', shop_id);
+            console.log('Shop ID:', worker_id);
 
             let timeSlots = [];
 
-            fetch(`/available_slots/?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
+            fetch(`available_slots?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
                 .then(response => response.json())
                 .then(resultSlots => {
                     timeSlots.push(...resultSlots);
