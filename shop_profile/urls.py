@@ -16,6 +16,8 @@ urlpatterns = [
     path('notifications', views.notification,name='shop_notifications'),
     path('settings', views.setting,name='shop_setting'),
     path('add_worker', views.add_worker,name='add_worker'),
+    path('basic_update', views.basic_update,name='basic_update'),
+    path('schedule_update', views.schedule_update,name='schedule_update'),
 ]
 # Serve media files during development
 if settings.DEBUG:

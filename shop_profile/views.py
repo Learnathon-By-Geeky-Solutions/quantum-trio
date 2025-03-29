@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from shop_profile.models import ShopGallery, ShopWorker, ShopService
@@ -139,5 +139,12 @@ def notification(request):
     return render(request,'app/salon_dashboard/notifications.html')
 
 def setting(request):
-    return render(request,'app/salon_dashboard/update_basic.html')
+    return render(request,'app/salon_dashboard/settings.html') 
 
+def basic_update(request):
+    return render(request, 'app/salon_dashboard/update_basic.html')
+
+def schedule_update(request):
+    days_of_week = ['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+    return render(request, 'app/salon_dashboard/update_schedule.html',{'days_of_week':days_of_week})
