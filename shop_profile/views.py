@@ -4,12 +4,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from shop_profile.models import ShopGallery, ShopWorker, ShopService
 from django.utils.safestring import mark_safe
-from datetime import datetime
+from datetime import datetime,date
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 # import calendar
 from calendar import HTMLCalendar
+from booking.models import BookingSlot
 user=get_user_model()
 def profile(request): 
     return render(request,'app/salon_dashboard/index.html')
@@ -49,7 +50,22 @@ def calender(request):
     return render(request, 'app/salon_dashboard/saloon-calender.html',{'cal':cal,'month':month,'year':year})
 
 def slots(request):
-    return render(request,'app/salon_dashboard/booking-slots.html')
+    today=date.today()
+    print(today)
+    worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
+    shop_worker=[]
+    for i in worker:
+        temp = {
+            'worker': i,
+            'booking_slots': BookingSlot.objects.filter(worker=i, date=today)
+        }
+        shop_worker.append(temp)
+
+    for i in shop_worker:
+        print(i['worker'])
+        print(i['booking_slots'])
+    print(worker)
+    return render(request,'app/salon_dashboard/booking-slots.html',{'shop_worker':shop_worker})
 
 def message(request):
     return render(request,'app/salon_dashboard/message.html')
