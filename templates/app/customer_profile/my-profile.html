@@ -32,7 +32,6 @@
                         EDIT PROFILE
                     </button>
                 </div>
-                
                 <!-- Right Column: User Info -->
                 <div class="w-full md:w-2/3 p-4">
                     <div class="space-y-4">
@@ -62,7 +61,6 @@
         </div>
     </div>
     {% include 'app/footer.html' %}
-
     <!-- Edit Profile Modal -->
     <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
         <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
@@ -126,10 +124,8 @@
                         onclick="saveProfile()">Save</button>
                 </div>
             </form>
-            
         </div>
     </div>
-
     <script>
         document.getElementById('retype_password').addEventListener('input', function () {
             const password = document.getElementById('password').value;
@@ -196,5 +192,4 @@
         }
     </script>
 </body>
-
 </html>
