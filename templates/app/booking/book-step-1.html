@@ -59,9 +59,10 @@
                 </p>
                 <hr class="my-4">
 
-                <p class="text-gray-700 font-semibold">{{ service.item }}</p>
+                <p class="text-gray-700 font-semibold">{{ service.name }}</p>
                 <p class="text-gray-500">Duration: 1 hour • {{ service.item_description }}</p>
                 <p class="text-gray-700 font-bold mt-4">Price: BDT {{ service.price }} TK</p>
+                
 
                 <hr class="my-4">
                 <p class="text-lg font-bold">Selected Worker: <span id="selected-worker-id" class="text-green-600">None</span></p>
@@ -70,14 +71,15 @@
                 <form id="worker-selection-form" action="booking-step-2" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="shop_id" value="{{ shop.id }}">
-                    <input type="hidden" name="item_id" value="{{ service.item.id }}">
+                    <input type="hidden" name="item_id" value="{{ service.id }}">
                     <input type="hidden" name="worker_id" id="worker-id-input" value="">
-                </form>
+                
 
-                <button id="continue-button" disabled
-                    class="w-full bg-gray-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
-                    Continue
-                </button>
+                    <button id="continue-button" disabled
+                        class="w-full bg-gray-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
+                        Continue
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -107,7 +109,7 @@
                     workerIdInput.value = selectedWorkerId;
 
                     // Update UI
-                    selectedWorkerIdDisplay.textContent = `ID: ${selectedWorkerId}`;
+                    selectedWorkerIdDisplay.textContent = `${selectedWorkerId}`;
 
                     // Enable the continue button
                     continueButton.disabled = false;

@@ -156,3 +156,20 @@ class ShopSchedule(models.Model):
     end=models.TimeField()
     def __str__(self):
         return f"{self.shop.shop_name} for {self.day_of_week}"
+    
+class ShopNotification(models.Model):
+    shop = models.ForeignKey(ShopProfile, related_name="notifications", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    NOTIFICATION_TYPES = [
+        ('booking', 'Booking'),
+        ('payment', 'Payment'),
+        ('message', 'Message'),
+        ('general', 'General'),
+    ]
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES, default='general')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.title} - {self.shop.shop_name} ({'Read' if self.is_read else 'Unread'})"
