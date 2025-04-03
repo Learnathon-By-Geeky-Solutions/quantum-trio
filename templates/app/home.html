@@ -11,30 +11,190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
+    {% comment %} <link rel="stylesheet" href="{% static 'app/css/style.css' %}" /> {% endcomment %}
+    <style>
+        
+        #imagesize:hover {
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            transform: scale(1.1);
+        }
+        
+        
+        
+        .sha {
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+        
+        .cards {
+            border: 2px solid #ccc;
+        }
+        
+       
+        .grid {
+            margin-left: 100px;
+        }
+        
+        .no-scrollbar {
+            -ms-text-overflow: none;
+            text-overflow: clip;
+            scrollbar-width: none;
+        }
+        #wat {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(-180deg, #ebbceb, #d7d6ef, #da7dc6, #a36c8d);
+            background-size: 300% 300%;
+            animation: gradient-bg 10s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        
+        #wat .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('wave.png');
+            background-size: 1000px 100px;
+            pointer-events: none; /* Ensures the waves don't interfere with user interactions */
+        }
+        
+        /* Gradient background animation */
+        @keyframes gradient-bg {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Base styles for animated waves */
+        #wat .wave.water {
+            animation: wave-move 25s linear infinite;
+            z-index: 1000;
+            opacity: 1;
+            bottom: 0;
+        }
+        
+        #wat .wave.water:nth-child(2) {
+            animation: wave-move-reverse 15s linear infinite;
+            z-index: 999;
+            opacity: 0.5;
+            bottom: 10px;
+        }
+        
+        #wat .wave.water:nth-child(3) {
+            animation: wave-move 30s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+            z-index: 998;
+            opacity: 0.2;
+            bottom: 15px;
+        }
+        
+        #wat .wave.water:nth-child(4) {
+            animation: wave-move-reverse 20s linear infinite;
+            z-index: 997;
+            opacity: 0.7;
+            bottom: 20px;
+        }
+        
+        /* Wave movement animations */
+        @keyframes wave-move {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1000px;
+            }
+        }
+        
+        @keyframes wave-move-reverse {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: -1000px;
+            }
+        }
+        .hidden {
+            display: none;
+        }
 
+
+
+
+        @keyframes typing {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 100%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+    
+        /* Keyframes for pausing the animation */
+        @keyframes pause {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Apply animation to the heading */
+        .animate-heading {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 4s steps(30) 2, pause 1s 4s forwards; /* Run typing once, then pause for 1 sec */
+            animation-delay: 0s, 5s; /* Delay second typing start after 1 sec pause */
+            animation-iteration-count: 2; /* Run animation once */
+            animation-fill-mode: forwards; /* Ensure the final state is maintained */
+        }
+    
+        .animate-heading span {
+            animation: typing 4s steps(30) 1, pause 1s 4s forwards; /* Same for the span */
+            animation-delay: 0s, 5s; /* Delay second typing start after 1 sec pause */
+            animation-fill-mode: forwards; /* Ensure the final state is maintained */
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
 
-    <section id="wat" class="relative">
+    {% comment %} <section id="wat" class="relative">
         <div id="backgroundinside"
-            class="w-full h-screen bg-black bg-opacity-60 flex items-center justify-center bg-no-repeat bg-center"
-            style="background-image: url('/static/app/image/front-image.jpg');
-            background-size: auto 100%;
-          ">
+        class="w-full h-screen flex items-center justify-center relative bg-no-repeat bg-cover bg-center"
+        style="background-image: url('/static/app/image/home-bg.jpg'); 
+        background-size: cover; background-position: center;">
             <div class="text-center px-4">
-                <div class="max-w-5xl mx-auto bg-gray-200 border rounded-lg shadow-2xl p-4 text-center">
-                    <h1
-                        class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight">
-                        Find and Book the Best
+                <div class="max-w-5xl mx-auto p-4 text-center">
+                    <h1 class="text-4xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight animate-heading">
+                        Find and Book the Best 
                         <span class="text-pink-700">Salons and Parlours</span>
                     </h1>
                 </div>
         
                 <div>
-                    <form action="" method="POST">
+                    <form action="search" method="POST">
                         {% csrf_token %}
                         <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
                             <input type="text" required placeholder="Enter your location or salon name" name="search"
@@ -48,24 +208,33 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> {% endcomment %}
 
-    <!-- <section id="wat">
-        <div class="bg-black-400 bg-opacity-70 h-full flex items-center justify-center" id="backgroundinside">
+     <section id="wat">
+        <div id="backgroundinside"
+        class="w-full h-screen flex items-center justify-center relative bg-no-repeat bg-cover bg-center"
+        style="background-image: url('/static/app/image/home-bg.jpg'); 
+        background-size: cover; background-position: center;">
             <div class="text-center text-white px-4">
-                <h1 id="weight" class="text-4xl md:text-6xl font-bold">
-                    Find and Book the Best Salons and Parlours Near You
-                </h1>
-                <p id="weight" class="mt-4 text-lg md:text-xl">
-                    Your beauty journey starts here
-                </p>
-                <form action="" method="POST">
+                <div class="max-w-5xl mx-auto p-4 text-center">
+                    <h1 class="text-5xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight animate-heading">
+                        Find and Book the Best 
+                        <span class="text-pink-700">Salons and Parlours</span>
+                    </h1>
+                </div>
+                <div class="max-w-5xl mx-auto p-4 text-center">
+                    <p id="weight" class="text-3xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 ">
+                        Your beauty journey starts here
+                    </p>
+                </div>
+                
+                <form action="search" method="POST">
                     {% csrf_token %}
-                    <div class="mt-6">
-                        <input type="text" required placeholder="Enter your location or salon name"
-                            class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 sha" name="search" />
+                    <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
+                        <input type="text" required placeholder="Enter your location or salon name" name="search"
+                            class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 shadow" />
                         <button type="submit"
-                            class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 sha">
+                            class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 shadow">
                             Search Now
                         </button>
                     </div>
@@ -76,7 +245,7 @@
         <div class="wave water"></div>
         <div class="wave water"></div>
         <div class="wave water"></div>
-    </section> -->
+    </section> 
 
     <section id="bg">
         <!-- How It Works Section -->

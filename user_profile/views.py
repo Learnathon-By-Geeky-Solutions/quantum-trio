@@ -1,10 +1,11 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseNotAllowed
-
+from django.http import HttpResponseNotAllowed
+from my_app.models import District, Upazilla, Area
 from user_profile.models import UserProfile
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.aggregates import ArrayAgg
 
 @login_required
 def profile(request):
@@ -67,7 +68,15 @@ def address(request):
 #     return render(request,'app/customer_profile/reviews.html')
 
 def addressofbooking(request):
-    return render(request,'app/customer_profile/addressofbooking.html')
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+
+    if request.method == 'GET':
+        return render(request, 'app/customer_profile/addressofbooking.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area})
+    else:
+        return HttpResponseNotAllowed(['GET'])
+    
 
 def myreviews(request):
     return render(request,'app/customer_profile/myreviews.html')

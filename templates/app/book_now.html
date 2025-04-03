@@ -1,45 +1,70 @@
 <!DOCTYPE html>
+{% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-<head>
-    <title>Book Now</title>
-    <link rel="stylesheet" href="{% static 'app/css/book_now.css' %}" />
-    {% tailwind_css %}
-</head>
-<body class="bg-gray-100">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Book Now</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+    {% tailwind_css %}
+
+    <style>
+        .shadow-effect {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+        }
+        .hover-effect:hover {
+            transition: transform 0.3s ease;
+            transform: scale(1.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #FFD8FF, #D6D4FF);
+            background-size: 400% 400%;
+            animation: gradient-bg 15s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
     {% include "app/navbar.html" %}
-   
+
     <section class="pt-20">
-        <div class="container mx-auto px-4 ">
-            <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">Salons and Parlours</h2>
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">Salons and Parlours</h2>
 
             <div class="flex mb-8">
-                <select id="district" class="p-2 border rounded mr-4">
-                    {#  <option disabled selected>Select District</option>  #}
-                        {% for dist in district %}
-                            <option value="{{ dist.name }}">{{ dist.name }}</option>
-                        {% endfor %}
+                <select id="district" class="p-8 border rounded mr-4">
+                    <option value="" disabled selected>Select District</option>
+                    {% for dist in district %}
+                        <option value="{{ dist.name }}">{{ dist.name }}</option>
+                    {% endfor %}
                 </select>
-                <select id="upazilla" name="upazilla" class="p-2 border rounded mr-4" required>
-                        <option value="" disabled selected>Select Upazilla</option>
+
+                <select id="upazilla" name="upazilla" class="p-8 border rounded mr-4">
+                    <option value="" disabled selected>Select Upazilla</option>
                 </select>
-                <select id="area" class="p-2 border rounded">
+
+                <select id="area" class="p-8 border rounded">
                     <option value="" disabled selected>Select Area</option>
                 </select>
             </div>
 
             <div id="salonsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-            <div class="text-center mt-8">
-                <button id="seeMoreBtn" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">See More</button>
+            <div class="text-center mt-8 mb-8">
+                <button id="seeMoreBtn" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
+                    See More
+                </button>
             </div>
         </div>
     </section>
+
     {% include "app/footer.html" %}
+
     <script>
-    // area selection process starts here
-        // collecting all the cities under the available district 
         const citiesBydistrict = {
             {% for upazilla in Upazilla %}
             "{{ upazilla.district__name }}": [
@@ -49,7 +74,7 @@
             ]{% if not forloop.last %}, {% endif %}
             {% endfor %}
         };
-        //collecting all the areas under the available upazilla
+
         const areasByupazilla = {
             {% for area in Area %}
             "{{ area.upazilla__name }}": [
@@ -59,56 +84,47 @@
             ]{% if not forloop.last %}, {% endif %}
             {% endfor %}
         };
-        //add the dynamic changes of upazilla
-        document
-        .getElementById("district")
-        .addEventListener("change", function () {
+
+        document.getElementById("district")?.addEventListener("change", function () {
             const district = this.value;
             const upazillaSelect = document.getElementById("upazilla");
-            upazillaSelect.innerHTML =
-            '<option value="" disabled selected>Select upazilla</option>';
-
-            if (district) {
-            const cities = citiesBydistrict[district];
-            cities.forEach((upazilla) => {
-                const option = document.createElement("option");
-                option.value = upazilla;
-                option.textContent = upazilla;
-                upazillaSelect.appendChild(option);
-            });
+            upazillaSelect.innerHTML = '<option value="" disabled selected>Select Upazilla</option>';
+            
+            if (district && citiesBydistrict[district]) {
+                citiesBydistrict[district].forEach(upazilla => {
+                    const option = document.createElement("option");
+                    option.value = upazilla;
+                    option.textContent = upazilla;
+                    upazillaSelect.appendChild(option);
+                });
             }
         });
-        //add the dynamic changes of area
-        document
-        .getElementById("upazilla")
-        .addEventListener("change", function () {
+
+        document.getElementById("upazilla")?.addEventListener("change", function () {
             const upazilla = this.value;
             const areaSelect = document.getElementById("area");
-            areaSelect.innerHTML =
-            '<option value="" disabled selected>Select Area</option>';
+            areaSelect.innerHTML = '<option value="" disabled selected>Select Area</option>';
 
-            if (upazilla) {
-            const areas = areasByupazilla[upazilla];
-            areas.forEach((area) => {
-                const option = document.createElement("option");
-                option.value = area;
-                option.textContent = area;
-                areaSelect.appendChild(option);
-            });
+            if (upazilla && areasByupazilla[upazilla]) {
+                areasByupazilla[upazilla].forEach(area => {
+                    const option = document.createElement("option");
+                    option.value = area;
+                    option.textContent = area;
+                    areaSelect.appendChild(option);
+                });
             }
         });
-        // area selection process ends here 
 
-        let limit = 6;
+        let limit = 3;
         let offset = 0;
-        
+
         function loadMoreSalons() {
-            const district = document.getElementById('district').value;
-            const upazila = document.getElementById('upazilla').value;
-            const area = document.getElementById('area').value;
+            const district = document.getElementById('district')?.value || '';
+            const upazila = document.getElementById('upazilla')?.value || '';
+            const area = document.getElementById('area')?.value || '';
             const timestamp = new Date().getTime(); // Prevent caching
-            // alert(district+upazila+area);
-            fetch(`fetch-shop/?limit=${limit}&offset=${offset}&district=${district}&upazila=${upazila}&area=${area}&t=${timestamp}`)
+
+            fetch(`fetch-shop/?limit=${limit}&offset=${offset}&district=${encodeURIComponent(district)}&upazila=${encodeURIComponent(upazila)}&area=${encodeURIComponent(area)}&t=${timestamp}`)
                 .then(response => response.json())
                 .then(salons => {
                     if (salons.length > 0) {
@@ -132,21 +148,22 @@
                     } else {
                         alert('No more salons found');
                     }
-                });
+                })
+                .catch(error => console.error("Error loading salons:", error));
         }
+
         function filterNow() {
             offset = 0;
             document.getElementById('salonsContainer').innerHTML = '';
             loadMoreSalons();
         }
-        document.getElementById('district').addEventListener('change', filterNow);
-        document.getElementById('upazilla').addEventListener('change', filterNow);
-        document.getElementById('area').addEventListener('change', filterNow);
-        document.getElementById('seeMoreBtn').addEventListener('click', loadMoreSalons);
+
+        document.getElementById('district')?.addEventListener('change', filterNow);
+        document.getElementById('upazilla')?.addEventListener('change', filterNow);
+        document.getElementById('area')?.addEventListener('change', filterNow);
+        document.getElementById('seeMoreBtn')?.addEventListener('click', loadMoreSalons);
         document.addEventListener('DOMContentLoaded', loadMoreSalons);
-
-
     </script>
-    
+
 </body>
 </html>
