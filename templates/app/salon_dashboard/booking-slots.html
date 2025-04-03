@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load static tailwind_tags %}
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -101,16 +99,14 @@
                     {#  start loop of all worker profile  #}
                     {% for worker in shop_worker %}
                     <div class="container bg-white shadow-lg rounded-lg p-6">
-                        <img src="{% static 'app/image/founder/1.jpg' %}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                        <img src="{{ BASE_DIR }}.{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
                         <h3 class="worker-title text-lg font-semibold text-center mt-4">{{worker.worker.name}}'s Schedule</h3>
                         <div class="time-slot text-center mt-4">
-                            {#  start loop of each worker   #}
+                            {#  start loop of each worker   #} 
                             {%for slot in worker.booking_slots%}
                             <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
                             <p class="mb-4">&nbsp;</p>
-                            <div class="grid grid-cols-5 gap-2">
-                                <button class="book-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed" disabled>Completed</button>
-                                <button class="book-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed" disabled>Submitted</button>
+                            <div class="grid grid-cols-3 gap-2"> 
                                 <button class="book-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
                                     data-booking-id="{{ booking_id }}" 
                                     {% if is_completed_enabled != 'enabled' %} disabled {% endif %}>

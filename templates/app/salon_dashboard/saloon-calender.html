@@ -28,7 +28,7 @@
                             <h2 class="text-xl font-bold mb-4 text-center">
                                 Calendar for {{ month }}/{{ year }}
                             </h2>
-                            
+                             
                             <div class="text-center mb-4">
                                 {% if month == 1 %}
                                     <a href="?month=12&year={{ year|add:-1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
@@ -58,18 +58,27 @@
 </body>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Get month and year from the HTML element (set dynamically from Django)
+    let calendarContainer = document.querySelector(".calendar");
+    let month = calendarContainer.getAttribute("data-month"); // e.g., "10"
+    let year = calendarContainer.getAttribute("data-year"); // e.g., "2024"
+
+    // Ensure values are integers
+    month = parseInt({{month}}, 10);
+    year = parseInt({{year}}, 10);
+
     // Get all table cells containing a date
     document.querySelectorAll("td").forEach((cell) => {
         let date = cell.innerText.trim(); // Get the date number
 
-        // Check if the cell contains a valid date (not empty or a non-breaking space)
+        // Check if the cell contains a valid date
         if (date && !isNaN(date)) {
-            let month = 1; // Change this dynamically based on the current month
-            let year = 2027; // Change this dynamically based on the current year
+            // Ensure date is a string and pad it
+            date = date.toString().padStart(2, "0");
 
             // Create a new anchor element
             let link = document.createElement("a");
-            link.href = `?date=${year}-${month.toString().padStart(2, "0")}-${date.padStart(2, "0")}`;
+            link.href = `slots?date=${year}-${month.toString().padStart(2, "0")}-${date}`;
             link.innerText = date; // Keep the date text
 
             // Replace the text with the link inside the cell
@@ -79,4 +88,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 </html>

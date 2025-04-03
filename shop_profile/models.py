@@ -165,7 +165,7 @@ class ShopNotification(models.Model):
         ('booking', 'Booking'),
         ('payment', 'Payment'),
         ('message', 'Message'),
-        ('general', 'General'),
+        ('general', 'General'), 
     ]
     notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES, default='general')
     is_read = models.BooleanField(default=False)
