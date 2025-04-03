@@ -44,13 +44,7 @@
             <h2 class="text-4xl font-bold text-gray-900 text-center mb-8">Browse by City</h2>
             <div class="flex justify-center space-x-4 city-list mb-8">
                 {% for division in divisions %}
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="city" value="{{ division.name }}">
-                        <button type="submit" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
-                            {{ division.name }}
-                        </button>
-                    </form>
+                    <a href="booknow?district={{division.name}}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">{{division.name}}</a>
                 {% endfor %}
             </div>
 
@@ -60,7 +54,7 @@
                     <h3 class="text-lg font-bold">{{ division.name }}</h3>
                     <ul>
                         {% for district in division.districts.all|slice:":5" %}
-                            <li><a href="#" class="text-gray-700 hover:text-gray-400">{{ district.name }}</a></li>
+                            <li><a href="booknow?district={{ division.name }}&upazilla={{ district.name }}" class="text-gray-700 hover:text-gray-400">{{ district.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

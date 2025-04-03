@@ -10,6 +10,8 @@ class BookingSlot(models.Model):
     item = models.ForeignKey(Item, related_name="bookingslot", on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
+    user_end= models.BooleanField(default=False)
+    shop_end= models.BooleanField(default=False)
     STATUS_CHOICES = [ 
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
@@ -29,5 +31,13 @@ class BookingSlot(models.Model):
     """If needed any notes"""
     notes = models.TextField(blank=True) 
 
+    def save(self, *args, **kwargs):
+        # Auto-update status to "completed" when both user and shop mark as done
+        if self.user_end and self.shop_end:
+            self.status = "completed"
+        super().save(*args, **kwargs)  # Call the original save method
+
     def __str__(self):
         return f"Booking by {self.user} at {self.shop} on {self.date} {self.time}"
+    
+    ##Is it possible to update the status automatically to canceled if the timestamp is over 24 hours after booked

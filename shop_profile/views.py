@@ -6,10 +6,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
-from datetime import datetime,date
+from django.utils import timezone
+from datetime import datetime,date,timedelta,timezone as tz
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.db.models import F, ExpressionWrapper, DateTimeField
+from django.db.models import Value, CharField,BooleanField,Case,When
+from django.db.models.functions import Concat, Cast
+
 # import calendar
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
@@ -73,20 +78,54 @@ def slots(request):
         today=datetime.strptime(request.GET.get('date'),"%Y-%m-%d")
         
     print(today)
+    
+    #adding 6 hours for the difference of timezone
+    #this is to check wheather the time has passed or not of the following booking if passed then
+    #the report button will appear so that the shop owner can report if needed
+    updated_time=timezone.now()+ timedelta(hours=6)
+    current_time= datetime.strptime(updated_time.time().strftime('%H:%M:%S'), '%H:%M:%S').time() #for removing the millisecond
+    current_date=updated_time.date()
+    current_datetime =datetime.combine(current_date,current_time)
+    current_datetime= current_datetime.replace(tzinfo=tz.utc)
+
     worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
     shop_worker=[]
     for i in worker:
         temp = {
             'worker': i,
-            'booking_slots': BookingSlot.objects.filter(worker=i, date=today).exclude(Q(status='pending') | Q(status='canceled'))
+            'booking_slots': BookingSlot.objects.filter(
+                worker=i, date=today
+            ).exclude(Q(status='pending') | Q(status='canceled')).annotate(
+                booking_datetime=ExpressionWrapper(
+                    Cast(
+                        Concat(
+                            Cast(F('date'), output_field=CharField()),  # Convert DateField to CharField
+                            Value(' '),  # Space separator
+                            Cast(F('time'), output_field=CharField())  # Convert TimeField to CharField
+                        ),
+                        output_field=DateTimeField()  # Convert final result to DateTimeField
+                    ),
+                    output_field=DateTimeField()
+                ),
+                is_expired=Case(
+                    When(booking_datetime__lt=current_datetime, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField()
+                )
+            )
         }
+        for slot in temp['booking_slots']:
+            print(slot.booking_datetime, current_datetime,slot.is_expired)
         shop_worker.append(temp)
 
-    for i in shop_worker:
-        print(i['worker'])
-        print(i['booking_slots'])
-    print(worker)
-    return render(request,'app/salon_dashboard/booking-slots.html',{'shop_worker':shop_worker})
+    # for i in shop_worker:
+    #     print(i['worker'])
+    #     print(i['booking_slots'])
+    # print(worker)
+
+    
+    
+    return render(request,'app/salon_dashboard/booking-slots.html',{'shop_worker':shop_worker,'today':current_datetime})
 """Accept the booking"""
 @csrf_exempt
 def accept_booking(request):
@@ -138,7 +177,44 @@ def booking_details(request):
             })
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": "Booking not found."})
+        
+@csrf_exempt
+def update_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        booking_id = data.get("booking_id")
+        try:
+            booking = BookingSlot.objects.get(id=booking_id)  # Get the booking object
+            # Combine the booking date and time
+            booking_datetime = datetime.combine(booking.date, booking.time)
+            
+            #adding 6 hours for the difference of timezone
+            updated_time=timezone.now()+ timedelta(hours=6)
+            current_time= datetime.strptime(updated_time.time().strftime('%H:%M:%S'), '%H:%M:%S').time() #for removing the millisecond
+            current_date=updated_time.date()
+            today =datetime.combine(current_date,current_time)
+            
+            # Check if the current time is greater than the booking date and time
+            if today > booking_datetime:
+                # Only update the status if the current time is after the booked time
+                booking.shop_end = True
+                booking.save()
 
+                return JsonResponse({
+                    "success": True,
+                    "details": {
+                        "message": "You have successfully marked as completed!"
+                    }
+                })
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "message": "The booking time has not yet arrived."
+                })
+                
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
+        
 def message(request):
     return render(request,'app/salon_dashboard/message.html')
 

@@ -115,6 +115,44 @@
                         {#  The report button will show after completing the task  #}
                         <button class="report-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" data-booking-id="{{ booking_id }}">Report</button> 
                         <button class="see-more-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" data-booking-id="{{ booking_id }}">See details</button>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <div class="main-content p-4 flex-1">
+                {% include "app/salon_dashboard/header.html" %}
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2">
+                    {#  start loop of all worker profile  #}
+                    {% for worker in shop_worker %}
+                    <div class="container bg-white shadow-lg rounded-lg p-6">
+                        <img src="{{ BASE_DIR }}.{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                        <h3 class="worker-title text-lg font-semibold text-center mt-4">{{worker.worker.name}}'s Schedule</h3>
+                        <div class="time-slot text-center mt-4">
+                            {#  start loop of each worker   #} 
+                            {%for slot in worker.booking_slots%}
+                            <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
+                            <p class="mb-4">&nbsp;</p>
+                            <div class="grid grid-cols-3 gap-2"> 
+                                    {#  If the task has not marked as done yet  #}
+                                    {% if slot.status != "completed"  %} 
+                                        {#  If shop_end has confirmed that the task is done  #}
+                                        {% if slot.shop_end%} 
+                                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
+                                                disabled>Confirmed!</button>
+                                        {%else%}
+                                            <button class="book-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
+                                                data-booking-id="{{ slot.id }}">Confirm?</button> 
+                                            {#  If the user is fraud like the time passed but he didnt come   #}
+                                            {%if slot.is_expired %}
+                                                <button class="report-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" data-booking-id="{{ slot.id }}">Report</button>
+                                            {%endif%}
+                                        {%endif%}
+                                    {#  If the task has marked as done from both end  #}
+                                    {% else%} 
+                                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" disabled>Completed!</button>  
+                                    {% endif %}
+                                {#  The report button will show after completing the task  #}
+                                <button class="see-more-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" data-booking-id="{{ booking_id }}">See details</button>
+                            </div>
+                            {%endfor%}
+                        </div>
                     </div>
                     {%endfor%}
                 </div>
@@ -128,9 +166,9 @@
                 document.querySelectorAll('.book-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const bookingId = button.getAttribute('data-booking-id');
-                        
+                        alert(bookingId);
                         if (confirm('Are you sure you want to mark this booking as completed?')) {
-                            fetch('update_status.php', {
+                            fetch('update-status/', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ booking_id: bookingId })
@@ -141,7 +179,7 @@
                                         alert('Booking marked as completed.');
                                         button.disabled = true;
                                         window.location.reload();
-                                        // Optionally, update UI elements as needed
+                                        // How to update UI elements as the elements is totally dependent on the python backend
                                     } else {
                                         alert('Error: ' + data.message);
                                     }
@@ -165,11 +203,11 @@
                                 if (data.success) {
                                     const details = data.details;
                                     let html = `<p><strong>Customer Name:</strong> ${details.full_name}</p>
-                                <p><strong>Service:</strong> ${details.item_name}</p>
-                                <p><strong>Price:</strong> ${details.item_price}</p>
-                                <p><strong>Booked for:</strong> ${details.booked_time}&nbsp;${details.booked_date}</p>
-                                <p><strong>Status:</strong> ${details.status}</p>
-                                <p><strong>Appointed at:</strong> ${details.booking_time}</p>`;
+                                                <p><strong>Service:</strong> ${details.item_name}</p>
+                                                <p><strong>Price:</strong> ${details.item_price}</p>
+                                                <p><strong>Booked for:</strong> ${details.booked_time}&nbsp;${details.booked_date}</p>
+                                                <p><strong>Status:</strong> ${details.status}</p>
+                                                <p><strong>Appointed at:</strong> ${details.booking_time}</p>`;
                                     document.getElementById('bookingDetails').innerHTML = html;
                                     document.getElementById('seeMoreModal').classList.remove('hidden');
                                 } else {
