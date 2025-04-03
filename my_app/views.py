@@ -204,7 +204,7 @@ def fetch_by_items(request):
     shop_page = paginator.get_page(offset // limit + 1)  # Get the current page based on the offset
     shop_data=[]
     for temp in shop_page:
-        # print(temp.id)
+        
         shop_data.append({
             'shop_id': temp.id,
             'shop_name': temp.shop_name,
@@ -213,7 +213,7 @@ def fetch_by_items(request):
             'shop_city': temp.shop_city,
             'shop_title': temp.shop_title,
             'image': temp.shop_picture.url if temp.shop_picture else '',
-            # 'shop_tier': temp.shop_tier,
+           
         })
     response_data = {
         'shop': shop_data,
