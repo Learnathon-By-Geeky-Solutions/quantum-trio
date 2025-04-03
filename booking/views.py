@@ -22,11 +22,7 @@ def booking_step_1(request):
         workers = ShopWorker.objects.filter(shop=shop_id,expertise=item_id)
         print(workers)
         expertise_worker = []
-        # for worker in workers:
-        #     #if worker.expertise.filter(name=service.item.name).exists():
-        #     for expertise in worker.expertise.all():
-        #         if expertise.name == service.item.name:
-        #             expertise_worker.append(worker)
+        
     print(service.id)
     print(expertise_worker)
     return render(request, 'app/booking/book-step-1.html',{
