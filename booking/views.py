@@ -54,7 +54,7 @@ def booking_step_2(request):
          "worker": worker, 
 
     })
-
+ 
 def available_slots(request):
     
     shop_id = request.GET.get('shop_id')

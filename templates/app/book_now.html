@@ -37,7 +37,7 @@
 
             <div class="flex mb-8">
                 <select id="district" class="p-8 border rounded mr-4">
-                    <option value="" disabled selected>Select District</option>
+                    <option value="{%if dist%}{{dist}}{%endif%}" disabled selected>{%if dist%}{{dist}}{%else%}Select District{%endif%}</option>
                     {% for dist in district %}
                         <option value="{{ dist.name }}">{{ dist.name }}</option>
                     {% endfor %}

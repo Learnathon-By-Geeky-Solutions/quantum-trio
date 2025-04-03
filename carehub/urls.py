@@ -35,17 +35,6 @@ urlpatterns = [
     path('service', views.service,name='service'),
     path('explore_by_items', views.explore_by_item,name='explore_by_item'),
     path('salon-profile', views.shop_profile,name='salon-profile'),
-    path('salon_dashboard', views.view_dash_board),
-    path('salon_gallery', views.view_salon_gallery),
-    path('saloon_calender', views.view_saloon_calender),
-    path('staffs', views.view_saloon_stuff),
-    path('settings', views.view_settings),
-    path('notifications', views.view_notification),
-    path('salon_reviews', views.view_reviews),
-    path('customers', views.view_customers),
-    path('booking-slots', views.booking_slots),
-    path('message', views.view_message),
-    path('message-reply', views.view_message_reply),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

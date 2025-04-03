@@ -150,10 +150,15 @@ def book_now(request):
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
-
+    dist=""
+    if request.GET.get('district'):
+        dist=request.GET.get('district')
+    if request.GET.get('upazilla'):
+        dist=request.GET.get('upazilla')
+    print(dist)
     print(area)
     if request.method == 'GET':
-        return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area})
+        return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area,'dist':dist})
     else:
         return HttpResponseNotAllowed(['GET'])
     
@@ -228,44 +233,3 @@ def location(request):
 
 def explore_by_item(request):
     return render(request, 'app/explore_by_items.html')
-
-def view_dash_board(request):
-    return render(request, 'app/salon_dashboard/index.html')
-
-def view_salon_gallery(request):
-    return render(request, 'app/salon_dashboard/saloon_gallery.html')
-
-def view_saloon_calender(request):
-    return render(request, 'app/salon_dashboard/saloon-calender.html')
-
-
-def view_saloon_stuff(request):
-    return render(request, 'app/salon_dashboard/staffs.html')
-
-
-def view_settings(request):
-    return render(request, 'app/salon_dashboard/saloon-setting.html')
-
-
-def view_notification(request):
-    return render(request, 'app/salon_dashboard/notifications.html')
-
-
-def view_reviews(request):
-    return render(request, 'app/salon_dashboard/reviews.html')
-
-
-def view_customers(request):
-    return render(request, 'app/salon_dashboard/customers.html')
-
-
-def booking_slots(request):
-    return render(request, 'app/salon_dashboard/booking-slots.html')
-
-
-def view_message(request):
-    return render(request, 'app/salon_dashboard/message.html')
-
-
-def view_message_reply(request):
-    return render(request, 'app/salon_dashboard/reply-message.html')
