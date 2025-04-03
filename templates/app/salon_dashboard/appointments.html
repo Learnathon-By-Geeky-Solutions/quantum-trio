@@ -52,7 +52,7 @@
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2">
                     {% for worker in shop_worker %}
                     <div class="container bg-white shadow-lg rounded-lg p-6">
-                        <img src="{% static 'app/image/founder/1.jpg' %}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                        <img src="{{worker.worker.profile_pic.url}}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
                         <h3 class="worker-title text-lg font-semibold text-center mt-4">{{ worker.worker.name }}'s Schedule</h3>
                         <div class="time-slot text-center mt-4">
                             {% for slot in worker.booking_slots %}
