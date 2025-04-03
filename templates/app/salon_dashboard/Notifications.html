@@ -33,19 +33,14 @@
                 {% include "app/salon_dashboard/header.html" %}
             
             <div class="flex flex-col gap-5">
-                <div class="bg-green-100 border border-green-700 p-6 rounded relative" role="alert">
-                    <h4 class="font-bold text-lg">New Booking</h4>
-                    <p class="mt-2">You have a new booking for Facial</p>
-                    <p class="mb-0">Admin, RadientHub BD</p>
-                    <span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">10/2/2025</span>
-                </div>
-            
-                <div class="bg-green-100 border border-green-700 p-6 rounded relative" role="alert">
-                    <h4 class="font-bold text-lg">New Booking</h4>
-                    <p class="mt-2">You have a new booking for Facial</p>
-                    <p class="mb-0">Admin, RadientHub BD</p>
-                    <span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">10/2/2025</span>
-                </div>
+                {%for notification in notifications%}
+                    <div class="bg-green-100 border border-green-700 p-6 rounded relative" role="alert">
+                        <h4 class="font-bold text-lg">{{notification.title}}</h4>
+                        <p class="mt-2">{{notification.message}}</p>
+                        <p class="mb-0">Admin, CareHub BD</p>
+                        <span id="current-time" class="absolute bottom-0 right-0 mb-2 mr-2 text-sm text-gray-500">Time: {{notification.created_at}}</span>
+                    </div>
+                {%endfor%}
             </div>
             
         </main>

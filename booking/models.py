@@ -10,7 +10,7 @@ class BookingSlot(models.Model):
     item = models.ForeignKey(Item, related_name="bookingslot", on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-    STATUS_CHOICES = [
+    STATUS_CHOICES = [ 
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
         ('canceled', 'Canceled'),

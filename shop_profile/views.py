@@ -1,15 +1,20 @@
+import json
+from django.db.models import Q
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from shop_profile.models import ShopGallery, ShopWorker, ShopService
 from django.utils.safestring import mark_safe
-from datetime import datetime
+from datetime import datetime,date
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 # import calendar
 from calendar import HTMLCalendar
+from booking.models import BookingSlot
+from my_app.models import Item
+from shop_profile.models import ShopGallery, ShopWorker, ShopService,ShopNotification
 user=get_user_model()
 def profile(request): 
     return render(request,'app/salon_dashboard/index.html')
@@ -38,18 +43,101 @@ def gallery(request):
 def calender(request):
     month=datetime.now().month
     year=datetime.now().year
-    
     # print(cal)
-    if request.method=="GET":
+    if request.method=="GET" and request.GET.get('month') is not None and request.GET.get('year') is not None:
         month=int(request.GET.get('month'))
         year=int(request.GET.get('year'))
-
+    print(month,type(int(year)))
     cal=HTMLCalendar().formatmonth(year,month)
-    print(cal)
+    # print(cal)
     return render(request, 'app/salon_dashboard/saloon-calender.html',{'cal':cal,'month':month,'year':year})
+def appointments(request):
+    worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
+    shop_worker=[]
+    for i in worker:
+        temp = {
+            'worker': i,
+            'booking_slots': BookingSlot.objects.filter(worker=i, status="pending").order_by("-created_at")
+        }
+        shop_worker.append(temp)
+
+    for i in shop_worker:
+        print(i['worker'])
+        print(i['booking_slots'])
+    print(worker)
+    return render(request,'app/salon_dashboard/appointments.html',{'shop_worker':shop_worker})
 
 def slots(request):
-    return render(request,'app/salon_dashboard/booking-slots.html')
+    today=date.today()
+    if request.method=="GET" and request.GET.get('date') is not None:
+        today=datetime.strptime(request.GET.get('date'),"%Y-%m-%d")
+        # print(type(today))
+    print(today)
+    worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
+    shop_worker=[]
+    for i in worker:
+        temp = {
+            'worker': i,
+            'booking_slots': BookingSlot.objects.filter(worker=i, date=today).exclude(Q(status='pending') | Q(status='canceled'))
+        }
+        shop_worker.append(temp)
+
+    for i in shop_worker:
+        print(i['worker'])
+        print(i['booking_slots'])
+    print(worker)
+    return render(request,'app/salon_dashboard/booking-slots.html',{'shop_worker':shop_worker})
+"""Accept the booking"""
+@csrf_exempt
+def accept_booking(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        booking_id = data.get("booking_id")
+        try:
+            booking = BookingSlot.objects.get(id=booking_id)
+            booking.status = "confirmed"
+            booking.save()
+            return JsonResponse({"success": True, "message": "Booking accepted."})
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
+
+"""Reject booking"""
+@csrf_exempt
+def reject_booking(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        booking_id = data.get("booking_id")
+        try:
+            booking = BookingSlot.objects.get(id=booking_id)
+            booking.status = "rejected"
+            booking.save()
+            return JsonResponse({"success": True, "message": "Booking rejected."})
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
+
+"""retrieval of booking-details of a booking"""
+@csrf_exempt 
+def booking_details(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        booking_id = data.get("booking_id")
+        try:
+            booking = BookingSlot.objects.get(id=booking_id)
+            price=ShopService.objects.get(shop=booking.shop,item=booking.item)
+            return JsonResponse({
+                "success": True,
+                "details": {
+                    "full_name": booking.user.first_name,
+                    "item_name": booking.item.name,
+                    "item_price": str(price),
+                    "booked_time": booking.time.strftime("%I:%M %p"),
+                    "booked_date": booking.date.strftime("%d-%m-%Y"),
+                    "status": booking.status,
+                    "booking_time": booking.time.strftime("%I:%M %p")
+                }
+            })
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
 
 def message(request):
     return render(request,'app/salon_dashboard/message.html')
@@ -136,7 +224,8 @@ def review(request):
     return render(request,'app/salon_dashboard/reviews.html')
 
 def notification(request):
-    return render(request,'app/salon_dashboard/notifications.html')
+    notification=ShopNotification.objects.filter(shop=request.user.shop_profile).order_by('-created_at')
+    return render(request,'app/salon_dashboard/notifications.html',{'notifications':notification})
 
 def setting(request):
     return render(request,'app/salon_dashboard/settings.html') 

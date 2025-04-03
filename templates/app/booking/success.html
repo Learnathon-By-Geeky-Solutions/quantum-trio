@@ -28,18 +28,20 @@
             </p>
             <div class="bg-gray-50 rounded-lg p-4 text-left mb-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-2">Booking Details</h2>
-                <p><strong>Salon Name:</strong> {{shop.shop_name}}, {{shop.shop_city}},
-                    {{shop.shop_area}}</p>
-                <p><strong>Service:</strong> {{ service.item }} </p>
+                <p><strong>Salon Name:</strong> {{shop.shop_name}} </p>
+                <p><strong>Area:</strong> {{shop.shop_city}}, {{shop.shop_area}} </p>
+                <p><strong>Service:</strong> {{ service.item.name }} </p>
                 <p><strong>Date:</strong> {{date}}</p>
                 <p><strong>Time:</strong> {{time}}</p>
                 <p><strong>Worker Name:</strong> {{worker.name}}</p>
                 <p><strong>Worker Expertise:</strong>
-                    {{worker.expertise}}
+                {% for exp in worker.expertise.all%}
+                    {{exp.name}},
+                {%endfor%}
                     </p>
                 <p><strong>Total Amount:</strong> BDT {{service.price}}</p>
             </div>
-            <a href="home"
+            <a href="../home"
                 class="mr-2 inline-block px-6 py-2 bg-pink-400 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300">Back
                 to Home</a>
             {% comment %} <pdfUrl = "payment_receipt.html" .

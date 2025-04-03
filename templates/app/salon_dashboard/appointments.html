@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salon Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+    {% tailwind_css %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .worker-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .time-slot {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .time-slot h5 {
+            margin: 0;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .workers_photo {
+            width: 210px;
+            height: 210px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-gray-200 font-sans leading-normal tracking-normal">
+    <div class="flex h-screen">
+        {% include "app/salon_dashboard/sidebar.html" %}
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <div class="main-content p-4 flex-1">
+                {% include "app/salon_dashboard/header.html" %}
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2">
+                    {% for worker in shop_worker %}
+                    <div class="container bg-white shadow-lg rounded-lg p-6">
+                        <img src="{% static 'app/image/founder/1.jpg' %}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                        <h3 class="worker-title text-lg font-semibold text-center mt-4">{{ worker.worker.name }}'s Schedule</h3>
+                        <div class="time-slot text-center mt-4">
+                            {% for slot in worker.booking_slots %}
+                            <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
+                            <div class="grid grid-cols-3 gap-2"> 
+                                <button class="accept-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" 
+                                    data-booking-id="{{ slot.id }}">Accept</button>
+                                <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
+                                    data-booking-id="{{ slot.id }}">Reject</button>
+                                <button class="see-more-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" 
+                                    data-booking-id="{{ slot.id }}">See details</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </main>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.accept-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const bookingId = button.getAttribute('data-booking-id');
+                        fetch('accept-booking/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ booking_id: bookingId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message);
+                            window.location.reload();
+                        });
+                    });
+                });
+
+                document.querySelectorAll('.reject-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const bookingId = button.getAttribute('data-booking-id');
+                        fetch('reject-booking/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ booking_id: bookingId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message);
+                            window.location.reload();
+                        });
+                    });
+                });
+
+                document.querySelectorAll('.see-more-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const bookingId = button.getAttribute('data-booking-id');
+                        fetch('booking-details/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ booking_id: bookingId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert(`Customer: ${data.details.full_name}\nService: ${data.details.item_name}\nPrice: ${data.details.item_price}\nTime: ${data.details.booked_time}\nDate: ${data.details.booked_date}\nStatus: ${data.details.status}`);
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+</body>
+</html>

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load static tailwind_tags %}
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,8 +10,6 @@
     {% tailwind_css %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        
-
         .worker-title {
             font-size: 18px;
             font-weight: bold;
@@ -86,8 +82,6 @@
             text-align: center;
         }
 
-       
-
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -95,42 +89,38 @@
        
     </style>
 </head>
-
 <body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
     <div class="flex h-screen">
-        <!-- Sidebar -->
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Bar -->
             <div class="main-content p-4 flex-1">
                 {% include "app/salon_dashboard/header.html" %}
-
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-                    <div class="container">
-                        <div class="schedule-container">
-                            <img src="{% static "app/image/founder/2.jpg" %}" alt="worker_pic" class="workers_photo">
-                            <h3 class="worker-title">Md Rakibul Islam's Schedule</h3>
-                            <div class="time-slot">
-                                    <h5>1.00 pm to 2.00 pm</h5>
-                                    <p>&nbsp;</p>
-                               
-                               <button class="book-button" disabled>Completed</button>
-                                <button class="book-button" disabled>Submitted</button>
-                                <button class="book-button" data-booking-id="' . $booking_id . '" ' . ($is_completed_enabled == 'enabled' ? '' : 'disabled') . '>Confirm?</button>
-                            
-
-                               <button class="report-button" data-booking-id="' . $booking_id . '">Report</button>
-                                    <button class="see-more-button" data-booking-id="' . $booking_id . '">See details</button>
-                                </div>
-                           </div>
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2">
+                    {#  start loop of all worker profile  #}
+                    {% for worker in shop_worker %}
+                    <div class="container bg-white shadow-lg rounded-lg p-6">
+                        <img src="{{ BASE_DIR }}.{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                        <h3 class="worker-title text-lg font-semibold text-center mt-4">{{worker.worker.name}}'s Schedule</h3>
+                        <div class="time-slot text-center mt-4">
+                            {#  start loop of each worker   #} 
+                            {%for slot in worker.booking_slots%}
+                            <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
+                            <p class="mb-4">&nbsp;</p>
+                            <div class="grid grid-cols-3 gap-2"> 
+                                <button class="book-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
+                                    data-booking-id="{{ booking_id }}" 
+                                    {% if is_completed_enabled != 'enabled' %} disabled {% endif %}>
+                                    Confirm?
+                                </button>
+                                {#  The report button will show after completing the task  #}
+                                <button class="report-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" data-booking-id="{{ booking_id }}">Report</button> 
+                                <button class="see-more-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" data-booking-id="{{ booking_id }}">See details</button>
+                            </div>
+                            {%endfor%}
+                        </div>
                     </div>
+                    {%endfor%}
                 </main>
-
-
-
                 <!-- See More Modal -->
                 <div id="seeMoreModal"
                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -142,7 +132,6 @@
                         <button id="closeSeeMore" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
                     </div>
                 </div>
-
                 <!-- Report Modal -->
                 <div id="reportModal"
                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -269,7 +258,6 @@
                 });
             });
         </script>
-
 </body>
 
 </html>
