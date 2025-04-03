@@ -114,6 +114,7 @@ def success(request):
             date = date,
             time = time
         )
+        print(booking)
         notification_message = (
             f"New booking received!\n"
             f"Customer: {user}\n"

@@ -43,13 +43,13 @@ def gallery(request):
 def calender(request):
     month=datetime.now().month
     year=datetime.now().year
-    # print(cal)
+    
     if request.method=="GET" and request.GET.get('month') is not None and request.GET.get('year') is not None:
         month=int(request.GET.get('month'))
         year=int(request.GET.get('year'))
     print(month,type(int(year)))
     cal=HTMLCalendar().formatmonth(year,month)
-    # print(cal)
+    
     return render(request, 'app/salon_dashboard/saloon-calender.html',{'cal':cal,'month':month,'year':year})
 def appointments(request):
     worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
@@ -71,7 +71,7 @@ def slots(request):
     today=date.today()
     if request.method=="GET" and request.GET.get('date') is not None:
         today=datetime.strptime(request.GET.get('date'),"%Y-%m-%d")
-        # print(type(today))
+        
     print(today)
     worker=ShopWorker.objects.filter(shop=request.user.shop_profile)
     shop_worker=[]

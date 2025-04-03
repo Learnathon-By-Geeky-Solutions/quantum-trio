@@ -11,9 +11,6 @@
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
-
-    
-    <!-- Include Chart.js for graphs/charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
      
@@ -44,27 +41,19 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-
-        /* table {
-            width: 1620px;
-            background-color: whitesmoke;
-        } */
         
     </style>
 </head>
 
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
-                
-                    <div class="overflow-x-auto tables">
+                <div class="overflow-x-auto tables">
                     <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                     <thead class="bg-pink-500 text-white">
                     <tr>
@@ -83,27 +72,29 @@
                     <tbody class="text-gray-700">
                     
 
-                        <tr class="border-t">
-                        <td class="px-2 py-1">12/12/12</td>
-                        <td class="px-2 py-1">Rakibul islam</td>
-                        <td class="px-2 py-1">Comilla, Debidwar, Agaragram</td>
-                        <td class="px-2 py-1">01770090141</td>
-                        <td class="px-2 py-1">swana</td>
-                        <td class="px-2 py-1">10/2/25</td>
-                        <td class="px-2 py-1">10 am</td>
-                        <td class="px-2 py-1">Md XYZ</td>
-                        <td class="px-2 py-1">1234567890</td>
-                        <td class="px-2 py-1">Booked</td>
+                    <tr class="border-t">
+                    <td class="px-2 py-1">12/12/12</td>
+                    <td class="px-2 py-1">Rakibul islam</td>
+                    <td class="px-2 py-1">Comilla, Debidwar, Agaragram</td>
+                    <td class="px-2 py-1">01770090141</td>
+                    <td class="px-2 py-1">swana</td>
+                    <td class="px-2 py-1">10/2/25</td>
+                    <td class="px-2 py-1">10 am</td>
+                    <td class="px-2 py-1">Md XYZ</td>
+                    <td class="px-2 py-1">1234567890</td>
+                    <td class="px-2 py-1">Booked</td>
 
-                    
-                    </tbody>
-                    </table>
-                    </div>
-                <p class="text-gray-500">No bookings found.</p>
-              
+                
+                </tbody>
+                </table>
+                </div>
+            <p class="text-gray-500">No bookings found.</p>
+          
+        </div>
             </div>
-    </div>
-    </main>
+        </div>
+    </section>
+              
 </body>
 
 </html>

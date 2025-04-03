@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Salon Deshboard</title>
+    <title>Salon Slot</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -67,8 +67,8 @@
         }
 
         .workers_photo {
-            width: 210px;
-            height: 210px;
+            width: 100px;
+            height: 100px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             object-fit: cover;
@@ -89,69 +89,40 @@
        
     </style>
 </head>
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-    <div class="flex h-screen">
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2">
-                    {#  start loop of all worker profile  #}
-                    {% for worker in shop_worker %}
-                    <div class="container bg-white shadow-lg rounded-lg p-6">
-                        <img src="{{ BASE_DIR }}.{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
-                        <h3 class="worker-title text-lg font-semibold text-center mt-4">{{worker.worker.name}}'s Schedule</h3>
-                        <div class="time-slot text-center mt-4">
-                            {#  start loop of each worker   #} 
-                            {%for slot in worker.booking_slots%}
-                            <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
-                            <p class="mb-4">&nbsp;</p>
-                            <div class="grid grid-cols-3 gap-2"> 
-                                <button class="book-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
-                                    data-booking-id="{{ booking_id }}" 
-                                    {% if is_completed_enabled != 'enabled' %} disabled {% endif %}>
-                                    Confirm?
-                                </button>
-                                {#  The report button will show after completing the task  #}
-                                <button class="report-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" data-booking-id="{{ booking_id }}">Report</button> 
-                                <button class="see-more-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" data-booking-id="{{ booking_id }}">See details</button>
-                            </div>
-                            {%endfor%}
-                        </div>
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2 p-4">
+            
+            {% for worker in shop_worker %}
+            <div class="container bg-white shadow-lg rounded-lg p-6">
+                <img src="{{ BASE_DIR }}.{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
+                <h3 class="worker-title text-lg font-semibold text-center mt-4">{{worker.worker.name}}'s Schedule</h3>
+                <div class="time-slot text-center mt-4">
+                 
+                    {%for slot in worker.booking_slots%}
+                    <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
+                    <p class="mb-4">&nbsp;</p>
+                    <div class="grid grid-cols-3 gap-2"> 
+                        <button class="book-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300" 
+                            data-booking-id="{{ booking_id }}" 
+                            {% if is_completed_enabled != 'enabled' %} disabled {% endif %}>
+                            Confirm?
+                        </button>
+                        {#  The report button will show after completing the task  #}
+                        <button class="report-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" data-booking-id="{{ booking_id }}">Report</button> 
+                        <button class="see-more-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" data-booking-id="{{ booking_id }}">See details</button>
                     </div>
                     {%endfor%}
-                </main>
-                <!-- See More Modal -->
-                <div id="seeMoreModal"
-                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-lg w-1/4 p-6">
-                        <h2 class="text-xl font-bold mb-4">Booking Details</h2>
-                        <div id="bookingDetails">
-                            <!-- Booking details will be loaded here via AJAX -->
-                        </div>
-                        <button id="closeSeeMore" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
-                    </div>
                 </div>
-                <!-- Report Modal -->
-                <div id="reportModal"
-                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-lg w-1/3 p-6">
-                        <h2 class="text-xl font-bold mb-4">Report Booking</h2>
-                        <form id="reportForm">
-                            <input type="hidden" id="reportBookingId" name="booking_id">
-                            <textarea id="reportReason" name="reason" class="w-full border rounded p-2" rows="4"
-                                placeholder="Enter your report reason"></textarea>
-                            <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Submit
-                                Report</button>
-                            <button type="button" id="closeReport"
-                                class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Cancel</button>
-                        </form>
-                    </div>
-                </div>
-
             </div>
-        </div>
-        <script>
+            {%endfor%}
+</section>
+
+<script>
             document.addEventListener('DOMContentLoaded', () => {
                 // Handle Completed Button Click
                 document.querySelectorAll('.book-button').forEach(button => {

@@ -42,98 +42,11 @@
             text-overflow: clip;
             scrollbar-width: none;
         }
-        #wat {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(-180deg, #ebbceb, #d7d6ef, #da7dc6, #a36c8d);
-            background-size: 300% 300%;
-            animation: gradient-bg 10s ease-in-out infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            overflow: hidden;
-        }
+      
         
-        
-        #wat .wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: url('wave.png');
-            background-size: 1000px 100px;
-            pointer-events: none; /* Ensures the waves don't interfere with user interactions */
-        }
-        
-        /* Gradient background animation */
-        @keyframes gradient-bg {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        
-        /* Base styles for animated waves */
-        #wat .wave.water {
-            animation: wave-move 25s linear infinite;
-            z-index: 1000;
-            opacity: 1;
-            bottom: 0;
-        }
-        
-        #wat .wave.water:nth-child(2) {
-            animation: wave-move-reverse 15s linear infinite;
-            z-index: 999;
-            opacity: 0.5;
-            bottom: 10px;
-        }
-        
-        #wat .wave.water:nth-child(3) {
-            animation: wave-move 30s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
-            z-index: 998;
-            opacity: 0.2;
-            bottom: 15px;
-        }
-        
-        #wat .wave.water:nth-child(4) {
-            animation: wave-move-reverse 20s linear infinite;
-            z-index: 997;
-            opacity: 0.7;
-            bottom: 20px;
-        }
-        
-        /* Wave movement animations */
-        @keyframes wave-move {
-            0% {
-                background-position-x: 0;
-            }
-            100% {
-                background-position-x: 1000px;
-            }
-        }
-        
-        @keyframes wave-move-reverse {
-            0% {
-                background-position-x: 0;
-            }
-            100% {
-                background-position-x: -1000px;
-            }
-        }
         .hidden {
             display: none;
         }
-
-
-
 
         @keyframes typing {
             0% {
@@ -179,37 +92,6 @@
 
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
-
-    {% comment %} <section id="wat" class="relative">
-        <div id="backgroundinside"
-        class="w-full h-screen flex items-center justify-center relative bg-no-repeat bg-cover bg-center"
-        style="background-image: url('/static/app/image/home-bg.jpg'); 
-        background-size: cover; background-position: center;">
-            <div class="text-center px-4">
-                <div class="max-w-5xl mx-auto p-4 text-center">
-                    <h1 class="text-4xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight animate-heading">
-                        Find and Book the Best 
-                        <span class="text-pink-700">Salons and Parlours</span>
-                    </h1>
-                </div>
-        
-                <div>
-                    <form action="search" method="POST">
-                        {% csrf_token %}
-                        <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
-                            <input type="text" required placeholder="Enter your location or salon name" name="search"
-                                class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 shadow" />
-                            <button type="submit"
-                                class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 shadow">
-                                Search Now
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section> {% endcomment %}
-
      <section id="wat">
         <div id="backgroundinside"
         class="w-full h-screen flex items-center justify-center relative bg-no-repeat bg-cover bg-center"
@@ -241,10 +123,6 @@
                 </form>
             </div>
         </div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
     </section> 
 
     <section id="bg">
@@ -276,7 +154,7 @@
                 </div>
             </div>
         </div>
-
+    </section>
         <section class="py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
@@ -509,29 +387,26 @@
             updateNavigationButtons("carousel-2", "leftBtn-2", "rightBtn-2");
         </script>
 
-        <section class="py-12">
-
+        <section class="py-3 ">
             <div class="container mx-auto px-4">
+                <!-- Section Header -->
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
-                    Reviews
+                    CareHUB Reviews
                 </h2>
+        
+                <!-- Reviews Carousel -->
                 <div class="relative">
                     <div id="carousel-7" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
                         {% for review in reviews %}
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
-                            <div class="flex items-center mb-4">
-                                <div class="text-red-400">
-                                    <p>{{ review.created_at|date:"g:i A j/n/Y" }}</p> <!-- Format: 7:20 PM 1/5/2025 -->
-                                </div>
-                            </div>
-                            <p class="mt-2 text-gray-600">
-                                {{ review.comment }}
-                            </p>
+                        <div class="bg-white p-6 rounded-lg shadow-md min-w-[300px] max-w-[300px] flex-none">
+                            <p class="text-gray-500 text-sm">{{ review.created_at|date:"g:i A j/n/Y" }}</p>
+                            <p class="mt-3 text-gray-700">{{ review.comment }}</p>
+        
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="Profile Picture"
-                                    class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="User"
+                                    class="w-10 h-10 rounded-full mr-3" />
                                 <div>
-                                    <p class="text-gray-800 font-semibold">
+                                    <p class="text-gray-900 font-semibold">
                                         {% if review.reviewer_type.model == "userprofile" %}
                                         {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
                                         {% elif review.reviewer_type.model == "shopprofile" %}
@@ -540,11 +415,9 @@
                                         Anonymous
                                         {% endif %}
                                     </p>
-                                    <p class="text-gray-600 text-sm">
-                                        {% if review.reviewer_type.model == "userprofile" %}
-                                        Customer
-                                        {% elif review.reviewer_type.model == "shopprofile" %}
-                                        Shop Owner
+                                    <p class="text-gray-500 text-sm">
+                                        {% if review.reviewer_type.model == "userprofile" %} Customer 
+                                        {% elif review.reviewer_type.model == "shopprofile" %} Shop Owner 
                                         {% endif %}
                                     </p>
                                 </div>
@@ -552,82 +425,82 @@
                         </div>
                         {% endfor %}
                     </div>
-        </section>
-        <div class="container mx-auto px-4 py-7">
-            <h2 class="text-2xl font-bold text-center mb-8">
-                Review About Our Platform
-            </h2>
-
-            <button id="writeReviewBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">
-                Write a Review
-            </button>
-
-            <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-            <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
-                    <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
-
-                    <form id="reviewForm" action="submit_review" method="POST">
-                        {% csrf_token %}
-                        <input type="text" id="reviewerName" name="reviewer_name"
-                            class="w-full border p-2 rounded-lg mb-4" readonly value=""
-                            placeholder="{{reviewer_name}}" />
-                        <div class="flex mb-4">
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
+                </div>
+        
+                <!-- Write Review Button (Always Centered) -->
+                <div class="flex justify-center mt-8">
+                    <button id="writeReviewBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg">
+                        Write a Review
+                    </button>
+                </div>
+        
+                <!-- Review Modal -->
+                <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <form id="reviewForm" action="submit_review" method="POST">
+                            {% csrf_token %}
+                            <input type="text" id="reviewerName" name="reviewer_name" class="w-full border p-2 rounded-lg mb-4" 
+                                readonly value="{{reviewer_name}}" placeholder="Your Name" />
+        
+                            <!-- Star Rating -->
+                            <div class="flex mb-4">
+                                {% for i in "12345" %}
+                                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="{{ i }}">&#9733;</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="" required />
+        
+                            <!-- Review Textarea -->
+                            <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4" 
+                                placeholder="Describe your experience (optional)" rows="4"></textarea>
+                            <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
+        
+                            <!-- Submit & Cancel Buttons -->
+                            <div class="flex justify-between">
+                                <button type="submit" id="submitReview" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                                    Submit Review
+                                </button>
+                                <button type="button" id="cancelReview" class="text-gray-600">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        
+                <!-- CareHUB Info Section -->
+                <div class="py-16 text-center">
+                    <h2 class="text-3xl font-bold text-black">
+                        Welcome to CareHUB: The Future of Beauty & Wellness
+                    </h2>
+                    <p class="text-lg text-gray-500 mt-2">
+                        Your One-Stop Hub for Radiance and Relaxation.
+                    </p>
+        
+                    <div class="mt-8">
+                        <span class="text-6xl font-bold text-blue-600">100,000</span>
+                        <p class="text-lg text-gray-500">Appointments booked on CareHUB</p>
+                    </div>
+        
+                    <div class="mt-12 flex justify-center space-x-12">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">100,000</p>
+                            <p class="text-lg text-gray-500">Registered Shops</p>
                         </div>
-
-                        <input type="hidden" id="rating" name="rating" value="" required />
-
-                        <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4"
-                            placeholder="Describe your experience (optional)" rows="4"></textarea>
-
-                        <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
-
-                        <button type="submit" id="submitReview" class="bg-green-500 text-white px-4 py-2 rounded-lg">
-                            Submit Review
-                        </button>
-                        <button type="button" id="cancelReview" class="ml-4 text-gray-600">
-                            Cancel
-                        </button>
-                    </form>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">100 Upazillas</p>
+                            <p class="text-lg text-gray-500">Using CareHUB</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">1,500</p>
+                            <p class="text-lg text-gray-500">Professional Barbers</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="reviewsContainer" class="mt-8 space-y-4">
-            </div>
-        </div>
-
-        <div class="py-16 text-center">
-            <h2 class="text-3xl font-bold text-black">
-                Wellcome to CareHUB :The Future of Beauty & Wellness
-            </h2>
-            <p class="text-lg text-gray-500 mt-2">
-                Your One-Stop Hub for Radiance and Relaxation.
-            </p>
-
-            <div class="mt-8">
-                <span class="text-6xl font-bold text-blue-600">100000</span>
-                <p class="text-lg text-gray-500">Appointments booked on CareHUB</p>
-            </div>
-
-            <div class="mt-12 flex justify-center space-x-12">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">100000</p>
-                    <p class="text-lg text-gray-500">Registered Shops</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">100 upazilla</p>
-                    <p class="text-lg text-gray-500">using CareHUB</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">1500</p>
-                    <p class="text-lg text-gray-500">Professional barber</p>
-                </div>
-            </div>
-        </div>
+        </section>
+        
+        
         <script>
             const writeReviewBtn = document.getElementById("writeReviewBtn");
             const modalOverlay = document.getElementById("modalOverlay");
@@ -677,9 +550,8 @@
                 }
             });
         </script>
-    </section>
-    {% include "app/footer.html" %}
-    <!-- Footer -->
+{% include "app/footer.html" %}
+
 </body>
 
 </html>

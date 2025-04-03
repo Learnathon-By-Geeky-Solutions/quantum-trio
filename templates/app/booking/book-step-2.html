@@ -79,10 +79,11 @@
                 <div class="px-5 mx-2 items-center justify-between">
                     <div id="date-buttons" class=" flex justify-between w-full space-x-2"></div>
                     <div class="bg-gray-200  mt-4 w-1/3">
-                        <label type="hidden" name="selected_date" id="fetch_selected_date"></label>
+                        <!-- Hidden input for selected_date -->
                         <input type="hidden" name="selected_date" id="fetch_selected_date">
-                        <label name="selected_time" id="fetch_selected_time"></label>
-                        <input type="hidden" id="fetch_selected_time" name="selected_time">
+                        
+                        <!-- Hidden input for selected_time -->
+                        <input type="hidden" name="selected_time" id="fetch_selected_time">
                     </div>
                     <!-- Time Slot dynamic -->
                     <div id="time-slots" class=" items-center justify-between bg-gray-200"></div>
@@ -211,24 +212,20 @@
             const year = date.getFullYear();
             monthYearElement.textContent = `${month} ${year}`;
         }
-        // Call the function to add time slots when the page loads
-        // document.addEventListener('DOMContentLoaded', addTimeSlots);
-
         let today = new Date();
-        // alert('today'+today);
-        let currentStartDate = new Date(today); // Keep a reference to the current start date
-        let selectedButton = null; // Track the selected button
+        
+        let currentStartDate = new Date(today); 
+        let selectedButton = null; 
 
-        // Function to generate the next 7 days
         function generateDays(startDate) {
-            // alert(startDate);
+            
             const dateContainer = document.getElementById('date-buttons');
             const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            // Clear previous dates
+          
             dateContainer.innerHTML = '';
-            // Update month and year based on the start date
+           
             updateMonthYear(startDate);
-            // Generate the 7-day range starting from startDate
+          
             for (let i = 0; i < 7; i++) {
                 let date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);  // Move the date forward by i days

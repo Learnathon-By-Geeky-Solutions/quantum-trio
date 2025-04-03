@@ -62,14 +62,14 @@ def submit_review(request):
         else:
             return HttpResponse("Invalid reviewer", status=400)
 
-        # Create the review object
-        review = ReviewCarehub.objects.create(
+        ReviewCarehub.objects.create(
             reviewer_type=ContentType.objects.get_for_model(reviewer_instance),
             reviewer_id=reviewer_instance.id,
             comment=comment,
             rating=rating
         )
-        return HttpResponse("Review submitted successfully")
+        
+        return redirect('home')
     return HttpResponse("Invalid request", status=400)
 
 def select_user_type(request):
@@ -190,7 +190,6 @@ def fetch_shop(request):
 
 def explore_by_items(request):
     item=request.GET.get('item')
-    gender=request.GET.get('gender')
     return render(request, 'app/explore_by_items.html',{'item':item})
 
 def fetch_by_items(request):

@@ -1,22 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-{% load static tailwind_tags %}
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Salon Reviews</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
-    {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
-    <!-- Include Chart.js for graphs/charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-</head>
-
-<!DOCTYPE html>
-{% load static %}
 {% load tailwind_tags %}
 <html lang="en">
 
@@ -27,45 +10,46 @@
     {% tailwind_css %}
 </head>
 
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4">
-            {% include "app/salon_dashboard/header.html" %}
-            
-            <div class="overflow-x-auto bg-white p-4 shadow-lg rounded-lg">
-                <table class="min-w-full border border-gray-200 rounded-lg">
-                    <thead class="bg-pink-500">
-                        <tr>
-                            <th class="py-2 px-4 text-left">Serial No</th>
-                            <th class="py-2 px-4 text-left">Date</th>
-                            <th class="py-2 px-4 text-left">Customer Name</th>
-                            <th class="py-2 px-4 text-left">Review</th>
-                            <th class="py-2 px-4 text-left">Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b hover:bg-pink-100">
-                            <td class="py-2 px-4">1</td>
-                            <td class="py-2 px-4">10.02.1025</td>
-                            <td class="py-2 px-4">Israt Jahan</td>
-                            <td class="py-2 px-4">It's the best place</td>
-                            <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
-                        </tr>
-                        <tr class="border-b hover:bg-pink-100">
-                            <td class="py-2 px-4">2</td>
-                            <td class="py-2 px-4">10.02.1025</td>
-                            <td class="py-2 px-4">Israt Jahan</td>
-                            <td class="py-2 px-4">It's the best place</td>
-                            <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
-                        </tr>
-                    </tbody>
-                </table>
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+            <div class="main-content p-4 flex-1">
+                <div class="overflow-x-auto bg-white p-4 shadow-lg rounded-lg">
+                    <table class="min-w-full border border-gray-200 rounded-lg">
+                        <thead class="bg-pink-500">
+                            <tr>
+                                <th class="py-2 px-4 text-left">Serial No</th>
+                                <th class="py-2 px-4 text-left">Date</th>
+                                <th class="py-2 px-4 text-left">Customer Name</th>
+                                <th class="py-2 px-4 text-left">Review</th>
+                                <th class="py-2 px-4 text-left">Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b hover:bg-pink-100">
+                                <td class="py-2 px-4">1</td>
+                                <td class="py-2 px-4">10.02.1025</td>
+                                <td class="py-2 px-4">Israt Jahan</td>
+                                <td class="py-2 px-4">It's the best place</td>
+                                <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
+                            </tr>
+                            <tr class="border-b hover:bg-pink-100">
+                                <td class="py-2 px-4">2</td>
+                                <td class="py-2 px-4">10.02.1025</td>
+                                <td class="py-2 px-4">Israt Jahan</td>
+                                <td class="py-2 px-4">It's the best place</td>
+                                <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </section>
+
 </body>
 </html>

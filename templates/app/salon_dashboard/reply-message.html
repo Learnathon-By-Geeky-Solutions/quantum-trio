@@ -9,27 +9,9 @@
     <title>Salon Deshboard</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            font-family: cursive;
-        }
-
-        #dashboard {
-            height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #1F2937;
-        }
-
-        .header {
-            background-color: #00E081;
-            color: white;
-        }
-
         .message-area {
             display: flex;
             flex-direction: column;
@@ -58,27 +40,22 @@
 
     </style>
 </head>
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
-
                 <div class="message-area px-4 py-6 bg-white rounded-lg shadow">
                     <div id="messageContainer" class="grid grid-cols-12 gap-y-2">
                         <!-- Messages will be loaded here via AJAX -->
                     </div>
                 </div>
-
             </div>
-        </main>
-    </div>
-
-       
+        </div>
+    </section>    
 </body>
 
 </html>

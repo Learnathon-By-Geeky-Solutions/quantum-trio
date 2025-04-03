@@ -9,84 +9,95 @@
     <title>Salon Calendar</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
+    <style>
+       
+        
+  table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        
+    </style>
+    
 </head>
-
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
+     
+        <div class="flex-1 p-6">
+            <div class="container1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-xl font-bold mb-4 text-center">
+                            Calendar for {{ month }}/{{ year }}
+                        </h2>
+                         
+                        <div class="text-center mb-4">
+                            {% if month == 1 %}
+                                <a href="?month=12&year={{ year|add:-1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                            {% else %}
+                                <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                            {% endif %}
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-            <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
-                <div class="container1">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h2 class="text-xl font-bold mb-4 text-center">
-                                Calendar for {{ month }}/{{ year }}
-                            </h2>
-                             
-                            <div class="text-center mb-4">
-                                {% if month == 1 %}
-                                    <a href="?month=12&year={{ year|add:-1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
-                                {% else %}
-                                    <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
-                                {% endif %}
+                            <span class="px-4 py-2 font-bold text-gray-800">{{ month_name }} {{ year }}</span>
 
-                                <span class="px-4 py-2 font-bold text-gray-800">{{ month_name }} {{ year }}</span>
+                            {% if month == 12 %}
+                                <a href="?month=1&year={{ year|add:1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                            {% else %}
+                                <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                            {% endif %}
+                        </div>
 
-                                {% if month == 12 %}
-                                    <a href="?month=1&year={{ year|add:1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
-                                {% else %}
-                                    <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
-                                {% endif %}
-                            </div>
-
-                            <div class="calendar border border-gray-300 p-4 bg-white">
-                                {{ cal|safe }}
-                            </div>
+                        <div class="calendar border border-gray-300 p-4 bg-white">
+                            {{ cal|safe }}
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
+       
+        </div>
+    </section>
 
-</body>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Get month and year from the HTML element (set dynamically from Django)
+ 
     let calendarContainer = document.querySelector(".calendar");
-    let month = calendarContainer.getAttribute("data-month"); // e.g., "10"
-    let year = calendarContainer.getAttribute("data-year"); // e.g., "2024"
-
-    // Ensure values are integers
+    let month = calendarContainer.getAttribute("data-month"); 
+    let year = calendarContainer.getAttribute("data-year"); 
     month = parseInt({{month}}, 10);
     year = parseInt({{year}}, 10);
 
-    // Get all table cells containing a date
     document.querySelectorAll("td").forEach((cell) => {
-        let date = cell.innerText.trim(); // Get the date number
-
-        // Check if the cell contains a valid date
+        let date = cell.innerText.trim(); 
         if (date && !isNaN(date)) {
-            // Ensure date is a string and pad it
+ 
             date = date.toString().padStart(2, "0");
 
-            // Create a new anchor element
             let link = document.createElement("a");
             link.href = `slots?date=${year}-${month.toString().padStart(2, "0")}-${date}`;
-            link.innerText = date; // Keep the date text
-
-            // Replace the text with the link inside the cell
+            link.innerText = date; 
             cell.innerHTML = "";
             cell.appendChild(link);
         }
     });
 });
 </script>
+
+</body>
 
 </html>

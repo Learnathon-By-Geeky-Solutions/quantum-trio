@@ -111,7 +111,7 @@
                         class="w-full p-2 border border-gray-300 rounded mt-1" accept=".jpg"
                         onchange="previewImage(event)">
                     {% if user.userprofile.image %}
-                    <p>Current Image: <img src="{{ user.userprofile.image.url }}" alt="Profile Image" class="h-12 w-12 rounded-full mt-2"></p>
+                    <p>Current Image: <img src="{{ user.userprofile.image.url }}" alt="" class="h-12 w-12 rounded-full mt-2"></p>
                     {% endif %}
                 </div>
             

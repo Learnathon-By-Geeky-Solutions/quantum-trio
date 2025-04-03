@@ -1,11 +1,7 @@
-<!DOCTYPE html>
+
 {% load static %}
 {% load static tailwind_tags %}
-<html lang="en">
 
-<head>
-    <title>Sidebar</title>
-    {% tailwind_css %}
     <style>
         * {
             margin: 0;
@@ -13,11 +9,7 @@
             font-family: cursive;
         }
     </style>
-</head>
-
-<body>
-
-    <div class="bg-gray-800 text-gray-100 w-64 space-y-6 py-7 px-2" id="dashboard">
+<div class="bg-gray-800 text-gray-100 w-64 space-y-6 py-7 px-2 " id="dashboard">
         <div class="flex items-center justify-center">
             <span class="text-2xl font-extrabold uppercase" style="margin-right:40px"><a href="../home">CareHub</a></span>
         </div>
@@ -34,7 +26,7 @@
             <a href="notifications" class="menu-item block py-2.5 px-4 rounded-lg mt-2">Notifications</a>
             <a href="settings" class="menu-item block py-2.5 px-4 rounded-lg mt-2">Settings</a>
         </nav>
-    </div>
+</div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const menuItems = document.querySelectorAll(".menu-item");
@@ -62,6 +54,3 @@
         });
     </script>
 
-</body>
-
-</html>
