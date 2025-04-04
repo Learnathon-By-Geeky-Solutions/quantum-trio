@@ -16,9 +16,9 @@ function openAddModal(worker_id, name, email, mobile,experience) {
     document.getElementById('addModal').classList.remove('hidden');
 }
 document.getElementById('editEmail').addEventListener('input', function () {
-    var emailField = document.getElementById('editEmail');
-    var emailError = document.getElementById('emailError');
-    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let emailField = document.getElementById('editEmail');
+    let emailError = document.getElementById('emailError');
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (emailField.value.match(emailPattern)) {
         emailError.style.display = 'none';
