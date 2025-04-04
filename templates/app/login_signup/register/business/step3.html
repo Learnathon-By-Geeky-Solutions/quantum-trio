@@ -100,21 +100,9 @@
         </button>
       </form>
     </div>
- 
 
-  <script>
-    const citiesBydistrict = {
-        {% for upazilla in Upazilla %}
-        "{{ upazilla.district__name }}": [
-            {% for index in upazilla.upazilla_names %}
-            "{{ index }}"{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        ]{% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    };
 
-  </script>
-  <script src="{% static 'app/js/location.js' %}"></script>
+    {% include 'app/address.html' %}
   </body>
 
 </html>
