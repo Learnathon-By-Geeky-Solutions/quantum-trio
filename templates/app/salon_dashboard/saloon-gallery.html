@@ -10,22 +10,20 @@
     <title>Salon Gallery</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
+    
     <style>
       
     </style>
 </head>
 
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+     
+        <div class="flex-1 p-6">
             <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
                 <div class="mb-4">
                     <!-- Add Image Button -->
                     <button id="addImageBtn"
@@ -57,26 +55,26 @@
                             </button>
                         </form>
                
-                        </div>
+                    </div>
                     {%endfor%}
-            </div>
+               </div>
        
-    
-</div>
-
             </div>
-        </main>
-        {% if message == 'success' %}
+        </div>
+    </section>
+
+            
+    {% if message == 'success' %}
         <script>
             alert("You successfully uploaded an image.");
         </script>
         {% endif %}
         <script>
-    // When the add image button is clicked, trigger the file input dialog
+    
     document.getElementById('addImageBtn').addEventListener('click', function() {
         document.getElementById('imageInput').click();
     });
-</script>
+   </script>
 </body>
 
 </html>

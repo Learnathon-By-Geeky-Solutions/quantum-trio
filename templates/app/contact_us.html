@@ -11,7 +11,41 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	{% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/contact-us.css' %}" />
+<style>
+   
+    #weight {
+        font-weight: 800px;
+        color: pink;
+        font-style: italic;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    
+    
+    }
+    
+    #imagesize:hover {
+        overflow: hidden;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        transform: scale(1.1);
+    
+    }
+    
+    #wat {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(180deg, #f1e0f1, #d3d2ec, #a7edeb, #ed7dc0);
+        background-size: 300% 300%;
+        animation: gradient-bg 10s ease-in-out infinite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+    }
+    
+    
+</style>
     
 </head>
 

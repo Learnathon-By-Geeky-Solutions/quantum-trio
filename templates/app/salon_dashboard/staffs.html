@@ -9,225 +9,168 @@
     <title>Salon stuff</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/salon-dashboard/style.css' %}" />
-   
+     
 </head>
-
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
-                {% include "app/salon_dashboard/header.html" %}
-                <!-- Members List -->
-                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {%for worker in shop_worker%}   
-                            <div class="bg-white rounded-lg shadow-md p-6">
-                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Member: 6</h3>
-                                <p class="text-gray-600"><span class="font-semibold"><img src="{{ BASE_DIR }}.{{ worker.profile_pic.url }}" alt="" width="300" height="300"></span></p>
-                                <p class="text-gray-600"><span class="font-semibold">Name:{{worker.name}}</span></p>
-                                <p class="text-gray-600"><span class="font-semibold">Email:{{worker.email}}</span></p>
-                                <p class="text-gray-600"><span class="font-semibold">Phone:{{worker.phone}}</span> </p>
-                                <p class="text-gray-600"><span class="font-semibold">Experience:{{worker.experience}}</span> </p>
-                                <p class="text-gray-600">Expertise:
-                                {%for item in worker.expertise.all%}
-                                    {{item.name}}
-                                {%endfor%}
-                                <div>
-                                    <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" 
-                                    onclick="openEditModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.email }}', '{{ worker.phone }}','{{ worker.experience }}')">EDIT PROFILE</button>
-                                </div> 
-                            </div>  
-                        {%endfor%} 
-                    </div>
-                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-lg shadow-md p-6">
-                            <div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {%for worker in shop_worker%}   
+                        <div class="bg-white rounded-lg shadow-md p-6 ">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Member: {{ forloop.counter }}</h3>
+                            <div class="flex justify-center p-5">
+                                <img src="{{ worker.profile_pic.url }}" alt="Profile Image"
+                                    style="width: 256px; height: 256px; object-fit: cover; border-radius: 50%; border: 2px solid #ccc;">
+                            </div>
+                            <p class="text-gray-600 "><span class="font-semibold">Name:</span>{{worker.name}}</p>
+                            <p class="text-gray-600"><span class="font-semibold">Email:</span>{{worker.email}}</p>
+                            <p class="text-gray-600"><span class="font-semibold">Phone:</span>{{worker.phone}}</p>
+                            <p class="text-gray-600"><span class="font-semibold">Experience: </span>{{worker.experience}} </p>
+                            <p class="text-gray-600"><span class="font-semibold">Expertise:</span>
+                            {%for item in worker.expertise.all%}
+                                {{item.name}}
+                            {%endfor%}
+                            <div class="mt-3 ">
                                 <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" 
-                                    onclick="openAddModal()">Add Worker</button>
+                                onclick="openEditModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.email }}', '{{ worker.phone }}','{{ worker.experience }}')">EDIT PROFILE</button>
                             </div> 
                         </div>  
-                        
-                    </div>
+                    {%endfor%} 
+                </div>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div>
+                            <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" 
+                                onclick="openAddModal()">Add Worker</button>
+                        </div> 
+                    </div>  
+                    
+                </div>
+        
             </div>
-        </main>
-        <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-            <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
-                <h2 class="text-xl font-bold mb-4">Edit Profile</h2>
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="hidden" id="worker_id" name="id">
-                    <!-- Other form fields -->
-                    <div class="mb-4">
-                        <label for="editName" class="block text-gray-700">Full name</label>
-                        <input type="text" id="editName" name="name"
-                            class="w-full p-2 border border-gray-300 rounded mt-1">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="editEmail" class="block text-gray-700">Email Address</label>
-                        <input type="email" id="editEmail" name="email"
-                            class="w-full p-2 border border-gray-300 rounded mt-1">
-                        <p id="emailError" style="color:red; display:none;">Please enter a valid email address.</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="editPhone" class="block text-gray-700">Mobile</label>
-                        <input type="text" id="editPhone" name="phone"
-                            class="w-full p-2 border border-gray-300 rounded mt-1">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="editExperience" class="block text-gray-700">Experience</label>
-                        <input type="text" id="editExperience" name="experience"
-                            class="w-full p-2 border border-gray-300 rounded mt-1">
-                    </div>
-                    <div class="mb-4">
-                        <label for="editExpertise" class="block text-gray-700">Experience Level</label>
-                        <select id="editExpertise" name="expertise" multiple class="w-full p-2 border border-gray-300 rounded mt-1">
-                            <option value="junior">Junior</option>
-                            {%for item in items %}
-                            <option value="{{item.item.id}}">{{item.item.name}}</option>
-                            {%endfor%}
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="editImage" class="block text-gray-700">Profile Photo</label>
-                        <input name="profile_pic" type="file" id="editImage"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" accept=".jpg,.jpeg,.png">
-                    </div>
-
-                    <div class="flex justify-end">
-                        <button type="button"
-                            class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
-                            onclick="closeEditModal()">Cancel</button>
-                        <button type="submit" name="submit"
-                            class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">Save</button>
-                    </div>
-                </form>
+            <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+                <div class="bg-white rounded-lg shadow-lg m-6 p-6 w-full max-w-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Edit Profile</h2>
+            
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" id="worker_id" name="id">
+            
+                        <!-- Full Name -->
+                        <div class="mb-4">
+                            <label for="editName" class="block text-gray-700 font-medium">Full Name</label>
+                            <input type="text" id="editName" name="name" class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500">
+                        </div>
+            
+                        <!-- Email Address -->
+                        <div class="mb-4">
+                            <label for="editEmail" class="block text-gray-700 font-medium">Email Address</label>
+                            <input type="email" id="editEmail" name="email" class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500">
+                            <p id="emailError" class="text-red-500 text-sm mt-1 hidden">Please enter a valid email address.</p>
+                        </div>
+            
+                        <!-- Mobile -->
+                        <div class="mb-4">
+                            <label for="editPhone" class="block text-gray-700 font-medium">Mobile</label>
+                            <input type="text" id="editPhone" name="phone" class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500">
+                        </div>
+            
+                        <!-- Experience -->
+                        <div class="mb-4">
+                            <label for="editExperience" class="block text-gray-700 font-medium">Experience</label>
+                            <input type="text" id="editExperience" name="experience" class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500">
+                        </div>
+            
+                        <!-- Experience Level -->
+                        <div class="mb-4">
+                            <label for="editExpertise" class="block text-gray-700 font-medium">Experience Level</label>
+                            <select id="editExpertise" name="expertise" multiple class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500">
+                                <option value="junior">Junior</option>
+                                {% for item in items %}
+                                <option value="{{ item.item.id }}">{{ item.item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- Profile Photo -->
+                        <div class="mb-4">
+                            <label for="editImage" class="block text-gray-700 font-medium">Profile Photo</label>
+                            <input name="profile_pic" type="file" id="editImage" class="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500" accept=".jpg,.jpeg,.png">
+                        </div>
+            
+                        <!-- Buttons -->
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300" onclick="closeEditModal()">Cancel</button>
+                            <button type="submit" name="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!--for add purpose-->
+            <div id="addModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+                <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+                    <h2 class="text-xl font-bold mb-4">Add Worker</h2>
+                    <form action="add_worker" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="addName" class="block text-gray-700">Full name</label>
+                            <input type="text" id="addName" name="name"
+                                class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="addEmail" class="block text-gray-700">Email Address</label>
+                            <input type="email" id="addEmail" name="email"
+                                class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                            <p id="emailError" style="color:red; display:none;">Please enter a valid email address.</p>
+                        </div>
+    
+                        <div class="mb-4">
+                            <label for="addPhone" class="block text-gray-700">Mobile</label>
+                            <input type="text" id="addPhone" name="phone"
+                                class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                        </div>
+    
+                        <div class="mb-4">
+                            <label for="addExperience" class="block text-gray-700">Experience</label>
+                            <input type="text" id="addExperience" name="experience"
+                                class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="addExpertise" class="block text-gray-700">Experience Level</label>
+                            <select id="addExpertise" name="expertise" multiple class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                                {#  <option value="junior">Junior</option>  #}
+                                {%for item in items %}
+                                <option value="{{item.item.id}}">{{item.item.name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="addImage" class="block text-gray-700">Profile Photo</label>
+                            <input name="profile_pic" type="file" id="addImage"
+                                class="w-full p-2 border border-gray-300 rounded mt-1" accept=".jpg,.jpeg,.png" required>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="button"
+                                class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+                                onclick="closeAddModal()">Cancel</button>
+                            <button type="submit" name="submit"
+                                class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">Save</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <!--for add purpose-->
-        <div id="addModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-            <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
-                <h2 class="text-xl font-bold mb-4">Add Worker</h2>
-                <form action="add_worker" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-4">
-                        <label for="addName" class="block text-gray-700">Full name</label>
-                        <input type="text" id="addName" name="name"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="addEmail" class="block text-gray-700">Email Address</label>
-                        <input type="email" id="addEmail" name="email"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                        <p id="emailError" style="color:red; display:none;">Please enter a valid email address.</p>
-                    </div>
+    </section>
 
-                    <div class="mb-4">
-                        <label for="addPhone" class="block text-gray-700">Mobile</label>
-                        <input type="text" id="addPhone" name="phone"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                    </div>
 
-                    <div class="mb-4">
-                        <label for="addExperience" class="block text-gray-700">Experience</label>
-                        <input type="text" id="addExperience" name="experience"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="addExpertise" class="block text-gray-700">Experience Level</label>
-                        <select id="addExpertise" name="expertise" multiple class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                            {#  <option value="junior">Junior</option>  #}
-                            {%for item in items %}
-                            <option value="{{item.item.id}}">{{item.item.name}}</option>
-                            {%endfor%}
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="addImage" class="block text-gray-700">Profile Photo</label>
-                        <input name="profile_pic" type="file" id="addImage"
-                            class="w-full p-2 border border-gray-300 rounded mt-1" accept=".jpg,.jpeg,.png" required>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button"
-                            class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
-                            onclick="closeAddModal()">Cancel</button>
-                        <button type="submit" name="submit"
-                            class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <script>
-            function openEditModal(worker_id, name, email, mobile,experience) {
-                document.getElementById('worker_id').value = worker_id;
-                document.getElementById('editName').value = name;
-                document.getElementById('editEmail').value = email;
-                document.getElementById('editPhone').value = mobile;
-                document.getElementById('editExperience').value = experience;
-                document.getElementById('editModal').classList.remove('hidden');
-            }
-
-            function openAddModal(worker_id, name, email, mobile,experience) {
-                document.getElementById('worker_id').value = worker_id;
-                document.getElementById('editName').value = name;
-                document.getElementById('editEmail').value = email;
-                document.getElementById('editPhone').value = mobile;
-                document.getElementById('editExperience').value = experience;
-                document.getElementById('addModal').classList.remove('hidden');
-            }
-            document.getElementById('editEmail').addEventListener('input', function () {
-                var emailField = document.getElementById('editEmail');
-                var emailError = document.getElementById('emailError');
-                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                if (emailField.value.match(emailPattern)) {
-                    emailError.style.display = 'none';
-                } else {
-                    emailError.style.display = 'block';
-                }
-            });
-
-            function closeEditModal() {
-                document.getElementById('worker_id').value = '';
-                document.getElementById('editName').value = '';
-                document.getElementById('editEmail').value = '';
-                document.getElementById('editPhone').value = '';
-                document.getElementById('editExperience').value = '';
-                document.getElementById('editModal').classList.add('hidden');
-            }
-            function closeAddModal() {
-                document.getElementById('addName').value = '';
-                document.getElementById('addEmail').value = '';
-                document.getElementById('addPhone').value = '';
-                document.getElementById('editExperience').value = '';
-                document.getElementById('addModal').classList.add('hidden');
-            }
-            function previewImage(event) {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    const output = document.getElementById('profileImage');
-                    output.src = reader.result;
-                }
-                reader.readAsDataURL(event.target.files[0]);
-            }
-
-            function saveProfile() {
-                const name = document.getElementById('editName').value;
-                const email = document.getElementById('editEmail').value;
-                const phone = document.getElementById('editPhone').value;
-                document.getElementById('profileName').innerText = name || "Please enter your name";
-                document.getElementById('profileEmail').innerText = email || "Please enter your email";
-                document.getElementById('profilePhone').innerText = phone || "Please enter your mobile";
-                closeEditModal();
-            }
-        </script>
+    <script src="{% static 'app/js/schedule.js' %}"></script>
 </body>
 
 </html>

@@ -9,23 +9,16 @@
     <title>My Inbox</title>
     {% tailwind_css %}
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 </head>
 
-<body class="bg-gray-100">
-    {% include 'app/customer_profile/navbar.html' %}
+<body class="bg-gray-100 pt-20">
+    {% include 'app/navbar.html' %}
+    
+    <section class="flex flex-col md:flex-row">
+        {% include 'app/customer_profile/sidebar.html' %}
      
-    <script>
-        function toggleDropdown() {
-            document.getElementById('dropdownMenu').classList.toggle('hidden');
-        }
-    </script>
-
-    <section class="flex">
-        <div class="w-1/4">
-            {% include 'app/customer_profile/sidebar.html' %}
-        </div>
-        <div class="w-3/4 p-4">
+        <div class="flex-1 p-6">
             <h3 class="text-2xl font-bold text-pink-700 mb-6">My Messages</h3>
             <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
                 <!-- Demo Message 1 -->

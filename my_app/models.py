@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-# from shop_profile.models import ShopProfile
-# from user_profile.models import UserProfile
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
@@ -58,10 +57,10 @@ class Item(models.Model):
         return f"{self.name},   {self.service.name}"
 
 class ReviewCarehub(models.Model):
-    reviewer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # Stores the model type (MyUser or ShopProfile)
-    reviewer_id = models.PositiveIntegerField()  # Stores the actual ID of the reviewer
-    reviewer = GenericForeignKey("reviewer_type", "reviewer_id")  # Links to either MyUser or ShopProfile
-    comment = models.CharField(max_length=255)  # Increased max length for better user flexibility
+    reviewer_type = models.ForeignKey(ContentType, on_delete=models.CASCADE) 
+    reviewer_id = models.PositiveIntegerField()  
+    reviewer = GenericForeignKey("reviewer_type", "reviewer_id") 
+    comment = models.CharField(max_length=255) 
     rating = models.DecimalField(max_digits=3, decimal_places=1)
     created_at = models.DateTimeField(auto_now_add=True) 
     def __str__(self):

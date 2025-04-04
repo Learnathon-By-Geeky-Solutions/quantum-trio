@@ -11,72 +11,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
+    {% comment %} <link rel="stylesheet" href="{% static 'app/css/style.css' %}" /> {% endcomment %}
+    <style>
+        
+        #imagesize:hover {
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            transform: scale(1.1);
+        }
+        
+        
+        
+        .sha {
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+        
+        .cards {
+            border: 2px solid #ccc;
+        }
+        
+       
+        .grid {
+            margin-left: 100px;
+        }
+        
+        .no-scrollbar {
+            -ms-text-overflow: none;
+            text-overflow: clip;
+            scrollbar-width: none;
+        }
+      
+        
+        .hidden {
+            display: none;
+        }
 
+        @keyframes typing {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 100%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+    
+        /* Keyframes for pausing the animation */
+        @keyframes pause {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Apply animation to the heading */
+        .animate-heading {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 4s steps(30) 2, pause 1s 4s forwards; /* Run typing once, then pause for 1 sec */
+            animation-delay: 0s, 5s; /* Delay second typing start after 1 sec pause */
+            animation-iteration-count: 2; /* Run animation once */
+            animation-fill-mode: forwards; /* Ensure the final state is maintained */
+        }
+    
+        .animate-heading span {
+            animation: typing 4s steps(30) 1, pause 1s 4s forwards; /* Same for the span */
+            animation-delay: 0s, 5s; /* Delay second typing start after 1 sec pause */
+            animation-fill-mode: forwards; /* Ensure the final state is maintained */
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
     {% include "app/navbar.html" %}
-
-    <section id="wat" class="relative">
+     <section id="wat">
         <div id="backgroundinside"
-            class="w-full h-screen bg-black bg-opacity-60 flex items-center justify-center bg-no-repeat bg-center"
-            style="background-image: url('/static/app/image/front-image.jpg');
-            background-size: auto 100%;
-          ">
-            <div class="text-center px-4">
-                <div class="max-w-5xl mx-auto bg-gray-200 border rounded-lg shadow-2xl p-4 text-center">
-                    <h1
-                        class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight">
-                        Find and Book the Best
+        class="w-full h-screen flex items-center justify-center relative bg-no-repeat bg-cover bg-center"
+        style="background-image: url('/static/app/image/home-bg.jpg'); 
+        background-size: cover; background-position: center;">
+            <div class="text-center text-white px-4">
+                <div class="max-w-5xl mx-auto p-4 text-center">
+                    <h1 class="text-5xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 leading-tight tracking-tight animate-heading">
+                        Find and Book the Best 
                         <span class="text-pink-700">Salons and Parlours</span>
                     </h1>
                 </div>
-        
-                <div>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
-                            <input type="text" required placeholder="Enter your location or salon name" name="search"
-                                class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 shadow" />
-                            <button type="submit"
-                                class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 shadow">
-                                Search Now
-                            </button>
-                        </div>
-                    </form>
+                <div class="max-w-5xl mx-auto p-4 text-center">
+                    <p id="weight" class="text-3xl sm:text-3xl md:text-4xl font-extrabold text-pink-600 ">
+                        Your beauty journey starts here
+                    </p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- <section id="wat">
-        <div class="bg-black-400 bg-opacity-70 h-full flex items-center justify-center" id="backgroundinside">
-            <div class="text-center text-white px-4">
-                <h1 id="weight" class="text-4xl md:text-6xl font-bold">
-                    Find and Book the Best Salons and Parlours Near You
-                </h1>
-                <p id="weight" class="mt-4 text-lg md:text-xl">
-                    Your beauty journey starts here
-                </p>
-                <form action="" method="POST">
+                
+                <form action="search" method="POST">
                     {% csrf_token %}
-                    <div class="mt-6">
-                        <input type="text" required placeholder="Enter your location or salon name"
-                            class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 sha" name="search" />
+                    <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
+                        <input type="text" required placeholder="Enter your location or salon name" name="search"
+                            class="p-2 w-full md:w-1/2 rounded-lg text-gray-800 shadow" />
                         <button type="submit"
-                            class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 sha">
+                            class="mt-2 md:mt-0 md:ml-2 p-2 bg-pink-500 text-white rounded-lg hover:bg-pink-700 shadow">
                             Search Now
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
-        <div class="wave water"></div>
-    </section> -->
+    </section> 
 
     <section id="bg">
         <!-- How It Works Section -->
@@ -107,7 +154,7 @@
                 </div>
             </div>
         </div>
-
+    </section>
         <section class="py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
@@ -340,29 +387,26 @@
             updateNavigationButtons("carousel-2", "leftBtn-2", "rightBtn-2");
         </script>
 
-        <section class="py-12">
-
+        <section class="py-3 ">
             <div class="container mx-auto px-4">
+                <!-- Section Header -->
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
-                    Reviews
+                    CareHUB Reviews
                 </h2>
+        
+                <!-- Reviews Carousel -->
                 <div class="relative">
                     <div id="carousel-7" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
                         {% for review in reviews %}
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-lg min-w-[300px] max-w-[300px] flex-none cards">
-                            <div class="flex items-center mb-4">
-                                <div class="text-red-400">
-                                    <p>{{ review.created_at|date:"g:i A j/n/Y" }}</p> <!-- Format: 7:20 PM 1/5/2025 -->
-                                </div>
-                            </div>
-                            <p class="mt-2 text-gray-600">
-                                {{ review.comment }}
-                            </p>
+                        <div class="bg-white p-6 rounded-lg shadow-md min-w-[300px] max-w-[300px] flex-none">
+                            <p class="text-gray-500 text-sm">{{ review.created_at|date:"g:i A j/n/Y" }}</p>
+                            <p class="mt-3 text-gray-700">{{ review.comment }}</p>
+        
                             <div class="flex items-center mt-4">
-                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="Profile Picture"
-                                    class="w-10 h-10 rounded-full mr-4" />
+                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="User"
+                                    class="w-10 h-10 rounded-full mr-3" />
                                 <div>
-                                    <p class="text-gray-800 font-semibold">
+                                    <p class="text-gray-900 font-semibold">
                                         {% if review.reviewer_type.model == "userprofile" %}
                                         {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
                                         {% elif review.reviewer_type.model == "shopprofile" %}
@@ -371,11 +415,9 @@
                                         Anonymous
                                         {% endif %}
                                     </p>
-                                    <p class="text-gray-600 text-sm">
-                                        {% if review.reviewer_type.model == "userprofile" %}
-                                        Customer
-                                        {% elif review.reviewer_type.model == "shopprofile" %}
-                                        Shop Owner
+                                    <p class="text-gray-500 text-sm">
+                                        {% if review.reviewer_type.model == "userprofile" %} Customer 
+                                        {% elif review.reviewer_type.model == "shopprofile" %} Shop Owner 
                                         {% endif %}
                                     </p>
                                 </div>
@@ -383,82 +425,82 @@
                         </div>
                         {% endfor %}
                     </div>
-        </section>
-        <div class="container mx-auto px-4 py-7">
-            <h2 class="text-2xl font-bold text-center mb-8">
-                Review About Our Platform
-            </h2>
-
-            <button id="writeReviewBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">
-                Write a Review
-            </button>
-
-            <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-            <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
-                    <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
-
-                    <form id="reviewForm" action="submit_review" method="POST">
-                        {% csrf_token %}
-                        <input type="text" id="reviewerName" name="reviewer_name"
-                            class="w-full border p-2 rounded-lg mb-4" readonly value=""
-                            placeholder="{{reviewer_name}}" />
-                        <div class="flex mb-4">
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
-                            <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
+                </div>
+        
+                <!-- Write Review Button (Always Centered) -->
+                <div class="flex justify-center mt-8">
+                    <button id="writeReviewBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg">
+                        Write a Review
+                    </button>
+                </div>
+        
+                <!-- Review Modal -->
+                <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <form id="reviewForm" action="submit_review" method="POST">
+                            {% csrf_token %}
+                            <input type="text" id="reviewerName" name="reviewer_name" class="w-full border p-2 rounded-lg mb-4" 
+                                readonly value="{{reviewer_name}}" placeholder="Your Name" />
+        
+                            <!-- Star Rating -->
+                            <div class="flex mb-4">
+                                {% for i in "12345" %}
+                                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="{{ i }}">&#9733;</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="" required />
+        
+                            <!-- Review Textarea -->
+                            <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4" 
+                                placeholder="Describe your experience (optional)" rows="4"></textarea>
+                            <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
+        
+                            <!-- Submit & Cancel Buttons -->
+                            <div class="flex justify-between">
+                                <button type="submit" id="submitReview" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                                    Submit Review
+                                </button>
+                                <button type="button" id="cancelReview" class="text-gray-600">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        
+                <!-- CareHUB Info Section -->
+                <div class="py-16 text-center">
+                    <h2 class="text-3xl font-bold text-black">
+                        Welcome to CareHUB: The Future of Beauty & Wellness
+                    </h2>
+                    <p class="text-lg text-gray-500 mt-2">
+                        Your One-Stop Hub for Radiance and Relaxation.
+                    </p>
+        
+                    <div class="mt-8">
+                        <span class="text-6xl font-bold text-blue-600">100,000</span>
+                        <p class="text-lg text-gray-500">Appointments booked on CareHUB</p>
+                    </div>
+        
+                    <div class="mt-12 flex justify-center space-x-12">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">100,000</p>
+                            <p class="text-lg text-gray-500">Registered Shops</p>
                         </div>
-
-                        <input type="hidden" id="rating" name="rating" value="" required />
-
-                        <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4"
-                            placeholder="Describe your experience (optional)" rows="4"></textarea>
-
-                        <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
-
-                        <button type="submit" id="submitReview" class="bg-green-500 text-white px-4 py-2 rounded-lg">
-                            Submit Review
-                        </button>
-                        <button type="button" id="cancelReview" class="ml-4 text-gray-600">
-                            Cancel
-                        </button>
-                    </form>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">100 Upazillas</p>
+                            <p class="text-lg text-gray-500">Using CareHUB</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-black">1,500</p>
+                            <p class="text-lg text-gray-500">Professional Barbers</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="reviewsContainer" class="mt-8 space-y-4">
-            </div>
-        </div>
-
-        <div class="py-16 text-center">
-            <h2 class="text-3xl font-bold text-black">
-                Wellcome to CareHUB :The Future of Beauty & Wellness
-            </h2>
-            <p class="text-lg text-gray-500 mt-2">
-                Your One-Stop Hub for Radiance and Relaxation.
-            </p>
-
-            <div class="mt-8">
-                <span class="text-6xl font-bold text-blue-600">100000</span>
-                <p class="text-lg text-gray-500">Appointments booked on CareHUB</p>
-            </div>
-
-            <div class="mt-12 flex justify-center space-x-12">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">100000</p>
-                    <p class="text-lg text-gray-500">Registered Shops</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">100 upazilla</p>
-                    <p class="text-lg text-gray-500">using CareHUB</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-black">1500</p>
-                    <p class="text-lg text-gray-500">Professional barber</p>
-                </div>
-            </div>
-        </div>
+        </section>
+        
+        
         <script>
             const writeReviewBtn = document.getElementById("writeReviewBtn");
             const modalOverlay = document.getElementById("modalOverlay");
@@ -508,9 +550,8 @@
                 }
             });
         </script>
-    </section>
-    {% include "app/footer.html" %}
-    <!-- Footer -->
+{% include "app/footer.html" %}
+
 </body>
 
 </html>

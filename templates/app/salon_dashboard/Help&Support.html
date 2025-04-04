@@ -12,13 +12,13 @@
     {% tailwind_css %}
 </head>
 
-<body class="bg-gray-200 font-sans leading-normal tracking-normal">
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
+<body class="bg-gray-100">
+    {% include "app/salon_dashboard/header.html" %}
+    
+    <section class="flex flex-col md:flex-row">
         {% include "app/salon_dashboard/sidebar.html" %}
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+     
+        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
                 <div class="header flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="margin:0 0 0 40px;">Gallery</h2>
@@ -28,11 +28,9 @@
                         <h3 class="text-base font-bold">Bombshell Studio</h3>
                     </div>
                 </div>
-                
             </div>
-        </main>
-        
-
+        </div>
+    </section>
 </body>
 
 </html>

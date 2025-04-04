@@ -62,14 +62,14 @@ def submit_review(request):
         else:
             return HttpResponse("Invalid reviewer", status=400)
 
-        # Create the review object
-        review = ReviewCarehub.objects.create(
+        ReviewCarehub.objects.create(
             reviewer_type=ContentType.objects.get_for_model(reviewer_instance),
             reviewer_id=reviewer_instance.id,
             comment=comment,
             rating=rating
         )
-        return HttpResponse("Review submitted successfully")
+        
+        return redirect('home')
     return HttpResponse("Invalid request", status=400)
 
 def select_user_type(request):
@@ -150,10 +150,15 @@ def book_now(request):
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
-
+    dist=""
+    if request.GET.get('district'):
+        dist=request.GET.get('district')
+    if request.GET.get('upazilla'):
+        dist=request.GET.get('upazilla')
+    print(dist)
     print(area)
     if request.method == 'GET':
-        return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area})
+        return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area,'dist':dist})
     else:
         return HttpResponseNotAllowed(['GET'])
     
@@ -190,7 +195,6 @@ def fetch_shop(request):
 
 def explore_by_items(request):
     item=request.GET.get('item')
-    gender=request.GET.get('gender')
     return render(request, 'app/explore_by_items.html',{'item':item})
 
 def fetch_by_items(request):
@@ -204,7 +208,7 @@ def fetch_by_items(request):
     shop_page = paginator.get_page(offset // limit + 1)  # Get the current page based on the offset
     shop_data=[]
     for temp in shop_page:
-        # print(temp.id)
+        
         shop_data.append({
             'shop_id': temp.id,
             'shop_name': temp.shop_name,
@@ -213,7 +217,7 @@ def fetch_by_items(request):
             'shop_city': temp.shop_city,
             'shop_title': temp.shop_title,
             'image': temp.shop_picture.url if temp.shop_picture else '',
-            # 'shop_tier': temp.shop_tier,
+           
         })
     response_data = {
         'shop': shop_data,
@@ -228,44 +232,3 @@ def location(request):
 
 def explore_by_item(request):
     return render(request, 'app/explore_by_items.html')
-
-def view_dash_board(request):
-    return render(request, 'app/salon_dashboard/index.html')
-
-def view_salon_gallery(request):
-    return render(request, 'app/salon_dashboard/saloon_gallery.html')
-
-def view_saloon_calender(request):
-    return render(request, 'app/salon_dashboard/saloon-calender.html')
-
-
-def view_saloon_stuff(request):
-    return render(request, 'app/salon_dashboard/staffs.html')
-
-
-def view_settings(request):
-    return render(request, 'app/salon_dashboard/saloon-setting.html')
-
-
-def view_notification(request):
-    return render(request, 'app/salon_dashboard/notifications.html')
-
-
-def view_reviews(request):
-    return render(request, 'app/salon_dashboard/reviews.html')
-
-
-def view_customers(request):
-    return render(request, 'app/salon_dashboard/customers.html')
-
-
-def booking_slots(request):
-    return render(request, 'app/salon_dashboard/booking-slots.html')
-
-
-def view_message(request):
-    return render(request, 'app/salon_dashboard/message.html')
-
-
-def view_message_reply(request):
-    return render(request, 'app/salon_dashboard/reply-message.html')

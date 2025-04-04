@@ -11,7 +11,36 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	{% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'app/css/explore-by-item.css' %}" />
+    <style>
+      
+        #imagesize:hover {
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            transform: scale(1.1);
+        
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: #f0c040;
+            /* Example color for the tier, adjust as needed */
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tier-badge .iconify {
+            vertical-align: middle;
+            margin-right: 5px;
+            /* Spacing between the icon and the text */
+            font-size: 18px;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
@@ -89,11 +118,8 @@
 
         document.addEventListener('DOMContentLoaded', loadMoreSalons);
     </script>
-
-
-    <!-- Footer -->
     {% include "app/footer.html" %}
-    <!-- Footer -->
+ 
 </body>
 
 </html>

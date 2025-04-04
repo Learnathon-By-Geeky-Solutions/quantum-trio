@@ -79,10 +79,11 @@
                 <div class="px-5 mx-2 items-center justify-between">
                     <div id="date-buttons" class=" flex justify-between w-full space-x-2"></div>
                     <div class="bg-gray-200  mt-4 w-1/3">
-                        <label type="hidden" name="selected_date" id="fetch_selected_date"></label>
+                        <!-- Hidden input for selected_date -->
                         <input type="hidden" name="selected_date" id="fetch_selected_date">
-                        <label name="selected_time" id="fetch_selected_time"></label>
-                        <input type="hidden" id="fetch_selected_time" name="selected_time">
+                        
+                        <!-- Hidden input for selected_time -->
+                        <input type="hidden" name="selected_time" id="fetch_selected_time">
                     </div>
                     <!-- Time Slot dynamic -->
                     <div id="time-slots" class=" items-center justify-between bg-gray-200"></div>
@@ -106,16 +107,19 @@
                 <p class="text-gray-500">Your desired Expert:{{ worker.name }}</p>
                 <p class="text-gray-500">Time: 1 hour (approx) &bull; {{ service.item_description }}</p>
                 <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
+                <p class="text-gray-700 font-bold mt-4">ID: {{ service.id }} </p>
                 <hr class="my-4">
         
                 <p class="text-lg font-bold">Total:
                     <span class="text-green-600">BDT: {{ service.price }} TK</span>
+                    
                 </p>
-                {% csrf_token %}
-                <form id="worker-selection-form" action="" method="POST">
+                
+                <form id="worker-selection-form" action="success" method="POST">
+                    {% csrf_token %}
                     <input id="shop_id" type="hidden" name="shop_id" value="{{shop.id}}">
-                    <input id="worker_id" type="hidden" name="worker_id" value="{{worker_id}}">
-                    <input id="item_id" type="hidden" name="item_id" value="{{item_id}}">
+                    <input id="worker_id" type="hidden" name="worker_id" value="{{worker.id}}">
+                    <input id="item_id" type="hidden" name="item_id" value="{{service.id}}">
                     <input id="selected_time_id" type="hidden" name="selected_time_id" value="">
                     <input id="selected_date_id" type="hidden" name="selected_date_id" value="">
                     <input id="check" type="hidden" name="check" value="1">
@@ -124,10 +128,6 @@
                         Confirm
                     </button>
                 </form>
-                <button id="continue-button" disabled
-                    class="w-full bg-pink-400 text-white py-2 mt-4 rounded-lg transition duration-150 hover:bg-pink-700">
-                    Continue
-                </button>
             </div>
         </div>
         
@@ -143,11 +143,11 @@
             let worker_id = document.getElementById('worker_id').value;
             let item_id = document.getElementById('item_id').value;
 
-            console.log('Shop ID:', shop_id);
+            console.log('Shop ID:', worker_id);
 
             let timeSlots = [];
 
-            fetch(`/available_slots/?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
+            fetch(`available_slots?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
                 .then(response => response.json())
                 .then(resultSlots => {
                     timeSlots.push(...resultSlots);
@@ -212,24 +212,20 @@
             const year = date.getFullYear();
             monthYearElement.textContent = `${month} ${year}`;
         }
-        // Call the function to add time slots when the page loads
-        // document.addEventListener('DOMContentLoaded', addTimeSlots);
-
         let today = new Date();
-        // alert('today'+today);
-        let currentStartDate = new Date(today); // Keep a reference to the current start date
-        let selectedButton = null; // Track the selected button
+        
+        let currentStartDate = new Date(today); 
+        let selectedButton = null; 
 
-        // Function to generate the next 7 days
         function generateDays(startDate) {
-            // alert(startDate);
+            
             const dateContainer = document.getElementById('date-buttons');
             const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            // Clear previous dates
+          
             dateContainer.innerHTML = '';
-            // Update month and year based on the start date
+           
             updateMonthYear(startDate);
-            // Generate the 7-day range starting from startDate
+          
             for (let i = 0; i < 7; i++) {
                 let date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);  // Move the date forward by i days
