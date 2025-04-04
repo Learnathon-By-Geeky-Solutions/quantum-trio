@@ -1,0 +1,30 @@
+<div id="schedule">
+    {% for day in days_of_week %}
+        <div class="day mb-4">
+        <label for="schedule-{{ day }}-start" class="block font-bold mb-2">{{ day }}</label>
+        <div class="slots">
+            {% if day == 'Friday' %}
+            <!-- Friday has no default time, so we leave it empty -->
+            <div class="slot mb-2 flex">
+                <input type="time" name="schedule[{{ day }}][start]"
+                class="block w-1/2 p-2 border rounded mb-2 mr-2" value="09:00">
+                <input type="time" name="schedule[{{ day }}][end]"
+                class="block w-1/2 p-2 border rounded mb-2" value="22:00">
+            </div>
+            {% else %}
+            <!-- Default time for Monday to Thursday -->
+            <div class="slot mb-2 flex">
+                <input type="time" name="schedule[{{ day }}][start]"
+                class="block w-1/2 p-2 border rounded mb-2 mr-2" value="09:00">
+                <input type="time" name="schedule[{{ day }}][end]"
+                class="block w-1/2 p-2 border rounded mb-2" value="18:00">
+            </div>
+            {% endif %}
+        </div>
+        <button type="button" class="add-slot bg-pink-500 text-white p-2 rounded mt-2">Add Slot</button>
+    </div>
+    {% endfor %}
+</div>
+<button type="submit" class="bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition duration-300">
+    Submit
+</button>
