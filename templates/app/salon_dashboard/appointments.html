@@ -11,65 +11,46 @@
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .worker-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .time-slot {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        .time-slot h5 {
-            margin: 0;
-            font-size: 16px;
-            color: #444;
-        }
-
-        .workers_photo {
-            width: 210px;
-            height: 210px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-    </style>
+   
     <body class="bg-gray-100">
         {% include "app/salon_dashboard/header.html" %}
         
-        <section class="flex flex-col md:flex-row">
+        <section class="flex flex-col md:flex-row min-h-screen">
             {% include "app/salon_dashboard/sidebar.html" %}
-         
-            <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 grid grid-cols-5 gap-2 p-6">
-                {% for worker in shop_worker %}
-                    <div class="container bg-white shadow-lg rounded-lg p-6">
-                        <img src="{{worker.worker.profile_pic.url}}" alt="worker_pic" class="workers_photo w-32 h-32 rounded-full mx-auto">
-                        <h3 class="worker-title text-lg font-semibold text-center mt-4">{{ worker.worker.name }}'s Schedule</h3>
-                        <div class="time-slot text-center mt-4">
+        
+            <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 ">
+                    {% for worker in shop_worker %}
+                    <div class="bg-white shadow-md rounded-md p-6 flex flex-col items-center">
+                        <img src="{{worker.worker.profile_pic.url}}" alt="worker_pic"
+                            class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-gray-300 object-cover">
+                        <h3 class="text-lg font-semibold text-gray-800 text-center mt-4">
+                            {{ worker.worker.name }}'s Schedule
+                        </h3>
+                        <div class="mt-4 w-full text-center">
                             {% for slot in worker.booking_slots %}
-                            <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g.i a" }}</h5>
-                            <div class="grid grid-cols-3 gap-2"> 
-                                <button class="accept-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" 
-                                    data-booking-id="{{ slot.id }}">Accept</button>
-                                <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
-                                    data-booking-id="{{ slot.id }}">Reject</button>
-                                <button class="see-more-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" 
-                                    data-booking-id="{{ slot.id }}">See details</button>
+                            <h5 class="text-gray-700 font-medium mb-2">
+                                {{ slot.time|time:"g:i a" }}
+                            </h5>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button class="bg-green-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-600 transition">
+                                    Accept
+                                </button>
+                                <button class="bg-red-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-red-600 transition">
+                                    Reject
+                                </button>
+                                <button class="bg-blue-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-600 transition">
+                                    See Details
+                                </button>
                             </div>
                             {% endfor %}
                         </div>
                     </div>
                     {% endfor %}
+                </div>
             </div>
         </section>
+        
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
