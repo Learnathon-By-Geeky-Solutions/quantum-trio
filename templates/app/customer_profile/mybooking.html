@@ -125,7 +125,6 @@
                 <input type="text" id="to" name="To" required class="border border-gray-300 p-2 w-full" disabled>
                 <input type="hidden" id="To" name="to">
             </div>
-
             <!-- Star Rating System -->
             <div class="flex mb-4">
                 <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
@@ -134,7 +133,6 @@
                 <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
                 <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
             </div>
-
             <!-- Hidden Rating Input -->
             <input type="hidden" id="rating" name="rating" value="" required>
 
@@ -144,9 +142,7 @@
             </div>
         </form>
     </div>
-
     {% include 'app/footer.html' %}
-
     <!-- JavaScript for Modal and Form Handling -->
     <script>
         // Function to show the rating form
@@ -156,7 +152,6 @@
             document.getElementById('legal_notice').style.display = 'block'; // Show modal
             document.getElementById('overlay').classList.remove('hidden'); // Show overlay
         }
-
         // Function to handle the cancel button
         function cancelEmail() {
             if (confirm('Are you sure you want to cancel?')) {
@@ -170,7 +165,6 @@
                 document.getElementById('overlay').classList.add('hidden');
             }
         }
-
         // Function to handle clicks outside of the modal
         window.onclick = function (event) {
             var legalNoticeDiv = document.getElementById('legal_notice');
@@ -180,12 +174,10 @@
                 overlayDiv.classList.add('hidden'); // Hide overlay
             }
         }
-
         // Handling stars for rating
         document.addEventListener('DOMContentLoaded', () => {
             const stars = document.querySelectorAll('.star');
             const ratingInput = document.getElementById('rating');
-
             // Set up click event listener for each star
             stars.forEach(star => {
                 star.addEventListener('click', () => {
