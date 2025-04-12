@@ -33,15 +33,12 @@
                                 {{ slot.time|time:"g:i a" }}
                             </h5>
                             <div class="grid grid-cols-3 gap-2">
-                                <button class="bg-green-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-600 transition">
-                                    Accept
-                                </button>
-                                <button class="bg-red-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-red-600 transition">
-                                    Reject
-                                </button>
-                                <button class="bg-blue-500 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-600 transition">
-                                    See Details
-                                </button>
+                                <button class="accept-button bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" 
+                                     data-booking-id="{{ slot.id }}">Accept</button>
+                                 <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
+                                     data-booking-id="{{ slot.id }}">Reject</button>
+                                 <button class="see-more-button bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" 
+                                     data-booking-id="{{ slot.id }}">See details</button>
                             </div>
                             {% endfor %}
                         </div>
@@ -57,6 +54,7 @@
                 document.querySelectorAll('.accept-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const bookingId = button.getAttribute('data-booking-id');
+                        alert("booking-id");
                         fetch('accept-booking/', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

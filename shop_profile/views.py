@@ -129,6 +129,7 @@ def slots(request):
 """Accept the booking"""
 @csrf_exempt
 def accept_booking(request):
+    print("check")
     if request.method == "POST":
         data = json.loads(request.body)
         booking_id = data.get("booking_id")
