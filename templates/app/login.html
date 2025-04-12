@@ -7,7 +7,9 @@
         {% else %}
             <a href="/admin" class="text-gray-700 hover:text-pink-600">Admin</a>
         {% endif %}
-        
+        <a href="{% url 'logout' %}" class="text-gray-700 hover:text-pink-600 hover:text-red-800">
+            Logout
+        </a>
         {% else %}
             <a href="{% url 'login' %}" class="text-gray-700 hover:text-pink-600">Login</a>
     {% endif %}

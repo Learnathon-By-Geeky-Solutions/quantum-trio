@@ -9,36 +9,7 @@
     <title>Salon Deshboard</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .message-area {
-            display: flex;
-            flex-direction: column;
-            height: 650px;
-            overflow-y: scroll;
-        }
-
-        .message-area::-webkit-scrollbar {
-            width: 0;
-        }
-
-        .message-input {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            padding: 10px;
-            background-color: white;
-        }
-
-        .message-input input {
-            border: none;
-            outline: none;
-            width: 100%;
-        }
-
-    </style>
+   
 </head>
 <body class="bg-gray-100">
     {% include "app/salon_dashboard/header.html" %}

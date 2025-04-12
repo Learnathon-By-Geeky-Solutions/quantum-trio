@@ -1,7 +1,8 @@
 {% load static %}
-<div class="header flex justify-between items-center  bg-pink-500 shadow-lg py-4 px-6">
+<div class="header flex justify-between items-center  bg-pink-500 shadow-lg py-6 px-6">
+    <a href="/home" class="text-4xl font-bold text-white-700">CareHUB BD</a>
     <!-- Shop Name -->
-    <h2 class="text-2xl font-bold text-white" style="margin:0 0 0 40px;">
+    <h2 class="text-4xl font-bold text-white" style="margin:0 0 0 40px;">
         {% if user.is_authenticated %}
             {{ user.shop_profile.shop_name }}
         {% endif %}
