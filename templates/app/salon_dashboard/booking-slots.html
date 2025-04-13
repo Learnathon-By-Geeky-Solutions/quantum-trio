@@ -2,13 +2,16 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Salon Slot</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"
+        integrity="sha384-T/4KgSWuZEPozpPz7rnnp/5lDSnpY1VPJCojf1S81uTHS1E38qgLfMgVsAeRCWc4"
+        crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -16,11 +19,13 @@
 
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include "app/salon_dashboard/sidebar.html" %}
-        
-        <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        <div
+            class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for worker in shop_worker %}
             <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
-                <img src="{{ worker.worker.profile_pic.url }}" alt="worker_pic" class="w-24 h-24 rounded-full border-2 border-gray-300">
+                <img src="{{ worker.worker.profile_pic.url }}" alt="worker_pic"
+                    class="w-24 h-24 rounded-full border-2 border-gray-300">
                 <h3 class="text-lg font-semibold text-gray-700 mt-4">{{ worker.worker.name }}'s Schedule</h3>
                 <div class="mt-4 w-full">
                     {% for slot in worker.booking_slots %}
@@ -28,23 +33,30 @@
                         <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g:i a" }}</h5>
                         <div class="mt-3 flex flex-col gap-2">
                             {% if slot.status != "completed" %}
-                                {% if slot.shop_end %}
-                                    <button class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
-                                {% else %}
-                                    <button class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition" 
-                                        data-booking-id="{{ slot.id }}">
-                                        Confirm?
-                                    </button>
-                                    {% if slot.is_expired %}
-                                        <button class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition" data-booking-id="{{ slot.id }}">
-                                            Report
-                                        </button>
-                                    {% endif %}
-                                {% endif %}
+                            {% if slot.shop_end %}
+                            <button
+                                class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
                             {% else %}
-                                <button class="bg-green-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Completed!</button>
+                            <button
+                                class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                                data-booking-id="{{ slot.id }}">
+                                Confirm?
+                            </button>
+                            {% if slot.is_expired %}
+                            <button
+                                class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+                                data-booking-id="{{ slot.id }}">
+                                Report
+                            </button>
                             {% endif %}
-                            <button class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition" data-booking-id="{{ slot.id }}">
+                            {% endif %}
+                            {% else %}
+                            <button
+                                class="bg-green-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Completed!</button>
+                            {% endif %}
+                            <button
+                                class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
+                                data-booking-id="{{ slot.id }}">
                                 See details
                             </button>
                         </div>
@@ -67,17 +79,17 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ booking_id: bookingId })
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Booking marked as completed.');
-                                button.disabled = true;
-                                window.location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Booking marked as completed.');
+                                    button.disabled = true;
+                                    window.location.reload();
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
                     }
                 });
             });
@@ -90,15 +102,15 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ booking_id: bookingId })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(`Details:\nCustomer: ${data.details.full_name}\nService: ${data.details.item_name}\nPrice: ${data.details.item_price}`);
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert(`Details:\nCustomer: ${data.details.full_name}\nService: ${data.details.item_name}\nPrice: ${data.details.item_price}`);
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 });
             });
 
@@ -112,19 +124,20 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ booking_id: bookingId, reason: reason })
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Report submitted successfully.');
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Report submitted successfully.');
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
                     }
                 });
             });
         });
     </script>
 </body>
+
 </html>
