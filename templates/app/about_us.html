@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+    <title>About Us - CareHub</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% tailwind_css %}
+
+</head>
+
+<body class="bg-gray-100 min-h-screen font-sans">
+    {% include "app/navbar.html" %}
+    <section class="py-6 bg-gray-100">
+        <div>&nbsp;</div>
+    </section>
+
+    <div class="text-center mt-4">
+        <h2 class="text-3xl font-extrabold text-pink-700 sm:text-4xl">About CareHub</h2>
+        <p class="mt-4 text-lg text-gray-800">
+            Transforming beauty and wellness in Bangladesh with seamless, trusted solutions.
+        </p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-12 p-8 px-4 sm:px-6 lg:px-8">
+        <!-- Mission Section -->
+        <section class="p-8 mb-4">
+            <div class="flex flex-col md:flex-row items-center gap-10 p-10">
+                <!-- Text Section (Left Side) -->
+                <div class="md:w-1/2 p-6">
+                    <h3 class="text-3xl font-bold text-pink-700 mb-6 text-center lg:text-left">Our Mission</h3>
+                    <p class="text-gray-800 leading-relaxed mb-4">
+                        At CareHub, we’re dedicated to making beauty and wellness services effortless, reliable, and
+                        delightful for everyone in Bangladesh. We know the frustrations of long wait times, unreliable
+                        scheduling, and
+                        outdated booking systems. Our mission is to simplify the entire experience—connecting customers
+                        with
+                        trusted salons, spas, and wellness experts while empowering businesses with smart tools to
+                        thrive.
+                        From instant bookings to transparent reviews, we’re building a platform that fosters trust,
+                        convenience,
+                        and quality.
+                    </p>
+                    <p class="text-gray-800 leading-relaxed">
+                        We envision a community where self-care is accessible to all, and service providers are
+                        celebrated
+                        for their craft. CareHub is more than an app—it’s a movement to elevate beauty and wellness
+                        standards,
+                        one appointment at a time.
+                    </p>
+                </div>
+
+                <div class="md:w-1/2">
+                    <img src="/static/app/image/shop/2.jpg" alt="CareHub Mission"
+                        class=" object-cover rounded-xl shadow-lg"
+                        style="height: 350px !important; width: 700px !important;">
+                </div>
+            </div>
+        </section>
+
+        <!-- What We Offer Section -->
+        <section class="mb-4">
+            <div class="p-10">
+                <h3 class="text-3xl font-bold text-pink-700 mb-6 text-center">What We Offer</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-900">Effortless Booking</h4>
+                        <p class="mt-2 text-gray-800">
+                            Book your favorite services with real-time availability. Filter by location, price, or
+                            ratings,
+                            and choose your preferred stylist or expert.
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l4-4h-.586A1.994 1.994 0 019 12.414" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-900">Seamless Communication</h4>
+                        <p class="mt-2 text-gray-800">
+                            Connect with providers via in-app chat for quick queries, and stay updated with real-time
+                            booking notifications.
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-900">Trusted Quality</h4>
+                        <p class="mt-2 text-gray-800">
+                            Choose providers with confidence using ratings and reviews, and share feedback to help
+                            improve
+                            services.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Story Section -->
+        <section class="p-8  mb-4">
+            <div class="flex flex-col md:flex-row items-center gap-10 p-10">
+                <div class="md:w-1/2">
+                    <img src="/static/app/image/shop/1.jpg" alt="CareHub Mission"
+                        class=" object-cover rounded-xl shadow-lg"
+                        style="height: 410px !important; width: 700px !important;">
+                </div>
+                <!-- Text Section (Left Side) -->
+                <div class="md:w-1/2 p-6">
+                    <div class="mb-4">
+                        <h3 class="text-3xl font-bold text-pink-700 mb-2 text-center">Our Story</h3>
+                        <p class="text-gray-800 leading-relaxed mb-4">
+                            At CareHub, we’re passionate about revolutionizing the beauty and wellness landscape in
+                            Bangladesh
+                            by bringing salons and beauty parlors
+                            into the digital age. Our mission is to make self-care seamless, enjoyable, and accessible
+                            for
+                            everyone, eliminating the frustrations of
+                            long wait times, unreliable appointments, and outdated booking methods. Through our
+                            innovative
+                            online platform, customers can effortlessly
+                            book services at trusted salons and parlors with just a few clicks, saving time and ensuring
+                            a
+                            delightful experience every time.
+                        </p>
+                        <p class="text-gray-800 leading-relaxed">
+                            We’re equally committed to empowering salon and parlor owners by providing them with the
+                            tools to
+                            thrive in the digital world.
+                            By creating their own profiles on CareHub, they can showcase their services, connect with
+                            new
+                            clients, and build a vibrant online presence
+                            that boosts visibility and growth. CareHub is more than a booking platform—it’s a dynamic
+                            community
+                            where self-care is celebrated, businesses
+                            flourish, and every appointment sparks joy. Together, we’re creating a brighter, more
+                            connected
+                            future for beauty and wellness in Bangladesh,
+                            one confident smile at a time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Reviews Section -->
+        <section class="mb-4 p-10">
+            <h3 class="text-3xl font-bold text-center text-pink-700 mb-8">What Our Customers Say</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "CareHub has made booking my salon appointments so easy! I love how I can see available slots,
+                        pick my favorite stylist, and book in just a few clicks. No more waiting on the phone—it’s a
+                        total game-changer!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            AR
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Ayesha Rahman</p>
+                            <p class="text-gray-700 text-sm">Dhaka</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 2 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "As a busy professional, I don’t have time to waste. CareHub lets me find the best parlors near
+                        me and book instantly. The reviews help me choose trusted places, and I’m always happy with the
+                        results!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            SH
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Samiul Hasan</p>
+                            <p class="text-gray-700 text-sm">Chittagong</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 3 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "Joining CareHub was the best decision for my salon! My online profile has brought in so many
+                        new clients, and the booking system keeps everything organized. It’s boosted my business like
+                        never before."
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            FB
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Farhana Begum</p>
+                            <p class="text-gray-700 text-sm">Salon Owner, Sylhet</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 4 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "I used to spend hours calling parlors to find an open slot. With CareHub, I can book anytime,
+                        anywhere, and even chat with the salon if I have questions. It’s so convenient and reliable!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            NJ
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Nusrat Jahan</p>
+                            <p class="text-gray-700 text-sm">Rajshahi</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 5 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "CareHub’s platform is amazing for discovering new salons. The ratings and reviews give me
+                        confidence, and the digital payment option is super smooth. It’s like having a personal beauty
+                        assistant!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            IK
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Imran Khan</p>
+                            <p class="text-gray-700 text-sm">Barisal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="py-12">
+            <h3 class="text-3xl font-bold text-center text-pink-700 mb-8">Meet Our Team</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="{% static 'app/image/founder/1.jpeg' %}" alt="Israt Jahan"
+                        class="rounded-full w-40 h-40 mx-auto mb-4">
+                    <h4 class="text-2xl font-semibold text-center text-gray-800">Israt Jahan</h4>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-gray-800 text-center">Israt Jahan leads CareHUB with a vision to transform beauty and
+                        wellness services.</p>
+                    <div class="text-center mt-4">
+                        <a href="mailto:israt151p@gmail.com"
+                            class="text-pink-600 hover:text-pink-700">israt151p@gmail.com</a>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="{% static 'app/image/founder/2.jpg' %}" alt="Asfaq Shahriur"
+                        class="rounded-full w-40 h-40 mx-auto mb-4">
+                    <h4 class="text-2xl font-semibold text-center text-gray-800">Asfak Shahriur</h4>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-gray-800 text-center">Asfak Shahriur drives innovation in CareHUB’s user experience
+                        and design.</p>
+                    <div class="text-center mt-4">
+                        <a href="mailto:shahrierasfak27@gmail.com"
+                            class="text-pink-600 hover:text-pink-700">shahrierasfak27@gmail.com</a>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="{% static 'app/image/founder/3.png' %}" alt="Md Rakibul Islam"
+                        class="rounded-full w-40 h-40 mx-auto mb-4">
+                    <h4 class="text-2xl font-semibold text-center text-gray-800">Md Rakibul Islam</h4>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-gray-800 text-center">Md Rakibul Islam powers CareHUB’s robust technical
+                        infrastructure.</p>
+                    <div class="text-center mt-4">
+                        <a href="mailto:rakib151p@gmail.com"
+                            class="text-pink-600 hover:text-pink-700">rakib151p@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% include "app/footer.html" %}
+</body>
+
+</html>

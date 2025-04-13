@@ -98,7 +98,7 @@ def customer_submit(request):
 @require_http_methods(["GET", "POST"])
 def business_register_step1(request):
     message=''
-    return render(request, 'app\login_signup\\register\\business\step1.html',{'message':message})
+    return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
