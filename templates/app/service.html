@@ -117,7 +117,7 @@
                 <div class="slider-container">
                     {% for service in services %}
                     <div class="slide">
-                        <a href="">
+                        <a href="{% url 'items' %}?service={{ service.name }}">
                             <div class="overlay-text">{{ service.name }}</div>
                             <img src="/static/app/image/ServicesPhoto/{{ service.id }}.jpg" alt="{{ service.id }}">
                         </a>
