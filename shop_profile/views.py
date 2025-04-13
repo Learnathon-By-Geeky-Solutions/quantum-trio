@@ -14,13 +14,13 @@ from django.core.exceptions import ValidationError
 from django.db.models import F, ExpressionWrapper, DateTimeField
 from django.db.models import Value, CharField,BooleanField,Case,When
 from django.db.models.functions import Concat, Cast
-
-# import calendar
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
 from my_app.models import Item
 from shop_profile.models import ShopGallery, ShopWorker, ShopService,ShopNotification
 user=get_user_model()
+# variable
+booking_not_found="Booking not found." 
 def profile(request): 
     return render(request,'app/salon_dashboard/index.html')
 
@@ -117,14 +117,6 @@ def slots(request):
         for slot in temp['booking_slots']:
             print(slot.booking_datetime, current_datetime,slot.is_expired)
         shop_worker.append(temp)
-
-    # for i in shop_worker:
-    #     print(i['worker'])
-    #     print(i['booking_slots'])
-    # print(worker)
-
-    
-    
     return render(request,'app/salon_dashboard/booking-slots.html',{'shop_worker':shop_worker,'today':current_datetime})
 """Accept the booking"""
 @csrf_exempt
@@ -139,7 +131,7 @@ def accept_booking(request):
             booking.save()
             return JsonResponse({"success": True, "message": "Booking accepted."})
         except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Booking not found."})
+            return JsonResponse({"success": False, "message": booking_not_found})
 
 """Reject booking"""
 @csrf_exempt
@@ -153,7 +145,7 @@ def reject_booking(request):
             booking.save()
             return JsonResponse({"success": True, "message": "Booking rejected."})
         except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Booking not found."})
+            return JsonResponse({"success": False, "message": booking_not_found})
 
 """retrieval of booking-details of a booking"""
 @csrf_exempt 
@@ -177,7 +169,7 @@ def booking_details(request):
                 }
             })
         except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Booking not found."})
+            return JsonResponse({"success": False, "message": booking_not_found})
         
 @csrf_exempt
 def update_status(request):
@@ -214,7 +206,7 @@ def update_status(request):
                 })
                 
         except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Booking not found."})
+            return JsonResponse({"success": False, "message": booking_not_found})
         
 def message(request):
     return render(request,'app/salon_dashboard/message.html')
