@@ -202,6 +202,7 @@ def explore_by_items(request):
 
 def fetch_by_items(request):
     item=request.GET.get('item')
+    print("Check",item)
     limit = int(request.GET.get('limit', 9))  # Default to 10 if no limit is provided
     offset = int(request.GET.get('offset', 0))  # Default to 0 if no offset is provided
     """Finding available shops of the desired service or item"""
@@ -233,5 +234,18 @@ def location(request):
     districts = District.objects.all()
     return render(request, 'app/location.html', {'divisions': divisions, 'districts': districts})
 
-def explore_by_item(request):
-    return render(request, 'app/explore_by_items.html')
+def explore_by_items(request):
+    item=""
+    if(request.method=="GET"):
+        item=request.GET.get('item')
+    print("Your turn")
+    return render(request, 'app/explore_by_items.html',{'item':item})
+
+def items(request):
+    item=service=''
+    if(request.method=="GET"):
+        service=request.GET.get('service')
+        item=Item.objects.filter(service__name=service)
+        print(item)
+    return render(request, 'app/items.html',{'service':service,'items':item})
+

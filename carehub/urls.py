@@ -35,7 +35,7 @@ urlpatterns = [
     path('fetch-shop/', views.fetch_shop,name='booknow'),
     path('location', views.location,name='location'),
     path('service', views.service,name='service'),
-    path('explore_by_items', views.explore_by_item,name='explore_by_item'),
+    path('items', views.items,name='items'),
     path('salon-profile', views.shop_profile,name='salon-profile'),
 ]
 if settings.DEBUG:
