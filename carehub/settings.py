@@ -15,7 +15,7 @@ load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = config('DJANGO_SECRET_KEY')
+SECRET_KEY = config('DJANGO_SECRET_KEY',default="test-secret-key-unsafe-for-production")
 
 if not SECRET_KEY:
     raise ImproperlyConfigured("The SECRET_KEY environment variable is not set.")
