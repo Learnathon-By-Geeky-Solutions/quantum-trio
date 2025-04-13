@@ -142,6 +142,12 @@ def contact_us(request):
 def about_us(request):
     return render(request, 'app/about_us.html')
 
+def privacy_policy(request):
+    return render(request, 'app/privacy_policy.html')
+
+def terms_conditions(request):
+    return render(request, 'app/terms_conditions.html')
+
 def search(request):
     return render(request, 'app/search.html')
 
