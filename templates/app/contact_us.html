@@ -2,9 +2,7 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-
 <head>
-    
     <title>Contact Us</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     <meta charset="UTF-8">
@@ -18,8 +16,6 @@
         color: pink;
         font-style: italic;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    
-    
     }
     
     #imagesize:hover {
@@ -27,7 +23,6 @@
         border-radius: 8px;
         transition: transform 0.3s ease;
         transform: scale(1.1);
-    
     }
     
     #wat {
@@ -43,27 +38,18 @@
         color: white;
         overflow: hidden;
     }
-    
-    
 </style>
-    
 </head>
 
 <body class="bg-gray-100">
-
     {% include "app/navbar.html" %}
-    
     <section class="py-6 bg-gray-100">
         <div>&nbsp;</div>
-        
     </section>
-
     <section id="wat" class="py-12 bg-gray-100">
         <div class="container mx-auto px-4 ">
             <h2 class="text-3xl font-bold text-center text-pink-700 mb-8">Meet Our Team</h2>
             <div class="grid md:grid-cols-3 gap-8">
-
-                 
                 <div class="bg-white p-6 rounded-lg shadow-lg">
                     <img src="{% static "app/image/founder/1.jpeg" %}" alt="Israt Jahan" class="rounded-full w-40 h-40 mx-auto mb-4">
                     <h3 class="text-2xl font-semibold text-center text-gray-800">Israt Jahan</h3>
@@ -74,20 +60,16 @@
                             class="text-pink-600 hover:text-pink-700">israt151p@gmail.com</a>
                     </div>
                 </div>
-
-                
                 <div class="bg-white p-6 rounded-lg shadow-lg">
                     <img src="{% static 'app/image/founder/2.jpg' %}" alt="Asfaq Shahriur" class="rounded-full w-40 h-40 mx-auto mb-4">
-                    <h3 class="text-2xl font-semibold text-center text-gray-800">Asfaq Shahriur</h3>
+                    <h3 class="text-2xl font-semibold text-center text-gray-800">Asfak Shahriur</h3>
                     <p class="text-center text-gray-500 mb-4">Co-founder of CareHUB</p>
                     <p class="text-gray-600 text-center">Asfaq Shahriur is the co-founder of CareHUB</p>
                     <div class="text-center mt-4">
-                        <a href="mailto:asfaq123@gmail.com"
-                            class="text-pink-600 hover:text-pink-700">asfaq123@gmail.com</a>
+                        <a href="mailto:shahrierasfak27@gmail.com"
+                            class="text-pink-600 hover:text-pink-700">shahrierasfak27@gmail.com</a>
                     </div>
                 </div>
-
-           
                 <div class="bg-white p-6 rounded-lg shadow-lg">
                     <img src="{% static 'app/image/founder/3.png' %}" alt="Md Rakibul Islam" class="rounded-full w-40 h-40 mx-auto mb-4">
                     <h3 class="text-2xl font-semibold text-center text-gray-800">Md Rakibul Islam</h3>
@@ -98,17 +80,10 @@
                             class="text-pink-600 hover:text-pink-700">rakib151p@gmail.com</a>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
-        
-
     </section>
-
     {% include "app/footer.html" %}
-
 </body>
 
 </html>
