@@ -1,6 +1,6 @@
 from PIL import Image
 from django.shortcuts import render,redirect
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
@@ -11,8 +11,6 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from io import BytesIO
 from django.conf import settings
-
-
 # use this to import any data from database
 # -----------------------------------------
 from my_app.models import District, Division, Service, Item, Upazilla, Area, Landmark
@@ -21,7 +19,8 @@ from user_profile.models import UserProfile
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.auth import get_user_model
 temp_user=get_user_model()
-
+# variable
+step1_url='app/login_signup/register/business/step1.html'
 
 # Create your views here.
 def select_user_type(request):
@@ -43,7 +42,7 @@ def customer_register_step2(request):
         since password will be validate in frontend so we just need to check does the email exist or not"""
         if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
-            return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
+            return render(request, step1_url,{'message':message})
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),
@@ -98,7 +97,7 @@ def customer_submit(request):
 @require_http_methods(["GET", "POST"])
 def business_register_step1(request):
     message=''
-    return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
+    return render(request, step1_url,{'message':message})
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
@@ -110,7 +109,7 @@ def business_register_step2(request):
         since password will be validate in frontend so we just need to check does the email exist or not"""
         if temp_user.objects.filter(email__iexact=request.POST.get("email")).exists():
             message='The email exist.'
-            return render(request, 'app/login_signup/register/business/step1.html',{'message':message})
+            return render(request, step1_url,{'message':message})
         request.session["user"] = {
             'first-name': request.POST.get("first-name", ""),
             'last-name': request.POST.get("last-name", ""),

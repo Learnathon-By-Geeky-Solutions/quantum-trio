@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 {% load static %} {% load static tailwind_tags %}
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>{{service}}</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{% static 'app/image/favicon.ico' %}"
-    />
-    {% tailwind_css %}
-  </head>
-  <body class="bg-gray-100">
-    {% include "app/navbar.html" %}
-    <div>&nbsp;</div>
-    <div>&nbsp;</div>
-    <section class="py-12">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
-          Available Items of {{service}}
-        </h2>
+        <title>{{service}}</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="{% static 'app/image/favicon.ico' %}" />
+        {% tailwind_css %}
+    </head>
+    <body class="bg-gray-100">
+        {% include "app/navbar.html" %}
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <section class="py-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
+                    Available Items of {{service}}
+                </h2>
 
-        <div class="grid md:grid-cols-3 gap-8">
-          {% for item in items%}
-          <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="text-pink-600 text-5xl mb-4  flex justify-center">
-              <img
-                style="width: 40%; height: 40%"
-                src="static/app/image/item/{{item.name}}.png"
-              />
+                <div class="grid md:grid-cols-3 gap-8">
+                    {% for item in items%}
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <div
+                            class="text-pink-600 text-5xl mb-4 flex justify-center">
+                            <img
+                                style="width: 40%; height: 40%"
+                                src="static/app/image/item/{{item.name}}.png"
+                                alt="No image found" />
+                        </div>
+                        <h3 class="text-xl font-semibold">{{ item.name }}</h3>
+                        <a
+                            href="{% url 'explore_by_items' %}?item={{ item.name|urlencode }}&gender={{ item.gender|urlencode }}"
+                            class="inline-block bg-pink-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-pink-600 transition">
+                            Explore Salons
+                        </a>
+                    </div>
+                    {%endfor%}
+                </div>
             </div>
-            <h3 class="text-xl font-semibold">{{ item.name }}</h3>
-              <a href="{% url 'explore_by_items' %}?item={{ item.name|urlencode }}&gender={{ item.gender|urlencode }}"
-                class="inline-block bg-pink-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-pink-600 transition">
-                Explore Salons
-              </a>
-          </div>
-          {%endfor%}
-        </div>
-      </div>
-    </section>
-    {% include "app/footer.html" %}
-  </body>
+        </section>
+        {% include "app/footer.html" %}
+    </body>
 </html>

@@ -12,7 +12,7 @@ def profile(request):
     user = request.user  # Get the logged-in user
     
     # Get or create UserProfile
-    profile, created = UserProfile.objects.get_or_create(user=user)
+    profile, _ = UserProfile.objects.get_or_create(user=user)
 
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -57,15 +57,11 @@ def profile(request):
     context = {"user": user, "profile": profile}
     return render(request, "app/customer_profile/my-profile.html", context)
 
-
-
-
-
 def address(request):
     return render(request,'app/customer_profile/address.html')
 
-# def reviews(request):
-#     return render(request,'app/customer_profile/reviews.html')
+def reviews(request):
+    return render(request,'app/customer_profile/reviews.html')
 
 def addressofbooking(request):
     district = District.objects.all().values('id', 'name')
