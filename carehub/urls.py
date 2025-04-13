@@ -27,6 +27,9 @@ urlpatterns = [
     
     path('contact', views.contact_us,name='contact'),
     path('about', views.about_us,name='about'),
+
+    path('privacy-policy', views.privacy_policy, name='privacy_policy'),
+    path('terms-conditions', views.terms_conditions, name='terms_conditions'),
     
     path('search', views.search,name='search'),
     path('booknow', views.book_now,name='booknow'),
