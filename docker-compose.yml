@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}  # Use DATABASE_PASSWORD from .env
+
+  web:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env  # Load environment variables from the .env file
+    command: >
+      sh -c "./wait-for-it.sh db:5432 -- python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/myapp
+
+volumes:
+  postgres_data:

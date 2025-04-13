@@ -2,10 +2,11 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from dotenv import load_dotenv  # <-- Add this
 
 def main():
     """Run administrative tasks."""
+    load_dotenv()  # <-- Load variables from .env file here
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'carehub.settings')
     try:
         from django.core.management import execute_from_command_line
