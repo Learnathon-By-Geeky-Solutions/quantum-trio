@@ -7,6 +7,8 @@ from user_profile.models import UserProfile
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.aggregates import ArrayAgg
 
+MY_PROFILE_TEMPLATE = "app/customer_profile/my-profile.html"
+
 @login_required
 def profile(request):
     user = request.user  # Get the logged-in user
@@ -31,7 +33,7 @@ def profile(request):
         # Validate email uniqueness
         if User.objects.filter(email=email).exclude(pk=user.pk).exists():
             messages.error(request, "This email is already in use.")
-            return render(request, "app/customer_profile/my-profile.html")
+            return render(request, MY_PROFILE_TEMPLATE)
 
         user.email = email
 
@@ -41,7 +43,7 @@ def profile(request):
                 user.set_password(password)  # Hash and save password
             else:
                 messages.error(request, "Passwords do not match.")
-                return render(request, "app/customer_profile/my-profile.html")
+                return render(request, MY_PROFILE_TEMPLATE)
 
         user.save()
 
@@ -53,9 +55,9 @@ def profile(request):
         profile.save()
 
         messages.success(request, "Profile updated successfully. Please log in again if you changed your password.")
-        render(request, "app/customer_profile/my-profile.html")
+        render(request, MY_PROFILE_TEMPLATE)
     context = {"user": user, "profile": profile}
-    return render(request, "app/customer_profile/my-profile.html", context)
+    return render(request, MY_PROFILE_TEMPLATE, context)
 
 def address(request):
     return render(request,'app/customer_profile/address.html')
