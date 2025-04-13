@@ -550,6 +550,13 @@
                 }
             });
         </script>
+        <script type="module">
+            import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+            Chatbot.init({
+                chatflowid: "ea5147be-df25-4ecc-8e23-fb7939f3d63f",
+                apiHost: "https://flowise-270778269604.us-central1.run.app",
+            })
+        </script>
 {% include "app/footer.html" %}
 
 </body>

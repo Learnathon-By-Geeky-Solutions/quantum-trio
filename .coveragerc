@@ -1,0 +1,13 @@
+[run]
+source = .
+branch = True
+
+[report]
+omit =
+    */tests/*
+    */migrations/*
+    */venv/*
+    manage.py
+
+[xml]
+output = coverage.xml
