@@ -21,6 +21,11 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov coverage
+          pip install django  # Add this line to install Django
+
+      - name: Set up Django settings
+        run: |
+          echo "DJANGO_SETTINGS_MODULE=carehub.settings" >> $GITHUB_ENV
 
       - name: Run Tests and Generate Coverage Report
         run: |

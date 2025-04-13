@@ -15,10 +15,12 @@
             const passwordField = document.getElementById('password');
             const passwordError = document.getElementById('passwordError');
 
+            const PASSWORD_LENGTH_ERROR = "Password must be at least 6 characters long.";
+
             form.addEventListener('submit', function (event) {
                 if (!validatePassword(passwordField.value)) {
                     event.preventDefault();  // Prevent form submission if validation fails
-                    passwordError.textContent = "Password must be at least 6 characters long.";
+                    passwordError.textContent = PASSWORD_LENGTH_ERROR;
                 } else {
                     passwordError.textContent = "";
                 }

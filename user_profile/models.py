@@ -16,8 +16,8 @@ class UserProfile(models.Model):
     user_state = models.CharField(max_length=100, blank=True,default='')
     user_city = models.CharField(max_length=100, blank=True,default='')
     user_area = models.CharField(max_length=100, blank=True,default='')
-    latitude = models.FloatField(blank=True, null=True,default='')
-    longitude = models.FloatField(blank=True, null=True,default='')
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 

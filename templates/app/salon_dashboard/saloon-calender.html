@@ -10,35 +10,32 @@
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
     <style>
-       
-        
-  table {
+        table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         th,
         td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
         }
-        
+
         th {
             background-color: #f2f2f2;
             font-weight: bold;
         }
-        
-        
     </style>
-    
+
 </head>
+
 <body class="bg-gray-100">
     {% include "app/salon_dashboard/header.html" %}
-    
+
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include "app/salon_dashboard/sidebar.html" %}
-     
+
         <div class="flex-1 p-6">
             <div class="container1">
                 <div class="row">
@@ -46,57 +43,61 @@
                         <h2 class="text-xl font-bold mb-4 text-center">
                             Calendar for {{ month }}/{{ year }}
                         </h2>
-                         
+
                         <div class="text-center mb-4">
                             {% if month == 1 %}
-                                <a href="?month=12&year={{ year|add:-1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                            <a href="?month=12&year={{ year|add:-1 }}"
+                                class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
                             {% else %}
-                                <a href="?month={{ month|add:-1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
+                            <a href="?month={{ month|add:-1 }}&year={{ year }}"
+                                class="px-4 py-2 bg-gray-700 text-white rounded">Previous</a>
                             {% endif %}
 
                             <span class="px-4 py-2 font-bold text-gray-800">{{ month_name }} {{ year }}</span>
 
                             {% if month == 12 %}
-                                <a href="?month=1&year={{ year|add:1 }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                            <a href="?month=1&year={{ year|add:1 }}"
+                                class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
                             {% else %}
-                                <a href="?month={{ month|add:1 }}&year={{ year }}" class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
+                            <a href="?month={{ month|add:1 }}&year={{ year }}"
+                                class="px-4 py-2 bg-gray-700 text-white rounded">Next</a>
                             {% endif %}
                         </div>
 
                         <div class="calendar border border-gray-300 p-4 bg-white">
+                            {# Rendered HTML calendar is server-generated and sanitized #}
                             {{ cal|safe }}
                         </div>
                     </div>
                 </div>
             </div>
-       
         </div>
     </section>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
- 
-    let calendarContainer = document.querySelector(".calendar");
-    let month = calendarContainer.getAttribute("data-month"); 
-    let year = calendarContainer.getAttribute("data-year"); 
-    month = parseInt({{month}}, 10);
-    year = parseInt({{year}}, 10);
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-    document.querySelectorAll("td").forEach((cell) => {
-        let date = cell.innerText.trim(); 
-        if (date && !isNaN(date)) {
- 
-            date = date.toString().padStart(2, "0");
+            let calendarContainer = document.querySelector(".calendar");
+            let month = calendarContainer.getAttribute("data-month");
+            let year = calendarContainer.getAttribute("data-year");
+            month = parseInt({ month }, 10);
+            year = parseInt({ year }, 10);
 
-            let link = document.createElement("a");
-            link.href = `slots?date=${year}-${month.toString().padStart(2, "0")}-${date}`;
-            link.innerText = date; 
-            cell.innerHTML = "";
-            cell.appendChild(link);
-        }
-    });
-});
-</script>
+            document.querySelectorAll("td").forEach((cell) => {
+                let date = cell.innerText.trim();
+                if (date && !isNaN(date)) {
+
+                    date = date.toString().padStart(2, "0");
+
+                    let link = document.createElement("a");
+                    link.href = `slots?date=${year}-${month.toString().padStart(2, "0")}-${date}`;
+                    link.innerText = date;
+                    cell.innerHTML = "";
+                    cell.appendChild(link);
+                }
+            });
+        });
+    </script>
 
 </body>
 
