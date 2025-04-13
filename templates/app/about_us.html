@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
+
 </head>
 
 <body class="bg-gray-100 min-h-screen font-sans">
@@ -57,7 +58,7 @@
             <div class="p-10">
                 <h3 class="text-3xl font-bold text-pink-700 mb-6 text-center">What We Offer</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
                         <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -71,7 +72,7 @@
                             and choose your preferred stylist or expert.
                         </p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
                         <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -84,7 +85,7 @@
                             booking notifications.
                         </p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
                         <div class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-600 text-white mb-4">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -130,6 +131,102 @@
             </div>
         </section>
 
+        <!-- Customer Reviews Section -->
+        <section class="mb-12 p-10">
+            <h3 class="text-3xl font-bold text-center text-pink-700 mb-8">What Our Customers Say</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "CareHub has made booking my salon appointments so easy! I love how I can see available slots,
+                        pick my favorite stylist, and book in just a few clicks. No more waiting on the phone—it’s a
+                        total game-changer!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            AR
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Ayesha Rahman</p>
+                            <p class="text-gray-700 text-sm">Dhaka</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "As a busy professional, I don’t have time to waste. CareHub lets me find the best parlors near
+                        me and book instantly. The reviews help me choose trusted places, and I’m always happy with the
+                        results!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            SH
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Samiul Hasan</p>
+                            <p class="text-gray-700 text-sm">Chittagong</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "Joining CareHub was the best decision for my salon! My online profile has brought in so many
+                        new clients, and the booking system keeps everything organized. It’s boosted my business like
+                        never before."
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            FB
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Farhana Begum</p>
+                            <p class="text-gray-700 text-sm">Salon Owner, Sylhet</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "I used to spend hours calling parlors to find an open slot. With CareHub, I can book anytime,
+                        anywhere, and even chat with the salon if I have questions. It’s so convenient and reliable!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            NJ
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Nusrat Jahan</p>
+                            <p class="text-gray-700 text-sm">Rajshahi</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 hover:shadow-lg hover:bg-pink-50 transition-all duration-300">
+                    <p class="text-gray-800 italic mb-4">
+                        "CareHub’s platform is amazing for discovering new salons. The ratings and reviews give me
+                        confidence, and the digital payment option is super smooth. It’s like having a personal beauty
+                        assistant!"
+                    </p>
+                    <div class="flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                            IK
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-gray-900 font-semibold">Imran Khan</p>
+                            <p class="text-gray-700 text-sm">Barisal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Team Section -->
         <section class="py-12">
             <h3 class="text-3xl font-bold text-center text-pink-700 mb-8">Meet Our Team</h3>
@@ -138,7 +235,7 @@
                     <img src="{% static 'app/image/founder/1.jpeg' %}" alt="Israt Jahan"
                         class="rounded-full w-40 h-40 mx-auto mb-4">
                     <h4 class="text-2xl font-semibold text-center text-gray-800">Israt Jahan</h4>
-                    <p class="text-center text-gray-500 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
                     <p class="text-gray-800 text-center">Israt Jahan leads CareHUB with a vision to transform beauty and
                         wellness services.</p>
                     <div class="text-center mt-4">
@@ -150,7 +247,7 @@
                     <img src="{% static 'app/image/founder/2.jpg' %}" alt="Asfaq Shahriur"
                         class="rounded-full w-40 h-40 mx-auto mb-4">
                     <h4 class="text-2xl font-semibold text-center text-gray-800">Asfak Shahriur</h4>
-                    <p class="text-center text-gray-500 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
                     <p class="text-gray-800 text-center">Asfak Shahriur drives innovation in CareHUB’s user experience
                         and design.</p>
                     <div class="text-center mt-4">
@@ -162,7 +259,7 @@
                     <img src="{% static 'app/image/founder/3.png' %}" alt="Md Rakibul Islam"
                         class="rounded-full w-40 h-40 mx-auto mb-4">
                     <h4 class="text-2xl font-semibold text-center text-gray-800">Md Rakibul Islam</h4>
-                    <p class="text-center text-gray-500 mb-4">Co-founder of CareHUB</p>
+                    <p class="text-center text-gray-700 mb-4">Co-founder of CareHUB</p>
                     <p class="text-gray-800 text-center">Md Rakibul Islam powers CareHUB’s robust technical
                         infrastructure.</p>
                     <div class="text-center mt-4">
@@ -173,7 +270,6 @@
             </div>
         </section>
     </main>
-
     {% include "app/footer.html" %}
 </body>
 
