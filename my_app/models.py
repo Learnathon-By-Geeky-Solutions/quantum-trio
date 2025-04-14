@@ -29,7 +29,7 @@ class Area(models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.upazilla.name}"
-
+ 
 class Landmark(models.Model):
     name = models.CharField(max_length=255)
     area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="landmarks")
