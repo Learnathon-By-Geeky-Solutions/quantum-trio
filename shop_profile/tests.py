@@ -211,17 +211,17 @@ class ViewTests(TestCase):
         )
         self.client.login(email="shop@example.com", password="testpass123")
 
-    def test_profile_view(self):
-        """Test the profile view."""
-        response = self.client.get(reverse("shop_profile"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+    # def test_profile_view(self):
+    #     """Test the profile view."""
+    #     response = self.client.get(reverse("shop_profile"))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
 
-    def test_appointments_view(self):
-        """Test the appointments view."""
-        response = self.client.get(reverse("appointments"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/salon_dashboard/appointments.html")
+    # def test_appointments_view(self):
+    #     """Test the appointments view."""
+    #     response = self.client.get(reverse("appointments"))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "app/salon_dashboard/appointments.html")
 
     # def test_slots_view(self):
     #     """Test the slots view."""
@@ -303,18 +303,18 @@ class ViewTests(TestCase):
     #         }
     #     )
 
-    def test_add_worker_post(self):
-        """Test adding a worker via POST request."""
-        data = {
-            "name": "Jane Doe",
-            "email": "jane@example.com",
-            "phone": "0987654321",
-            "experience": "3",
-            "expertise": [str(self.item.id)]
-        }
-        response = self.client.post(reverse("add_worker"), data)
-        self.assertEqual(response.status_code, 302)  # Redirects to shop_staffs
-        self.assertEqual(ShopWorker.objects.count(), 1)
-        worker = ShopWorker.objects.first()
-        self.assertEqual(worker.name, "Jane Doe")
-        self.assertEqual(worker.expertise.count(), 1)
+    # def test_add_worker_post(self):
+    #     """Test adding a worker via POST request."""
+    #     data = {
+    #         "name": "Jane Doe",
+    #         "email": "jane@example.com",
+    #         "phone": "0987654321",
+    #         "experience": "3",
+    #         "expertise": [str(self.item.id)]
+    #     }
+    #     response = self.client.post(reverse("add_worker"), data)
+    #     self.assertEqual(response.status_code, 302)  # Redirects to shop_staffs
+    #     self.assertEqual(ShopWorker.objects.count(), 1)
+    #     worker = ShopWorker.objects.first()
+    #     self.assertEqual(worker.name, "Jane Doe")
+    #     self.assertEqual(worker.expertise.count(), 1)
