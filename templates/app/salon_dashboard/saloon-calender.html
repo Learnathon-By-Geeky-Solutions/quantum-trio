@@ -73,32 +73,31 @@
             </div>
         </div>
     </section>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
+            // Get month and year from the HTML element (set dynamically from Django)
             let calendarContainer = document.querySelector(".calendar");
-            let month = calendarContainer.getAttribute("data-month");
-            let year = calendarContainer.getAttribute("data-year");
-            month = parseInt({ month }, 10);
-            year = parseInt({ year }, 10);
-
+            let month = calendarContainer.getAttribute("data-month"); // e.g., "10"
+            let year = calendarContainer.getAttribute("data-year"); // e.g., "2024"
+            // Ensure values are integers
+            month = parseInt({{month}}, 10);
+            year = parseInt({{year}}, 10);
+            // Get all table cells containing a date
             document.querySelectorAll("td").forEach((cell) => {
-                let date = cell.innerText.trim();
+                let date = cell.innerText.trim(); // Get the date number
+                // Check if the cell contains a valid date
                 if (date && !isNaN(date)) {
-
+                    // Ensure date is a string and pad it
                     date = date.toString().padStart(2, "0");
-
+                    // Create a new anchor element
                     let link = document.createElement("a");
                     link.href = `slots?date=${year}-${month.toString().padStart(2, "0")}-${date}`;
-                    link.innerText = date;
+                    link.innerText = date; // Keep the date text
+                    // Replace the text with the link inside the cell
                     cell.innerHTML = "";
                     cell.appendChild(link);
                 }
             });
         });
     </script>
-
-</body>
-
 </html>

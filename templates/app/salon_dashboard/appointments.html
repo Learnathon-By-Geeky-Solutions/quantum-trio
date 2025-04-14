@@ -66,7 +66,6 @@
                         });
                     });
                 });
-
                 document.querySelectorAll('.reject-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const bookingId = button.getAttribute('data-booking-id');
@@ -82,25 +81,7 @@
                         });
                     });
                 });
-
-                document.querySelectorAll('.see-more-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const bookingId = button.getAttribute('data-booking-id');
-                        fetch('booking-details/', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ booking_id: bookingId })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert(`Customer: ${data.details.full_name}\nService: ${data.details.item_name}\nPrice: ${data.details.item_price}\nTime: ${data.details.booked_time}\nDate: ${data.details.booked_date}\nStatus: ${data.details.status}`);
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        });
-                    });
-                });
+                {% include "app/salon_dashboard/booking_details.html" %}
             });
         </script>
 </body>

@@ -1,0 +1,27 @@
+document.querySelectorAll('.see-more-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const bookingId = button.getAttribute('data-booking-id');
+            fetch('booking-details/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ booking_id: bookingId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert( 
+                            `Booking Details:\n` +
+                            `Customer: ${data.details.full_name}\n` +
+                            `Service: ${data.details.item_name}\n` +
+                            `Price: ${data.details.item_price}\n` +
+                            `Date: ${data.details.booked_date}\n` +
+                            `Time: ${data.details.booked_time}\n` +
+                            `Status: ${data.details.status}`
+                        );
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });

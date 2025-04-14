@@ -287,7 +287,9 @@ def add_worker(request):
     return render(request, "staffs")
 
 def customers(request):
-    return render(request,'app/salon_dashboard/customers.html')
+    booking=BookingSlot.objects.filter(shop=request.user.shop_profile).order_by('-date','-time')
+    print(booking)
+    return render(request,'app/salon_dashboard/customers.html',{'bookings':booking})
 
 def review(request):
     return render(request,'app/salon_dashboard/reviews.html')

@@ -16,10 +16,8 @@
 
 <body class="bg-gray-100">
     {% include "app/salon_dashboard/header.html" %}
-
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include "app/salon_dashboard/sidebar.html" %}
-
         <div
             class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for worker in shop_worker %}
@@ -67,7 +65,6 @@
             {% endfor %}
         </div>
     </section>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.book-button').forEach(button => {
@@ -92,28 +89,8 @@
                             .catch(error => console.error('Error:', error));
                     }
                 });
-            });
-
-            document.querySelectorAll('.see-more-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const bookingId = button.getAttribute('data-booking-id');
-                    fetch('', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ booking_id: bookingId })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert(`Details:\nCustomer: ${data.details.full_name}\nService: ${data.details.item_name}\nPrice: ${data.details.item_price}`);
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-                });
-            });
-
+            });  
+            {% include "app/salon_dashboard/booking_details.html" %}
             document.querySelectorAll('.report-button').forEach(button => {
                 button.addEventListener('click', () => {
                     const bookingId = button.getAttribute('data-booking-id');
@@ -139,5 +116,4 @@
         });
     </script>
 </body>
-
 </html>
