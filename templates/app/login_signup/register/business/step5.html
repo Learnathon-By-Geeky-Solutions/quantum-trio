@@ -22,8 +22,8 @@
             <div class="" id="services">
                 {% for service in services %}
         <div class="service mb-4">
-            <label class="block font-bold mb-2">Service: {{ service.service__name }} </label>
-            <label class="block font-bold mb-2">Items</label>
+            <p class="block font-bold mb-2">Service: {{ service.service__name }} </p>
+            <p class="block font-bold mb-2">Items</p>
             <div class="items">
                 <div class="item mb-2 flex gap-2">
                     <select name="items[{{ forloop.counter }}][name][]" 

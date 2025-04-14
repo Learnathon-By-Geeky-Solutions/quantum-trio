@@ -330,6 +330,14 @@ def business_submit(request):
                     shop_landmark_4 = user_details['landmark4'],
                     shop_landmark_5 = user_details['landmark5'],
                 )
+                """Insert the area in area table"""
+                try:
+                    Area.objects.create(
+                        name=shop.area,
+                        upazilla=shop.city,
+                    )
+                except Exception as e:
+                    print(f"Error creating Area: {e}")
                 """creating worker profile under the shop"""
                 try:
                     member_details=user_details['members']
@@ -344,11 +352,15 @@ def business_submit(request):
                         img_io = BytesIO()
                         img.save(img_io, format=img.format)  # Preserve original format (JPEG, PNG, etc.)
                         img_bytes = img_io.getvalue()
+                        try:
+                            experience = float(member_details.get(f'member[{index}][experience]', ['0'])[0])
+                        except (ValueError, TypeError):
+                            experience = 0.0
                         worker = ShopWorker.objects.create(
                             name = member_details.get(f'member[{index}][name]', [''])[0],
                             email = member_details.get(f'member[{index}][email]', [''])[0],
                             phone = member_details.get(f'member[{index}][contact]', [''])[0],
-                            experience = round(float(member_details.get(f'member[{index}][experience]', ['0'])[0])),
+                            experience = experience,
                             shop = shop
                         )
                         

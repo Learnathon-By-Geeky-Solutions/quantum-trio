@@ -117,7 +117,7 @@ class ShopWorker(models.Model):
     email = models.EmailField() 
     phone = models.CharField(max_length=15)  # Ensures unique phone numbers
     profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, default='default-profile.jpg')
-    experience = models.PositiveIntegerField(help_text="Experience in years")  # Only positive numbers
+    experience = models.FloatField(help_text="Experience in years")
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
     rating=models.DecimalField(max_digits=2, decimal_places=2, default=0.0)
