@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Tests and Generate Coverage Report
         run: |
-          pytest --ds=carehub.settings --cov=. --cov-report=xml
+          pytest --cov=. --cov-report=xml
 
       - name: Upload Coverage Report to SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
