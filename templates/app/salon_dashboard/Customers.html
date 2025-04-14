@@ -49,14 +49,17 @@
                                         {{booking.date}} {{booking.time}}
                                     </td>
                                     <td class="py-2 px-4">{{booking.user}}</td>
-                                    <td class="py-2 px-4">
-                                        {{booking.status}}
+                                    <td class="py-2 px-4
+                                        {% if booking.status == 'completed' %}text-green-600 font-semibold
+                                        {% elif booking.status == 'confirmed' %}text-yellow-500 font-semibold
+                                        {% endif %}">
+                                        {{ booking.status }}
                                     </td>
                                     <td
                                         class="py-2 px-4 font-bold text-yellow-500">
                                         <button
                                             class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
-                                            data-booking-id="{{ slot.id }}">
+                                            data-booking-id="{{ booking.id }}">
                                             See details
                                         </button>
                                     </td>
@@ -70,7 +73,7 @@
             </div>
         </section>
         <script>
-        {% include "app/salon_dashboard/see_more_button.html" %}
+        {% include "app/salon_dashboard/booking_details.html" %}
         </script>
     </body>
 </html>
