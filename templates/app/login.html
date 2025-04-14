@@ -3,7 +3,6 @@
         {% if user.user_type == "shop" %}
             <a href="dashboard" class="text-gray-700 hover:text-pink-600">Dashboard</a>
         {% elif user.user_type == "user" %}
-            <!-- <a href="myprofile" class="text-gray-700 hover:text-pink-600"><i class="fas fa-user mr-2"></i>{{ user.user_profile.first_name}} {{user.user_profile.last_name }}</a> -->
             <a href="myprofile" class="inline-flex items-center px-4 py-2 bg-white border border-pink-300 text-gray-700 hover:text-white hover:bg-pink-500 rounded-full shadow-sm transition duration-300">
                 <i class="fas fa-user mr-2 text-pink-500"></i>
                 {{ user.user_profile.first_name }} {{ user.user_profile.last_name }}
