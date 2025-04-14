@@ -199,17 +199,18 @@ class ShopNotificationTests(TestCase):
 
 
 class ViewTests(TestCase):
+    TEST_PASSWORD = "testpass123"
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email="shop@example.com", password=self.TEST_PASSWORD, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
         self.worker = ShopWorker.objects.create(
             name="John Doe", email="john@example.com", phone="1234567890", shop=self.shop
         )
-        self.client.login(email="shop@example.com", password="testpass123")
+        self.client.login(email="shop@example.com", password=self.TEST_PASSWORD)
 
     # def test_profile_view(self):
     #     """Test the profile view."""
