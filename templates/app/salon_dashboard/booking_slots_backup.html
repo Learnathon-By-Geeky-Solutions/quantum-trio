@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load static %}
 {% load static tailwind_tags %}
@@ -10,97 +9,73 @@
     <title>Saloon Appointments</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    
+
     <!-- Include Chart.js for graphs/charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"
+        integrity="sha384-T/4KgSWuZEPozpPz7rnnp/5lDSnpY1VPJCojf1S81uTHS1E38qgLfMgVsAeRCWc4"
+        crossorigin="anonymous"></script>
+
 </head>
 
 <body class="bg-gray-200">
     {% include "app/salon_dashboard/header.html" %}
-    
+
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include "app/salon_dashboard/sidebar.html" %}
-     
+
         <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="container">
-                        
+
                 <div class="schedule-container">
-                <img src="" alt="" class="workers_photo">
-                <h3 class="worker-title">A's Schedule</h3>
+                    <img src="" alt="" class="workers_photo">
+                    <h3 class="worker-title">A's Schedule</h3>
                     <div class="time-slot">
                         <h5>10:00PM to 11:00PM</h5>
                         <p>&nbsp;</p>
-                        <button class="book-button" >Completed</button>
+                        <button class="book-button">Completed</button>
                         <button class="report-button">Report</button>
                         <button class="see-more-button">See details</button>
                     </div>
 
                 </div>
-            
+
             </div>
             <!-- See More Modal -->
-            <div id="seeMoreModal"
-            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-            <div class="bg-white rounded-lg w-1/4 p-6">
-                <h2 class="text-xl font-bold mb-4">Booking Details</h2>
-                <div id="bookingDetails">
-                    <!-- Booking details will be loaded here via AJAX -->
+            <div id="seeMoreModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="bg-white rounded-lg w-1/4 p-6">
+                    <h2 class="text-xl font-bold mb-4">Booking Details</h2>
+                    <div id="bookingDetails">
+                        <!-- Booking details will be loaded here via AJAX -->
+                    </div>
+                    <button id="closeSeeMore" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
                 </div>
-                <button id="closeSeeMore" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
             </div>
-        </div>
 
-        <!-- Report Modal -->
-        <div id="reportModal"
-            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-            <div class="bg-white rounded-lg w-1/3 p-6">
-                <h2 class="text-xl font-bold mb-4">Report Booking</h2>
-                <form id="reportForm">
-                    <input type="hidden" id="reportBookingId" name="booking_id">
-                    <textarea id="reportReason" name="reason" class="w-full border rounded p-2" rows="4"
-                        placeholder="Enter your report reason"></textarea>
-                    <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Submit
-                        Report</button>
-                    <button type="button" id="closeReport"
-                        class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Cancel</button>
-                </form>
+            <!-- Report Modal -->
+            <div id="reportModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="bg-white rounded-lg w-1/3 p-6">
+                    <h2 class="text-xl font-bold mb-4">Report Booking</h2>
+                    <form id="reportForm">
+                        <input type="hidden" id="reportBookingId" name="booking_id">
+                        <textarea id="reportReason" name="reason" class="w-full border rounded p-2" rows="4"
+                            placeholder="Enter your report reason"></textarea>
+                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Submit
+                            Report</button>
+                        <button type="button" id="closeReport"
+                            class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Cancel</button>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
     </section>
-<script>
-            document.addEventListener('DOMContentLoaded', () => {
-                // Handle Completed Button Click
-                document.querySelectorAll('.book-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const bookingId = button.getAttribute('data-booking-id');
-                        if (confirm('Are you sure you want to mark this booking as completed?')) {
-                            fetch('update_status.html', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ booking_id: bookingId })
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        alert('Booking marked as completed.');
-                                        button.disabled = true;
-                                        // Optionally, update UI elements as needed
-                                    } else {
-                                        alert('Error: ' + data.message);
-                                    }
-                                })
-                                .catch(error => console.error('Error:', error));
-                        }
-                    });
-                });
-
-                // Handle See More Button Click
-                document.querySelectorAll('.see-more-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const bookingId = button.getAttribute('data-booking-id');
-                        fetch('get_booking_details.html', {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle Completed Button Click
+            document.querySelectorAll('.book-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bookingId = button.getAttribute('data-booking-id');
+                    if (confirm('Are you sure you want to mark this booking as completed?')) {
+                        fetch('update_status.html', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ booking_id: bookingId })
@@ -108,64 +83,39 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    const details = data.details;
-                                    let html = `<p><strong>Customer Name:</strong> ${details.first_name}&nbsp;${details.last_name}</p>
-                                <p><strong>Service:</strong> ${details.item_name}</p>
-                                <p><strong>Price:</strong> ${details.item_price}</p>
-                                <p><strong>Booked for:</strong> ${details.booked_time}&nbsp;${details.booked_date}</p>
-                                <p><strong>Status:</strong> ${details.status}</p>
-                                <p><strong>Appointed at:</strong> ${details.booking_time}</p>`;
-                                    document.getElementById('bookingDetails').innerHTML = html;
-                                    document.getElementById('seeMoreModal').classList.remove('hidden');
+                                    alert('Booking marked as completed.');
+                                    button.disabled = true;
+                                    // Optionally, update UI elements as needed
                                 } else {
                                     alert('Error: ' + data.message);
                                 }
                             })
                             .catch(error => console.error('Error:', error));
-                    });
-                });
-
-                // Handle Report Button Click
-                document.querySelectorAll('.report-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const bookingId = button.getAttribute('data-booking-id');
-                        document.getElementById('reportBookingId').value = bookingId;
-                        document.getElementById('reportModal').classList.remove('hidden');
-                    });
-                });
-
-                // Close See More Modal
-                document.getElementById('closeSeeMore').addEventListener('click', () => {
-                    document.getElementById('seeMoreModal').classList.add('hidden');
-                });
-
-                // Close Report Modal
-                document.getElementById('closeReport').addEventListener('click', () => {
-                    document.getElementById('reportModal').classList.add('hidden');
-                });
-
-                // Handle Report Form Submission
-                document.getElementById('reportForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const bookingId = document.getElementById('reportBookingId').value;
-                    const reason = document.getElementById('reportReason').value.trim();
-
-                    if (reason === '') {
-                        alert('Please enter a reason for the report.');
-                        return;
                     }
+                });
+            });
 
-                    fetch('report_booking.html', {
+            // Handle See More Button Click
+            document.querySelectorAll('.see-more-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bookingId = button.getAttribute('data-booking-id');
+                    fetch('get_booking_details.html', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ booking_id: bookingId, reason: reason })
+                        body: JSON.stringify({ booking_id: bookingId })
                     })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                alert('Report submitted successfully.');
-                                document.getElementById('reportModal').classList.add('hidden');
-                                document.getElementById('reportForm').reset();
+                                const details = data.details;
+                                let html = `<p><strong>Customer Name:</strong> ${details.first_name}&nbsp;${details.last_name}</p>
+                                <p><strong>Service:</strong> ${details.item_name}</p>
+                                <p><strong>Price:</strong> ${details.item_price}</p>
+                                <p><strong>Booked for:</strong> ${details.booked_time}&nbsp;${details.booked_date}</p>
+                                <p><strong>Status:</strong> ${details.status}</p>
+                                <p><strong>Appointed at:</strong> ${details.booking_time}</p>`;
+                                document.getElementById('bookingDetails').innerHTML = html;
+                                document.getElementById('seeMoreModal').classList.remove('hidden');
                             } else {
                                 alert('Error: ' + data.message);
                             }
@@ -173,7 +123,56 @@
                         .catch(error => console.error('Error:', error));
                 });
             });
-        </script>
+
+            // Handle Report Button Click
+            document.querySelectorAll('.report-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bookingId = button.getAttribute('data-booking-id');
+                    document.getElementById('reportBookingId').value = bookingId;
+                    document.getElementById('reportModal').classList.remove('hidden');
+                });
+            });
+
+            // Close See More Modal
+            document.getElementById('closeSeeMore').addEventListener('click', () => {
+                document.getElementById('seeMoreModal').classList.add('hidden');
+            });
+
+            // Close Report Modal
+            document.getElementById('closeReport').addEventListener('click', () => {
+                document.getElementById('reportModal').classList.add('hidden');
+            });
+
+            // Handle Report Form Submission
+            document.getElementById('reportForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const bookingId = document.getElementById('reportBookingId').value;
+                const reason = document.getElementById('reportReason').value.trim();
+
+                if (reason === '') {
+                    alert('Please enter a reason for the report.');
+                    return;
+                }
+
+                fetch('report_booking.html', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: bookingId, reason: reason })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Report submitted successfully.');
+                            document.getElementById('reportModal').classList.add('hidden');
+                            document.getElementById('reportForm').reset();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 
 </body>
 

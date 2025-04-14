@@ -7,78 +7,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Reviews</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+        integrity="sha384-Y1zzU5I7+ujiuXE1zuR3FJEPzfjZulUbsE9v7KDX7ztQ+fpy+aCix9RgfskCL2Oz"
+        crossorigin="anonymous"></script>
     {% tailwind_css %}
 </head>
 
 <body class="bg-gray-100 pt-20">
     {% include 'app/navbar.html' %}
-    
+
     <section class="flex flex-col md:flex-row">
         {% include 'app/customer_profile/sidebar.html' %}
-     
+
         <div class="flex-1 p-6">
             <h3 class="text-2xl font-bold text-pink-700 mb-6">My Reviews</h3>
-          
-                <div class="overflow-x-auto bg-white rounded-lg">
-                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead class="bg-pink-500 text-white">
-                            <tr>
-                                <th class="px-4 py-2 text-left">Serial</th>
-                                <th class="px-4 py-2 text-left">Shop Name</th>
-                                <th class="px-4 py-2 text-left">Shop Address</th>
-                                <th class="px-4 py-2 text-left">Review</th>
-                                <th class="px-4 py-2 text-left">Rating</th>
-                                <th class="px-4 py-2 text-left">Date & Time</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-700">
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">1</td>
-                                <td class="px-4 py-2">Salon A</td>
-                                <td class="px-4 py-2">123 Beauty Street, Downtown</td>
-                                <td class="px-4 py-2">Excellent service, friendly staff!</td>
-                                <td class="px-4 py-2">5</td>
-                                <td class="px-4 py-2">2025-03-20 10:30:00</td>
-                            </tr>
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">2</td>
-                                <td class="px-4 py-2">Salon B</td>
-                                <td class="px-4 py-2">456 Glamour Rd, Uptown</td>
-                                <td class="px-4 py-2">Good atmosphere, but the haircut could have been better.</td>
-                                <td class="px-4 py-2">3</td>
-                                <td class="px-4 py-2">2025-03-20 12:00:00</td>
-                            </tr>
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">3</td>
-                                <td class="px-4 py-2">Salon C</td>
-                                <td class="px-4 py-2">789 Chic Ave, City Center</td>
-                                <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
-                                <td class="px-4 py-2">4</td>
-                                <td class="px-4 py-2">2025-03-20 14:00:00</td>
-                            </tr>
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">4</td>
-                                <td class="px-4 py-2">Salon D</td>
-                                <td class="px-4 py-2">789 Chic Ave, City Center</td>
-                                <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
-                                <td class="px-4 py-2">4</td>
-                                <td class="px-4 py-2">2025-03-20 14:00:00</td>
-                            </tr>
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">5</td>
-                                <td class="px-4 py-2">Salon E</td>
-                                <td class="px-4 py-2">789 Chic Ave, City Center</td>
-                                <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
-                                <td class="px-4 py-2">4</td>
-                                <td class="px-4 py-2">2025-03-20 14:00:00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+            <div class="overflow-x-auto bg-white rounded-lg">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-pink-500 text-white">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Serial</th>
+                            <th class="px-4 py-2 text-left">Shop Name</th>
+                            <th class="px-4 py-2 text-left">Shop Address</th>
+                            <th class="px-4 py-2 text-left">Review</th>
+                            <th class="px-4 py-2 text-left">Rating</th>
+                            <th class="px-4 py-2 text-left">Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">1</td>
+                            <td class="px-4 py-2">Salon A</td>
+                            <td class="px-4 py-2">123 Beauty Street, Downtown</td>
+                            <td class="px-4 py-2">Excellent service, friendly staff!</td>
+                            <td class="px-4 py-2">5</td>
+                            <td class="px-4 py-2">2025-03-20 10:30:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">2</td>
+                            <td class="px-4 py-2">Salon B</td>
+                            <td class="px-4 py-2">456 Glamour Rd, Uptown</td>
+                            <td class="px-4 py-2">Good atmosphere, but the haircut could have been better.</td>
+                            <td class="px-4 py-2">3</td>
+                            <td class="px-4 py-2">2025-03-20 12:00:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">3</td>
+                            <td class="px-4 py-2">Salon C</td>
+                            <td class="px-4 py-2">789 Chic Ave, City Center</td>
+                            <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
+                            <td class="px-4 py-2">4</td>
+                            <td class="px-4 py-2">2025-03-20 14:00:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">4</td>
+                            <td class="px-4 py-2">Salon D</td>
+                            <td class="px-4 py-2">789 Chic Ave, City Center</td>
+                            <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
+                            <td class="px-4 py-2">4</td>
+                            <td class="px-4 py-2">2025-03-20 14:00:00</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-100">
+                            <td class="px-4 py-2">5</td>
+                            <td class="px-4 py-2">Salon E</td>
+                            <td class="px-4 py-2">789 Chic Ave, City Center</td>
+                            <td class="px-4 py-2">Highly recommend! The staff really knows what they are doing.</td>
+                            <td class="px-4 py-2">4</td>
+                            <td class="px-4 py-2">2025-03-20 14:00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
         </div>
     </section>
     {% include 'app/footer.html' %}
 </body>
+
 </html>
