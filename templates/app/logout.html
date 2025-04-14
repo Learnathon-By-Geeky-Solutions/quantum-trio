@@ -1,5 +1,6 @@
 {% if request.user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="block text-lg font-semibold text-red-400 hover:text-red-800 text-left py-2 mt-5 transition-colors duration-300">
-            Logout
-        </a>
-    {% endif %}
+<a href="{% url 'logout' %}"
+    class="block text-lg font-semibold text-red-400 hover:text-red-800 text-left py-2 mt-5 border-t-2">
+    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+</a>
+{% endif %}

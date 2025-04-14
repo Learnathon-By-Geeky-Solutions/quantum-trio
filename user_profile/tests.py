@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 # Create your tests here.
-import pytest
+import pytest # type: ignore
 from django.urls import reverse
 from shop_profile.models import MyUser
 from user_profile.models import UserProfile
