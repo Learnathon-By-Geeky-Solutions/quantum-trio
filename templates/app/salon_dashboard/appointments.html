@@ -10,7 +10,6 @@
     <title>Salon Dashboard</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-   
     <body class="bg-gray-100">
         {% include "app/salon_dashboard/header.html" %}
         
@@ -46,8 +45,7 @@
                 </div>
             </div>
         </section>
-        
-
+        {% include "app/salon_dashboard/booking_details.html" %}
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('.accept-button').forEach(button => {
@@ -81,7 +79,6 @@
                         });
                     });
                 });
-                {% include "app/salon_dashboard/booking_details.html" %}
             });
         </script>
 </body>
