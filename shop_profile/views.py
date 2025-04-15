@@ -188,8 +188,6 @@ def booking_details(request):
             )
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
-
-
 @csrf_protect
 def update_status(request):
     if request.method == "POST":
