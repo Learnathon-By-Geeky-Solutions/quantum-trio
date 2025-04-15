@@ -101,6 +101,7 @@ def log_in(request):
                 
             else:
                 print('Admin')  
+                return redirect('home')
         else:
             print('invalid username')
             error = "Invalid email or password"
