@@ -29,9 +29,9 @@ def profile(request):
         user.first_name = first_name
         user.last_name = last_name
 
-        User = get_user_model()
+        user_model = get_user_model()
         # Validate email uniqueness
-        if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+        if user_model.objects.filter(email=email).exclude(pk=user.pk).exists():
             messages.error(request, "This email is already in use.")
             return render(request, MY_PROFILE_TEMPLATE)
 
@@ -84,9 +84,6 @@ def mybooking(request):
 
 def mycancellations(request):
     return render(request,'app/customer_profile/mycancellations.html')
-
-def mynotifications(request):
-    return render(request,'app/customer_profile/mynotifications.html')
 
 def mynotifications(request):
     return render(request,'app/customer_profile/mynotifications.html')
