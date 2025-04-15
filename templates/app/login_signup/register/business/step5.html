@@ -87,21 +87,15 @@
                 for (let i = 0; i < services.length; i++) {
                     const itemsDiv = services[i].querySelector('.items');
                     const itemSelects = itemsDiv.querySelectorAll('.item-select');
-                    let valid = true;
 
                     itemSelects.forEach(function (select) {
                         const priceInput = select.nextElementSibling;
                         if (select.value !== '' && priceInput.value === '') {
-                            valid = false;
                             alert(`Please enter a price for the selected item in ${services[i].querySelector('.font-bold').textContent}.`);
                             e.preventDefault();
                             return;
                         }
                     });
-
-                    if (!valid) {
-                        return;
-                    }
                 }
             });
         });
