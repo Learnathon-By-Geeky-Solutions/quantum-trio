@@ -8,7 +8,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 # use this to import any data from database
-from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub
+from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub,Contact
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -136,8 +136,24 @@ def shop_profile(request):
              "shop_services": service,
              "shop_workers": workers
         })
-
+@csrf_protect
 def contact_us(request):
+    if request.method=="POST":
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        subject=request.POST.get('subject')
+        message=request.POST.get('message')
+        try:
+            Contact.objects.create(
+                name=name,
+                email=email,
+                subject=subject,
+                message=message
+            )
+            messages.success(request, "Your message has been sent successfully!")  # optional
+        except Exception as e:
+            messages.error(request, f"Something went wrong: {str(e)}") 
+        print(name,email,subject,message)
     return render(request, 'app/contact_us.html')
 
 def about_us(request):
