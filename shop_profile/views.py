@@ -18,16 +18,17 @@ from django.db.models.functions import Concat, Cast
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
 from my_app.models import Item
-from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification
+from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule
+from my_app.models import District,Upazilla,Service
+from django.contrib.postgres.aggregates import ArrayAgg
 
-user = get_user_model()
 # variable
+user = get_user_model()
 booking_not_found = "Booking not found."
 
 
 def profile(request):
     return render(request, "app/salon_dashboard/index.html")
-
 
 def gallery(request):
     message = ""
@@ -342,24 +343,86 @@ def notification(request):
 def setting(request):
     return render(request, "app/salon_dashboard/settings.html")
 
-
+@csrf_protect
 def basic_update(request):
-    return render(request, "app/salon_dashboard/update_basic.html")
+    shop=request.user.shop_profile
+    user=request.user
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    if request.method == 'POST':
+        try:
+            # Get updated data from the form
+            shop.shop_name = request.POST.get('shop_name', shop.shop_name)
+            shop.shop_title = request.POST.get('shop_title', shop.shop_title)
+            shop.shop_info = request.POST.get('shop_info', shop.shop_info)
+            shop.shop_owner = request.POST.get('shop_owner', shop.shop_owner)
+            shop.mobile_number = request.POST.get('mobile_number', shop.mobile_number)
+            shop.shop_website = request.POST.get('shop_website', shop.shop_website)
+            shop.gender = request.POST.get('gender', shop.gender)
+            shop.status = request.POST.get('status', shop.status) == 'true'
+            shop.shop_state = request.POST.get('shop_state', shop.shop_state)
+            shop.shop_city = request.POST.get('shop_city', shop.shop_city)
+            shop.shop_area = request.POST.get('shop_area', shop.shop_area)
+            
+            # Landmarks (optional fields)
+            shop.shop_landmark_1 = request.POST.get('landmark_1', shop.shop_landmark_1)
+            shop.shop_landmark_2 = request.POST.get('landmark_2', shop.shop_landmark_2)
+            shop.shop_landmark_3 = request.POST.get('landmark_3', shop.shop_landmark_3)
+            shop.shop_landmark_4 = request.POST.get('landmark_4', shop.shop_landmark_4)
+            shop.shop_landmark_5 = request.POST.get('landmark_5', shop.shop_landmark_5)
 
+            # Shop image (if uploaded)
+            if 'shop_picture' in request.FILES:
+                shop.shop_picture = request.FILES['shop_picture']
+            shop.save()
+            messages.success(request, "Shop profile updated successfully.")
+            print("Done")
 
-def schedule_update(request):
-    days_of_week = [
-        "Saturday",
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-    ]
+        except Exception as e:
+            messages.error(request, f"Failed to update shop: {str(e)}")
+            print("error2")
+            # return redirect('shop-profile')
 
+    else:
+        print("Error1")
+        # return redirect('shop-profile')
+    print(shop.gender)
+    return render(request, "app/salon_dashboard/update_basic.html",{'user':user,'shop':shop,'district':list(district),'Upazilla':list(upazilla)})
+
+def services_update(request):
+    service=Service.objects.all().values('id', 'name')
     return render(
         request,
-        "app/salon_dashboard/update_schedule.html",
-        {"days_of_week": days_of_week},
+        "app/salon_dashboard/update-services.html",
+        {'services':service}
     )
+
+@csrf_protect
+def schedule_update(request):
+    shop=request.user.shop_profile
+    if request.method == 'POST':
+        schedule_data = request.POST  # QueryDict
+        for day in ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+            start_time = schedule_data.get(f"schedule[{day}][start]", "").strip()
+            end_time = schedule_data.get(f"schedule[{day}][end]", "").strip()
+            # Only save the day if it has valid start or end time
+            if start_time < end_time:
+                shop_schedule = ShopSchedule.objects.get(shop=shop, day_of_week=day)
+                shop_schedule.start = start_time
+                shop_schedule.end = end_time
+                shop_schedule.save()
+                print("ok")
+            else:
+                print("Not Valid")
+    schedule=ShopSchedule.objects.filter(shop=shop)
+    schedule_dict = {
+        s.day_of_week: {
+            'start': s.start.strftime('%H:%M'),  # Convert to string in 'HH:MM' format
+            'end': s.end.strftime('%H:%M')       # Convert to string in 'HH:MM' format
+        }
+        for s in schedule
+    }   
+    return render(request, 'app/salon_dashboard/update_schedule.html', {
+        'days_of_week':{'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'},
+        'schedule_dict':schedule_dict  # unpack into template context
+    })

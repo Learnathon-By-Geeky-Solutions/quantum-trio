@@ -60,7 +60,7 @@ class ShopProfile(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Other', 'Other'),
+        ('Other', 'Other'), 
     ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)

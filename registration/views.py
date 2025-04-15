@@ -35,7 +35,7 @@ def customer_register_step1(request):
 def customer_register_step2(request):
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    
+     
     if request.method == "POST":
         
         """email check logic 

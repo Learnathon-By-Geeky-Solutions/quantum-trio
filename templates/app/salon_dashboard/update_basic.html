@@ -21,83 +21,114 @@
         <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
                 <div class="flex justify-center items-center min-h-screen">
-                    <form action="" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+                    <form action="" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+                        {% csrf_token %}
+
                         <div class="mb-4">
-                            <label for="shop_name" class="block text-sm font-medium">Shop Name:</label>
-                            <input type="text" name="shop_name" id="shop_name"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
+                            <label for="shop_name" class="block text-sm font-medium">Shop Name:
+                            <input type="text" name="shop_name" id="shop_name" value="{{shop.shop_name}}" required class="border border-gray-300 p-2 w-full">
+                        </label></div>
+
+                        <div class="mb-4">
+                            <label for="shop_title" class="block text-sm font-medium">Shop Title:
+                            <input type="text" name="shop_title" id="shop_title" value="{{shop.shop_title}}" class="border border-gray-300 p-2 w-full">
+                        </label></div>
+
+                        <div class="mb-4">
+                            <label for="shop_info" class="block text-sm font-medium">Shop Info:
+                            <textarea name="shop_info" id="shop_info" rows="3" class="border border-gray-300 p-2 w-full" >{{shop.shop_info}}</textarea>
+                        </label></div>
+                        <div class="mb-4">
+                            <label for="shop_email" class="block text-sm font-medium">E-mail:
+                            <input type="email" name="shop_email" id="shop_email" value="{{ user.email }}" 
+                                   class="border border-gray-300 p-2 w-full bg-gray-100 cursor-not-allowed" 
+                                   readonly>
+                            </label>
                         </div>
                         <div class="mb-4">
-                            <label for="shop_title" class="block text-sm font-medium">Shop Title:</label>
-                            <input type="text" name="shop_title" id="shop_title"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
-                        </div>
-                        <div class="mb-4">
-                            <label for="shop_info" class="block text-sm font-medium">Shop Info:</label>
-                            <textarea name="shop_info" id="shop_info" rows="3"
-                                class="border border-gray-300 p-2 w-full"></textarea>
+                            <label for="shop_owner" class="block text-sm font-medium">Owner Name:
+                                <input type="text" name="shop_owner" id="shop_owner" value="{{shop.shop_owner}}" class="border border-gray-300 p-2 w-full">
+                            </label>
                         </div>
 
                         <div class="mb-4">
-                            <label for="shop_email" class="block text-sm font-medium">Email:</label>
-                            <input type="email" name="shop_email" id="shop_email"
-                                value="" required
+                            <label for="shop_picture" class="block text-sm font-medium">Shop Picture:
+                            <input type="file" name="shop_picture" id="shop_picture" 
+                                   accept="image/*" 
+                                   class="border border-gray-300 p-2 w-full">
+                            </label>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="mobile_number" class="block text-sm font-medium">Mobile Number:
+                            <input type="text" name="mobile_number" id="mobile_number" value="{{shop.mobile_number}}" class="border border-gray-300 p-2 w-full">
+                        </label></div>
+
+                        <div class="mb-4">
+                            <label for="shop_website" class="block text-sm font-medium">Website:
+                                <input type="text" name="shop_website" id="shop_website" 
+                                value="{{ shop.shop_website }}" 
                                 class="border border-gray-300 p-2 w-full">
+                        </label></div>
+
+                        <div class="mb-4">
+                            <label for="gender" class="block text-sm font-medium">Gender:
+                            <select name="gender" id="gender" class="border border-gray-300 p-2 w-full">
+                                <option value="Other" {% if shop.gender == "Other" %}selected{% endif %}>Other</option>
+                                <option value="Male" {% if shop.gender == "Male" %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if shop.gender == "Female" %}selected{% endif %}>Female</option>
+                            </select>
+                        </label></div>
+
+                        <div class="mb-4">
+                            <label for="shop_state" class="block text-sm font-medium">District:
+                            <select id="district" name="district" 
+                                class="border border-gray-300 p-2 w-full" required>
+                                <option disabled selected>Select District</option>
+                                {% for dist in district %}
+                                    <option value="{{ dist.name }}" {% if shop.shop_state == dist.name %}selected{% endif %}>
+                                        {{ dist.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </label></div>
+                        <div class="mb-4">
+                            <label for="upazilla" class="block text-sm font-medium">Shop upazilla *
+                                <select id="upazilla" name="upazilla"
+                                    class="border border-gray-300 p-2 w-full">
+                                    <option value="" disabled selected>{{shop.shop_city}}</option>
+                                </select>
+                            </label>
                         </div>
                         <div class="mb-4">
-                            <label for="mobile_number" class="block text-sm font-medium">Mobile Number:</label>
-                            <input type="text" name="mobile_number" id="mobile_number"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
-                        </div>
+                            <label for="shop_area" class="block text-sm font-medium">Area:
+                            <input type="text" name="shop_area" id="shop_area" value="{{shop.shop_area}}" class="border border-gray-300 p-2 w-full">
+                        </label></div>
                         <div class="mb-4">
-                            <label for="shop_state" class="block text-sm font-medium">State:</label>
-                            <input type="text" name="shop_state" id="shop_state"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
+                            <label class="block text-sm font-medium">Landmark Addresses (At least 3 required):
+                                <input type="text" name="landmark_1" value="{{shop.shop_landmark_1}}" required class="border border-gray-300 p-2 w-full mb-2">
+                                <input type="text" name="landmark_2" value="{{shop.shop_landmark_2}}" required class="border border-gray-300 p-2 w-full mb-2">
+                                <input type="text" name="landmark_3" value="{{shop.shop_landmark_3}}" required class="border border-gray-300 p-2 w-full mb-2">
+                                <input type="text" name="landmark_4" value="{{shop.shop_landmark_4}}" class="border border-gray-300 p-2 w-full mb-2">
+                                <input type="text" name="landmark_5" value="{{shop.shop_landmark_5}}" class="border border-gray-300 p-2 w-full mb-2">
+                            </label>
                         </div>
+
                         <div class="mb-4">
-                            <label for="shop_city" class="block text-sm font-medium">City:</label>
-                            <input type="text" name="shop_city" id="shop_city"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
-                        </div>
-                        <div class="mb-4">
-                            <label for="shop_area" class="block text-sm font-medium">Area:</label>
-                            <input type="text" name="shop_area" id="shop_area"
-                                value="" required
-                                class="border border-gray-300 p-2 w-full">
-                        </div>
-                        <div class="mb-4">
-                            <label for="landmarks" class="block text-gray-700 font-bold mb-2">Landmark Addresses (At
-                                least 3 required)
-                                *</label>
-                            <input type="text" id="landmark1" name="landmark_1"
-                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="" required />
-                            <input type="text" id="landmark2" name="landmark_2"
-                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="" required />
-                            <input type="text" id="landmark3" name="landmark_3"
-                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="" required />
-                            <input type="text" id="landmark4" name="landmark_4"
-                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="" />
-                            <input type="text" id="landmark5" name="landmark_5"
-                                class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-                                value="" />
+                            <label for="status" class="block text-sm font-medium">Active Status:
+                                <select name="status" id="status" class="border border-gray-300 p-2 w-full">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </label>
                         </div>
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Update Shop</button>
                     </form>
-
-
                 </div>
             </div>
         </div>
     </section>
+    {% include 'app/address.html' %}
 </body>
 
 </html>
