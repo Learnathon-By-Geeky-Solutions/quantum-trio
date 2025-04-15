@@ -52,10 +52,13 @@ jobs:
         run: |
           pytest --cov=. --cov-report=xml
 
-      - name: Upload Coverage Report to SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: .
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_quantum-trio
+            -Dsonar.organization=learnathon-by-geeky-solutions
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.python.coverage.reportPaths=coverage.xml

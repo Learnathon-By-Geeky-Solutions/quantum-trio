@@ -2,7 +2,7 @@ import json
 from django.db.models import Q
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
@@ -132,7 +132,7 @@ def slots(request):
     )
 
 """Cancel booking"""
-@csrf_exempt
+@csrf_protect
 def reject_booking(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -163,7 +163,8 @@ def reject_booking(request):
             return JsonResponse({"success": False, "message": "Booking not found."})
 
 """retrieval of booking-details of a booking"""
-@csrf_exempt
+
+@csrf_protect
 def booking_details(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -188,7 +189,8 @@ def booking_details(request):
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
 
-@csrf_exempt
+
+@csrf_protect
 def update_status(request):
     if request.method == "POST":
         data = json.loads(request.body)
