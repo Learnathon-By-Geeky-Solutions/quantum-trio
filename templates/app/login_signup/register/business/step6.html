@@ -2,13 +2,14 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Setup</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    
+
     <style>
         .selected {
             background-color: #be185d;
@@ -39,14 +40,15 @@
         </div>
     </div>
 
-    {% comment %} <script>
+    {% comment %}
+    <script>
         document.getElementById('memberForm').addEventListener('submit', function (event) {
             const members = document.getElementById('membersInput');
             if (members.value === '') {
                 event.preventDefault();
                 alert('Please enter the number of members.');
             }
-            if(members.value==0){
+            if (members.value == 0) {
                 event.preventDefault();
                 alert('Please enter a number more than 0.');
             }

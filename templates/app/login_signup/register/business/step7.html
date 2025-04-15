@@ -75,7 +75,7 @@
 
             contactInputs.forEach(input => {
                 const value = input.value.trim();
-                const bangladeshiPhonePattern = /^\+8801[3-9]\d{8}$/;
+                const bangladeshiPhonePattern = /^01\d{9}$/;
                 if (!bangladeshiPhonePattern.test(value)) {
                     valid = false;
                     alert('Please enter a valid Bangladeshi contact number starting with +880 followed by 10 digits.');
