@@ -7,7 +7,7 @@ from django.contrib.messages import get_messages
 import uuid
 
 TEST_PASS = "pass"
-
+RETYPE_TEST_PASS ="pass1"
 class UserProfileTests(TestCase):
     def setUp(self):
         self.user = MyUser.objects.create_user(
@@ -47,8 +47,8 @@ class UserProfileTests(TestCase):
     def test_update_profile_password_mismatch(self):
         url = reverse("user")
         data = {
-            "password": "pass1",
-            "retype_password": "pass2",
+            "password": TEST_PASS,
+            "retype_password": RETYPE_TEST_PASS,
         }
         response = self.client.post(url, data)
         self.assertContains(response, "Passwords do not match")
