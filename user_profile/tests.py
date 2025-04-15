@@ -52,3 +52,7 @@ class UserProfileTests(TestCase):
         }
         response = self.client.post(url, data)
         self.assertContains(response, "Passwords do not match")
+
+    
+
+        
