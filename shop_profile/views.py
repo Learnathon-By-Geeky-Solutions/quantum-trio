@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from datetime import datetime, date, timedelta, timezone as tz
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -72,28 +73,6 @@ def calender(request):
         "app/salon_dashboard/saloon-calender.html",
         {"cal": cal, "month": month, "year": year},
     )
-
-
-def appointments(request):
-    worker = ShopWorker.objects.filter(shop=request.user.shop_profile)
-    shop_worker = []
-    for i in worker:
-        temp = {
-            "worker": i,
-            "booking_slots": BookingSlot.objects.filter(
-                worker=i, status="pending"
-            ).order_by("-created_at"),
-        }
-        shop_worker.append(temp)
-
-    for i in shop_worker:
-        print(i["worker"])
-        print(i["booking_slots"])
-    print(worker)
-    return render(
-        request, "app/salon_dashboard/appointments.html", {"shop_worker": shop_worker}
-    )
-
  
 def slots(request):
     today = date.today()
@@ -119,7 +98,7 @@ def slots(request):
         temp = {
             "worker": i,
             "booking_slots": BookingSlot.objects.filter(worker=i, date=today)
-            .exclude(Q(status="pending") | Q(status="canceled"))
+            .exclude(Q(status="canceled"))
             .annotate(
                 booking_datetime=ExpressionWrapper(
                     Cast(
@@ -152,42 +131,38 @@ def slots(request):
         {"shop_worker": shop_worker, "today": current_datetime},
     )
 
-"""Accept the booking"""
-@csrf_exempt
-def accept_booking(request):
-    print("check")
-    if request.method == "POST":
-        data = json.loads(request.body)
-        booking_id = data.get("booking_id")
-        try:
-            booking = BookingSlot.objects.get(id=booking_id)
-            booking.status = "confirmed"
-            booking.save()
-            return JsonResponse({"success": True, "message": "Booking accepted."})
-        except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": booking_not_found})
-
-
-"""Reject booking"""
-
-
+"""Cancel booking"""
 @csrf_exempt
 def reject_booking(request):
     if request.method == "POST":
         data = json.loads(request.body)
         booking_id = data.get("booking_id")
+
         try:
             booking = BookingSlot.objects.get(id=booking_id)
-            booking.status = "rejected"
-            booking.save()
-            return JsonResponse({"success": True, "message": "Booking rejected."})
-        except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": booking_not_found})
+            
+            # Combine date and time into a single datetime object
+            booking_datetime = datetime.combine(booking.date, booking.time)
+            booking_datetime = make_aware(booking_datetime)  # make timezone aware
+            print("booking time:",booking_datetime)
+            # Check if less than 24 hours remaining
+            now = datetime.now().astimezone()
+            print("Now: ",now)
+            print("diff: ",booking_datetime - now)
+            if booking_datetime - now < timedelta(hours=30): #we added extra 6 hours because of our timezone is +6:00 and the server time is 6 hours fast
+                return JsonResponse({
+                    "success": False,
+                    "message": "Cannot cancel booking within 24 hours of the appointment time."
+                })
 
+            booking.status = "canceled"
+            booking.save()
+            return JsonResponse({"success": True, "message": "Booking canceled."})
+
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
 
 """retrieval of booking-details of a booking"""
-
-
 @csrf_exempt
 def booking_details(request):
     if request.method == "POST":
@@ -212,7 +187,6 @@ def booking_details(request):
             )
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
-
 
 @csrf_exempt
 def update_status(request):
@@ -257,10 +231,8 @@ def update_status(request):
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
 
-
 def message(request):
     return render(request, "app/salon_dashboard/message.html")
-
 
 def staffs(request):
     if request.method == "POST":
@@ -343,7 +315,6 @@ def add_worker(request):
         messages.success(request, "Worker added successfully!")
         return redirect("shop_staffs")
     return render(request, "staffs")
-
 
 def customers(request):
     booking = BookingSlot.objects.filter(shop=request.user.shop_profile).order_by(

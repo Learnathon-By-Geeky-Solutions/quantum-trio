@@ -31,23 +31,29 @@
                         <h5 class="text-gray-700 font-medium">{{ slot.time|time:"g:i a" }}</h5>
                         <div class="mt-3 flex flex-col gap-2">
                             {% if slot.status != "completed" %}
-                            {% if slot.shop_end %}
-                            <button
-                                class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
-                            {% else %}
-                            <button
-                                class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-                                data-booking-id="{{ slot.id }}">
-                                Confirm?
-                            </button>
-                            {% if slot.is_expired %}
-                            <button
-                                class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-                                data-booking-id="{{ slot.id }}">
-                                Report
-                            </button>
-                            {% endif %}
-                            {% endif %}
+                                {% if slot.shop_end %}
+                                <button
+                                    class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
+                                {% else %}
+                                    
+                                    {% if slot.is_expired %}
+                                        <button
+                                            class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                                            data-booking-id="{{ slot.id }}">
+                                            Confirm?
+                                        </button>
+                                        <button
+                                            class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+                                            data-booking-id="{{ slot.id }}">
+                                            Report
+                                        </button>
+                                    {%else%}
+                                        <button
+                                            class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Pending!</button>
+                                        <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
+                                            data-booking-id="{{ slot.id }}">Cancel</button>
+                                    {% endif %}
+                                {% endif %}
                             {% else %}
                             <button
                                 class="bg-green-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Completed!</button>
@@ -90,6 +96,21 @@
                     }
                 });
             });  
+            document.querySelectorAll('.reject-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bookingId = button.getAttribute('data-booking-id');
+                    fetch('reject-booking/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ booking_id: bookingId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        window.location.reload();
+                    });
+                });
+            });
             {% include "app/salon_dashboard/booking_details.html" %}
             document.querySelectorAll('.report-button').forEach(button => {
                 button.addEventListener('click', () => {

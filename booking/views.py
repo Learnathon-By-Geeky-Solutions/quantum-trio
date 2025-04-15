@@ -67,7 +67,7 @@ def available_slots(request):
     for day in schedule:
         start_time = day.start
         end_time = day.end
-
+        """Here is a bug if you click today then it is showing the slots which should not be shown like the current time is 03:00PM then you can select 02:00PM make sure that is solved"""
         if date == datetime.today().date():
             now = datetime.now().time()
             if now > start_time:
@@ -81,7 +81,7 @@ def available_slots(request):
             total_seconds = (current_time.hour * 3600 + current_time.minute * 60 + current_time.second) + 3600
             current_time = time(total_seconds // 3600, (total_seconds % 3600) // 60, total_seconds % 60)
 
-    booked = BookingSlot.objects.filter(shop=shop_id, worker=worker_id, date=date).values_list('time', flat=True)
+    booked = BookingSlot.objects.filter(shop=shop_id, worker=worker_id, date=date,status='pending').values_list('time', flat=True)
     
     free_slots = [slot for slot in time_slot if slot not in booked]
     

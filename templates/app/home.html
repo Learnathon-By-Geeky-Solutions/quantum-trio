@@ -194,18 +194,23 @@
     <script>
         const recommendations = [
             {% for shop in shops %}
-        {
-            title: "{{ shop.shop_name|escapejs }}",
-                rating: "{{ shop.shop_rating }}",
-                    reviews: "{{ shop.shop_customer_count }}",
-                        location: "{{ shop.shop_city|escapejs }}",
-                            category: "{{ shop.category|escapejs }}",
-                                image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                                    link: "salon-profile?shop_id={{ shop.id }}",
-                    },
-        {% endfor %}
+                {
+                    title: "{{ shop.shop_name|escapejs }}",
+                        rating: "{{ shop.shop_rating }}",
+                            reviews: "{{ shop.shop_customer_count }}",
+                                location: "{{ shop.shop_city|escapejs }}",
+                                    category: "{{ shop.category|escapejs }}",
+                                        image: "{% static 'app/image/shop/1.jpg' %}",
+                                            link: "salon-profile?shop_id={{ shop.id }}",
+                            },
+                {% endfor %}
             ];
-
+        let cnt=1;
+        recommendations.forEach((shop) => { 
+            const randomNum = (cnt%4)+1; // random 1 to 4
+            cnt+=1;
+            shop.image = shop.image.replace("1.jpg", randomNum + ".jpg");
+        });
         const carousel = document.getElementById("carousel-3");
 
         recommendations.forEach((recommendation) => {
