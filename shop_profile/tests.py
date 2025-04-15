@@ -14,14 +14,14 @@ import json
 
 User = get_user_model()
 
-TEST_PASSWORD = "testpass123"
+TEST_PASS = "testpass123"
 TEST_EMAIL1 = "shop@example.com"   # TEST_EMAIL1
 TEST_EMAIL2 = "john@example.com"   # TEST_EMAIL2
 class ShopProfileTests(TestCase):
     def setUp(self):
         # Create a test user and shop profile
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(
             user=self.user,
@@ -60,11 +60,11 @@ class ShopProfileTests(TestCase):
 class ShopGalleryTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.client = Client()
-        self.client.login(email=TEST_EMAIL1, password=TEST_PASSWORD)
+        self.client.login(email=TEST_EMAIL1, password=TEST_PASS)
 
     def test_create_gallery_image(self):
         """Test creating a gallery image."""
@@ -87,7 +87,7 @@ class ShopGalleryTests(TestCase):
 class ShopWorkerTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
@@ -103,7 +103,7 @@ class ShopWorkerTests(TestCase):
 class ShopServiceTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
@@ -114,7 +114,7 @@ class ShopServiceTests(TestCase):
 class ShopReviewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.review = ShopReview.objects.create(
@@ -131,7 +131,7 @@ class ShopReviewTests(TestCase):
 class ShopScheduleTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.schedule = ShopSchedule.objects.create(
@@ -156,7 +156,7 @@ class ShopScheduleTests(TestCase):
 class ShopNotificationTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.notification = ShopNotification.objects.create(
@@ -179,15 +179,29 @@ class ShopNotificationTests(TestCase):
 
 
 class ViewTests(TestCase):
-    TEST_PASSWORD = TEST_PASSWORD
+    TEST_PASS = TEST_PASS
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=self.TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=self.TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
         self.worker = ShopWorker.objects.create(
             name="John Doe", email=TEST_EMAIL2, phone="1234567890", shop=self.shop
         )
-        self.client.login(email=TEST_EMAIL1, password=self.TEST_PASSWORD)
+        self.client.login(email=TEST_EMAIL1, password=self.TEST_PASS)
+
+class ViewTests1(TestCase):
+    TEST_PASS = TEST_PASS
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL1, password=self.TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
+        self.item = Item.objects.create(name="Haircut", description="Basic haircut")
+        self.worker = ShopWorker.objects.create(
+            name="John Doe", email=TEST_EMAIL2, phone="1234567890", shop=self.shop
+        )
+        self.client.login(email=TEST_EMAIL1, password=self.TEST_PASS)
