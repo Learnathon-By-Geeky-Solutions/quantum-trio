@@ -1,61 +1,54 @@
-from django.test import TestCase
-
-# Create your tests here.
-import pytest # type: ignore
+from django.test import TestCase, Client
 from django.urls import reverse
 from shop_profile.models import MyUser
 from user_profile.models import UserProfile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.messages import get_messages
+import uuid
 
-@pytest.fixture
-def user_with_profile(db):
-    user = MyUser.objects.create_user(email="test@example.com", password="strongpassword123")
-    profile = UserProfile.objects.create(user=user, first_name="Test", last_name="User")
-    return user, profile
+TEST_PASS = "pass"
 
-@pytest.fixture
-def client_logged_in(client, user_with_profile):
-    user, _ = user_with_profile
-    client.force_login(user)
-    return client, user
+class UserProfileTests(TestCase):
+    def setUp(self):
+        self.user = MyUser.objects.create_user(
+            email=f"test_{uuid.uuid4()}@example.com",
+            password=TEST_PASS  
+        )
+        self.profile = UserProfile.objects.create(
+            user=self.user, first_name="Test", last_name="User"
+        )
+        self.client = Client()
+        self.client.force_login(self.user)
 
-@pytest.mark.django_db
-def test_get_profile_page(client_logged_in):
-    client, _ = client_logged_in
-    url = reverse("user")
-    response = client.get(url)
-    assert response.status_code == 200
-    assert b"My Profile" in response.content  # or a string you know appears in the template
+    def test_get_profile_page(self):
+        url = reverse("user")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "My Profile")
 
+    def test_update_profile_email_conflict(self):
+        conflict_email = f"conflict_{uuid.uuid4()}@example.com"
+        MyUser.objects.create_user(
+            email= conflict_email,
+            password=TEST_PASS  
+        )
+        url = reverse("user")
+        data = {
+            "email": conflict_email,
+            "first_name": "X",
+            "last_name": "Y",
+        }
+        response = self.client.post(url, data)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any("email is already in use" in str(message) for message in messages)
+        )
 
-# ✅ Test email already exists
-@pytest.mark.django_db
-def test_update_profile_email_conflict(client_logged_in):
-    MyUser.objects.create_user(email="existing@example.com", password="anotherpass")
-
-    client, user = client_logged_in
-    url = reverse("user")
-    data = {
-        "email": "existing@example.com",  # this email already taken
-        "first_name": "X",
-        "last_name": "Y",
-    }
-    response = client.post(url, data)
-
-    # Check if the flash message was added
-    messages = list(get_messages(response.wsgi_request))
-    assert any("email is already in use" in str(message) for message in messages)
-
-# ✅ Test password mismatch
-def test_update_profile_password_mismatch(client_logged_in):
-    client, user = client_logged_in
-    url = reverse("user")
-    data = {
-        "password": "pass123",
-        "retype_password": "wrongpass123",
-    }
-    response = client.post(url, data)
-    assert b"Passwords do not match" in response.content
-
-
+    def test_update_profile_password_mismatch(self):
+        url = reverse("user")
+        data = {
+            "password": "pass1",
+            "retype_password": "pass2",
+        }
+        response = self.client.post(url, data)
+        self.assertContains(response, "Passwords do not match")
