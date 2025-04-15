@@ -2,7 +2,7 @@ import json
 from django.db.models import Q
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
@@ -153,7 +153,7 @@ def slots(request):
     )
 
 """Accept the booking"""
-@csrf_exempt
+@csrf_protect
 def accept_booking(request):
     print("check")
     if request.method == "POST":
