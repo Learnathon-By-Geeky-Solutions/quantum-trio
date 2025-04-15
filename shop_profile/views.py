@@ -169,9 +169,7 @@ def accept_booking(request):
 
 
 """Reject booking"""
-
-
-@csrf_exempt
+@csrf_protect
 def reject_booking(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -187,8 +185,7 @@ def reject_booking(request):
 
 """retrieval of booking-details of a booking"""
 
-
-@csrf_exempt
+@csrf_protect
 def booking_details(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -214,7 +211,7 @@ def booking_details(request):
             return JsonResponse({"success": False, "message": booking_not_found})
 
 
-@csrf_exempt
+@csrf_protect
 def update_status(request):
     if request.method == "POST":
         data = json.loads(request.body)
