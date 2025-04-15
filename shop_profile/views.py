@@ -381,11 +381,10 @@ def basic_update(request):
         except Exception as e:
             messages.error(request, f"Failed to update shop: {str(e)}")
             print("error2")
-            # return redirect('shop-profile')
 
     else:
         print("Error1")
-        # return redirect('shop-profile')
+        
     print(shop.gender)
     return render(request, "app/salon_dashboard/update_basic.html",{'user':user,'shop':shop,'district':list(district),'Upazilla':list(upazilla)})
 

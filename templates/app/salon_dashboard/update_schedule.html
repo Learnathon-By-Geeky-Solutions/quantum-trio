@@ -45,9 +45,10 @@
             
                 {% for day, times in schedule_dict.items %}
                     <div class="slot mb-2 flex items-center">
-                        <label class="w-1/4 font-medium">{{ day }}</label>
-                        <input type="time" name="schedule[{{ day }}][start]" class="block w-1/2 p-2 border rounded mb-2 mr-2" value="{{ times.start }}" />
-                        <input type="time" name="schedule[{{ day }}][end]" class="block w-1/2 p-2 border rounded mb-2" value="{{ times.end }}" />
+                        <label class="w-1/4 font-medium">{{ day }}
+                            <input type="time" name="schedule[{{ day }}][start]" class="block w-1/2 p-2 border rounded mb-2 mr-2" value="{{ times.start }}" />
+                            <input type="time" name="schedule[{{ day }}][end]" class="block w-1/2 p-2 border rounded mb-2" value="{{ times.end }}" />
+                        </label>
                     </div>
                 {% endfor %}
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Update Schedule</button>
