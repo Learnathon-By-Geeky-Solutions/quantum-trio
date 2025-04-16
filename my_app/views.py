@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 temp_user=get_user_model()
-# Create your views here.
+# Create your views here. 
 def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
