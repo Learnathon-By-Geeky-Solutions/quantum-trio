@@ -38,28 +38,6 @@ class RegistrationTests(TestCase):
         response = self.client.get(reverse("customer_register_step1"))
         self.assertEqual(response.status_code, 200)
 
-    # def test_customer_register_step2_get(self):
-    #     """Test GET request to customer_register_step2."""
-    #     response = self.client.get(reverse("step2"))
-    #     self.assertEqual(response.status_code, 200)
-
-    # def test_customer_register_step2_post_valid(self):
-    #     """Test POST to customer_register_step2 with valid data."""
-    #     data = {
-    #         "first-name": "John",
-    #         "last-name": "Doe",
-    #         "email": f"john_{uuid.uuid4()}@example.com",
-    #         "password": "Password123!",
-    #         "mobile-number": "1234567890",
-    #         "gender": "Male"
-    #     }
-    #     response = self.client.post(reverse("step2"), data)
-    #     self.assertEqual(response.status_code, 200)
-    #     session_user = self.client.session.get("user", {})
-    #     self.assertEqual(session_user.get("first-name"), "John")
-    #     self.assertEqual(session_user.get("email"), data["email"])
-    #     self.assertEqual(session_user.get("gender"), "Male")
-
     def test_customer_register_step2_post_existing_email(self):
         """Test POST to customer_register_step2 with existing email."""
         User.objects.create_user(
@@ -98,20 +76,6 @@ class RegistrationTests(TestCase):
         session_user = self.client.session.get("user", {})
         self.assertEqual(session_user.get("first-name"), "Jane")
         self.assertEqual(session_user.get("email"), data["email"])
-
-    # def test_business_register_step5_post(self):
-    #     """Test POST to business_register_step5."""
-    #     email = f"jane_{uuid.uuid4()}@example.com"
-    #     self.client.session["user"] = {
-    #         "email": email
-    #     }
-    #     self.client.session.modified = True
-    #     data = {
-    #         "services[]": [str(self.service.id)]
-    #     }
-    #     response = self.client.post(reverse("business_register_step5"), data)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(self.client.session.get("user", {}).get("services", []), [str(self.service.id)])
 
     @patch('registration.views.Upazilla.objects.values')
     def test_customer_register_step2_get(self, mock_upazilla_values):
@@ -160,3 +124,4 @@ class RegistrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         session_user = self.client.session.get("user", {})
         self.assertEqual(session_user.get("services", []), ["1"])
+
