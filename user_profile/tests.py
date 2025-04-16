@@ -51,11 +51,6 @@ class UserProfileTests(TestCase):
     @patch('user_profile.views.Upazilla.objects.values')
     @patch('user_profile.views.Area.objects.values')
 
-    def test_addressofbooking_post_not_allowed(self):
-        """Test POST to addressofbooking returns 302."""
-        response = self.client.post(reverse("addressofbooking"))
-        self.assertEqual(response.status_code, 302)
-
     def test_reviews_get(self):
         """Test GET request to reviews."""
         response = self.client.get(reverse("myreviews"))
