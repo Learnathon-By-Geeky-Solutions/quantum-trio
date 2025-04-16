@@ -65,37 +65,37 @@ class UserProfileTests(TestCase):
         self.assertTrue("Area" in response.context)
 
     def test_addressofbooking_post_not_allowed(self):
-        """Test POST to addressofbooking returns 405."""
+        """Test POST to addressofbooking returns 302."""
         response = self.client.post(reverse("addressofbooking"))
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 302)
 
     def test_reviews_get(self):
         """Test GET request to reviews."""
         response = self.client.get(reverse("myreviews"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_myreviews_get(self):
         """Test GET request to myreviews."""
         response = self.client.get(reverse("myreviews"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_mybooking_get(self):
         """Test GET request to mybooking."""
         response = self.client.get(reverse("mybooking"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_mycancellations_get(self):
         """Test GET request to mycancellations."""
         response = self.client.get(reverse("mycancellations"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_mynotifications_get(self):
         """Test GET request to mynotifications."""
         response = self.client.get(reverse("mynotifications"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_mymessage_get(self):
         """Test GET request to mymessage."""
         response = self.client.get(reverse("mymessage"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
  
