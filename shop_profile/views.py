@@ -373,7 +373,7 @@ def basic_update(request):
 
             # Shop image (if uploaded)
             if 'shop_picture' in request.FILES:
-                shop.shop_picture = request.FILES['shop_picture']
+                shop.shop_picture = request.FILES['shop_picture'] 
             shop.save()
             messages.success(request, "Shop profile updated successfully.")
             print("Done")

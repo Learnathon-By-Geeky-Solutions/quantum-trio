@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models 
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password, check_password
 from shop_profile.models import MyUser
