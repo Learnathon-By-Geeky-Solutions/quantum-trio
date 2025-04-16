@@ -59,7 +59,7 @@ class UserProfileTests(TestCase):
             {'upazilla__name': 'Mirpur', 'area_names': ['Mirpur-10']}
         ]
         response = self.client.get(reverse("addressofbooking"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.assertTrue("district" in response.context)
         self.assertTrue("Upazilla" in response.context)
         self.assertTrue("Area" in response.context)
