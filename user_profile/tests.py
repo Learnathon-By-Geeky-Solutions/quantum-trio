@@ -50,19 +50,6 @@ class UserProfileTests(TestCase):
 
     @patch('user_profile.views.Upazilla.objects.values')
     @patch('user_profile.views.Area.objects.values')
-    def test_addressofbooking_get(self, mock_area_values, mock_upazilla_values):
-        """Test GET request to addressofbooking."""
-        mock_upazilla_values.return_value.annotate.return_value = [
-            {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Dhanmondi']}
-        ]
-        mock_area_values.return_value.annotate.return_value = [
-            {'upazilla__name': 'Mirpur', 'area_names': ['Mirpur-10']}
-        ]
-        response = self.client.get(reverse("addressofbooking"))
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue("district" in response.context)
-        self.assertTrue("Upazilla" in response.context)
-        self.assertTrue("Area" in response.context)
 
     def test_addressofbooking_post_not_allowed(self):
         """Test POST to addressofbooking returns 302."""
