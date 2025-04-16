@@ -166,7 +166,50 @@ def terms_conditions(request):
     return render(request, 'app/terms_conditions.html')
 
 def search(request):
-    return render(request, 'app/search.html')
+    shops=location_based=items=service_based = []
+    keyword = ''
+    if request.method == "POST":
+        keyword = request.POST.get('search', '').strip()
+        if keyword:
+            # Based on name, title and info only
+            shops = ShopProfile.objects.filter(
+                Q(shop_name__icontains=keyword) |
+                Q(shop_title__icontains=keyword) |
+                Q(shop_info__icontains=keyword)
+            )
+            
+            # Based on location 
+            # If the keyword matches with any shops location
+            location_based = ShopProfile.objects.filter(
+                Q(shop_state__icontains=keyword) |
+                Q(shop_city__icontains=keyword) |
+                Q(shop_area__icontains=keyword) |
+                Q(shop_landmark_1__icontains=keyword)|
+                Q(shop_landmark_2__icontains=keyword)|
+                Q(shop_landmark_3__icontains=keyword)|
+                Q(shop_landmark_4__icontains=keyword)|
+                Q(shop_landmark_5__icontains=keyword)
+            ).distinct()
+            print(location_based)
+            # Based on service 
+            # If the keyword matches with shops service 
+            service_based = ShopProfile.objects.filter(
+                shopservice__item__name__icontains=keyword
+            ).distinct()
+            
+            # Based on item
+            # If the keyword matches with any item 
+            items = Item.objects.filter(
+                name__icontains=keyword
+            ).distinct()
+            
+    return render(request, 'app/search.html', {
+        'keyword': keyword,
+        'shops': shops,
+        'location_based':location_based,
+        'service_based':service_based,
+        'items':items        
+    })
 
 def service(request):
     services=Service.objects.all()

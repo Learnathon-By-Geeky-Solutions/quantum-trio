@@ -1,0 +1,73 @@
+{% load static %}        
+        <div class="relative">
+            <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
+                <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
+                    <button class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                        onclick="scrollCarousel('carousel-3', -300)"
+                        onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', -300); event.preventDefault(); }"
+                        aria-label="Scroll left">
+                        <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
+                            class="w-8 h-8 opacity-75 hover:opacity-100" />
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-3">
+                    <button class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                        onclick="scrollCarousel('carousel-3', 300)"
+                        onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
+                        aria-label="Scroll right">
+                        <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
+                            class="w-8 h-8 opacity-75 hover:opacity-100" /> 
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    const recommendations = [
+        {% for shop in shops %}
+            {
+                title: "{{ shop.shop_name | escapejs }}",
+                rating: "{{ shop.shop_rating }}",
+                reviews: "{{ shop.shop_customer_count }}",
+                location: "{{ shop.shop_state|escapejs }},{{ shop.shop_city|escapejs }},{{ shop.shop_area|escapejs }}",
+                category: "{{ shop.category | escapejs }}",
+                image: "{% if shop.shop_picture and shop.shop_picture.url %}{{ shop.shop_picture.url }}{% else %}{% static 'app/image/shop/1.jpg' %}{% endif %}",
+                link: "salon-profile?shop_id={{ shop.id }}",
+            },
+        {% endfor %}
+    ];
+    let cnt=1;
+            recommendations.forEach((shop) => { 
+                const randomNum = (cnt%4)+1; // random 1 to 4
+    cnt+=1;
+    shop.image = shop.image.replace("1.jpg", randomNum + ".jpg");
+            });
+    const carousel = document.getElementById("carousel-3");
+    
+    recommendations.forEach((recommendation) => {
+        const card = document.createElement("a");
+    card.href = recommendation.link;
+    card.className =
+    "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
+
+    card.innerHTML = `
+        <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
+        <div class="p-4 cards">
+            <h3 class="text-lg font-semibold">${recommendation.title}</h3>
+            <p class="mt-2 text-sm text-gray-600">
+                <span class="font-bold text-yellow-500">${recommendation.rating} &#9733;</span>
+                (${recommendation.reviews} reviews)
+            </p>
+            <p class="mt-2 text-sm text-gray-600">${recommendation.location}</p>
+            <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
+        </div>
+        `;
+        carousel.appendChild(card);
+            });
+
+        function scrollCarousel(carouselId, scrollAmount) {
+                const carousel = document.getElementById(carouselId);
+        carousel.scrollBy({left: scrollAmount, behavior: "smooth" });
+            }
+</script>
