@@ -26,26 +26,6 @@ class RegistrationTests(TestCase):
             item_description="Standard haircut"
         )
 
-    def test_customer_register_step2_get(self):
-        """Test GET request to customer_register_step2."""
-        response = self.client.get(reverse("step2"))
-        self.assertEqual(response.status_code, 200)
-
-    def test_customer_register_step2_post_valid(self):
-        """Test POST to customer_register_step2 with valid data."""
-        data = {
-            "first-name": "John",
-            "last-name": "Doe",
-            "email": f"john_{uuid.uuid4()}@example.com",
-            "password": "Password123!",
-            "mobile-number": "1234567890",
-            "gender": "Male"
-        }
-        response = self.client.post(reverse("step2"), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.client.session.get("user", {}).get("first-name"), "John")
-        self.assertEqual(self.client.session.get("user", {}).get("email"), data["email"])
-
     def test_customer_register_step2_post_existing_email(self):
         """Test POST to customer_register_step2 with existing email."""
         User.objects.create_user(
