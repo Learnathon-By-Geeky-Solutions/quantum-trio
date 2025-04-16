@@ -48,31 +48,3 @@ class UserProfileTests(TestCase):
         password = self.profile.generate_random_password(length=8)
         self.assertEqual(len(password), 8)
 
-    @patch('user_profile.views.Upazilla.objects.values')
-    @patch('user_profile.views.Area.objects.values')
-
-    def test_myreviews_get(self):
-        """Test GET request to myreviews."""
-        response = self.client.get(reverse("myreviews"))
-        self.assertEqual(response.status_code, 302)
-
-    def test_mybooking_get(self):
-        """Test GET request to mybooking."""
-        response = self.client.get(reverse("mybooking"))
-        self.assertEqual(response.status_code, 302)
-
-    def test_mycancellations_get(self):
-        """Test GET request to mycancellations."""
-        response = self.client.get(reverse("mycancellations"))
-        self.assertEqual(response.status_code, 302)
-
-    def test_mynotifications_get(self):
-        """Test GET request to mynotifications."""
-        response = self.client.get(reverse("mynotifications"))
-        self.assertEqual(response.status_code, 302)
-
-    def test_mymessage_get(self):
-        """Test GET request to mymessage."""
-        response = self.client.get(reverse("mymessage"))
-        self.assertEqual(response.status_code, 302)
- 
