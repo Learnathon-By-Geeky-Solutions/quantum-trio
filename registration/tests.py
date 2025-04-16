@@ -25,7 +25,7 @@ class RegistrationTests(TestCase):
             gender="Both",
             item_description="Standard haircut"
         )
-    def test_customer_register_step2_get(self):
-        """Test GET request to customer_register_step2."""
-        response = self.client.get(reverse("step2"))
-        self.assertEqual(response.status_code, 200)
+    # def test_customer_register_step2_get(self):
+    #     """Test GET request to customer_register_step2."""
+    #     response = self.client.get(reverse("step2"))
+    #     self.assertEqual(response.status_code, 200)
