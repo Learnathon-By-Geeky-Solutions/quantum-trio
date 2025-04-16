@@ -108,7 +108,7 @@ def log_in(request):
             user_type = 'customer'  
 
     return render(request, 'app/login_signup/login.html', {'type': user_type, 'message': error})
-def success_reset_password(request):
+def success_reset_password():
     return HttpResponse("Password reset successful. This is a test response.")
 
 def log_out(request):
