@@ -51,11 +51,6 @@ class UserProfileTests(TestCase):
     @patch('user_profile.views.Upazilla.objects.values')
     @patch('user_profile.views.Area.objects.values')
 
-    def test_reviews_get(self):
-        """Test GET request to reviews."""
-        response = self.client.get(reverse("myreviews"))
-        self.assertEqual(response.status_code, 302)
-
     def test_myreviews_get(self):
         """Test GET request to myreviews."""
         response = self.client.get(reverse("myreviews"))
