@@ -63,7 +63,7 @@ def gallery(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def calender(request):
     month = datetime.now().month
     year = datetime.now().year
@@ -146,7 +146,7 @@ def slots(request):
 """Cancel booking"""
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def reject_booking(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -180,7 +180,7 @@ def reject_booking(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def booking_details(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -210,7 +210,7 @@ def booking_details(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def update_status(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -254,13 +254,13 @@ def update_status(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def message(request):
     return render(request, "app/salon_dashboard/message.html")
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def staffs(request):
     if request.method == "POST":
         worker_id = request.POST.get("id")
@@ -305,7 +305,7 @@ def staffs(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def add_worker(request):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -347,7 +347,7 @@ def add_worker(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def customers(request):
     booking = BookingSlot.objects.filter(shop=request.user.shop_profile).order_by(
         "-date", "-time"
@@ -357,13 +357,13 @@ def customers(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def review(request):
     return render(request, "app/salon_dashboard/reviews.html")
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def notification(request):
     notification = ShopNotification.objects.filter(
         shop=request.user.shop_profile
@@ -376,13 +376,13 @@ def notification(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def setting(request):
     return render(request, "app/salon_dashboard/settings.html")
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def basic_update(request):
     shop=request.user.shop_profile
     user=request.user
@@ -429,7 +429,7 @@ def basic_update(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def services_update(request):
     service=Service.objects.all().values('id', 'name')
     return render(
@@ -440,7 +440,7 @@ def services_update(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def schedule_update(request):
     shop=request.user.shop_profile
     if request.method == 'POST':

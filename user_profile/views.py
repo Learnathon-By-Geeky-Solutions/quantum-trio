@@ -191,18 +191,18 @@ def update_status(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def mycancellations(request):
     return render(request,'app/customer_profile/mycancellations.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def mynotifications(request):
     return render(request,'app/customer_profile/mynotifications.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def mymessage(request):
     return render(request,'app/customer_profile/mymessage.html')
