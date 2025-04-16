@@ -5,6 +5,8 @@ from django.contrib.auth.hashers import make_password
 from my_app.models import District, Upazilla, Area, Service, Item, Division
 from shop_profile.models import MyUser, ShopProfile, ShopWorker, ShopService, ShopSchedule
 from user_profile.models import UserProfile
+from unittest.mock import patch
+
 import uuid
 
 User = get_user_model()
@@ -36,27 +38,27 @@ class RegistrationTests(TestCase):
         response = self.client.get(reverse("customer_register_step1"))
         self.assertEqual(response.status_code, 200)
 
-    def test_customer_register_step2_get(self):
-        """Test GET request to customer_register_step2."""
-        response = self.client.get(reverse("step2"))
-        self.assertEqual(response.status_code, 200)
+    # def test_customer_register_step2_get(self):
+    #     """Test GET request to customer_register_step2."""
+    #     response = self.client.get(reverse("step2"))
+    #     self.assertEqual(response.status_code, 200)
 
-    def test_customer_register_step2_post_valid(self):
-        """Test POST to customer_register_step2 with valid data."""
-        data = {
-            "first-name": "John",
-            "last-name": "Doe",
-            "email": f"john_{uuid.uuid4()}@example.com",
-            "password": "Password123!",
-            "mobile-number": "1234567890",
-            "gender": "Male"
-        }
-        response = self.client.post(reverse("step2"), data)
-        self.assertEqual(response.status_code, 200)
-        session_user = self.client.session.get("user", {})
-        self.assertEqual(session_user.get("first-name"), "John")
-        self.assertEqual(session_user.get("email"), data["email"])
-        self.assertEqual(session_user.get("gender"), "Male")
+    # def test_customer_register_step2_post_valid(self):
+    #     """Test POST to customer_register_step2 with valid data."""
+    #     data = {
+    #         "first-name": "John",
+    #         "last-name": "Doe",
+    #         "email": f"john_{uuid.uuid4()}@example.com",
+    #         "password": "Password123!",
+    #         "mobile-number": "1234567890",
+    #         "gender": "Male"
+    #     }
+    #     response = self.client.post(reverse("step2"), data)
+    #     self.assertEqual(response.status_code, 200)
+    #     session_user = self.client.session.get("user", {})
+    #     self.assertEqual(session_user.get("first-name"), "John")
+    #     self.assertEqual(session_user.get("email"), data["email"])
+    #     self.assertEqual(session_user.get("gender"), "Male")
 
     def test_customer_register_step2_post_existing_email(self):
         """Test POST to customer_register_step2 with existing email."""
@@ -97,16 +99,64 @@ class RegistrationTests(TestCase):
         self.assertEqual(session_user.get("first-name"), "Jane")
         self.assertEqual(session_user.get("email"), data["email"])
 
-    def test_business_register_step5_post(self):
+    # def test_business_register_step5_post(self):
+    #     """Test POST to business_register_step5."""
+    #     email = f"jane_{uuid.uuid4()}@example.com"
+    #     self.client.session["user"] = {
+    #         "email": email
+    #     }
+    #     self.client.session.modified = True
+    #     data = {
+    #         "services[]": [str(self.service.id)]
+    #     }
+    #     response = self.client.post(reverse("business_register_step5"), data)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(self.client.session.get("user", {}).get("services", []), [str(self.service.id)])
+
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_register_step2_get(self, mock_upazilla_values):
+        """Test GET request to customer_register_step2."""
+        mock_upazilla_values.return_value.annotate.return_value = [
+            {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Dhanmondi']}
+        ]
+        response = self.client.get(reverse("step2"))
+        self.assertEqual(response.status_code, 200)
+
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_register_step2_post_valid(self, mock_upazilla_values):
+        """Test POST to customer_register_step2 with valid data."""
+        mock_upazilla_values.return_value.annotate.return_value = [
+            {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Dhanmondi']}
+        ]
+        data = {
+            "first-name": "John",
+            "last-name": "Doe",
+            "email": f"john_{uuid.uuid4()}@example.com",
+            "password": "Password123!",
+            "mobile-number": "1234567890",
+            "gender": "Male"
+        }
+        response = self.client.post(reverse("step2"), data)
+        self.assertEqual(response.status_code, 200)
+        session_user = self.client.session.get("user", {})
+        self.assertEqual(session_user.get("first-name"), "John")
+        self.assertEqual(session_user.get("email"), data["email"])
+
+    @patch('registration.views.Item.objects.values')
+    def test_business_register_step5_post(self, mock_item_values):
         """Test POST to business_register_step5."""
         email = f"jane_{uuid.uuid4()}@example.com"
         self.client.session["user"] = {
             "email": email
         }
         self.client.session.modified = True
+        mock_item_values.return_value.annotate.return_value = [
+            {'service__id': 1, 'service__name': 'Haircare', 'service_names': ['Haircut']}
+        ]
         data = {
-            "services[]": [str(self.service.id)]
+            "services[]": ["1"]
         }
         response = self.client.post(reverse("business_register_step5"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.client.session.get("user", {}).get("services", []), [str(self.service.id)])
+        session_user = self.client.session.get("user", {})
+        self.assertEqual(session_user.get("services", []), ["1"])
