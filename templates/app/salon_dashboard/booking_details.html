@@ -1,9 +1,25 @@
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
 document.querySelectorAll('.see-more-button').forEach(button => {
     button.addEventListener('click', () => {
         const bookingId = button.getAttribute('data-booking-id');
             fetch('booking-details/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json','X-CSRFToken': csrftoken },
                 body: JSON.stringify({ booking_id: bookingId })
             })
                 .then(response => response.json())
@@ -12,6 +28,8 @@ document.querySelectorAll('.see-more-button').forEach(button => {
                         alert( 
                             `Booking Details:\n` +
                             `Customer: ${data.details.full_name}\n` +
+                            `Shop: ${data.details.shop_name}\n` +
+                            `Worker: ${data.details.worker}\n` +
                             `Service: ${data.details.item_name}\n` +
                             `Price: ${data.details.item_price}\n` +
                             `Date: ${data.details.booked_date}\n` +
@@ -23,5 +41,43 @@ document.querySelectorAll('.see-more-button').forEach(button => {
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        });
+    });
+    document.querySelectorAll('.reject-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const bookingId = button.getAttribute('data-booking-id');
+            fetch('reject-booking/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json','X-CSRFToken': csrftoken },
+                body: JSON.stringify({ booking_id: bookingId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                window.location.reload();
+            });
+        });
+    });
+    document.querySelectorAll('.book-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const bookingId = button.getAttribute('data-booking-id');
+            if (confirm('Are you sure you want to mark this booking as completed?')) {
+                fetch('update-status/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json','X-CSRFToken': csrftoken },
+                    body: JSON.stringify({ booking_id: bookingId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Booking marked as completed.');
+                            button.disabled = true;
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
         });
     });

@@ -3,7 +3,7 @@ from my_app.models import Item
 from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile, ShopWorker
 from django.utils import timezone 
-class BookingSlot(models.Model):
+class BookingSlot(models.Model): 
     user = models.ForeignKey(UserProfile, related_name="bookingslot", on_delete=models.CASCADE)
     shop = models.ForeignKey(ShopProfile, related_name="bookingslot", on_delete=models.CASCADE) 
     worker = models.ForeignKey(ShopWorker, related_name="bookingslot", on_delete=models.CASCADE) 

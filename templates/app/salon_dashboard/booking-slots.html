@@ -32,10 +32,9 @@
                         <div class="mt-3 flex flex-col gap-2">
                             {% if slot.status != "completed" %}
                                 {% if slot.shop_end %}
-                                <button
+                                <button 
                                     class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
                                 {% else %}
-                                    
                                     {% if slot.is_expired %}
                                         <button
                                             class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
@@ -73,44 +72,6 @@
     </section>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.book-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const bookingId = button.getAttribute('data-booking-id');
-                    if (confirm('Are you sure you want to mark this booking as completed?')) {
-                        fetch('update-status/', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ booking_id: bookingId })
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Booking marked as completed.');
-                                    button.disabled = true;
-                                    window.location.reload();
-                                } else {
-                                    alert('Error: ' + data.message);
-                                }
-                            })
-                            .catch(error => console.error('Error:', error));
-                    }
-                });
-            });  
-            document.querySelectorAll('.reject-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const bookingId = button.getAttribute('data-booking-id');
-                    fetch('reject-booking/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ booking_id: bookingId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        window.location.reload();
-                    });
-                });
-            });
             {% include "app/salon_dashboard/booking_details.html" %}
             document.querySelectorAll('.report-button').forEach(button => {
                 button.addEventListener('click', () => {
@@ -119,7 +80,7 @@
                     if (reason) {
                         fetch('', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json','X-CSRFToken': csrftoken },
                             body: JSON.stringify({ booking_id: bookingId, reason: reason })
                         })
                             .then(response => response.json())
