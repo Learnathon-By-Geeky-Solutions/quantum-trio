@@ -70,19 +70,19 @@ def profile(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def address(request):
     return render(request,'app/customer_profile/address.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def reviews(request):
     return render(request,'app/customer_profile/reviews.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def addressofbooking(request):
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
@@ -95,13 +95,13 @@ def addressofbooking(request):
     
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def myreviews(request):
     return render(request,'app/customer_profile/myreviews.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def mybooking(request):
     current_datetime = datetime.now()
     booking = BookingSlot.objects.filter(
@@ -133,21 +133,21 @@ def mybooking(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def booking_details(request):
     # This is imported from shop_profile view to reuse code
     return imported_booking_details(request)
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def reject_booking(request):
     # This is imported from shop_profile view to reuse code
     return imported_reject_booking(request)
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def update_status(request):
     if request.method == "POST":
         data = json.loads(request.body)
