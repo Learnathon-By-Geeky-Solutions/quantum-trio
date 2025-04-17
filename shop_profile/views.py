@@ -164,7 +164,7 @@ def calender(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def slots(request):
     today = date.today()
     if request.method == "GET" and request.GET.get("date") is not None:
@@ -356,21 +356,19 @@ def staffs(request):
             worker.email = email
             worker.phone = phone
             worker.experience = experience
-            if (
-                expertise_items.exists()
-            ):  # Only update if there are valid expertise items
+            if expertise_items.exists():  # Only update if there are valid expertise items
                 worker.expertise.set(expertise_items)
-            if (
-                profile_pic
-            ):  # Only update profile_pic if a new file is uploaded delete first then upload
+            if profile_pic:  # Only update profile_pic if a new file is uploaded delete first then upload
                 if worker.profile_pic:
                     worker.profile_pic.delete(save=False)
                 worker.profile_pic = profile_pic
             worker.save()
-            return JsonResponse({"message": "Worker updated successfully"}, status=200)
-
+            messages.success(request,"Worker details updated Successfully.")
+            
+        except (ValueError, TypeError):
+            messages.error(request,"Please enter a valid number of years.")
         except ShopWorker.DoesNotExist:
-            return JsonResponse({"error": "Worker not found"}, status=404)
+            messages.error(request,"Worker doesn't Exist.")
 
     workers = ShopWorker.objects.filter(shop=request.user.shop_profile)
     items = ShopService.objects.filter(shop=request.user.shop_profile)
