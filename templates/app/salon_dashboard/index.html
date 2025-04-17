@@ -3,180 +3,216 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <link rel="icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"
-        integrity="sha384-abc123yourRealHashHere"
-        crossorigin="anonymous"></script>
+    <script src="{% static 'app/js/chart.min.js' %}"></script>
     <style>
-        /* Navigation Buttons */
-        .prev-btn,
-        .next-btn {
-            height: 60px;
-            width: 60px;
-            position: relative;
-            top: 50px;
-            transform: translateY(-50%);
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 10px;
-            right: 10px;
-            left: 10px;
-        }
-
-        .prev-btn:hover,
-        .next-btn:hover {
-            background-color: #0056b3;
-        }
+      /* Navigation Buttons */
+      .prev-btn,
+      .next-btn {
+        height: 60px;
+        width: 60px;
+        position: relative;
+        top: 50px;
+        transform: translateY(-50%);
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 10px;
+        right: 10px;
+        left: 10px;
+      }
+      
+      .prev-btn:hover,
+      .next-btn:hover {
+        background-color: #0056b3;
+      }
     </style>
-</head>
+  </head>
 
-
-<body class="bg-gray-100">
-    {% include "app/salon_dashboard/header.html" %}
+  <body class="bg-gray-100">
+    {% include 'app/salon_dashboard/header.html' %}
 
     <section class="flex flex-col md:flex-row min-h-screen">
-        {% include "app/salon_dashboard/sidebar.html" %}
+      {% include 'app/salon_dashboard/sidebar.html' %}
 
-        <div class="flex-1 p-6">
-            <div class="overflow-x-auto rounded-lg">
-                <!-- Dashboard Content -->
-                <div class="flex flex-row gap-4 m-2 mb-4">
-                    <!-- Response of last 7 days -->
-                    <div class="card bg-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
-                        <h3 class="text-xl font-bold mb-2">Response of last 7 days</h3>
-                        <div id="stats" style="height: 370px; width: 100%;"></div>
-                    </div>
-
-                    <!-- Sales -->
-                    <div class="card bg-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
-                        <h3 class="text-xl font-bold mb-2">Sales</h3>
-                        <div id="sales" style="height: 370px; width: 100%;"></div>
-                    </div>
-                </div>
-
-                <div class="flex flex-row gap-4 m-2 mb-4">
-                    <!-- Total Customers -->
-                    <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
-                        <h3 class="text-xl font-bold mb-2">Total customers</h3>
-                        <div class="text-4xl mb-2">100</div>
-                    </div>
-
-                    <!-- Total Sales (this month) -->
-                    <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
-                        <h3 class="text-xl font-bold mb-2">Total sales (this month)</h3>
-                        <div class="text-4xl mb-2">30543</div>
-                    </div>
-                </div>
-
-
-
-                <!-- Metrics Section -->
-                <div class="flex flex-row gap-4 mt-4">
-                    <!-- Average Ratings -->
-                    <div class="metrics bg-pink-500 text-white rounded-lg p-4 flex-1">
-                        <h3 class="text-sm font-bold mb-2">Average Ratings</h3>
-                        <div class="text-lg font-bold">3.76</div>
-                    </div>
-
-                    <!-- Happy Customers -->
-                    <div class="metrics bg-green-500 text-white rounded-lg p-4 flex-1">
-                        <h3 class="text-sm font-bold mb-2">Happy Customers</h3>
-                        <div class="text-lg font-bold">251</div>
-                    </div>
-
-                    <!-- Unhappy Customers -->
-                    <div class="metrics bg-red-500 text-white rounded-lg p-4 flex-1">
-                        <h3 class="text-sm font-bold mb-2">Unhappy Customers</h3>
-                        <div class="text-lg font-bold">100</div>
-                    </div>
-                </div>
-
-                <!-- Reviews Section -->
-                <div class="gap-4 mt-4">
-                    <p class="text-xl font-semibold">Our Review:</p>
-                    <div class="flex flex-row ">
-                        <button class="prev-btn text-xl mr-5 font-semibold">❮</button>
-                        <div class="flex flex-cols-3 gap-4">
-                            <div class="cards bg-gray-500 m-4 p-4 rounded">
-                                <h3 class="text-white">Rakib</h3>
-                                <div class="rating text-white">***</div>
-                                <p class="text-white">Hi, thanks for your service</p>
-                            </div>
-                            <div class="cards bg-gray-500 m-4 p-4 rounded">
-                                <h3 class="text-white">Rakib</h3>
-                                <div class="rating text-white">***</div>
-                                <p class="text-white">Hi, thanks for your service</p>
-                            </div>
-                            <div class="cards bg-gray-500 m-4 p-4 rounded">
-                                <h3 class="text-white">Rakib</h3>
-                                <div class="rating text-white">***</div>
-                                <p class="text-white">Hi, thanks for your service</p>
-                            </div>
-
-
-                        </div>
-
-                        <button class="next-btn text-xl ml-3 font-semibold">❯</button>
-                    </div>
-                </div>
-
+      <div class="flex-1 p-6">
+        <div class="overflow-x-auto rounded-lg">
+          <!-- Dashboard Content -->
+          <div class="flex flex-row gap-4 m-2 mb-4">
+            <!-- Response of last 7 days -->
+            <div class="card bg-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
+              <h3 class="text-xl font-bold mb-2">Response of last 15 days</h3>
+              <div id="stats" style="height: 300px; width: 100%;">
+                <canvas id="salesChart" class="w-full h-80"></canvas>
+              </div>
             </div>
+
+            <!-- Sales -->
+            <div class="card bg-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
+              <h3 class="text-xl font-bold mb-2">Sales</h3>
+              <div id="sales" style="height: 300px; width: 100%;">
+                <canvas id="myChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-row gap-4 m-2 mb-4">
+            <!-- Total Customers -->
+            <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
+              <h3 class="text-xl font-bold mb-2">Total customers</h3>
+              <div class="text-4xl mb-2">100</div>
+            </div>
+
+            <!-- Total Sales (this month) -->
+            <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
+              <h3 class="text-xl font-bold mb-2">Total sales (this month)</h3>
+              <div class="text-4xl mb-2">30543</div>
+            </div>
+          </div>
+
+          <!-- Metrics Section -->
+          <div class="flex flex-row gap-4 mt-4">
+            <!-- Average Ratings -->
+            <div class="metrics bg-pink-500 text-white rounded-lg p-4 flex-1">
+              <h3 class="text-sm font-bold mb-2">Average Ratings</h3>
+              <div class="text-lg font-bold">3.76</div>
+            </div>
+
+            <!-- Happy Customers -->
+            <div class="metrics bg-green-500 text-white rounded-lg p-4 flex-1">
+              <h3 class="text-sm font-bold mb-2">Happy Customers</h3>
+              <div class="text-lg font-bold">251</div>
+            </div>
+
+            <!-- Unhappy Customers -->
+            <div class="metrics bg-red-500 text-white rounded-lg p-4 flex-1">
+              <h3 class="text-sm font-bold mb-2">Unhappy Customers</h3>
+              <div class="text-lg font-bold">100</div>
+            </div>
+          </div>
+
+          <!-- Reviews Section -->
+          <div class="gap-4 mt-4">
+            <p class="text-xl font-semibold">Our Review:</p>
+            <div class="flex flex-row">
+              <button class="prev-btn text-xl mr-5 font-semibold">❮</button>
+              <div class="flex flex-cols-3 gap-4">
+                <div class="cards bg-gray-500 m-4 p-4 rounded">
+                  <h3 class="text-white">Rakib</h3>
+                  <div class="rating text-white">***</div>
+                  <p class="text-white">Hi, thanks for your service</p>
+                </div>
+                <div class="cards bg-gray-500 m-4 p-4 rounded">
+                  <h3 class="text-white">Rakib</h3>
+                  <div class="rating text-white">***</div>
+                  <p class="text-white">Hi, thanks for your service</p>
+                </div>
+                <div class="cards bg-gray-500 m-4 p-4 rounded">
+                  <h3 class="text-white">Rakib</h3>
+                  <div class="rating text-white">***</div>
+                  <p class="text-white">Hi, thanks for your service</p>
+                </div>
+              </div>
+
+              <button class="next-btn text-xl ml-3 font-semibold">❯</button>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const carouselInner = document.querySelector(".carousel-inner");
-            let currentIndex = 0;
-
-            document.querySelector(".prev-btn").addEventListener("click", () => {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateCarousel();
-                }
-            });
-
-            document.querySelector(".next-btn").addEventListener("click", () => {
-                if (currentIndex < 2) {
-                    currentIndex++;
-                    updateCarousel();
-                }
-            });
-
-            function updateCarousel() {
-                carouselInner.style.transform = `translateX(-${currentIndex * 33.33}%)`;
+      const ctx = document.getElementById('myChart').getContext('2d')
+      new Chart(ctx, {
+        type: 'bar', // or 'line', 'pie', etc.
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'june', 'july', 'aug', 'sep', 'oct', 'nov', 'Dec'],
+          datasets: [
+            {
+              label: 'Sales',
+              data: [12, 19, 3, 5, 2, 12, 19, 3, 5, 2, 17, 13],
+              backgroundColor: 'rgba(59, 130, 246, 0.5)', // Tailwind blue-500 with opacity
+              borderColor: 'rgba(59, 130, 246, 1)',
+              borderWidth: 1
             }
-
-            window.onload = function () {
-                var chart = new CanvasJS.Chart("stats", {
-                    title: { text: "Last 7 days stats" },
-                    axisX: { labelAngle: -45 },
-                    axisY: { title: "Number of customers" },
-                    data: [{ type: "line" }]
-                });
-                chart.render();
-
-                var chart1 = new CanvasJS.Chart("sales", {
-                    animationEnabled: true,
-                    title: { text: "Sales stats" },
-                    axisX: { interval: 1, labelAngle: -45 },
-                    axisY: { title: "Revenue" },
-                    data: [{ type: "column" }]
-                });
-                chart1.render();
-            };
-        });
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      })
+      
+      //for previous 15 days
+      document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('salesChart').getContext('2d')
+      
+        // Generate labels for previous 15 days
+        const labels = [...Array(15)].map((_, i) => {
+          const d = new Date()
+          d.setDate(d.getDate() - (14 - i))
+          return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+        })
+      
+        // Simulate sales data (you can replace with real backend data)
+        const salesData = [50, 60, 45, 70, 65, 80, 90, 85, 70, 75, 60, 72, 78, 90, 95]
+      
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Sales (BDT)',
+                data: salesData,
+                fill: false,
+                borderColor: 'rgb(59, 130, 246)', // Tailwind blue-500
+                tension: 0.4, // smooth curve
+                pointBackgroundColor: 'white',
+                pointBorderColor: 'rgb(59, 130, 246)',
+                pointRadius: 5,
+                pointHoverRadius: 7
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Sales (৳)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Date'
+                }
+              }
+            }
+          }
+        })
+      })
     </script>
-</body>
-
+  </body>
 </html>
