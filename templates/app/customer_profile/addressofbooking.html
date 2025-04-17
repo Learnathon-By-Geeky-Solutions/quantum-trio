@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	{% tailwind_css %}
+    {% include 'app/message.html' %}
 </head>
 
 <body class="bg-gray-100 pt-20">
@@ -22,6 +23,7 @@
             <h3 class="text-2xl font-bold text-pink-700 mb-6">Address of Booking</h3>
             <div class="card max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
                 <form action="" method="POST">
+                    {% csrf_token %}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <!-- District Dropdown -->
                         <div>
@@ -30,8 +32,8 @@
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
                                 required>
                                 {% for dist in district %}
-                                 <option value="{{ dist.name }}">{{ dist.name }}</option>
-                                 {% endfor %}
+                                    <option value="{{ dist.name }}" {% if dist.name == user.user_state %} selected {% endif %}>{{ dist.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div>
@@ -39,27 +41,27 @@
                             <select id="upazilla" name="upazilla"
                                 class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600"
                                 required>
-                                <option value="" disabled selected>Select Upazilla</option>
-                            </select>
+                                <option value="{{user.user_city}}" disabled selected>{{user.user_city}}</option>
+                            </select> 
                         </div>
     
                         <div>
                             <label for="area" class="font-semibold">Area</label>
                             <input type="text" id="area" name="area" class="text-gray-600 w-full p-2 border rounded"
-                                value="" required>
+                                value="{{user.user_area}}" required>
                         </div>
 
                         <div>
                             <label for="latitude" class="font-semibold">Latitude</label>
                             <input type="text" id="latitude" name="latitude" class="text-gray-600 w-full p-2 border rounded"
-                                value="" required>
+                                value="{{user.latitude}}" required>
                         </div>
     
                         <div>
                             <label for="longitude" class="font-semibold">Longitude</label>
                             <input type="text" id="longitude" name="longitude"
                                 class="text-gray-600 w-full p-2 border rounded"
-                                value="" required>
+                                value="{{user.longitude}}" required>
                         </div>
     
                         <div>

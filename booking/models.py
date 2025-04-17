@@ -30,7 +30,7 @@ class BookingSlot(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     """If needed any notes"""
     notes = models.TextField(blank=True) 
-
+    rated=models.BooleanField(default=False)
     def save(self, *args, **kwargs):
         # Auto-update status to "completed" when both user and shop mark as done
         if self.user_end and self.shop_end:

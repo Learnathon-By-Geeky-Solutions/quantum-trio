@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookings</title>
     {% tailwind_css %}
+    {% include 'app/message.html' %}
 </head>
 
 <body class="bg-gray-100 pt-20">
@@ -30,9 +31,9 @@
                             <th class="px-4 py-2 text-left">Appointment Date</th>
                             <th class="px-4 py-2 text-left">Time</th>
                             <th class="px-4 py-2 text-left">Expert</th>
-                            <th class="px-4 py-2 text-left">Status</th>
-                            <th class="px-4 py-2 text-left">Details</th>
                             <th class="px-4 py-2 text-left">Action</th>
+                            <th class="px-4 py-2 text-left">Details</th>
+                            
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
@@ -49,6 +50,9 @@
                                         {% if booking.user_end %}
                                         <button
                                             class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
+                                            {% if not booking.rated %}
+                                                <button onclick="rating({{booking.id}},'{{booking.worker.name}}')" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded">Rate</button>
+                                            {% endif %}
                                         {% else %}
                                             {% if booking.is_expired %}
                                                 <button
@@ -58,7 +62,8 @@
                                                 </button>
                                                 <button
                                                     class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-                                                    data-booking-id="{{ booking.id }}">
+                                                    data-booking-id="{{ booking.id }}"
+                                                    onclick="open_report_modal()">
                                                     Report
                                                 </button>
                                             {%else%}
@@ -71,6 +76,9 @@
                                     {% else %}
                                     <button
                                         class="bg-green-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Completed!</button>
+                                        {% if not booking.rated %}
+                                            <button onclick="rating({{booking.id}},'{{booking.worker.name}}')" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded">Rate</button>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td class="px-4 py-2">
@@ -79,9 +87,6 @@
                                         data-booking-id="{{ booking.id }}">
                                         See details
                                     </button>
-                                </td>
-                                <td class="px-4 py-2">
-                                    <button onclick="rating(1)" class="text-blue-500 hover:text-blue-700">Rate</button>
                                 </td>
                             </tr>
                         {%endfor%}
@@ -94,80 +99,108 @@
     <!-- Overlay for Modal -->
     <div id="overlay" class="hidden fixed inset-0 bg-black opacity-80 z-40"></div>
 
-    <!-- Rating Modal Structure -->
-    <div id="legal_notice" class="max-w-md mx-auto bg-white p-4 shadow-md z-50 fixed inset-0 m-auto hidden"
-        style="width: 50%; height: fit-content;">
-        <h2 class="text-xl font-semibold mb-4">Rate the Expert:</h2>
-        <form action="" method="POST" id="ratingForm">
-            <div class="mb-4">
-                <label for="to" class="block text-sm font-medium">To:</label>
-                <input type="text" id="to" name="To" required class="border border-gray-300 p-2 w-full" disabled>
-                <input type="hidden" id="To" name="to">
-            </div>
-            <!-- Star Rating System -->
-            <div class="flex mb-4">
-                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
-                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
-                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
-                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
-                <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
-            </div>
-            <!-- Hidden Rating Input -->
-            <input type="hidden" id="rating" name="rating" value="" required>
-
-            <div class="flex justify-between">
-                <button type="submit" class="bg-blue-500 text-white p-2 rounded" name="submit">Send</button>
-                <button type="button" class="bg-red-500 text-white p-2 rounded" id="cancelBtn">Cancel</button>
-            </div>
-        </form>
+    {% comment %} rating form  {% endcomment %}
+    <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Rate the barber!</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="to" class="block text-sm font-medium">To:</label>
+                    <input type="text" id="to" name="To" required class="border border-gray-300 p-2 w-full" disabled>
+                    <input type="hidden" id="To" name="to">
+                    <input type="hidden" id="rating" name="rating" value="" required>
+                </div>
+                <!-- Star Rating System -->
+                <div class="flex mb-4">
+                    <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="1">&#9733;</span>
+                    <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="2">&#9733;</span>
+                    <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="3">&#9733;</span>
+                    <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="4">&#9733;</span>
+                    <span class="star w-6 h-6 text-gray-400 cursor-pointer" data-value="5">&#9733;</span>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button type="button"
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+                        onclick="cancel()">Cancel</button>
+                    <button type="submit" name="submit"
+                        class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded"
+                        >Save</button>
+                </div>
+            </form>
+        </div>
     </div>
-    {% include 'app/footer.html' %}
+
+    {% comment %} reporting form  {% endcomment %}
+    <div id="reportModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Reporting form!</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {% comment %} <div class="mb-4">
+                    <label for="to" class="block text-sm font-medium">To:</label>
+                    <input type="text" id="to" name="To" required class="border border-gray-300 p-2 w-full" disabled>
+                    <input type="hidden" id="To" name="to">
+                    <input type="hidden" id="rating" name="rating" value="" required>
+                </div> {% endcomment %}
+                <!-- Textarea for Report Description -->
+                <div class="mb-4">
+                    <label for="report_description" class="block text-sm font-medium">Report Description:</label>
+                    <textarea id="report_description" name="report_description" rows="4"
+                        class="border border-gray-300 p-2 w-full resize-none" required></textarea>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button type="button"
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+                        onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" name="submit"
+                        class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded"
+                        >Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function open_report_modal() {
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('reportModal').classList.add('hidden');
+        }
+    </script>
     <!-- JavaScript for Modal and Form Handling -->
     <script>
+        
         // Function to show the rating form
-        function rating(booking_id) {
-            document.getElementById('to').value = 'booking ID: ' + booking_id; // Display booking ID in the disabled field
+        function rating(booking_id,worker) {
+            document.getElementById('to').value = 'Worker: ' + worker; // Display booking ID in the disabled field
             document.getElementById('To').value = booking_id; // Hidden field for actual booking ID
-            document.getElementById('legal_notice').style.display = 'block'; // Show modal
-            document.getElementById('overlay').classList.remove('hidden'); // Show overlay
+            document.getElementById('editModal').classList.remove('hidden');
         }
         // Function to handle the cancel button
-        function cancelEmail() {
-            if (confirm('Are you sure you want to cancel?')) {
+        function cancel() {
+            if (confirm('Are you sure you want to cancel submission?')) {
                 // Clear the form
                 document.getElementById('to').value = '';
                 document.getElementById('To').value = '';
                 document.getElementById('rating').value = '';
-
-                // Hide modal and overlay
-                document.getElementById('legal_notice').style.display = 'none';
-                document.getElementById('overlay').classList.add('hidden');
-            }
-        }
-        // Function to handle clicks outside of the modal
-        window.onclick = function (event) {
-            var legalNoticeDiv = document.getElementById('legal_notice');
-            var overlayDiv = document.getElementById('overlay');
-            if (event.target == overlayDiv) {
-                legalNoticeDiv.style.display = 'none'; // Hide modal
-                overlayDiv.classList.add('hidden'); // Hide overlay
+                document.getElementById('editModal').classList.add('hidden');
             }
         }
         // Handling stars for rating
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('check');
             const stars = document.querySelectorAll('.star');
             const ratingInput = document.getElementById('rating');
             // Set up click event listener for each star
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     const selectedRating = parseInt(star.getAttribute('data-value'));
-
                     // Update hidden input value
                     ratingInput.value = selectedRating;
-
                     // Reset all stars to gray
                     stars.forEach(s => s.classList.remove('text-yellow-500'));
-
                     // Highlight all stars up to the selected one
                     for (let i = 0; i < selectedRating; i++) {
                         stars[i].classList.add('text-yellow-500');
@@ -175,19 +208,16 @@
                 });
             });
         });
-
-        // Cancel button listener
-        document.getElementById('cancelBtn').addEventListener('click', cancelEmail);
-
         // Form submission handler
-        document.getElementById('ratingForm').addEventListener('submit', function (event) {
+        document.querySelector('#editModal form').addEventListener('submit', function (event) {
             const rating = document.getElementById('rating').value;
             if (rating === '') {
                 alert('Please select a rating before submitting.');
-                event.preventDefault(); // Stop form from submitting
+                event.preventDefault();
             }
         });
         {% include "app/salon_dashboard/booking_details.html" %}
     </script>
+    {% include 'app/footer.html' %}
 </body>
 </html>

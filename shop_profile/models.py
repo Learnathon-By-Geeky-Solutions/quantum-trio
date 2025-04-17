@@ -1,6 +1,6 @@
 from django.db import models
 from my_app.models import Item
-from django.db import models
+from decimal import Decimal
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class MyUserManager(BaseUserManager):
@@ -120,7 +120,15 @@ class ShopWorker(models.Model):
     experience = models.FloatField(help_text="Experience in years")
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
-    rating=models.DecimalField(max_digits=2, decimal_places=2, default=0.0)
+    rating=models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    total_reviews = models.PositiveIntegerField(default=0)
+    def update_rating(self, new_rating):
+        """Update the average rating when a new rating is submitted."""
+        self.total_reviews += 1
+        current_total = self.rating * (self.total_reviews - 1)
+        new_avg = (current_total + Decimal(str(new_rating))) / self.total_reviews
+        self.rating = round(new_avg, 2)
+        self.save()
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
      
