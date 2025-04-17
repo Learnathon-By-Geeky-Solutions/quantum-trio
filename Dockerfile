@@ -12,10 +12,11 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies for psycopg2
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip
@@ -35,7 +36,7 @@ RUN useradd -m -r appuser && \
     chown -R appuser /my_app
 
 # Install runtime dependencies for psycopg2
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 

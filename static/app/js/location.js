@@ -39,7 +39,8 @@ document
 function getLocation() {
     // Check if Geolocation is supported
     if (navigator.geolocation) {
-        // Get the current position
+        // Necessary: We need the user's location to show nearby service providers
+navigator.geolocation.getCurrentPosition(showPosition, showError);
         navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
         document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
