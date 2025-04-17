@@ -1,13 +1,13 @@
 import json
 from django.db.models import Q
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware,now
 from datetime import datetime, date, timedelta, timezone as tz
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -23,16 +23,94 @@ from my_app.models import District,Upazilla,Service
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-
+from collections import OrderedDict
+from decimal import Decimal
 # variable
 user = get_user_model()
 booking_not_found = "Booking not found."
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def profile(request):
-    return render(request, "app/salon_dashboard/index.html")
+    """previous 15 days response data"""
+    shop=request.user.shop_profile
+    response_data = [
+        {
+            "date": (datetime.now() - timedelta(days=i)).strftime("%d %b"),
+            "value": BookingSlot.objects.filter(
+                        shop=shop,
+                        status='completed',
+                        date=(datetime.now() - timedelta(days=i)).date()
+                    ).count()
+        }
+        for i in range(14, -1, -1)
+    ]
+    print(response_data)
+    
+    """monthly data """
+    current_year = now().year
+    current_month = datetime.now().month
+    months = OrderedDict(
+        (datetime(2000, m, 1).strftime('%b'), Decimal('0.00')) 
+        for m in range(1, current_month + 1)
+    )
+    # Get completed bookings for this shop this year
+    completed_bookings = BookingSlot.objects.filter(
+        shop=shop,
+        status='completed',
+        date__year=current_year
+    ).select_related('item')
+    # Map item_id to price for this shop
+    price_map = {
+        service.item_id: service.price
+        for service in ShopService.objects.filter(shop=shop)
+    }
+    # sum up 
+    for booking in completed_bookings:
+        month_name = booking.date.strftime('%b')
+        price = price_map.get(booking.item_id, Decimal('0.00'))
+        months[month_name] += price
+    # convert to ordered dict
+    labels = list(months.keys())
+    values = [float(val) for val in months.values()] 
+    monthly_data = [
+        {"month": month, "value": value}
+        for month, value in zip(months, values)
+    ]
+    # print(monthly_data)
+    
+    """Total customers count"""
+    total_customer=BookingSlot.objects.filter(shop=shop,status='completed').count()
+    
+    """New Customers (This Month)"""
+    now_time = now()
+    start_of_month = now_time.replace(day=1)
+    # Get users who completed bookings this month at the current shop
+    completed_this_month_users = BookingSlot.objects.filter(
+            shop=shop,
+            status='completed',
+            created_at__gte=start_of_month
+        ).values_list('user', flat=True).distinct()
+    
+    # Remove users who had any completed booking *before* this month
+    old_customers = BookingSlot.objects.filter(
+        shop=shop,
+        status='completed',
+        created_at__lt=start_of_month,
+        user__in=completed_this_month_users
+    ).values_list('user', flat=True).distinct()
+    
+    # Exclude old customers from the current month's list
+    new_customer= completed_this_month_users.exclude(id__in=old_customers).count()
+    
+    context={
+        'response_data':response_data,
+        'monthly_data':monthly_data,
+        'total_customer':total_customer,
+        'new_customer':new_customer
+    }
+    return render(request, "app/salon_dashboard/index.html",context)
 
 @csrf_protect
 @login_required

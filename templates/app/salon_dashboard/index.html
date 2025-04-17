@@ -68,13 +68,13 @@
             <!-- Total Customers -->
             <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
               <h3 class="text-xl font-bold mb-2">Total customers</h3>
-              <div class="text-4xl mb-2">100</div>
+              <div class="text-4xl mb-2">{{total_customer}}</div>
             </div>
 
             <!-- Total Sales (this month) -->
             <div class="card bg-purple-600 text-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
-              <h3 class="text-xl font-bold mb-2">Total sales (this month)</h3>
-              <div class="text-4xl mb-2">30543</div>
+              <h3 class="text-xl font-bold mb-2">New customer (this month)</h3>
+              <div class="text-4xl mb-2">{{new_customer}}</div>
             </div>
           </div>
 
@@ -121,7 +121,6 @@
                   <p class="text-white">Hi, thanks for your service</p>
                 </div>
               </div>
-
               <button class="next-btn text-xl ml-3 font-semibold">❯</button>
             </div>
           </div>
@@ -130,60 +129,23 @@
     </section>
 
     <script>
-      const ctx = document.getElementById('myChart').getContext('2d')
-      new Chart(ctx, {
-        type: 'bar', // or 'line', 'pie', etc.
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'june', 'july', 'aug', 'sep', 'oct', 'nov', 'Dec'],
-          datasets: [
-            {
-              label: 'Sales',
-              data: [12, 19, 3, 5, 2, 12, 19, 3, 5, 2, 17, 13],
-              backgroundColor: 'rgba(59, 130, 246, 0.5)', // Tailwind blue-500 with opacity
-              borderColor: 'rgba(59, 130, 246, 1)',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      })
-      
-      //for previous 15 days
+      //Day basis customer up and down visualization
       document.addEventListener('DOMContentLoaded', () => {
-        const ctx = document.getElementById('salesChart').getContext('2d')
-      
-        // Generate labels for previous 15 days
-        const labels = [...Array(15)].map((_, i) => {
-          const d = new Date()
-          d.setDate(d.getDate() - (14 - i))
-          return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-        })
-      
-        // Simulate sales data (you can replace with real backend data)
-        const salesData = [50, 60, 45, 70, 65, 80, 90, 85, 70, 75, 60, 72, 78, 90, 95]
-      
-        new Chart(ctx, {
+        const ctx1 = document.getElementById('salesChart').getContext('2d');
+        const monthlyData = {{ response_data|safe }};
+        const labels = monthlyData.map(item => item.date);
+        const dataPoints = monthlyData.map(item => item.value);
+        new Chart(ctx1, {
           type: 'line',
           data: {
             labels: labels,
             datasets: [
               {
-                label: 'Sales (BDT)',
-                data: salesData,
-                fill: false,
-                borderColor: 'rgb(59, 130, 246)', // Tailwind blue-500
-                tension: 0.4, // smooth curve
-                pointBackgroundColor: 'white',
-                pointBorderColor: 'rgb(59, 130, 246)',
-                pointRadius: 5,
-                pointHoverRadius: 7
+                label: 'Daily customer (person)',
+                data: dataPoints,
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgb(59, 130, 246)',
+                borderWidth: 2
               }
             ]
           },
@@ -200,19 +162,44 @@
                 beginAtZero: true,
                 title: {
                   display: true,
-                  text: 'Sales (৳)'
+                  text: 'customer count'
                 }
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Date'
-                }
-              }
+              } 
             }
           }
-        })
-      })
+        });
+      });
+
+      //monthly sales data visualization
+      const ctx2 = document.getElementById('myChart').getContext('2d')
+      const chartData = {{ monthly_data|safe }};
+      const labels = chartData.map(item => item.month);
+      const dataPoints = chartData.map(item => item.value);
+      new Chart(ctx2, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Monthly Sales(BDT)',
+                  data: dataPoints,
+                  backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                  borderColor: 'rgba(59, 130, 246, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Sales (৳)'
+                      }
+                  }
+              }
+          }
+      });
     </script>
   </body>
 </html>
