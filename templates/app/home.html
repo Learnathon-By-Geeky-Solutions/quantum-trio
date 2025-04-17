@@ -116,7 +116,7 @@
                     </p>
                 </div>
 
-                <form action="search" method="POST">
+                <form action="search" method="POST"> 
                     {% csrf_token %}
                     <div class="mt-6 flex flex-col md:flex-row items-center justify-center">
                         <input type="text" required placeholder="Enter your location or salon name" name="search"
@@ -166,74 +166,9 @@
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
                 Featured Salons and Parlours
             </h2>
-            <div class="relative">
-                <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
-                    <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
-                        <button class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                            onclick="scrollCarousel('carousel-3', -300)"
-                            onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', -300); event.preventDefault(); }"
-                            aria-label="Scroll left">
-                            <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
-                                class="w-8 h-8 opacity-75 hover:opacity-100" />
-                        </button>
-                    </div>
-                    <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-3">
-                        <button class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                            onclick="scrollCarousel('carousel-3', 300)"
-                            onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-                            aria-label="Scroll right">
-                            <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
-                                class="w-8 h-8 opacity-75 hover:opacity-100" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        const recommendations = [
-            {% for shop in shops %}
-        {
-            title: "{{ shop.shop_name|escapejs }}",
-                rating: "{{ shop.shop_rating }}",
-                    reviews: "{{ shop.shop_customer_count }}",
-                        location: "{{ shop.shop_city|escapejs }}",
-                            category: "{{ shop.category|escapejs }}",
-                                image: "{% static 'app/image/shop/' %}{{ shop.image }}",
-                                    link: "salon-profile?shop_id={{ shop.id }}",
-                    },
-        {% endfor %}
-            ];
-
-        const carousel = document.getElementById("carousel-3");
-
-        recommendations.forEach((recommendation) => {
-            const card = document.createElement("a");
-            card.href = recommendation.link;
-            card.className =
-                "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
-
-            card.innerHTML = `
-                     <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
-                     <div class="p-4 cards">
-                         <h3 class="text-lg font-semibold">${recommendation.title}</h3>
-                         <p class="mt-2 text-sm text-gray-600">
-                             <span class="font-bold text-yellow-500">${recommendation.rating} &#9733;</span>
-                             (${recommendation.reviews} reviews)
-                         </p>
-                         <p class="mt-2 text-sm text-gray-600">${recommendation.location}</p>
-                         <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
-                     </div>
-                 `;
-            carousel.appendChild(card);
-        });
-
-        function scrollCarousel(carouselId, scrollAmount) {
-            const carousel = document.getElementById(carouselId);
-            carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
-        }
-    </script>
+            {% comment %} The rest of the code is included  {% endcomment %}
+            {% include "app/shops.html" %}
+    {% comment %} end of the section  {% endcomment %}
 
     <div class="container mx-auto px-6 mb-12">
         <!-- Popular Services -->

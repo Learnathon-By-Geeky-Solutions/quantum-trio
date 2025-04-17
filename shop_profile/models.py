@@ -60,7 +60,7 @@ class ShopProfile(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Other', 'Other'),
+        ('Other', 'Other'), 
     ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="shop_profile")
     shop_name = models.CharField(max_length=255)
@@ -124,7 +124,7 @@ class ShopWorker(models.Model):
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
      
-class ShopService(models.Model):
+class ShopService(models.Model): 
     shop = models.ForeignKey(ShopProfile, related_name="shopservice", on_delete=models.CASCADE)  # Shop providing the service
     item = models.ForeignKey(Item, related_name="shopservices", on_delete=models.CASCADE)  # Service provided by the shop
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Price of the service at this shop (could be different per shop)

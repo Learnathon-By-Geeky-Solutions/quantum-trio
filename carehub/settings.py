@@ -164,3 +164,12 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 AUTH_USER_MODEL = "shop_profile.MyUser"
+# this is to show the message in console that will be used when we need debugging
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rakib1551p@gmail.com'
+EMAIL_HOST_PASSWORD = config('DJANGO_EMAIL_KEY',default="test-secret-key-unsafe-for-production")  # user this 'osdd eyfn pfig kadn' as key is env variable
+DEFAULT_FROM_EMAIL = 'CareHubBD <rakib1551p@gmail.com>'

@@ -2,54 +2,62 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worker update</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule update</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    
+
     <style>
-    
-        form {
-            width: 700px;
-        }
-        #workerslist {
-            position: relative;
-            height: 600px;
-            width: 700px;
-            margin: 50px 0 0 0;
-
-        }
-
-        #addWorkerModal {
-            padding: 20px;
-        }
-
-        #workerForm {
-            width: 400px;
-        }
+      form {
+        width: 700px;
+      }
+      #workerslist {
+        position: relative;
+        height: 600px;
+        width: 700px;
+        margin: 50px 0 0 0;
+      }
+      
+      #addWorkerModal {
+        padding: 20px;
+      }
+      
+      #workerForm {
+        width: 400px;
+      }
     </style>
-</head>
+  </head>
 
-<body class="bg-gray-100">
-  {% include "app/salon_dashboard/header.html" %}
-  
-  <section class="flex flex-col md:flex-row min-h-screen">
-      {% include "app/salon_dashboard/sidebar.html" %}
-   
+  <body class="bg-gray-100">
+    {% include 'app/salon_dashboard/header.html' %}
+
+    <section class="flex flex-col md:flex-row min-h-screen">
+      {% include 'app/salon_dashboard/sidebar.html' %}
+
       <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-          <div class="main-content p-4 flex-1">
-            <form action="submit" method="POST" class="bg-white p-6 rounded shadow-md w-full">
-              {% csrf_token %}
-              <h2 class="text-2xl font-bold text-center mb-4">Update Your Schedule</h2>
-              {% include "app/salon_dashboard/schedule_set.html" %}
-          </form>
-          </div>
+        <div class="main-content p-4 flex-1">
+            <form action="" method="POST" class="bg-white p-6 rounded shadow-md w-full">
+                {% csrf_token %}
+                {% comment %} {% include "app/salon_dashboard/schedule_set.html" %} {% endcomment %}
+                <h2 class="text-2xl font-bold text-center mb-4">Update Your Schedule</h2>
+            
+                {% for day, times in schedule_dict.items %}
+                    <div class="slot mb-2 flex items-center">
+                        <p class="w-1/4 font-medium">{{ day }}</p>
+                            <input type="time" name="schedule[{{ day }}][start]" class="block w-1/2 p-2 border rounded mb-2 mr-2" value="{{ times.start }}" />
+                            <input type="time" name="schedule[{{ day }}][end]" class="block w-1/2 p-2 border rounded mb-2" value="{{ times.end }}" />
+                        
+                    </div>
+                {% endfor %}
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Update Schedule</button>
+            </form>
+            
+        </div>
       </div>
-  </section>
+    </section>
 
-<script src="{% static 'app/js/update_schedule.js' %}"></script>
-</body>
+    <script src="{% static 'app/js/update_schedule.js' %}"></script>
+  </body>
 </html>

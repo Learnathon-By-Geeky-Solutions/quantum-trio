@@ -4,7 +4,7 @@ from django import views
 from carehub import settings
 from my_app import views
 from django.conf.urls.static import static
-
+from django.contrib.auth import views as auth_views
 urlpatterns = [ 
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
@@ -24,6 +24,12 @@ urlpatterns = [
     path('select_user', views.select_user_type,name='select_user'),
     path('login', views.log_in,name='login'),
     path('logout',views.log_out,name='logout'),
+    
+    #For resetting password
+    path('reset_password/', auth_views.PasswordResetView.as_view(), name='reset_password'),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset_password_complete/', views.success_reset_password, name='password_reset_complete'),
     
     path('contact', views.contact_us,name='contact'),
     path('about', views.about_us,name='about'),

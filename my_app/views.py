@@ -8,7 +8,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 # use this to import any data from database
-from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub
+from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub,Contact
 from shop_profile.models import ShopProfile, ShopWorker, ShopService
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 temp_user=get_user_model()
-# Create your views here.
+# Create your views here. 
 def home(request):
     if request.method != 'GET':
         # Return a 405 Method Not Allowed response for any non-GET requests
@@ -101,13 +101,15 @@ def log_in(request):
                 
             else:
                 print('Admin')  
+                return redirect('home')
         else:
             print('invalid username')
             error = "Invalid email or password"
             user_type = 'customer'  
 
     return render(request, 'app/login_signup/login.html', {'type': user_type, 'message': error})
-
+def success_reset_password():
+    return HttpResponse("Password reset successful. This is a test response.")
 
 def log_out(request):
     logout(request)
@@ -135,8 +137,24 @@ def shop_profile(request):
              "shop_services": service,
              "shop_workers": workers
         })
-
+@csrf_protect
 def contact_us(request):
+    if request.method=="POST":
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        subject=request.POST.get('subject')
+        message=request.POST.get('message')
+        try:
+            Contact.objects.create(
+                name=name,
+                email=email,
+                subject=subject,
+                message=message
+            )
+            messages.success(request, "Your message has been sent successfully!")  # optional
+        except Exception as e:
+            messages.error(request, f"Something went wrong: {str(e)}") 
+        print(name,email,subject,message)
     return render(request, 'app/contact_us.html')
 
 def about_us(request):
@@ -149,7 +167,50 @@ def terms_conditions(request):
     return render(request, 'app/terms_conditions.html')
 
 def search(request):
-    return render(request, 'app/search.html')
+    shops=location_based=items=service_based = []
+    keyword = ''
+    if request.method == "POST":
+        keyword = request.POST.get('search', '').strip()
+        if keyword:
+            # Based on name, title and info only
+            shops = ShopProfile.objects.filter(
+                Q(shop_name__icontains=keyword) |
+                Q(shop_title__icontains=keyword) |
+                Q(shop_info__icontains=keyword)
+            )
+            
+            # Based on location 
+            # If the keyword matches with any shops location
+            location_based = ShopProfile.objects.filter(
+                Q(shop_state__icontains=keyword) |
+                Q(shop_city__icontains=keyword) |
+                Q(shop_area__icontains=keyword) |
+                Q(shop_landmark_1__icontains=keyword)|
+                Q(shop_landmark_2__icontains=keyword)|
+                Q(shop_landmark_3__icontains=keyword)|
+                Q(shop_landmark_4__icontains=keyword)|
+                Q(shop_landmark_5__icontains=keyword)
+            ).distinct()
+            print(location_based)
+            # Based on service 
+            # If the keyword matches with shops service 
+            service_based = ShopProfile.objects.filter(
+                shopservice__item__name__icontains=keyword
+            ).distinct()
+            
+            # Based on item
+            # If the keyword matches with any item 
+            items = Item.objects.filter(
+                name__icontains=keyword
+            ).distinct()
+            
+    return render(request, 'app/search.html', {
+        'keyword': keyword,
+        'shops': shops,
+        'location_based':location_based,
+        'service_based':service_based,
+        'items':items        
+    })
 
 def service(request):
     services=Service.objects.all()

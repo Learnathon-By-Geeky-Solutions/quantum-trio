@@ -14,11 +14,14 @@ import json
 
 User = get_user_model()
 
+TEST_PASS = "testpass123"
+TEST_EMAIL1 = "shop@example.com"   # TEST_EMAIL1
+TEST_EMAIL2 = "john@example.com"   # TEST_EMAIL2
 class ShopProfileTests(TestCase):
     def setUp(self):
         # Create a test user and shop profile
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(
             user=self.user,
@@ -34,7 +37,7 @@ class ShopProfileTests(TestCase):
         """Test that a ShopProfile is created correctly."""
         self.assertEqual(self.shop.shop_name, "Test Shop")
         self.assertEqual(self.shop.shop_rating, 4.5)
-        self.assertEqual(self.shop.user.email, "shop@example.com")
+        self.assertEqual(self.shop.user.email, TEST_EMAIL1)
         self.assertTrue(self.shop.status)
 
     def test_update_rating_valid(self):
@@ -57,11 +60,11 @@ class ShopProfileTests(TestCase):
 class ShopGalleryTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.client = Client()
-        self.client.login(email="shop@example.com", password="testpass123")
+        self.client.login(email=TEST_EMAIL1, password=TEST_PASS)
 
     def test_create_gallery_image(self):
         """Test creating a gallery image."""
@@ -84,35 +87,23 @@ class ShopGalleryTests(TestCase):
 class ShopWorkerTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
         self.worker = ShopWorker.objects.create(
             name="John Doe",
-            email="john@example.com",
+            email=TEST_EMAIL2,
             phone="1234567890",
             experience=5,
             shop=self.shop
         )
         self.worker.expertise.add(self.item)
 
-    # def test_worker_creation(self):
-    #     """Test that a ShopWorker is created correctly."""
-    #     self.assertEqual(self.worker.name, "John Doe")
-    #     self.assertEqual(self.worker.experience, 5)
-    #     self.assertEqual(self.worker.shop, self.shop)
-    #     self.assertIn(self.item, self.worker.expertise.all())
-
-    # def test_worker_str(self):
-    #     """Test the string representation of ShopWorker."""
-    #     self.assertEqual(str(self.worker), "John Doe (5 years experience)")
-
-
 class ShopServiceTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
@@ -120,21 +111,10 @@ class ShopServiceTests(TestCase):
             shop=self.shop, item=self.item, price=25.00
         )
 
-    # def test_service_creation(self):
-    #     """Test that a ShopService is created correctly."""
-    #     self.assertEqual(self.service.shop, self.shop)
-    #     self.assertEqual(self.service.item, self.item)
-    #     self.assertEqual(self.service.price, 25.00)
-
-    # def test_service_str(self):
-    #     """Test the string representation of ShopService."""
-    #     self.assertEqual(str(self.service), "Test Shop - Haircut")
-
-
 class ShopReviewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.review = ShopReview.objects.create(
@@ -151,7 +131,7 @@ class ShopReviewTests(TestCase):
 class ShopScheduleTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.schedule = ShopSchedule.objects.create(
@@ -176,7 +156,7 @@ class ShopScheduleTests(TestCase):
 class ShopNotificationTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email="shop@example.com", password="testpass123", user_type="shop"
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.notification = ShopNotification.objects.create(
@@ -199,123 +179,29 @@ class ShopNotificationTests(TestCase):
 
 
 class ViewTests(TestCase):
-    TEST_PASSWORD = "testpass123"
+    TEST_PASS = TEST_PASS
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            email="shop@example.com", password=self.TEST_PASSWORD, user_type="shop"
+            email=TEST_EMAIL1, password=self.TEST_PASS, user_type="shop"
         )
         self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
         self.item = Item.objects.create(name="Haircut", description="Basic haircut")
         self.worker = ShopWorker.objects.create(
-            name="John Doe", email="john@example.com", phone="1234567890", shop=self.shop
+            name="John Doe", email=TEST_EMAIL2, phone="1234567890", shop=self.shop
         )
-        self.client.login(email="shop@example.com", password=self.TEST_PASSWORD)
+        self.client.login(email=TEST_EMAIL1, password=self.TEST_PASS)
 
-    # def test_profile_view(self):
-    #     """Test the profile view."""
-    #     response = self.client.get(reverse("shop_profile"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
-
-    # def test_appointments_view(self):
-    #     """Test the appointments view."""
-    #     response = self.client.get(reverse("appointments"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/appointments.html")
-
-    # def test_slots_view(self):
-    #     """Test the slots view."""
-    #     response = self.client.get(reverse("shop_booking_slots"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/booking-slots.html")
-
-    # def test_accept_booking(self):
-    #     """Test accepting a booking."""
-    #     booking = BookingSlot.objects.create(
-    #         user=self.user,
-    #         shop=self.shop,
-    #         worker=self.worker,
-    #         item=self.item,
-    #         date=date.today(),
-    #         time=time(10, 0),
-    #         status="pending"
-    #     )
-    #     response = self.client.post(
-    #         reverse("accept_booking"),
-    #         json.dumps({"booking_id": booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     booking.refresh_from_db()
-    #     self.assertEqual(booking.status, "confirmed")
-
-    # def test_reject_booking(self):
-    #     """Test rejecting a booking."""
-    #     booking = BookingSlot.objects.create(
-    #         user=self.user,
-    #         shop=self.shop,
-    #         worker=self.worker,
-    #         item=self.item,
-    #         date=date.today(),
-    #         time=time(10, 0),
-    #         status="pending"
-    #     )
-    #     response = self.client.post(
-    #         reverse("reject_booking"),
-    #         json.dumps({"booking_id": booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     booking.refresh_from_db()
-    #     self.assertEqual(booking.status, "rejected")
-
-    # def test_booking_details(self):
-    #     """Test retrieving booking details."""
-    #     booking = BookingSlot.objects.create(
-    #         user=self.user,
-    #         shop=self.shop,
-    #         worker=self.worker,
-    #         item=self.item,
-    #         date=date.today(),
-    #         time=time(10, 0),
-    #         status="pending"
-    #     )
-    #     ShopService.objects.create(shop=self.shop, item=self.item, price=25.00)
-    #     response = self.client.post(
-    #         reverse("booking_details"),
-    #         json.dumps({"booking_id": booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertJSONEqual(
-    #         response.content,
-    #         {
-    #             "success": True,
-    #             "details": {
-    #                 "full_name": "",
-    #                 "item_name": "Haircut",
-    #                 "item_price": "25.0",
-    #                 "booked_time": booking.time.strftime("%I:%M %p"),
-    #                 "booked_date": booking.date.strftime("%d-%m-%Y"),
-    #                 "status": "pending",
-    #                 "booking_time": booking.time.strftime("%I:%M %p")
-    #             }
-    #         }
-    #     )
-
-    # def test_add_worker_post(self):
-    #     """Test adding a worker via POST request."""
-    #     data = {
-    #         "name": "Jane Doe",
-    #         "email": "jane@example.com",
-    #         "phone": "0987654321",
-    #         "experience": "3",
-    #         "expertise": [str(self.item.id)]
-    #     }
-    #     response = self.client.post(reverse("add_worker"), data)
-    #     self.assertEqual(response.status_code, 302)  # Redirects to shop_staffs
-    #     self.assertEqual(ShopWorker.objects.count(), 1)
-    #     worker = ShopWorker.objects.first()
-    #     self.assertEqual(worker.name, "Jane Doe")
-    #     self.assertEqual(worker.expertise.count(), 1)
+class ViewTests1(TestCase):
+    TEST_PASS = TEST_PASS
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL1, password=self.TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
+        self.item = Item.objects.create(name="Haircut", description="Basic haircut")
+        self.worker = ShopWorker.objects.create(
+            name="John Doe", email=TEST_EMAIL2, phone="1234567890", shop=self.shop
+        )
+        self.client.login(email=TEST_EMAIL1, password=self.TEST_PASS)

@@ -99,7 +99,8 @@ def available_slots(request):
     booked_times = BookingSlot.objects.filter(
         shop=shop_id,
         worker=worker_id,
-        date=date_obj
+        date=date_obj,
+        status="pending"
     ).values_list('time', flat=True)
 
     # Filter out booked times

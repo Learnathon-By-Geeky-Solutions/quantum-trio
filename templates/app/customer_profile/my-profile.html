@@ -2,7 +2,7 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-
+ 
 <head>
     <title>My Profile</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
@@ -23,7 +23,7 @@
                 <!-- Left Column: Profile Picture + Button -->
                 <div class="flex flex-col items-center md:w-1/3 p-4">
                     <!-- Profile Image with Demo Image -->
-                    <img id="profileImage" src="https://via.placeholder.com/150" alt=""
+                    <img id="profileImage" src="{{ user.user_profile.profile_picture.url|default:'/media/profile_pictures/default.jpg' }}" alt="Profile"
                         class="w-40 h-40 rounded-full object-cover mb-4">
                 
                     <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
@@ -131,23 +131,23 @@
         document.getElementById('retype_password').addEventListener('input', function () {
             const password = document.getElementById('password').value;
             const retypePassword = this.value;
-
             if (password !== retypePassword) {
                 this.setCustomValidity('Passwords do not match');
             } else {
                 this.setCustomValidity('');
             }
         });
-
+        
+        // Optional: recheck when the original password changes
         document.getElementById('password').addEventListener('input', function () {
-            const password = this.value;
-            const retypePassword = document.getElementById('retype_password').value;
-            if (password !== retypePassword) {
-                this.setCustomValidity('Passwords do not match');
-            } else {
-                this.setCustomValidity('');
+            const retypePasswordField = document.getElementById('retype_password');
+            
+            // Trigger re-validation if the user has already typed something
+            if (retypePasswordField.value.length > 0) {
+                retypePasswordField.dispatchEvent(new Event('input'));
             }
         });
+        
 
         document.getElementById('editEmail').addEventListener('input', function () {
             var emailField = document.getElementById('editEmail');

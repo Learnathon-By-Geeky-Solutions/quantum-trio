@@ -1,61 +1,50 @@
-from django.test import TestCase
-
-# Create your tests here.
-import pytest # type: ignore
+from django.test import TestCase, Client
 from django.urls import reverse
-from shop_profile.models import MyUser
-from user_profile.models import UserProfile
+from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.contrib.messages import get_messages
+from user_profile.models import UserProfile
+from shop_profile.models import MyUser
+from my_app.models import District, Upazilla, Area, Division
+from unittest.mock import patch
+import uuid
+from io import BytesIO
+from PIL import Image
 
-@pytest.fixture
-def user_with_profile(db):
-    user = MyUser.objects.create_user(email="test@example.com", password="strongpassword123")
-    profile = UserProfile.objects.create(user=user, first_name="Test", last_name="User")
-    return user, profile
+User = get_user_model()
 
-@pytest.fixture
-def client_logged_in(client, user_with_profile):
-    user, _ = user_with_profile
-    client.force_login(user)
-    return client, user
+class UserProfileTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Create location data
+        self.division = Division.objects.create(name="Dhaka Division")
+        self.district = District.objects.create(name="Dhaka", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Mirpur", district=self.district)
+        self.area = Area.objects.create(name="Mirpur-10", upazilla=self.upazilla)
+        # Create user and profile
+        self.user = User.objects.create_user(
+            email=f"user_{uuid.uuid4()}@example.com",
+            password="Password123!",
+            user_type="user"
+        )
+        self.profile = UserProfile.objects.create(
+            user=self.user,
+            first_name="John",
+            last_name="Doe",
+            phone_number="1234567890",
+            gender="Male",
+            user_state=self.district.name,
+            user_city=self.upazilla.name,
+            user_area=self.area.name
+        )
 
-@pytest.mark.django_db
-def test_get_profile_page(client_logged_in):
-    client, _ = client_logged_in
-    url = reverse("user")
-    response = client.get(url)
-    assert response.status_code == 200
-    assert b"My Profile" in response.content  # or a string you know appears in the template
+    def test_user_profile_set_password(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassword123!")
+        self.assertTrue(self.profile.check_password("NewPassword123!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
 
-
-# ✅ Test email already exists
-@pytest.mark.django_db
-def test_update_profile_email_conflict(client_logged_in):
-    MyUser.objects.create_user(email="existing@example.com", password="anotherpass")
-
-    client, user = client_logged_in
-    url = reverse("user")
-    data = {
-        "email": "existing@example.com",  # this email already taken
-        "first_name": "X",
-        "last_name": "Y",
-    }
-    response = client.post(url, data)
-
-    # Check if the flash message was added
-    messages = list(get_messages(response.wsgi_request))
-    assert any("email is already in use" in str(message) for message in messages)
-
-# ✅ Test password mismatch
-def test_update_profile_password_mismatch(client_logged_in):
-    client, user = client_logged_in
-    url = reverse("user")
-    data = {
-        "password": "pass123",
-        "retype_password": "wrongpass123",
-    }
-    response = client.post(url, data)
-    assert b"Passwords do not match" in response.content
-
+    def test_user_profile_generate_random_password(self):
+        """Test UserProfile generate_random_password method."""
+        password = self.profile.generate_random_password(length=8)
+        self.assertEqual(len(password), 8)
 

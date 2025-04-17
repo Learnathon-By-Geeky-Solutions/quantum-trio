@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from datetime import datetime, date, timedelta, timezone as tz
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -17,17 +18,25 @@ from django.db.models.functions import Concat, Cast
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
 from my_app.models import Item
-from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification
+from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule
+from my_app.models import District,Upazilla,Service
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 
-user = get_user_model()
 # variable
+user = get_user_model()
 booking_not_found = "Booking not found."
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET", "POST"])
 def profile(request):
     return render(request, "app/salon_dashboard/index.html")
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET", "POST"])
 def gallery(request):
     message = ""
     if request.method == "POST":
@@ -52,7 +61,9 @@ def gallery(request):
         {"image": img, "message": message},
     )
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def calender(request):
     month = datetime.now().month
     year = datetime.now().year
@@ -73,28 +84,9 @@ def calender(request):
         {"cal": cal, "month": month, "year": year},
     )
 
-
-def appointments(request):
-    worker = ShopWorker.objects.filter(shop=request.user.shop_profile)
-    shop_worker = []
-    for i in worker:
-        temp = {
-            "worker": i,
-            "booking_slots": BookingSlot.objects.filter(
-                worker=i, status="pending"
-            ).order_by("-created_at"),
-        }
-        shop_worker.append(temp)
-
-    for i in shop_worker:
-        print(i["worker"])
-        print(i["booking_slots"])
-    print(worker)
-    return render(
-        request, "app/salon_dashboard/appointments.html", {"shop_worker": shop_worker}
-    )
-
- 
+@csrf_protect
+@login_required
+@require_http_methods(["GET", "POST"])
 def slots(request):
     today = date.today()
     if request.method == "GET" and request.GET.get("date") is not None:
@@ -112,14 +104,13 @@ def slots(request):
     current_date = updated_time.date()
     current_datetime = datetime.combine(current_date, current_time)
     current_datetime = current_datetime.replace(tzinfo=tz.utc)
-
     worker = ShopWorker.objects.filter(shop=request.user.shop_profile)
     shop_worker = []
     for i in worker:
         temp = {
             "worker": i,
             "booking_slots": BookingSlot.objects.filter(worker=i, date=today)
-            .exclude(Q(status="pending") | Q(status="canceled"))
+            .exclude(Q(status="canceled"))
             .annotate(
                 booking_datetime=ExpressionWrapper(
                     Cast(
@@ -152,54 +143,61 @@ def slots(request):
         {"shop_worker": shop_worker, "today": current_datetime},
     )
 
-"""Accept the booking"""
+"""Cancel booking"""
 @csrf_protect
-def accept_booking(request):
-    print("check")
-    if request.method == "POST":
-        data = json.loads(request.body)
-        booking_id = data.get("booking_id")
-        try:
-            booking = BookingSlot.objects.get(id=booking_id)
-            booking.status = "confirmed"
-            booking.save()
-            return JsonResponse({"success": True, "message": "Booking accepted."})
-        except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": booking_not_found})
-
-
-"""Reject booking"""
-@csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def reject_booking(request):
     if request.method == "POST":
         data = json.loads(request.body)
         booking_id = data.get("booking_id")
+
         try:
             booking = BookingSlot.objects.get(id=booking_id)
-            booking.status = "rejected"
-            booking.save()
-            return JsonResponse({"success": True, "message": "Booking rejected."})
-        except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": booking_not_found})
+            
+            # Combine date and time into a single datetime object
+            booking_datetime = datetime.combine(booking.date, booking.time)
+            booking_datetime = make_aware(booking_datetime)  # make timezone aware
+            print("booking time:",booking_datetime)
+            # Check if less than 24 hours remaining
+            now = datetime.now().astimezone()
+            print("Now: ",now)
+            print("diff: ",booking_datetime - now)
+            if booking_datetime - now < timedelta(hours=30): #we added extra 6 hours because of our timezone is +6:00 and the server time is 6 hours fast
+                return JsonResponse({
+                    "success": False,
+                    "message": "Cannot cancel booking within 24 hours of the appointment time."
+                })
 
+            booking.status = "canceled"
+            booking.save()
+            return JsonResponse({"success": True, "message": "Booking canceled."})
+
+        except BookingSlot.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
 
 """retrieval of booking-details of a booking"""
 
 @csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def booking_details(request):
     if request.method == "POST":
         data = json.loads(request.body)
         booking_id = data.get("booking_id")
         try:
             booking = BookingSlot.objects.get(id=booking_id)
-            price = ShopService.objects.get(shop=booking.shop, item=booking.item)
+            service = ShopService.objects.get(shop=booking.shop, item=booking.item)
+            print(service)
             return JsonResponse(
                 {
                     "success": True,
                     "details": {
-                        "full_name": booking.user.first_name,
+                        "full_name": f"{booking.user.first_name} {booking.user.last_name}",
+                        "shop_name": booking.shop.shop_name,
+                        "worker": booking.worker.name,
                         "item_name": booking.item.name,
-                        "item_price": str(price),
+                        "item_price": str(service.price),
                         "booked_time": booking.time.strftime("%I:%M %p"),
                         "booked_date": booking.date.strftime("%d-%m-%Y"),
                         "status": booking.status,
@@ -210,8 +208,9 @@ def booking_details(request):
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
 
-
 @csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def update_status(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -234,7 +233,6 @@ def update_status(request):
                 # Only update the status if the current time is after the booked time
                 booking.shop_end = True
                 booking.save()
-
                 return JsonResponse(
                     {
                         "success": True,
@@ -254,11 +252,15 @@ def update_status(request):
         except BookingSlot.DoesNotExist:
             return JsonResponse({"success": False, "message": booking_not_found})
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def message(request):
     return render(request, "app/salon_dashboard/message.html")
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def staffs(request):
     if request.method == "POST":
         worker_id = request.POST.get("id")
@@ -301,7 +303,9 @@ def staffs(request):
         {"shop_worker": workers, "items": items},
     )
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def add_worker(request):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -341,7 +345,9 @@ def add_worker(request):
         return redirect("shop_staffs")
     return render(request, "staffs")
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def customers(request):
     booking = BookingSlot.objects.filter(shop=request.user.shop_profile).order_by(
         "-date", "-time"
@@ -349,11 +355,15 @@ def customers(request):
     print(booking)
     return render(request, "app/salon_dashboard/customers.html", {"bookings": booking})
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def review(request):
     return render(request, "app/salon_dashboard/reviews.html")
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def notification(request):
     notification = ShopNotification.objects.filter(
         shop=request.user.shop_profile
@@ -364,28 +374,98 @@ def notification(request):
         {"notifications": notification},
     )
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
 def setting(request):
     return render(request, "app/salon_dashboard/settings.html")
 
-
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
 def basic_update(request):
-    return render(request, "app/salon_dashboard/update_basic.html")
+    shop=request.user.shop_profile
+    user=request.user
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    if request.method == 'POST':
+        try:
+            # Get updated data from the form
+            shop.shop_name = request.POST.get('shop_name', shop.shop_name)
+            shop.shop_title = request.POST.get('shop_title', shop.shop_title)
+            shop.shop_info = request.POST.get('shop_info', shop.shop_info)
+            shop.shop_owner = request.POST.get('shop_owner', shop.shop_owner)
+            shop.mobile_number = request.POST.get('mobile_number', shop.mobile_number)
+            shop.shop_website = request.POST.get('shop_website', shop.shop_website)
+            shop.gender = request.POST.get('gender', shop.gender)
+            shop.status = request.POST.get('status', shop.status) == 'true'
+            shop.shop_state = request.POST.get('shop_state', shop.shop_state)
+            shop.shop_city = request.POST.get('shop_city', shop.shop_city)
+            shop.shop_area = request.POST.get('shop_area', shop.shop_area)
+            
+            # Landmarks (optional fields)
+            shop.shop_landmark_1 = request.POST.get('landmark_1', shop.shop_landmark_1)
+            shop.shop_landmark_2 = request.POST.get('landmark_2', shop.shop_landmark_2)
+            shop.shop_landmark_3 = request.POST.get('landmark_3', shop.shop_landmark_3)
+            shop.shop_landmark_4 = request.POST.get('landmark_4', shop.shop_landmark_4)
+            shop.shop_landmark_5 = request.POST.get('landmark_5', shop.shop_landmark_5)
 
+            # Shop image (if uploaded)
+            if 'shop_picture' in request.FILES:
+                shop.shop_picture = request.FILES['shop_picture'] 
+            shop.save()
+            messages.success(request, "Shop profile updated successfully.")
+            print("Done")
 
-def schedule_update(request):
-    days_of_week = [
-        "Saturday",
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-    ]
+        except Exception as e:
+            messages.error(request, f"Failed to update shop: {str(e)}")
+            print("error2")
 
+    else:
+        print("Error1")
+        
+    print(shop.gender)
+    return render(request, "app/salon_dashboard/update_basic.html",{'user':user,'shop':shop,'district':list(district),'Upazilla':list(upazilla)})
+
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
+def services_update(request):
+    service=Service.objects.all().values('id', 'name')
     return render(
         request,
-        "app/salon_dashboard/update_schedule.html",
-        {"days_of_week": days_of_week},
+        "app/salon_dashboard/update-services.html",
+        {'services':service}
     )
+
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
+def schedule_update(request):
+    shop=request.user.shop_profile
+    if request.method == 'POST':
+        schedule_data = request.POST  # QueryDict
+        for day in ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+            start_time = schedule_data.get(f"schedule[{day}][start]", "").strip()
+            end_time = schedule_data.get(f"schedule[{day}][end]", "").strip()
+            # Only save the day if it has valid start or end time
+            if start_time < end_time:
+                shop_schedule = ShopSchedule.objects.get(shop=shop, day_of_week=day)
+                shop_schedule.start = start_time
+                shop_schedule.end = end_time
+                shop_schedule.save()
+                print("ok")
+            else:
+                print("Not Valid")
+    schedule=ShopSchedule.objects.filter(shop=shop)
+    schedule_dict = {
+        s.day_of_week: {
+            'start': s.start.strftime('%H:%M'),  # Convert to string in 'HH:MM' format
+            'end': s.end.strftime('%H:%M')       # Convert to string in 'HH:MM' format
+        }
+        for s in schedule
+    }   
+    return render(request, 'app/salon_dashboard/update_schedule.html', {
+        'days_of_week':{'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'},
+        'schedule_dict':schedule_dict  # unpack into template context
+    })

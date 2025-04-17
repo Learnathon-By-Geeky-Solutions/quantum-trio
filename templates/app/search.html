@@ -2,692 +2,124 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
-  <head>
-    
-    <title>Search results</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
-    <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-	  {% tailwind_css %}
-    
-    <style>
-      #imagesize:hover {
-        overflow: hidden;
-        border-radius: 8px;
-        transition: transform 0.3s ease;
-        transform: scale(1.1);
-      }
-    
-      .sha {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-          rgba(0, 0, 0, 0.23) 0px 3px 6px;
-      }
-      .cards {
-        border: 2px solid #ccc;
-      }
-  </style>
-  </head>
-
-  <body class="bg-gray-100">
-   
-   {% include "app/navbar.html" %}
-    
-    <section class="py-6 bg-gray-100">
-      <div>&nbsp;</div>
-  
-    </section>
-   
-    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
-      Search results 
-    </h2>
-
-    <section class="py-12">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
-          Salons and Parlours
-        </h2>
-        <div class="relative">
-          <div
-            id="carousel-1"
-            class="carousel flex space-x-4 overflow-x-auto scroll-smooth"
-          >
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none cards"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/1.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 3.5 &#9733;</span
-                  >
-                  review:10
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka,Notun Bazar</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none cards"
-            >
-              <img
-                id="imagesize "
-                src="{% static 'app/image/shop/2.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 3.5 &#9733;</span
-                  >
-                  review:10
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka,Notun Bazar</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none cards"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/3.avif' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 3.5 &#9733;</span
-                  >
-                  review:10
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka,Notun Bazar</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none cards"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/4.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 3.6 &#9733;</span
-                  >
-                  review:10
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka,Notun Bazar</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none cards"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/5.webp' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 3.5 &#9733;</span
-                  >
-                  review:10
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka,Notun Bazar</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-          </div>
-
-          <!-- Left Arrow -->
-          <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-1">
-            <button
-              class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-1', -300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-1', -300); event.preventDefault(); }"
-              aria-label="Scroll left"
-            >
-              <img
-                src="{% static 'app/image/icon/left-arrow1.png' %}"
-                alt="Scroll left"
-                class="w-8 h-8 opacity-100"
-              />
-            </button>
-          </div>
-
-          <!-- Right Arrow -->
-          <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-1">
-            <button
-              class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onclick="scrollCarousel('carousel-1', 300)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-1', 300); event.preventDefault(); }"
-              aria-label="Scroll right"
-            >
-              <img
-                src="{% static 'app/image/icon/right-arrow.png' %}"
-                alt="Scroll right"
-                class="w-8 h-8 opacity-100"
-              />
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </section>
-    <section class="py-12">
-      <div class="container mx-auto px-4">
-        
-        <div class="flex items-center mb-8">
-          <label for="sort" class="mr-4 text-gray-800 font-semibold"
-            >Sort by:</label
-          >
-          <select
-            id="sort"
-            class="form-select"
-            onchange="sortRecommendations()"
-          >
-            <option value="rating-asc">Rating: Low to High</option>
-            <option value="rating-desc">Rating: High to Low</option>
-        
-          </select>
-        </div>
-
-        <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
-          Based on location
-        </h2>
-        <div class="relative">
-          <div
-            id="carousel-2"
-            class="carousel flex space-x-4 overflow-x-auto scroll-smooth"
-          >
-            <a
-              href=""
-              class="recommendation-item block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img id="imagesize"
-                src="{% static 'app/image/shop/2.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating:3.9 &#9733;</span
-                  >
-                  review:15
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Gopalganj, 100ft</p>
-                <p class="mt-2 text-sm text-gray-600">Regular</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="recommendation-item block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/1.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating:3.7 &#9733;</span
-                  >
-                  review:15
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Gopalganj, 100ft</p>
-                <p class="mt-2 text-sm text-gray-600">Regular</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="recommendation-item block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/3.avif' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating:3.7 &#9733;</span
-                  >
-                  review:15
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Gopalganj, 100ft</p>
-                <p class="mt-2 text-sm text-gray-600">Regular</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="recommendation-item block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/4.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating:3.7 &#9733;</span
-                  >
-                  review:15
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Gopalganj, 100ft</p>
-                <p class="mt-2 text-sm text-gray-600">Regular</p>
-              </div>
-            </a>
-          </div>
-          <!-- Left Arrow -->
-            <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-2">
-              <button
-                class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                onclick="scrollCarousel('carousel-2', -300)"
-                aria-label="Scroll left"
-              >
-                <img
-                  src="{% static 'app/image/icon/left-arrow1.png' %}"
-                  alt="Scroll left"
-                  class="w-8 h-8 opacity-100"
-                />
-              </button>
-            </div>
-
-            <!-- Right Arrow -->
-            <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-2">
-              <button
-                class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                onclick="scrollCarousel('carousel-2', 300)"
-                aria-label="Scroll right"
-              >
-                <img
-                  src="{% static 'app/image/icon/right-arrow.png' %}"
-                  alt="Scroll right"
-                  class="w-8 h-8 opacity-100"
-                />
-              </button>
-            </div>
-
-        </div>
-      </div>
-    </section>
-
-    <script>
-      function sortRecommendations() {
-        const sortOrder = document.getElementById("sort").value;
-        const container = document.getElementById("carousel-2");
-        const items = Array.from(
-          container.getElementsByClassName("recommendation-item")
-        );
-
-        items.sort((a, b) => {
-          const aRating = parseFloat(a.querySelector("span").textContent);
-          const bRating = parseFloat(b.querySelector("span").textContent);
-          const aReviews = parseInt(
-            a.querySelector("p:nth-child(3)").textContent.replace(/\D/g, ""),
-            10
-          );
-          const bReviews = parseInt(
-            b.querySelector("p:nth-child(3)").textContent.replace(/\D/g, ""),
-            10
-          );
-
-          if (sortOrder === "rating-asc") {
-            return aRating - bRating;
-          } else if (sortOrder === "rating-desc") {
-            return bRating - aRating;
-          } else if (sortOrder === "reviews-asc") {
-            return aReviews - bReviews;
-          } else if (sortOrder === "reviews-desc") {
-            return bReviews - aReviews;
+    <head>
+      <title>Search results</title>
+      <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      {% tailwind_css %}
+      
+      <style>
+          #imagesize:hover {
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            transform: scale(1.1);
           }
-          return 0;
-        });
-
-        container.innerHTML = "";
-        items.forEach((item) => container.appendChild(item));
-      }
-    </script>
-
-    <section class="py-12">
-      <div class="container mx-auto px-4">
         
-        <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
-          Based on provided services
+          .sha {
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+              rgba(0, 0, 0, 0.23) 0px 3px 6px;
+          }
+          .cards {
+            border: 2px solid #ccc;
+          }
+      </style>
+    </head>
+    <body class="bg-gray-100">
+    {% include "app/navbar.html" %}
+      <section class="py-6 bg-gray-100">
+          <div>&nbsp;</div>
+      </section>
+      <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
+            Search results for "{{keyword}}"
         </h2>
-        <div class="relative">
-          <div id="carousel-3" class="carousel flex space-x-4 overflow-x-auto scroll-smooth">
-            <a href="" class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/5.webp' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Your title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 4.1 &#9733;</span
-                  >
-                  review:12
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka, Badda</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
+
+        {% comment %} Saloon and parlour section here the user will be able to see if the search keyword is a shop name  {% endcomment %}
+        <section class="py-12">
+          <div class="container mx-auto px-4">
+              <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
+                  Matched saloon and parlours
+              </h2>
+              {% comment %} The rest of the code is included  {% endcomment %}
+              {% include "app/shops.html" %}
+
+        {% comment %} end of the section  {% endcomment %}
+        <section class="py-12">
+          <div class="container mx-auto px-4">
+              <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
+                  Matched Location of saloon and parlours
+              </h2>
+              <div class="relative">
+                <div id="carousel-4" class="carousel flex space-x-4 overflow-x-auto no-scrollbar">
+                    <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-4">
+                        <button class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                            onclick="scrollCarousel('carousel-4', -300)"
+                            onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-4', -300); event.preventDefault(); }"
+                            aria-label="Scroll left">
+                            <img src="{% static 'app/image/icon/left-arrow1.png' %}" alt="Scroll left"
+                                class="w-8 h-8 opacity-75 hover:opacity-100" />
+                        </button>
+                    </div>
+                    <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-4">
+                        <button class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
+                            onclick="scrollCarousel('carousel-4', 300)"
+                            onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-4', 300); event.preventDefault(); }"
+                            aria-label="Scroll right">
+                            <img src="{% static 'app/image/icon/right-arrow.png' %}" alt="Scroll right"
+                                class="w-8 h-8 opacity-75 hover:opacity-100" /> 
+                        </button>
+                    </div>
+                  </div>
               </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/4.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Your title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 4.1 &#9733;</span
-                  >
-                  review:12
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka, Badda</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/1.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Your title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 4.1 &#9733;</span
-                  >
-                  review:12
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka, Badda</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/4.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Your title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 4.1 &#9733;</span
-                  >
-                  review:12
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka, Badda</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
-            <a
-              href=""
-              class="block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none"
-            >
-              <img
-                id="imagesize"
-                src="{% static 'app/image/shop/2.jpg' %}"
-                alt=""
-                class="w-full h-48 object-cover"
-              />
-              <div class="p-4 cards">
-                <h3 class="text-lg font-semibold">Your title</h3>
-                <p class="mt-2 text-sm text-gray-600">
-                  <span class="font-bold text-yellow-500"
-                    >Rating: 4.1 &#9733;</span
-                  >
-                  review:12
-                </p>
-                <p class="mt-2 text-sm text-gray-600">Dhaka, Badda</p>
-                <p class="mt-2 text-sm text-gray-600">Premium</p>
-              </div>
-            </a>
           </div>
-          <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-3">
-        <button
-          class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-          onclick="scrollCarousel('carousel-3', -300)"
-          onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', -300); event.preventDefault(); }"
-          aria-label="Scroll left"
-        >
-          <img
-            src="{% static 'app/image/icon/left-arrow1.png' %}"
-            alt="Scroll left"
-            class="w-8 h-8 opacity-100"
-          />
-        </button>
-      </div>
-      <div
-        class="absolute inset-y-0 right-0 flex items-center"
-        id="rightBtn-3"
-      >
-        <button
-          class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-          onclick="scrollCarousel('carousel-3', 300)"
-          onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-3', 300); event.preventDefault(); }"
-          aria-label="Scroll right"
-        >
-          <img
-            src="{% static 'app/image/icon/right-arrow.png' %}"
-            alt="Scroll right"
-            class="w-8 h-8 opacity-100"
-          />
-        </button>
-        </div>
-
-        </div>
-      </div>
-    </section>
-    <section class="py-12">
-      <div class="container mx-auto px-4">
-       
-        <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
-          Based on services
-        </h2>
-        <div class="relative">
-          <div
-            id="carousel-4"
-            class="carousel flex space-x-4 overflow-x-auto scroll-smooth"
-          >
-            <div
-              class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards"
-            >
-              <a href="">
-                <div class="text-pink-600 text-5xl mb-4">
-                  <img style="width: 100px; height: 100px" src="image/shop/2.jpg" alt="✂️" />
-                </div>
-                ';
-                <h3 class="text-xl font-semibold">Hair services</h3>
-                <a href="https://www.youtube.com/watch?v=4U_AAGHzTok"
-                  >Stylish haircuts by professional stylists.</a
-                >
-              </a>
-            </div>
-            <div
-              class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards"
-            >
-              <a href="">
-                <div class="text-pink-600 text-5xl mb-4">
-                  <img style="width: 100px; height: 100px" src="image/shop/1.jpg" alt="✂️" />
-                </div>
-                ';
-                <h3 class="text-xl font-semibold">Hair services</h3>
-                <a href="https://www.youtube.com/watch?v=4U_AAGHzTok"
-                  >Stylish haircuts by professional stylists.</a
-                >
-              </a>
-            </div>
-            <div
-              class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards"
-            >
-              <a href="">
-                <div class="text-pink-600 text-5xl mb-4">
-                  <img style="width: 100px; height: 100px" src="image/shop/2.jpg" alt="✂️" />
-                </div>
-               
-                <h3 class="text-xl font-semibold">Hair services</h3>
-                <a href="https://www.youtube.com/watch?v=4U_AAGHzTok"
-                  >Stylish haircuts by professional stylists.</a
-                >
-              </a>
-            </div>
-            <div
-              class="text-center bg-white p-6 rounded-lg shadow-lg flex-none w-60 cards"
-            >
-              <a href="">
-                <div class="text-pink-600 text-5xl mb-4">
-                  <img style="width: 100px; height: 100px" src="image/shop/1.jpg" alt="✂️" />
-                </div>
-                
-                <h3 class="text-xl font-semibold">Hair services</h3>
-                <a href="https://www.youtube.com/watch?v=4U_AAGHzTok"
-                  >Stylish haircuts by professional stylists.</a
-                >
-              </a>
-            </div>
-          </div>
-          <div class="absolute inset-y-0 left-0 flex items-center" id="leftBtn-4">
-            <button
-                class="scroll-arrow left-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                onclick="scrollCarousel('carousel-4', -300)"
-                onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-4', -300); event.preventDefault(); }"
-                aria-label="Scroll left"
-            >
-                <img
-                    src="{% static 'app/image/icon/left-arrow1.png' %}"
-                    alt="Scroll left"
-                    class="w-8 h-8 opacity-75 hover:opacity-100"
-                />
-            </button>
-        </div>
-        <div class="absolute inset-y-0 right-0 flex items-center" id="rightBtn-4">
-            <button
-                class="scroll-arrow right-arrow bg-white p-2 rounded-full shadow-md cursor-pointer"
-                onclick="scrollCarousel('carousel-4', 300)"
-                onkeydown="if (event.key === 'Enter' || event.key === ' ') { scrollCarousel('carousel-4', 300); event.preventDefault(); }"
-                aria-label="Scroll right"
-            >
-                <img
-                    src="{% static 'app/image/icon/right-arrow.png' %}"
-                    alt="Scroll right"
-                    class="w-8 h-8 opacity-75 hover:opacity-100"
-                />
-            </button>
-        </div>
-        
-        </div>
-      </div>
-    </section>
-    {% include "app/footer.html" %}
-    <script>
-      // Function to scroll carousel
-      function scrollCarousel(carouselId, scrollOffset) {
-        const carousel = document.getElementById(carouselId);
-        carousel.scrollBy({
-          left: scrollOffset,
-          behavior: "smooth",
-        });
-      }
-
-      // Function to show/hide navigation buttons based on scroll position
-      function updateNavigationButtons(carouselId, leftBtnId, rightBtnId) {
-        const carousel = document.getElementById(carouselId);
-        const leftBtn = document.getElementById(leftBtnId);
-        const rightBtn = document.getElementById(rightBtnId);
-
-        // Check if carousel can scroll left or right
-        leftBtn.style.display = carousel.scrollLeft > 0 ? "flex" : "none";
-        rightBtn.style.display =
-          carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth
-            ? "flex"
-            : "none";
-      }
-
-      // Attach scroll event listeners to both carousels
-      document
-        .getElementById("carousel-1")
-        .addEventListener("scroll", function () {
-          updateNavigationButtons("carousel-1", "leftBtn-1", "rightBtn-1");
-        });
-      document
-        .getElementById("carousel-2")
-        .addEventListener("scroll", function () {
-          updateNavigationButtons("carousel-2", "leftBtn-2", "rightBtn-2");
-        });
-      document
-        .getElementById("carousel-3")
-        .addEventListener("scroll", function () {
-          updateNavigationButtons("carousel-3", "leftBtn-3", "rightBtn-3");
-        });
-      document
-        .getElementById("carousel-4")
-        .addEventListener("scroll", function () {
-          updateNavigationButtons("carousel-4", "leftBtn-4", "rightBtn-4");
-        });
-
-      // Initialize navigation button visibility on page load
-      updateNavigationButtons("carousel-1", "leftBtn-1", "rightBtn-1");
-      updateNavigationButtons("carousel-2", "leftBtn-2", "rightBtn-2");
-      updateNavigationButtons("carousel-3", "leftBtn-3", "rightBtn-3");
-      updateNavigationButtons("carousel-4", "leftBtn-4", "rightBtn-4");
-    </script>
-  </body>
+        </section>
+        <script>
+            const Location_based = [
+                {% for shop in location_based %}
+                    {
+                        title: "{{ shop.shop_name | escapejs }}",
+                        rating: "{{ shop.shop_rating }}",
+                        reviews: "{{ shop.shop_customer_count }}",
+                        location: "{{ shop.shop_state|escapejs }},{{ shop.shop_city|escapejs }},{{ shop.shop_area|escapejs }}",
+                        category: "{{ shop.category | escapejs }}",
+                        image: "{% if shop.shop_picture and shop.shop_picture.url %}{{ shop.shop_picture.url }}{% else %}{% static 'app/image/shop/1.jpg' %}{% endif %}",
+                        link: "salon-profile?shop_id={{ shop.id }}",
+                    },
+                {% endfor %}
+            ];
+            console.log(Location_based);
+            const carousel_4 = document.getElementById("carousel-4");
+            Location_based.forEach((recommendation) => {
+              const card = document.createElement("a");
+              card.href = recommendation.link;
+              card.className =
+              "block bg-white rounded-lg shadow-lg overflow-hidden min-w-[300px] max-w-[300px] flex-none";
+          
+              card.innerHTML = `
+                <img id="imagesize" src="${recommendation.image}" alt="${recommendation.title}" class="w-full h-48 object-cover">
+                    <div class="p-4 cards">
+                        <h3 class="text-lg font-semibold">${recommendation.title}</h3>
+                        <p class="mt-2 text-sm text-gray-600">
+                            <span class="font-bold text-yellow-500">${recommendation.rating} &#9733;</span>
+                            (${recommendation.reviews} reviews)
+                        </p>
+                        <p class="mt-2 text-sm text-gray-600">${recommendation.location}</p>
+                        <p class="mt-2 text-sm text-gray-600">${recommendation.category}</p>
+                    </div>
+              `;
+              carousel_4.appendChild(card);
+            });
+          
+              function scrollCarousel(carouselId, scrollAmount) {
+                  const carousel = document.getElementById(carouselId);
+                  carousel.scrollBy({left: scrollAmount, behavior: "smooth" });
+              }
+        </script>
+        {% comment %} end of the section  {% endcomment %}
+      </main>
+      {% include "app/footer.html" %}
+    </body>
 </html>
