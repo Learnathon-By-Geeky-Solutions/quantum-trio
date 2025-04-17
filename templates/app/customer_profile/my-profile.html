@@ -22,15 +22,21 @@
             <div class="bg-white shadow-md rounded-lg p-6 flex flex-col md:flex-row items-center md:items-start">
                 <!-- Left Column: Profile Picture + Button -->
                 <div class="flex flex-col items-center md:w-1/3 p-4">
-                    <!-- Profile Image with Demo Image -->
-                    <img id="profileImage" src="{{ user.user_profile.profile_picture.url|default:'/media/profile_pictures/default.jpg' }}" alt="Profile"
-                        class="w-40 h-40 rounded-full object-cover mb-4">
+                    <!-- Profile Image with safe check -->
+                    {% if user.user_profile.profile_picture %}
+                        <img id="profileImage" src="{{ user.user_profile.profile_picture.url }}" alt="Profile"
+                            class="w-40 h-40 rounded-full object-cover mb-4">
+                    {% else %}
+                        <img id="profileImage" src="/media/profile_pictures/default.jpg" alt="Default Profile"
+                            class="w-40 h-40 rounded-full object-cover mb-4">
+                    {% endif %}
                 
                     <button id="btn" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
                         onclick="openEditModal()">
                         EDIT PROFILE
                     </button>
                 </div>
+                
                 <!-- Right Column: User Info -->
                 <div class="w-full md:w-2/3 p-4">
                     <div class="space-y-4">
@@ -152,7 +158,7 @@
         document.getElementById('editEmail').addEventListener('input', function () {
             var emailField = document.getElementById('editEmail');
             var emailError = document.getElementById('emailError');
-            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Basic email regex pattern
 
             if (emailField.value.match(emailPattern)) {
                 emailError.style.display = 'none';

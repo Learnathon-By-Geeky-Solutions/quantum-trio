@@ -18,7 +18,7 @@ function openAddModal(worker_id, name, email, mobile,experience) {
 document.getElementById('editEmail').addEventListener('input', function () {
     let emailField = document.getElementById('editEmail');
     let emailError = document.getElementById('emailError');
-    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (emailField.value.match(emailPattern)) {
         emailError.style.display = 'none';

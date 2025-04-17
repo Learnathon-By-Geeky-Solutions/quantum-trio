@@ -1,2 +1,26 @@
+# Exclude virtual environment
 venv/
+
+# Exclude Dockerfile
 Dockerfile
+
+# Exclude Python bytecode files
+__pycache__/
+*.pyc
+
+# Exclude environment variable files (e.g. .env files)
+*.env
+
+# Exclude Git directories and files
+.git/
+.gitignore
+
+# Exclude IDE/editor configuration files
+.idea/
+.vscode/
+
+# Exclude node modules (if applicable)
+node_modules/
+
+# Exclude other system files (macOS example)
+.DS_Store
