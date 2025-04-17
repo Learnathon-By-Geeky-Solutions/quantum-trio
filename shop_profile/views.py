@@ -260,7 +260,7 @@ def message(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def staffs(request):
     if request.method == "POST":
         worker_id = request.POST.get("id")
@@ -382,7 +382,7 @@ def setting(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def basic_update(request):
     shop=request.user.shop_profile
     user=request.user
@@ -440,7 +440,7 @@ def services_update(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def schedule_update(request):
     shop=request.user.shop_profile
     if request.method == 'POST':

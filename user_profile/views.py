@@ -114,6 +114,7 @@ def addressofbooking(request):
 @login_required
 @require_http_methods(["GET"])
 def myreviews(request):
+    
     return render(request,'app/customer_profile/myreviews.html')
 
 @csrf_protect
@@ -227,7 +228,8 @@ def update_status(request):
 @login_required
 @require_http_methods(["GET"])
 def mycancellations(request):
-    return render(request,'app/customer_profile/mycancellations.html')
+    booking=BookingSlot.objects.filter(user=request.user.user_profile,status="canceled").order_by('-created_at')
+    return render(request,'app/customer_profile/mycancellations.html',{'booking':booking})
 
 @csrf_protect
 @login_required
