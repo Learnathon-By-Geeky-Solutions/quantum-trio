@@ -141,14 +141,13 @@ class ShopService(models.Model):
         return f"{self.shop.shop_name} - {self.item.name}"
 
 class ShopReview(models.Model):
-    # from user_profile.models import UserProfile
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
     reviewer_id = models.IntegerField(null=True, blank=True)  # The shop reviewed by whom only id
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True,default='')  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
     def __str__(self):
-        return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
+        return f"Review by {self.reviewer_id} for {self.shop.shop_name} - Rating: {self.rating}"
 
 class ShopSchedule(models.Model):
     DAYS_OF_WEEK = [

@@ -37,13 +37,24 @@ def home(request):
             reviewer_name = request.user.shop_profile.shop_name
         elif request.user.user_type == "user":
             reviewer_name = f"{request.user.user_profile.first_name} {request.user.user_profile.last_name}"
-
+    
+    booked_appointment=BookingSlot.objects.all().count()
+    registered_shop=ShopProfile.objects.all().count()
+    available_upazilla = ShopProfile.objects.order_by('shop_city').distinct('shop_city').count()
+    available_barber=ShopWorker.objects.all().count()
+    statistics = {
+        'booked_appointment': booked_appointment,
+        'registered_shop': registered_shop,
+        'available_upazilla': available_upazilla,
+        'available_barber': available_barber
+    }
     return render(request, 'app/home.html', {
-        "reviews": reviews,
+        'reviews': reviews,
         'shops':shop,
         'male':male_item,
         'female':female_item,
         'reviewer_name':reviewer_name,
+        'statistics':statistics
     })
 def submit_review(request):
     # redirect("home")

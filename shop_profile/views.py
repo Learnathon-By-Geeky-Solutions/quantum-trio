@@ -72,7 +72,6 @@ def profile(request):
         price = price_map.get(booking.item_id, Decimal('0.00'))
         months[month_name] += price
     # convert to ordered dict
-    labels = list(months.keys())
     values = [float(val) for val in months.values()] 
     monthly_data = [
         {"month": month, "value": value}
