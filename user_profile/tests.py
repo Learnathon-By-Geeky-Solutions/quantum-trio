@@ -1,14 +1,10 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from user_profile.models import UserProfile
 from shop_profile.models import MyUser
 from my_app.models import District, Upazilla, Area, Division
-from unittest.mock import patch
 import uuid
-from io import BytesIO
-from PIL import Image
 
 User = get_user_model()
 
@@ -48,3 +44,14 @@ class UserProfileTests(TestCase):
         password = self.profile.generate_random_password(length=8)
         self.assertEqual(len(password), 8)
 
+    def test_mynotifications_get(self):
+        """Test GET request to mynotifications."""
+        self.client.login(email=self.user.email, password="Password123!")
+        response = self.client.get(reverse("mynotifications"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_myreviews_get(self):
+        """Test GET request to myreviews."""
+        self.client.login(email=self.user.email, password="Password123!")
+        response = self.client.get(reverse("myreviews"))
+        self.assertEqual(response.status_code, 200)
