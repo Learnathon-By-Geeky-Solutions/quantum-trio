@@ -1,26 +1,46 @@
 # Exclude virtual environment
 venv/
 
-# Exclude Dockerfile
+# Exclude Docker-related files (optional)
 Dockerfile
+.dockerignore
 
-# Exclude Python bytecode files
+# Exclude Python bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# Exclude environment variable files (e.g. .env files)
+# Exclude environment variable and secret files
 *.env
+*.pem
+*.key
+*.crt
+secrets/
+credentials.json
 
-# Exclude Git directories and files
+# Exclude Git and version control metadata
 .git/
 .gitignore
 
-# Exclude IDE/editor configuration files
+# Exclude IDE/editor configs
 .idea/
 .vscode/
+*.swp
 
-# Exclude node modules (if applicable)
+# Exclude Node.js files (if any)
 node_modules/
+package-lock.json
+yarn.lock
 
-# Exclude other system files (macOS example)
+# Exclude test and coverage data (if not needed in image)
+tests/
+*.log
+.coverage
+coverage.xml
+htmlcov/
+
+# Exclude OS files
 .DS_Store
+Thumbs.db
+.scannerwork/
+sonar-report/

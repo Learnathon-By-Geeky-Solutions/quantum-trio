@@ -36,16 +36,17 @@ document
         }
       });
 
-function getLocation() {
-    // Check if Geolocation is supported
-    if (navigator.geolocation) {
-        // Necessary: We need the user's location to show nearby service providers
-navigator.geolocation.getCurrentPosition(showPosition, showError);
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-        document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+      function getLocation() {
+        // Check if Geolocation is supported
+        if (navigator.geolocation) {
+            const confirmAccess = confirm("We use your location to show nearby service providers. Do you want to allow access?");
+            if (confirmAccess) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            }
+        } else {
+            document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+        }
     }
-}
 
 
 function showPosition(position) {
