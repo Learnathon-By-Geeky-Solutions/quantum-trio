@@ -39,10 +39,33 @@ class UserProfileTests(TestCase):
         self.assertTrue(self.profile.check_password("NewPassword123!"))
         self.assertFalse(self.profile.check_password("WrongPassword"))
 
+    def test_user_profile_set_password1(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassword124!")
+        self.assertTrue(self.profile.check_password("NewPassword124!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
+
+    def test_user_profile_set_password2(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassword1!")
+        self.assertTrue(self.profile.check_password("NewPassword1!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
+
+    def test_user_profile_set_password3(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassord124!")
+        self.assertTrue(self.profile.check_password("NewPassord124!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
+
     def test_user_profile_generate_random_password(self):
         """Test UserProfile generate_random_password method."""
         password = self.profile.generate_random_password(length=8)
         self.assertEqual(len(password), 8)
+    
+    def test_user_profile_generate_random_password1(self):
+        """Test UserProfile generate_random_password method."""
+        password = self.profile.generate_random_password(length=9)
+        self.assertEqual(len(password), 9)
 
     def test_mynotifications_get(self):
         """Test GET request to mynotifications."""
