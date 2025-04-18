@@ -5,12 +5,12 @@ from shop_profile.models import MyUser
 class UserProfile(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
-        ('Female', 'Female'),
+        ('Female', 'Female'), 
         ('Other', 'Other'),
     ]
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name="user_profile")
     first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    last_name  = models.CharField(max_length=150)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True,default='')
     phone_number = models.CharField(max_length=15, blank=True,default='')
     user_state = models.CharField(max_length=100, blank=True,default='')

@@ -83,15 +83,7 @@
         // Show the first slide on load
         showSlide(currentSlide);
     </>
-
-
-
-
     <!-- chatwithsalonn -->
-    
-    
-    
-    
     <div class="chat-wrapper" id="chat-wrapper">
         <div class="chat-circle" id="chat-circle">
             <i class="fas fa-comments"></i>
@@ -109,11 +101,6 @@
             </div>
         </div>
     </div>
-    
-    
-   
-    
-    
     <!-- chat_javascript -->
     <script>
         function displayUserMessage(message) {
@@ -188,9 +175,6 @@
             }
         }
 
-
-
-
         // Add a click event listener to the button
         document.getElementById("button").addEventListener("click", sendMessage);
 
@@ -231,10 +215,7 @@
             isDragging = false;
         });
     </script>
-
-
     <!-- Photo Gallary -->
-
     <section class="py-12">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Our Services</h2>
@@ -255,9 +236,7 @@
                     </form>  
                     
                 </div>
-            {% endfor %}
-            
-                
+            {% endfor %}      
         </div>
     </section>
 
@@ -294,8 +273,7 @@
                     <li>{{ item.name }}</li> 
                 {% empty %}
                     <li>No expertise listed</li>
-                {% endfor %}     
-                    
+                {% endfor %}        
             </ul>
             </p>
         </div>
@@ -304,7 +282,6 @@
     </div>
 </div>
 </section>
-
     <!--Customer Reviews Section-->
     <!-- Reviews Container -->
     <section class="py-12">
@@ -453,25 +430,21 @@
     </section>
 
     <!-- review about our shop-->
+    {% if user.is_authenticated and user.user_type == 'user' %}
     <section>
-
         <div class="container mx-auto px-4 py-4">
-        
             <button id="writeReviewBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">Write a Review</button>
-
             <!-- Modal Overlay -->
             <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-
             <!-- Review Modal -->
             <div id="reviewModal" class="fixed inset-0 flex items-center justify-center hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
-                    <h3 class="text-xl font-semibold mb-4">Rate and Review</h3>
+                    <h3 class="text-xl font-semibold mb-4">Rate and Review us</h3>
                     <!-- Review Form -->
-                    <form id="reviewForm" action="submit_review.php" method="POST">
-                        <!-- Name Input -->
-
+                    <form id="reviewForm" action="" method="POST">
+                        {% csrf_token %}
                         <input type="text" id="reviewerName" name="reviewer_name"
-                            class="w-full border p-2 rounded-lg mb-4" readonly value="Md XYZ" />
+                            class="w-full border p-2 rounded-lg mb-4" readonly value="{{user.user_profile.first_name}} {{user.user_profile.last_name}}" />
 
                         <!-- Star Rating -->
                         <div class="flex mb-4">
@@ -486,11 +459,9 @@
                         <!-- Review Textarea -->
                         <textarea id="reviewText" name="review" class="w-full border p-2 rounded-lg mb-4"
                             placeholder="Describe your experience (optional)" rows="4"></textarea>
-                        <!-- Character Count -->
                         <p id="charCount" class="text-sm text-gray-500 mb-4">0 / 500</p>
-                        <!-- <?php echo $shop_id; ?> -->
-                        <input type="hidden" name="shop_id" value="<?php echo $shop_id; ?>">
-                        <input type="hidden" name="customer_id" value="<?php echo $_session['customer_id']; ?>">
+                        <input type="hidden" name="shop_id" value="{{shop.id}}">
+                        <input type="hidden" name="user_id" value="{{user.user_profile.id}}">
                         <!-- Submit and Cancel Buttons -->
                         <button type="submit" id="submitReview"
                             class="bg-green-500 text-white px-4 py-2 rounded-lg">Submit Review</button>
@@ -498,10 +469,56 @@
                     </form>
                 </div>
             </div>
-
-
             <!-- JavaScript for Review Modal and Functionality -->
             <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const form = document.getElementById("reviewForm");
+                    const submitButton = document.getElementById("submitReview");
+                
+                    form.addEventListener("submit", function (e) {
+                        e.preventDefault(); // Prevent page reload
+                
+                        const formData = new FormData(form);
+                
+                        fetch("{% url 'submit_shop_review' %}", {
+                            method: "POST",
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken')  // CSRF token from cookie
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("✅ Review submitted successfully!");
+                                form.reset();
+                                // Optional: clear selected stars
+                                document.querySelectorAll(".star").forEach(star => star.classList.remove("text-yellow-400"));
+                            } else {
+                                alert("⚠️ " + (data.error || "Something went wrong."));
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                        });
+                    });
+                
+                    // CSRF helper
+                    function getCookie(name) {
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== "") {
+                            const cookies = document.cookie.split(";");
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                });
                 const writeReviewBtn = document.getElementById('writeReviewBtn');
                 const modalOverlay = document.getElementById('modalOverlay');
                 const reviewModal = document.getElementById('reviewModal');
@@ -567,9 +584,8 @@
                     }
                 });
             </script>
-
     </section>
-
+    {% endif %}
     {% include "app/footer.html" %}
 
 

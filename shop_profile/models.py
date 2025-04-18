@@ -36,7 +36,7 @@ class MyUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default="user")
-
+ 
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
@@ -141,7 +141,9 @@ class ShopService(models.Model):
         return f"{self.shop.shop_name} - {self.item.name}"
 
 class ShopReview(models.Model):
+    # from user_profile.models import UserProfile
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
+    reviewer_id = models.IntegerField(null=True, blank=True)  # The shop reviewed by whom only id
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True,default='')  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
