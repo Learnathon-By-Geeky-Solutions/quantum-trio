@@ -15,7 +15,7 @@ class BookingTests(TestCase):
         # Create customer user and profile
         self.customer_user = User.objects.create_user(
             email=f"customer_{uuid.uuid4()}@example.com",
-            password="test"
+            password="test"# NOSONAR
         )
         self.user_profile = UserProfile.objects.create(
             user=self.customer_user,
@@ -26,7 +26,7 @@ class BookingTests(TestCase):
         # Create shop user and profile
         self.shop_user = User.objects.create_user(
             email=f"shop_{uuid.uuid4()}@example.com",
-            password="test",
+            password="test",# NOSONAR
             user_type="shop"
         )
         self.shop_profile = ShopProfile.objects.create(
