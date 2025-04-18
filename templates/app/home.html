@@ -343,16 +343,26 @@
                         <p class="mt-3 text-gray-700">{{ review.comment }}</p>
 
                         <div class="flex items-center mt-4">
-                            <img src="{% static 'app/image/customer/default.jpg' %}" alt="User"
+                            {% if review.reviewer_type.model == "userprofile" %}
+                                <img src="{% if review.reviewer.profile_picture %}{{ review.reviewer.profile_picture.url }}{% else %}{% static 'app/image/customer/default.jpg' %}{% endif %}" 
+                                    alt="User" 
+                                    class="w-10 h-10 rounded-full mr-3" />
+                            {% elif review.reviewer_type.model == "shopprofile" %}
+                                <img src="{% if review.reviewer.shop_picture %}{{ review.reviewer.shop_picture.url }}{% else %}{% static 'app/image/shop/default.jpg' %}{% endif %}" 
+                                    alt="Shop"
+                                    class="w-10 h-10 rounded-full mr-3" />
+                            {% else %}
+                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="Annonymous"
                                 class="w-10 h-10 rounded-full mr-3" />
+                            {% endif %}
                             <div>
                                 <p class="text-gray-900 font-semibold">
                                     {% if review.reviewer_type.model == "userprofile" %}
-                                    {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
+                                        {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
                                     {% elif review.reviewer_type.model == "shopprofile" %}
-                                    {{ review.reviewer.shop_name }}
+                                        {{ review.reviewer.shop_name }}
                                     {% else %}
-                                    Anonymous
+                                        Anonymous
                                     {% endif %}
                                 </p>
                                 <p class="text-gray-500 text-sm">
