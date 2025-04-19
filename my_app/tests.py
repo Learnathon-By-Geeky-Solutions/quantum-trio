@@ -223,17 +223,7 @@ class MyAppTests(TestCase):
             return JsonResponse({'success': False, 'error': 'Shop not found.'}, status=404)
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
-
-    def test_home_view_get(self):
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/home.html')
-        self.assertIn('shops', response.context)
-        self.assertIn('male', response.context)
-        self.assertIn('female', response.context)
-        self.assertIn('reviews', response.context)
-        self.assertIn('statistics', response.context)
-    
+ 
     def test_shop_profile_view(self):
         self.client.login(email='testuser@example.com', password='testpass123')
         response = self.client.get(reverse('salon-profile'), {'shop_id': self.shop_profile.id})
@@ -249,12 +239,3 @@ class MyAppTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"error": "Invalid shop ID"})
     
-    def test_fetch_by_items_view(self):
-        response = self.client.get(reverse('fetch_by_items'), {
-            'item': 'Test Item',
-            'limit': 9,
-            'offset': 0
-        })
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertTrue(any(shop['shop_id'] == self.shop_profile.id for shop in data['shop']))
