@@ -21,6 +21,7 @@ from django.contrib.auth import get_user_model
 temp_user=get_user_model()
 # variable
 step1_url='app/login_signup/register/business/step1.html'
+LOGIN_URL = "/login"
 
 # Create your views here.
 def select_user_type(request):
@@ -85,7 +86,7 @@ def customer_submit(request):
                 )
                 user_profile.save()
                 request.session.flush()   #pbkdf2_sha256$870000$P6dgX7e0bRUMDUFZbpcEtH$J7fMWHJjEOJ6GeOaORDNiTNVFr7vcii7upyF22QNSQc=
-                return redirect("/login") #pbkdf2_sha256$870000$35UjOIAoGl9Krej9H8I2o3$2H9QJSJakSofxjA2ZomkBZwr3QdRaO9QTxXBnvGMXfU=
+                return redirect(LOGIN_URL) #pbkdf2_sha256$870000$35UjOIAoGl9Krej9H8I2o3$2H9QJSJakSofxjA2ZomkBZwr3QdRaO9QTxXBnvGMXfU=
             except Exception as e:        #pbkdf2_sha256$870000$rWApXZtm7Pm9phSO05hkP9$0huOR0W/qmiUQJE/lWnLer1cJ4NILqMLuP2imScBRng=
                 print(f"Error creating user profile: {e}")
         except Exception as e:
@@ -284,140 +285,9 @@ def business_register_step8(request):
 
 @csrf_protect
 @require_POST
-# def business_submit(request):
-#     if(request.method=='POST'):
-
-#         """process the schedule first"""
-#         schedule_data = request.POST  # QueryDict
-#         schedule = {}
-#         for day in ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
-#             start_time = schedule_data.get(f"schedule[{day}][start]", "").strip()
-#             end_time = schedule_data.get(f"schedule[{day}][end]", "").strip()
-#             # Only save the day if it has valid start or end time
-#             if start_time or end_time:
-#                 schedule[day] = {"start": start_time, "end": end_time}
-        
-#         try:
-#             user_details=request.session['user']
-#             try:
-#                 user=temp_user.objects.create(
-#                     email=user_details['email'],
-#                     password=user_details['password'],
-#                     user_type='shop',
-#                 )
-#                 user.save()
-#                 """creating shop profile"""
-#                 shop = ShopProfile.objects.create(
-#                     user=user,
-#                     shop_name = user_details['business_name'],
-#                     shop_title = user_details['business_title'],
-#                     shop_info = user_details['business_info'],
-#                     shop_owner = user_details['first-name']+' '+user_details['last-name'],
-                    
-#                     # Contact Information
-#                     mobile_number = user_details['mobile-number'],
-#                     shop_website = user_details['website'],
-#                     # Location Fields (For geolocation)
-#                     shop_state = user_details['district'],
-#                     shop_city = user_details['upazilla'],
-#                     shop_area = user_details['area'],
-#                     latitude = user_details['latitude'],
-#                     longitude = user_details['longitude'],
-#                     shop_landmark_1 = user_details['landmark1'],
-#                     shop_landmark_2 = user_details['landmark2'],
-#                     shop_landmark_3 = user_details['landmark3'],
-#                     shop_landmark_4 = user_details['landmark4'],
-#                     shop_landmark_5 = user_details['landmark5'],
-#                 )
-#                 """Insert the area in area table"""
-#                 try:
-#                     Area.objects.create(
-#                         name=shop.area,
-#                         upazilla=shop.city,
-#                     )
-#                 except Exception as e:
-#                     print(f"Error creating Area: {e}")
-#                 """creating worker profile under the shop"""
-#                 try:
-#                     member_details=user_details['members']
-#                     worker_image=user_details['worker_image']
-                    
-#                     for index in range(user_details['member']):
-#                         img_path = os.path.join(settings.BASE_DIR,"media", worker_image[index][0])
-#                         img=Image.open(img_path)
-#                         print(img)
-#                         image_name = img_path.split("/")[-1] 
-#                         print(image_name)
-#                         img_io = BytesIO()
-#                         img.save(img_io, format=img.format)  # Preserve original format (JPEG, PNG, etc.)
-#                         img_bytes = img_io.getvalue()
-#                         try:
-#                             experience = float(member_details.get(f'member[{index}][experience]', ['0'])[0])
-#                         except (ValueError, TypeError):
-#                             experience = 0.0
-#                         worker = ShopWorker.objects.create(
-#                             name = member_details.get(f'member[{index}][name]', [''])[0],
-#                             email = member_details.get(f'member[{index}][email]', [''])[0],
-#                             phone = member_details.get(f'member[{index}][contact]', [''])[0],
-#                             experience = experience,
-#                             shop = shop
-#                         )
-                        
-#                         worker.profile_pic.save(image_name, ContentFile(img_bytes))
-#                         # # Assign ManyToManyField expertise
-#                         expertise_values = member_details.get(f'member[{index}][expertise][]', [])
-#                         selected_expertise = Item.objects.filter(name__in=expertise_values)  # Assuming 'name' is unique
-#                         worker.expertise.set(selected_expertise)  # Set ManyToMany relationship
-#                         worker.save()
-#                 except Exception as e:
-#                     print(f"❌ Error: {e}")
-
-#                 """inserting the services provided by the shop in ShopService table along with prices"""
-#                 try:
-#                     items=user_details['items']
-#                     """How many items the shop provides"""
-                    
-#                     item = [name for key, name_list in items.items() if 'name' in key for name in name_list]
-#                     print(item)
-#                     price = [price for key, price_list in items.items() if 'price' in key for price in price_list]
-#                     print(price)
-#                     for index in range(len(item)):
-#                         service=ShopService.objects.create(
-#                             shop=shop,
-#                             item=Item.objects.get(name=item[index]),
-#                             price=price[index]
-#                         )
-#                         service.save()
-                    
-#                 except Exception as e:
-#                     print(f"❌ Error: {e}")
-
-#                 """inserting the shop schedule into the ShopSchedule table"""
-#                 try:
-#                     print("Filtered Schedule:", schedule)
-#                     for day, time in schedule.items():
-#                         print(f"{day}: Start - {time['start']}, End - {time['end']}")
-#                         shop_schedule=ShopSchedule.objects.create(
-#                             shop=shop,
-#                             day_of_week=day,
-#                             start=time['start'],
-#                             end=time['end']
-#                         )
-#                         shop_schedule.save()
-
-#                 except Exception as e:
-#                     print(f"❌ Error: {e}")
-
-#             except Exception as e:
-#                 print(f"❌ Error: {e}")
-
-#         except KeyError as e:
-#             HttpResponse("Registered")
-#     return redirect("/login")
-
 def business_submit(request):
     if request.method != 'POST':
-        return redirect("/login")
+        return redirect(LOGIN_URL)
 
     # Process schedule
     schedule_data = request.POST
