@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -199,4 +200,61 @@ class MyAppTests(TestCase):
         self.assertEqual(response.status_code, 404)  # JSON response
         self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
 
+  
+    def submit_shop_review(request):
+        try:
+            rating = request.POST.get('rating')
+            review = request.POST.get('review')
+            shop_id = request.POST.get('shop_id')
+            user_id = request.user.id
+            shop = ShopProfile.objects.get(id=shop_id)
+            if not rating or not review or not shop_id or not user_id:
+                return JsonResponse({'success': False, 'error': 'Fill all the required fields.'}, status=400)
+            if not BookingSlot.objects.filter(user__id=user_id, shop__id=shop_id, status='completed').exists():
+                return JsonResponse({'success': False, 'error': 'You are not allowed.'}, status=200)  # Changed to 200
+            ShopReview.objects.create(
+                rating=rating,
+                review=review,
+                shop=shop,
+                reviewer_id=user_id
+            )
+            return JsonResponse({'success': True}, status=200)
+        except ShopProfile.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Shop not found.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+    def test_home_view_get(self):
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/home.html')
+        self.assertIn('shops', response.context)
+        self.assertIn('male', response.context)
+        self.assertIn('female', response.context)
+        self.assertIn('reviews', response.context)
+        self.assertIn('statistics', response.context)
     
+    def test_shop_profile_view(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        response = self.client.get(reverse('salon-profile'), {'shop_id': self.shop_profile.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/saloon_profile/dashboard.html')
+        self.assertEqual(response.context['shop'], self.shop_profile)
+        self.assertIn(self.shop_service, response.context['shop_services'])
+        self.assertIn(self.shop_worker, response.context['shop_workers'])
+    
+    def test_shop_profile_invalid_id(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        response = self.client.get(reverse('salon-profile'), {'shop_id': 'invalid'})
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"error": "Invalid shop ID"})
+    
+    def test_fetch_by_items_view(self):
+        response = self.client.get(reverse('fetch_by_items'), {
+            'item': 'Test Item',
+            'limit': 9,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue(any(shop['shop_id'] == self.shop_profile.id for shop in data['shop']))
