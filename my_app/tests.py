@@ -188,3 +188,15 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/items.html')
         self.assertIn(self.item, response.context['items'])
         self.assertEqual(response.context['service'], 'Test Service')
+
+    def test_submit_shop_review_no_booking(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        response = self.client.post(reverse('submit_shop_review'), {
+            'rating': '4',
+            'review': 'Great shop!',
+            'shop_id': self.shop_profile.id
+        })
+        self.assertEqual(response.status_code, 404)  # JSON response
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
+
+    
