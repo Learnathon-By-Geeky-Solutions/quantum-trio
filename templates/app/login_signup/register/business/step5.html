@@ -84,21 +84,25 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('form').addEventListener('submit', function (e) {
                 const services = document.querySelectorAll('.service');
+        
                 for (let i = 0; i < services.length; i++) {
                     const itemsDiv = services[i].querySelector('.items');
                     const itemSelects = itemsDiv.querySelectorAll('.item-select');
-
-                    itemSelects.forEach(function (select) {
+        
+                    for (let j = 0; j < itemSelects.length; j++) {
+                        const select = itemSelects[j];
                         const priceInput = select.nextElementSibling;
+        
                         if (select.value !== '' && priceInput.value === '') {
                             alert(`Please enter a price for the selected item in ${services[i].querySelector('.font-bold').textContent}.`);
                             e.preventDefault();
-                            return;
+                            return; // ✅ Now this will exit the whole submit handler correctly
                         }
-                    });
+                    }
                 }
             });
         });
+        
     </script>
 </body>
 
