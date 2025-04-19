@@ -84,16 +84,16 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('form').addEventListener('submit', function (e) {
                 const services = document.querySelectorAll('.service');
-        
-                for (let i = 0; i < services.length; i++) {
-                    const itemsDiv = services[i].querySelector('.items');
+
+                for (const service of services) {
+                    const itemsDiv = service.querySelector('.items');
                     const itemSelects = itemsDiv.querySelectorAll('.item-select');
-        
+
                     for (const select of itemSelects) {
                         const priceInput = select.nextElementSibling;
-                    
+
                         if (select.value !== '' && priceInput.value === '') {
-                            alert(`Please enter a price for the selected item in ${services[i].querySelector('.font-bold').textContent}.`);
+                            alert(`Please enter a price for the selected item in ${service.querySelector('.font-bold').textContent}`);
                             e.preventDefault();
                             return;
                         }
