@@ -29,7 +29,7 @@
         right: 10px;
         left: 10px;
       }
-      
+    
       .prev-btn:hover,
       .next-btn:hover {
         background-color: #0056b3;
@@ -83,19 +83,19 @@
             <!-- Average Ratings -->
             <div class="metrics bg-pink-500 text-white rounded-lg p-4 flex-1">
               <h3 class="text-sm font-bold mb-2">Average Ratings</h3>
-              <div class="text-lg font-bold">3.76</div>
+              <div class="text-lg font-bold">{{average_rating}}</div>
             </div>
 
             <!-- Happy Customers -->
             <div class="metrics bg-green-500 text-white rounded-lg p-4 flex-1">
               <h3 class="text-sm font-bold mb-2">Happy Customers</h3>
-              <div class="text-lg font-bold">251</div>
+              <div class="text-lg font-bold">{{happy_count}}</div>
             </div>
 
             <!-- Unhappy Customers -->
             <div class="metrics bg-red-500 text-white rounded-lg p-4 flex-1">
               <h3 class="text-sm font-bold mb-2">Unhappy Customers</h3>
-              <div class="text-lg font-bold">100</div>
+              <div class="text-lg font-bold">{{unhappy_count}}</div>
             </div>
           </div>
 
@@ -105,21 +105,15 @@
             <div class="flex flex-row">
               <button class="prev-btn text-xl mr-5 font-semibold">❮</button>
               <div class="flex flex-cols-3 gap-4">
-                <div class="cards bg-gray-500 m-4 p-4 rounded">
-                  <h3 class="text-white">Rakib</h3>
-                  <div class="rating text-white">***</div>
-                  <p class="text-white">Hi, thanks for your service</p>
-                </div>
-                <div class="cards bg-gray-500 m-4 p-4 rounded">
-                  <h3 class="text-white">Rakib</h3>
-                  <div class="rating text-white">***</div>
-                  <p class="text-white">Hi, thanks for your service</p>
-                </div>
-                <div class="cards bg-gray-500 m-4 p-4 rounded">
-                  <h3 class="text-white">Rakib</h3>
-                  <div class="rating text-white">***</div>
-                  <p class="text-white">Hi, thanks for your service</p>
-                </div>
+                {% for review in reviews %}
+                  <div class="cards bg-gray-500 m-4 p-4 rounded">
+                    <h3 class="text-white">{{review.reviewer.first_name}} {{review.reviewer.last_name}}</h3>
+                    <div class="rating text-white">
+                      {{review.stars}}
+                    </div>
+                    <p class="text-white">{{review.review}}</p>
+                  </div>
+                {% endfor %}
               </div>
               <button class="next-btn text-xl ml-3 font-semibold">❯</button>
             </div>

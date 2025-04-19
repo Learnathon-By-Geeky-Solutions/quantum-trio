@@ -149,12 +149,11 @@ def shop_profile(request):
              "shop": shop, 
              "shop_services": service,
              "shop_workers": workers
-        })
+    })
     
 @require_POST
 @login_required
 def submit_shop_review(request):
-
     try:
         # Assume you're extracting data from POST
         rating = request.POST.get('rating')

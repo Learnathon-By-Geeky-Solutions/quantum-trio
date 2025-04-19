@@ -490,11 +490,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
+                                reviewModal.classList.add('hidden');
                                 alert("✅ Review submitted successfully!");
                                 form.reset();
                                 // Optional: clear selected stars
                                 document.querySelectorAll(".star").forEach(star => star.classList.remove("text-yellow-400"));
                             } else {
+                                //reviewModal.classList.add('hidden');
                                 alert("⚠️ " + (data.error || "Something went wrong."));
                             }
                         })
@@ -535,13 +537,13 @@
                 // Show the review modal when "Write a Review" button is clicked
                 writeReviewBtn.onclick = () => {
                     reviewModal.classList.remove('hidden');
-                    modalOverlay.classList.remove('hidden');
+                    //modalOverlay.classList.remove('hidden');
                 };
 
                 // Hide the review modal when "Cancel" button is clicked
                 cancelReview.onclick = () => {
                     reviewModal.classList.add('hidden');
-                    modalOverlay.classList.add('hidden');
+                    //modalOverlay.classList.add('hidden');
                     resetStars();
                 };
 
