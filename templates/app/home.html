@@ -11,8 +11,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
-    {% comment %}
-    <link rel="stylesheet" href="{% static 'app/css/style.css' %}" /> {% endcomment %}
     <style>
         #imagesize:hover {
             overflow: hidden;
@@ -440,8 +438,8 @@
                         <p class="text-lg text-gray-500">Registered Shops</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-black">{{statistics.available_upazilla}} Upazillas</p>
-                        <p class="text-lg text-gray-500">Using CareHUB</p>
+                        <p class="text-2xl font-bold text-black">{{statistics.available_upazilla}}</p>
+                        <p class="text-lg text-gray-500">Using Upazillas</p>
                     </div>
                     <div class="text-center">
                         <p class="text-2xl font-bold text-black">{{statistics.available_barber }}</p>
