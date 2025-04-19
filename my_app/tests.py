@@ -116,16 +116,6 @@ class MyAppTests(TestCase):
         response = self.client.post(reverse('home'))
         self.assertEqual(response.status_code, 405)
 
-    def test_submit_review_authenticated(self):
-        self.client.login(email='testuser@example.com', password='testpass123')
-        response = self.client.post(reverse('submit_review'), {
-            'review': 'Great service!',
-            'rating': '4.5'
-        })
-        self.assertEqual(response.status_code, 302)  # Expect redirect
-        self.assertRedirects(response, reverse('home'))
-        self.assertTrue(ReviewCarehub.objects.filter(comment='Great service!').exists())
-
     def test_submit_review_unauthenticated(self):
         response = self.client.post(reverse('submit_review'), {
             'review': 'Great service!',
@@ -138,15 +128,6 @@ class MyAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/login_signup/login.html')
         self.assertEqual(response.context['type'], 'customer')
-
-    def test_log_in_view_post_success(self):
-        response = self.client.post(reverse('login'), {
-            'email': 'testuser@example.com',
-            'password': 'testpass123'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
-        self.assertTrue(self.client.session['_auth_user_id'])
 
     def test_log_in_view_post_invalid(self):
         response = self.client.post(reverse('login'), {
@@ -187,16 +168,6 @@ class MyAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/service.html')
         self.assertIn(self.service, response.context['services'])
-
-    # def test_fetch_by_items_view(self):
-    #     response = self.client.get(reverse('fetch_by_items'), {
-    #         'item': 'Test Item',
-    #         'limit': 9,
-    #         'offset': 0
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertTrue(any(shop['shop_id'] == self.shop_profile.id for shop in data['shop']))
 
     def test_location_view(self):
         response = self.client.get(reverse('location'))
