@@ -60,19 +60,18 @@
         <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
         <div class="grid-container">
           {% for service in services %}
-            <div class="grid-item"
-                 role="checkbox"
-                 aria-checked="false"
-                 onclick="selectService(this)"
-                 onkeydown="handleKeyPress(event, this)"
-                 tabindex="0">
-              <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
-              <label for="{{ service.id }}">
-                <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
-                <span>{{ service.name }}</span>
-              </label>
-            </div>
-          {% endfor %}
+          <div class="grid-item"
+               onclick="selectService(this)"
+               onkeydown="handleKeyPress(event, this)"
+               tabindex="0">
+            <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
+            <label for="{{ service.id }}">
+              <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
+              <span>{{ service.name }}</span>
+            </label>
+          </div>
+        {% endfor %}
+        
           <div class="ji"></div>
         </div>
         <button type="submit"
