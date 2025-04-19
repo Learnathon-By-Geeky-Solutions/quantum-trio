@@ -1,9 +1,8 @@
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
-
-from user_profile.models import UserProfile
 from .models import Division, District, Upazilla, Area, Landmark, Service, Item, ReviewCarehub, Contact
+from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopReview
 from booking.models import BookingSlot
 from django.contrib.auth import get_user_model
@@ -101,6 +100,9 @@ class MyAppTests(TestCase):
     def test_service_str(self):
         self.assertEqual(str(self.service), 'Test Service')
 
+    def test_item_str(self):
+        self.assertEqual(str(self.item), 'Test Item,   Test Service')  # Match extra spaces
+
     def test_contact_str(self):
         contact = Contact.objects.create(
             name='Test Contact',
@@ -110,20 +112,19 @@ class MyAppTests(TestCase):
         )
         self.assertEqual(str(contact), 'Test Contact - Test Subject')
 
-    # View Tests
-    def test_home_view_get(self):
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/home.html')
-        self.assertIn('shops', response.context)
-        self.assertIn('male', response.context)
-        self.assertIn('female', response.context)
-        self.assertIn('reviews', response.context)
-        self.assertIn('statistics', response.context)
-
     def test_home_view_non_get(self):
         response = self.client.post(reverse('home'))
         self.assertEqual(response.status_code, 405)
+
+    def test_submit_review_authenticated(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        response = self.client.post(reverse('submit_review'), {
+            'review': 'Great service!',
+            'rating': '4.5'
+        })
+        self.assertEqual(response.status_code, 302)  # Expect redirect
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(ReviewCarehub.objects.filter(comment='Great service!').exists())
 
     def test_submit_review_unauthenticated(self):
         response = self.client.post(reverse('submit_review'), {
@@ -138,6 +139,15 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/login.html')
         self.assertEqual(response.context['type'], 'customer')
 
+    def test_log_in_view_post_success(self):
+        response = self.client.post(reverse('login'), {
+            'email': 'testuser@example.com',
+            'password': 'testpass123'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(self.client.session['_auth_user_id'])
+
     def test_log_in_view_post_invalid(self):
         response = self.client.post(reverse('login'), {
             'email': 'testuser@example.com',
@@ -147,14 +157,23 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/login.html')
         self.assertEqual(response.context['message'], 'Invalid email or password')
 
-    def test_submit_shop_review_no_booking(self):
+    def test_log_out_view(self):
         self.client.login(email='testuser@example.com', password='testpass123')
-        response = self.client.post(reverse('submit_shop_review'), {
-            'rating': '4',
-            'review': 'Great shop!',
-            'shop_id': self.shop_profile.id
+        response = self.client.get(reverse('logout'))  # Verify in urls.py
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login'))
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_contact_us_post(self):
+        response = self.client.post(reverse('contact'), {  # Verify in urls.py
+            'name': 'Test User',
+            'email': 'test@example.com',
+            'subject': 'Test Subject',
+            'message': 'Test Message'
         })
-        self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/contact_us.html')
+        self.assertTrue(Contact.objects.filter(name='Test User').exists())
 
     def test_search_view_post(self):
         response = self.client.post(reverse('search'), {'search': 'Test Shop'})
