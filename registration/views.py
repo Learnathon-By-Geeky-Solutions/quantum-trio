@@ -331,7 +331,7 @@ def business_submit(request):
 
         # Create area
         try:
-            Area.objects.create(name=shop.area, upazilla=shop.city)
+            Area.objects.create(name=shop.shop_area, upazilla=shop.shop_city)
         except Exception as e:
             print(f"Area creation error: {e}")
 

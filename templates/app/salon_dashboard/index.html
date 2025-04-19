@@ -147,7 +147,7 @@
       const dataPoints1 = monthlyData.map(item => item.value);
 
       // Create and store Chart instance
-      const chart1 = new Chart(ctx1, {
+      new Chart(ctx1, {
         type: 'line',
         data: {
           labels: labels1,
@@ -198,7 +198,7 @@
       const dataPoints2 = chartData.map(item => item.value);
 
       // Create and store Chart instance
-      const chart2 = new Chart(ctx2, {
+      new Chart(ctx2, {
         type: 'bar',
         data: {
           labels: labels2,
