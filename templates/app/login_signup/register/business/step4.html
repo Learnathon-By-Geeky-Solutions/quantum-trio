@@ -60,23 +60,31 @@
         <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
         <div class="grid-container">
           {% for service in services %}
-          <div class="grid-item" onclick="selectService(this)" onkeydown="handleKeyPress(event, this)" tabindex="0">
-            <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
-            <label for="{{ service.id }}">
-              <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="Service">
-              <span>{{ service.name }}</span>
-            </label>
-          </div>
+            <div class="grid-item"
+                 role="checkbox"
+                 aria-checked="false"
+                 onclick="selectService(this)"
+                 onkeydown="handleKeyPress(event, this)"
+                 tabindex="0">
+              <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
+              <label for="{{ service.id }}">
+                <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
+                <span>{{ service.name }}</span>
+              </label>
+            </div>
           {% endfor %}
           <div class="ji"></div>
         </div>
         <button type="submit"
-          class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue</button>
+                class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue
+        </button>
       </form>
     </div>
   </div>
+
   <script>
     let selectedServices = []
+
     function selectService(element) {
       const checkbox = element.querySelector('input[type="checkbox"]')
       const index = selectedServices.indexOf(element)
@@ -84,16 +92,25 @@
         selectedServices.splice(index, 1)
         element.classList.remove('selected')
         checkbox.checked = false
+        element.setAttribute('aria-checked', 'false')
       } else if (selectedServices.length >= 4) {
         return
       } else {
         selectedServices.push(element)
         element.classList.add('selected')
         checkbox.checked = true
+        element.setAttribute('aria-checked', 'true')
       }
       selectedServices.forEach((el, i) => {
         el.setAttribute('data-order', i + 1)
       })
+    }
+
+    function handleKeyPress(event, element) {
+      if (event.key === ' ' || event.key === 'Enter') {
+        event.preventDefault()
+        selectService(element)
+      }
     }
 
     document.getElementById('serviceForm').addEventListener('submit', function (event) {

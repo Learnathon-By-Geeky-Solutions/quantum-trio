@@ -384,8 +384,11 @@ def business_submit(request):
         except Exception as e:
             print(f"Schedule creation error: {e}")
 
-    except (KeyError, Exception) as e:
-        print(f"Error: {e}")
-        return HttpResponse("Registered")
+    except KeyError as e:
+        print(f"Missing key in session data: {e}")
+        return HttpResponse("Invalid session data", status=400)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return HttpResponse("Something went wrong", status=500)
 
-    return redirect("/login")
+    return redirect(LOGIN_URL)
