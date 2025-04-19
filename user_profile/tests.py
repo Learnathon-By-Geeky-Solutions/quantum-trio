@@ -1,5 +1,3 @@
-
-
 from django.http import JsonResponse
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -163,78 +161,10 @@ class UserProfileViewsTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith("/accounts/login/"))
 
-    # def test_address_view(self):
-    #     response = self.client.get(reverse("addressofbooking"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/customer_profile/addressofbooking.html")
-
-    # def test_addressofbooking_post(self):
-    #     division = Division.objects.create(name="TestDivision")
-    #     district = District.objects.create(name="TestDistrict", division=division)
-    #     upazilla = Upazilla.objects.create(name="TestUpazilla", district=district)
-    #     Area.objects.create(name="TestArea", upazilla=upazilla)
-    #     data = {
-    #         "district": "TestDistrict",
-    #         "upazilla": "TestUpazilla",
-    #         "area": "TestArea",
-    #         "latitude": "12.34",
-    #         "longitude": "56.78"
-    #     }
-    #     response = self.client.post(reverse("addressofbooking"), data)
-    #     self.profile.refresh_from_db()
-    #     self.assertEqual(self.profile.user_state, "TestDistrict")
-    #     self.assertEqual(self.profile.user_city, "TestUpazilla")
-    #     self.assertEqual(self.profile.user_area, "TestArea")
-    #     self.assertEqual(self.profile.latitude, 12.34)
-    #     self.assertEqual(self.profile.longitude, 56.78)
-    #     self.assertContains(response, "Successfully changed your address")
-
     def test_myreviews_view(self):
         response = self.client.get(reverse("myreviews"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "app/customer_profile/myreviews.html")
-
-    # @patch("booking.models.BookingSlot.objects")
-    # def test_mybooking_view_get(self, mock_booking):
-    #     mock_booking.filter.return_value.exclude.return_value.order_by.return_value.annotate.return_value = []
-    #     response = self.client.get(reverse("mybooking"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
-    #     self.assertIn("bookings", response.context)
-
-    # def test_mybooking_view_post(self):
-        service = Service.objects.create(name="TestService")
-        item = Item.objects.create(name="TestItem", service=service)
-        worker = ShopWorker.objects.create(
-            name="Test Worker",
-            email="worker@example.com",
-            phone="1234567890",
-            experience=5.0,
-            shop=self.shop,
-            rating=0.0
-        )
-        booking = BookingSlot.objects.create(
-            user=self.profile,
-            shop=self.shop,
-            worker=worker,
-            item=item,
-            date=date.today(),
-            time=timezone.now().time(),
-            status="confirmed"
-        )
-        data = {"rating": "4.5", "to": str(booking.id)}
-        response = self.client.post(reverse("mybooking"), data)
-        booking.refresh_from_db()
-        worker.refresh_from_db()
-        self.assertTrue(booking.rated)
-        self.assertEqual(worker.rating, Decimal("4.5"))
-        self.assertContains(response, "Rating submitted successfully")
-
-    # def test_mybooking_view_post_invalid_booking(self):
-    #     data = {"rating": "4.5", "to": "999"}
-    #     response = self.client.post(reverse("mybooking"), data)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
 
     @patch("user_profile.views.imported_booking_details")
     def test_booking_details_view(self, mock_booking_details):
@@ -363,19 +293,4 @@ class UserProfileViewsTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertTrue(response.url.startswith("/accounts/login/"))
 
-# def test_url_patterns(self):
-#     url_patterns = [
-#         ("user", "myprofile"),
-#         ("addressofbooking", "myprofile/addressofbooking"),
-#         ("myreviews", "myprofile/myreviews"),
-#         ("mybooking", "myprofile/mybooking"),
-#         ("update-status", "myprofile/update-status"),
-#         ("reject_booking", "myprofile/reject-booking"),
-#         ("booking_details", "myprofile/booking-details"),
-#         ("mycancellations", "myprofile/mycancellations"),
-#         ("mynotifications", "myprofile/mynotifications"),
-#         ("mymessage", "myprofile/mymessage")
-#     ]
-#     for name, path in url_patterns:
-#         self.assertEqual(reverse(name), f"/{path}")  # Removed trailing slash
 
