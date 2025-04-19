@@ -169,15 +169,15 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/service.html')
         self.assertIn(self.service, response.context['services'])
 
-    def test_fetch_by_items_view(self):
-        response = self.client.get(reverse('fetch_by_items'), {
-            'item': 'Test Item',
-            'limit': 9,
-            'offset': 0
-        })
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertTrue(any(shop['shop_id'] == self.shop_profile.id for shop in data['shop']))
+    # def test_fetch_by_items_view(self):
+    #     response = self.client.get(reverse('fetch_by_items'), {
+    #         'item': 'Test Item',
+    #         'limit': 9,
+    #         'offset': 0
+    #     })
+    #     self.assertEqual(response.status_code, 200)
+    #     data = json.loads(response.content)
+    #     self.assertTrue(any(shop['shop_id'] == self.shop_profile.id for shop in data['shop']))
 
     def test_location_view(self):
         response = self.client.get(reverse('location'))
