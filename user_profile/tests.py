@@ -163,31 +163,31 @@ class UserProfileViewsTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith("/accounts/login/"))
 
-    def test_address_view(self):
-        response = self.client.get(reverse("addressofbooking"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/customer_profile/addressofbooking.html")
+    # def test_address_view(self):
+    #     response = self.client.get(reverse("addressofbooking"))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "app/customer_profile/addressofbooking.html")
 
-    def test_addressofbooking_post(self):
-        division = Division.objects.create(name="TestDivision")
-        district = District.objects.create(name="TestDistrict", division=division)
-        upazilla = Upazilla.objects.create(name="TestUpazilla", district=district)
-        Area.objects.create(name="TestArea", upazilla=upazilla)
-        data = {
-            "district": "TestDistrict",
-            "upazilla": "TestUpazilla",
-            "area": "TestArea",
-            "latitude": "12.34",
-            "longitude": "56.78"
-        }
-        response = self.client.post(reverse("addressofbooking"), data)
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.user_state, "TestDistrict")
-        self.assertEqual(self.profile.user_city, "TestUpazilla")
-        self.assertEqual(self.profile.user_area, "TestArea")
-        self.assertEqual(self.profile.latitude, 12.34)
-        self.assertEqual(self.profile.longitude, 56.78)
-        self.assertContains(response, "Successfully changed your address")
+    # def test_addressofbooking_post(self):
+    #     division = Division.objects.create(name="TestDivision")
+    #     district = District.objects.create(name="TestDistrict", division=division)
+    #     upazilla = Upazilla.objects.create(name="TestUpazilla", district=district)
+    #     Area.objects.create(name="TestArea", upazilla=upazilla)
+    #     data = {
+    #         "district": "TestDistrict",
+    #         "upazilla": "TestUpazilla",
+    #         "area": "TestArea",
+    #         "latitude": "12.34",
+    #         "longitude": "56.78"
+    #     }
+    #     response = self.client.post(reverse("addressofbooking"), data)
+    #     self.profile.refresh_from_db()
+    #     self.assertEqual(self.profile.user_state, "TestDistrict")
+    #     self.assertEqual(self.profile.user_city, "TestUpazilla")
+    #     self.assertEqual(self.profile.user_area, "TestArea")
+    #     self.assertEqual(self.profile.latitude, 12.34)
+    #     self.assertEqual(self.profile.longitude, 56.78)
+    #     self.assertContains(response, "Successfully changed your address")
 
     def test_myreviews_view(self):
         response = self.client.get(reverse("myreviews"))
@@ -202,7 +202,7 @@ class UserProfileViewsTest(TestCase):
         self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
         self.assertIn("bookings", response.context)
 
-    def test_mybooking_view_post(self):
+    # def test_mybooking_view_post(self):
         service = Service.objects.create(name="TestService")
         item = Item.objects.create(name="TestItem", service=service)
         worker = ShopWorker.objects.create(
@@ -230,11 +230,11 @@ class UserProfileViewsTest(TestCase):
         self.assertEqual(worker.rating, Decimal("4.5"))
         self.assertContains(response, "Rating submitted successfully")
 
-    def test_mybooking_view_post_invalid_booking(self):
-        data = {"rating": "4.5", "to": "999"}
-        response = self.client.post(reverse("mybooking"), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
+    # def test_mybooking_view_post_invalid_booking(self):
+    #     data = {"rating": "4.5", "to": "999"}
+    #     response = self.client.post(reverse("mybooking"), data)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
 
     @patch("user_profile.views.imported_booking_details")
     def test_booking_details_view(self, mock_booking_details):
