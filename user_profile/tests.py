@@ -57,6 +57,18 @@ class UserProfileTests(TestCase):
         self.assertTrue(self.profile.check_password("NewPassord124!"))
         self.assertFalse(self.profile.check_password("WrongPassword"))
 
+    def test_user_profile_set_password4(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassord1244!")
+        self.assertTrue(self.profile.check_password("NewPassord1244!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
+
+    def test_user_profile_set_password5(self):
+        """Test UserProfile set_password method."""
+        self.profile.set_password("NewPassord1245!")
+        self.assertTrue(self.profile.check_password("NewPassord1245!"))
+        self.assertFalse(self.profile.check_password("WrongPassword"))
+
     def test_user_profile_generate_random_password(self):
         """Test UserProfile generate_random_password method."""
         password = self.profile.generate_random_password(length=8)
