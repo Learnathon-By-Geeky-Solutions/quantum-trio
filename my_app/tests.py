@@ -101,9 +101,6 @@ class MyAppTests(TestCase):
     def test_service_str(self):
         self.assertEqual(str(self.service), 'Test Service')
 
-    # def test_item_str(self):
-    #     self.assertEqual(str(self.item), 'Test Item, Test Service')
-
     def test_contact_str(self):
         contact = Contact.objects.create(
             name='Test Contact',
@@ -112,15 +109,6 @@ class MyAppTests(TestCase):
             message='Test Message'
         )
         self.assertEqual(str(contact), 'Test Contact - Test Subject')
-
-    # def test_review_carehub_str(self):
-    #     review = ReviewCarehub.objects.create(
-    #         reviewer_type=ContentType.objects.get_for_model(self.user_profile),
-    #         reviewer_id=self.user_profile.id,
-    #         comment='Test Review',
-    #         rating=4.5
-    #     )
-    #     self.assertEqual(str(review), f'Review by {self.user} - 4.5/5')
 
     # View Tests
     def test_home_view_get(self):
@@ -137,15 +125,6 @@ class MyAppTests(TestCase):
         response = self.client.post(reverse('home'))
         self.assertEqual(response.status_code, 405)
 
-    # def test_submit_review_authenticated(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     response = self.client.post(reverse('submit_review'), {
-    #         'review': 'Great service!',
-    #         'rating': '4.5'
-    #     })
-    #     self.assertRedirects(response, reverse('home'))
-    #     self.assertTrue(ReviewCarehub.objects.filter(comment='Great service!').exists())
-
     def test_submit_review_unauthenticated(self):
         response = self.client.post(reverse('submit_review'), {
             'review': 'Great service!',
@@ -159,14 +138,6 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/login.html')
         self.assertEqual(response.context['type'], 'customer')
 
-    # def test_log_in_view_post_success(self):
-    #     response = self.client.post(reverse('login'), {
-    #         'email': 'testuser@example.com',
-    #         'password': 'testpass123'
-    #     })
-    #     self.assertRedirects(response, reverse('home'))
-    #     self.assertTrue(self.client.session['_auth_user_id'])
-
     def test_log_in_view_post_invalid(self):
         response = self.client.post(reverse('login'), {
             'email': 'testuser@example.com',
@@ -176,40 +147,6 @@ class MyAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/login.html')
         self.assertEqual(response.context['message'], 'Invalid email or password')
 
-    # def test_log_out_view(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     response = self.client.get(reverse('log_out'))
-    #     self.assertRedirects(response, reverse('login'))
-    #     self.assertFalse('_auth_user_id' in self.client.session)
-
-    # def test_shop_profile_view(self):
-    #     response = self.client.get(reverse('shop_profile'), {'shop_id': self.shop_profile.id})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'app/saloon_profile/dashboard.html')
-    #     self.assertEqual(response.context['shop'], self.shop_profile)
-    #     self.assertIn(self.shop_service, response.context['shop_services'])
-    #     self.assertIn(self.shop_worker, response.context['shop_workers'])
-
-    # def test_shop_profile_invalid_id(self):
-    #     response = self.client.get(reverse('shop_profile'), {'shop_id': 'invalid'})
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertJSONEqual(response.content, {"error": "Invalid shop ID"})
-
-    # def test_submit_shop_review_authenticated(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     BookingSlot.objects.create(
-    #         user=self.user,
-    #         shop=self.shop_profile,
-    #         status='completed'
-    #     )
-    #     response = self.client.post(reverse('submit_shop_review'), {
-    #         'rating': '4',
-    #         'review': 'Great shop!',
-    #         'shop_id': self.shop_profile.id
-    #     })
-    #     self.assertJSONEqual(response.content, {'success': True})
-    #     self.assertTrue(ShopReview.objects.filter(review='Great shop!').exists())
-
     def test_submit_shop_review_no_booking(self):
         self.client.login(email='testuser@example.com', password='testpass123')
         response = self.client.post(reverse('submit_shop_review'), {
@@ -218,17 +155,6 @@ class MyAppTests(TestCase):
             'shop_id': self.shop_profile.id
         })
         self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
-
-    # def test_contact_us_post(self):
-    #     response = self.client.post(reverse('contact_us'), {
-    #         'name': 'Test User',
-    #         'email': 'test@example.com',
-    #         'subject': 'Test Subject',
-    #         'message': 'Test Message'
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'app/contact_us.html')
-    #     self.assertTrue(Contact.objects.filter(name='Test User').exists())
 
     def test_search_view_post(self):
         response = self.client.post(reverse('search'), {'search': 'Test Shop'})
@@ -242,29 +168,6 @@ class MyAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/service.html')
         self.assertIn(self.service, response.context['services'])
-
-    # def test_book_now_view_get(self):
-    #     response = self.client.get(reverse('book_now'), {'district': 'Test District'})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'app/book_now.html')
-    #     self.assertIn('district', response.context)
-    #     self.assertEqual(response.context['dist'], 'Test District')
-
-    # def test_book_now_view_non_get(self):
-    #     response = self.client.post(reverse('book_now'))
-    #     self.assertEqual(response.status_code, 405)
-
-    # def test_fetch_shop_view(self):
-    #     response = self.client.get(reverse('fetch_shop'), {
-    #         'district': 'Test District',
-    #         'upazila': 'Test Upazilla',
-    #         'area': 'Test Area',
-    #         'limit': 9,
-    #         'offset': 0
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertTrue(any(salon['shop_id'] == self.shop_profile.id for salon in data))
 
     def test_fetch_by_items_view(self):
         response = self.client.get(reverse('fetch_by_items'), {
