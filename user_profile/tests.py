@@ -1,3 +1,5 @@
+
+
 from django.http import JsonResponse
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -8,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from user_profile.models import UserProfile
 from shop_profile.models import MyUser, ShopProfile, ShopWorker
-from my_app.models import Division, District, Service, Upazilla, Area, Item
+from my_app.models import Division, District, Upazilla, Area, Item, Service
 from booking.models import BookingSlot
 from decimal import Decimal
 from datetime import datetime, date, time, timedelta
@@ -86,8 +88,6 @@ class UserProfileViewsTest(TestCase):
         )
         self.client.login(email="test@example.com", password="password123")
 
-        
-
     def test_profile_view_get(self):
         response = self.client.get(reverse("user"))
         self.assertEqual(response.status_code, 200)
@@ -157,7 +157,6 @@ class UserProfileViewsTest(TestCase):
         self.profile.refresh_from_db()
         self.assertTrue(self.profile.profile_picture.name.startswith("profile_pictures/test"))
 
-
     def test_profile_view_unauthenticated(self):
         self.client.logout()
         response = self.client.get(reverse("user"))
@@ -203,11 +202,111 @@ class UserProfileViewsTest(TestCase):
         self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
         self.assertIn("bookings", response.context)
 
+    def test_mybooking_view_post(self):
+        service = Service.objects.create(name="TestService")
+        item = Item.objects.create(name="TestItem", service=service)
+        worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        booking = BookingSlot.objects.create(
+            user=self.profile,
+            shop=self.shop,
+            worker=worker,
+            item=item,
+            date=date.today(),
+            time=timezone.now().time(),
+            status="confirmed"
+        )
+        data = {"rating": "4.5", "to": str(booking.id)}
+        response = self.client.post(reverse("mybooking"), data)
+        booking.refresh_from_db()
+        worker.refresh_from_db()
+        self.assertTrue(booking.rated)
+        self.assertEqual(worker.rating, Decimal("4.5"))
+        self.assertContains(response, "Rating submitted successfully")
+
     def test_mybooking_view_post_invalid_booking(self):
         data = {"rating": "4.5", "to": "999"}
         response = self.client.post(reverse("mybooking"), data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
+
+    @patch("user_profile.views.imported_booking_details")
+    def test_booking_details_view(self, mock_booking_details):
+        mock_booking_details.return_value = JsonResponse({"success": True})
+        data = {"booking_id": 1}
+        response = self.client.post(reverse("booking_details"), json.dumps(data), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"success": True})
+
+    @patch("user_profile.views.imported_reject_booking")
+    def test_reject_booking_view(self, mock_reject_booking):
+        mock_reject_booking.return_value = JsonResponse({"success": True})
+        data = {"booking_id": 1}
+        response = self.client.post(reverse("reject_booking"), json.dumps(data), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"success": True})
+
+    def test_update_status_view_past_booking(self):
+        service = Service.objects.create(name="TestService")
+        item = Item.objects.create(name="TestItem", service=service)
+        worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        booking = BookingSlot.objects.create(
+            user=self.profile,
+            shop=self.shop,
+            worker=worker,
+            item=item,
+            date=date.today() - timedelta(days=1),
+            time=(timezone.now() - timedelta(hours=1)).time(),
+            status="confirmed"
+        )
+        data = {"booking_id": booking.id}
+        response = self.client.post(reverse("update-status"), json.dumps(data), content_type="application/json")
+        booking.refresh_from_db()
+        self.assertTrue(booking.user_end)
+        self.assertJSONEqual(response.content, {
+            "success": True,
+            "details": {"message": "You have successfully marked as completed!"}
+        })
+
+    def test_update_status_view_future_booking(self):
+        service = Service.objects.create(name="TestService")
+        item = Item.objects.create(name="TestItem", service=service)
+        worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        booking = BookingSlot.objects.create(
+            user=self.profile,
+            shop=self.shop,
+            worker=worker,
+            item=item,
+            date=date.today() + timedelta(days=1),
+            time=timezone.now().time(),
+            status="confirmed"
+        )
+        data = {"booking_id": booking.id}
+        response = self.client.post(reverse("update-status"), json.dumps(data), content_type="application/json")
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "The booking time has not yet arrived."
+        })
 
     def test_update_status_view_invalid_booking(self):
         data = {"booking_id": 999}
@@ -217,7 +316,31 @@ class UserProfileViewsTest(TestCase):
             "message": "Booking not found."
         })
 
-   
+    def test_mycancellations_view(self):
+        service = Service.objects.create(name="TestService")
+        item = Item.objects.create(name="TestItem", service=service)
+        worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        BookingSlot.objects.create(
+            user=self.profile,
+            shop=self.shop,
+            worker=worker,
+            item=item,
+            date=date.today(),
+            time=timezone.now().time(),
+            status="canceled"
+        )
+        response = self.client.get(reverse("mycancellations"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/customer_profile/mycancellations.html")
+        self.assertIn("booking", response.context)
+
     def test_mynotifications_view(self):
         response = self.client.get(reverse("mynotifications"))
         self.assertEqual(response.status_code, 200)
@@ -255,5 +378,3 @@ def test_url_patterns(self):
     ]
     for name, path in url_patterns:
         self.assertEqual(reverse(name), f"/{path}")  # Removed trailing slash
-
-    
