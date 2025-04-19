@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 asgiref = "==3.8.1"
 django = "==5.1.7"
+django = "==5.1.7"
 django-tailwind = "==3.8.0"
 livereload = "==2.7.1"
 python-decouple = "==3.8"
