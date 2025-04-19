@@ -18,13 +18,15 @@ from django.db.models.functions import Concat, Cast
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
 from my_app.models import Item
-from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule
+from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule,ShopReview
+from user_profile.models import UserProfile 
 from my_app.models import District,Upazilla,Service
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from collections import OrderedDict
 from decimal import Decimal
+from django.db.models import Avg
 # variable
 user = get_user_model()
 booking_not_found = "Booking not found."
@@ -46,7 +48,6 @@ def profile(request):
         }
         for i in range(14, -1, -1)
     ]
-    print(response_data)
     
     """monthly data """
     current_year = now().year
@@ -103,11 +104,29 @@ def profile(request):
     # Exclude old customers from the current month's list
     new_customer= completed_this_month_users.exclude(id__in=old_customers).count()
     
+    # Reviews
+    reviews=ShopReview.objects.filter(shop=shop)
+    for review in reviews:
+        try:
+            review.reviewer = UserProfile.objects.get(id=review.reviewer_id)
+        except UserProfile.DoesNotExist:
+            review.reviewer = None
+        review.stars = '★' * review.rating 
+    
+    # Happy unhappy customer
+    happy_count = ShopReview.objects.filter(shop=shop,rating__gte=4).count()
+    unhappy_count = ShopReview.objects.filter(shop=shop,rating__lte=3).count()
+    average_rating = ShopReview.objects.filter(shop=shop).aggregate(avg=Avg('rating'))['avg']
+
     context={
         'response_data':response_data,
         'monthly_data':monthly_data,
         'total_customer':total_customer,
-        'new_customer':new_customer
+        'new_customer':new_customer,
+        'reviews':reviews,
+        'happy_count':happy_count,
+        'unhappy_count':unhappy_count,
+        'average_rating':average_rating
     }
     return render(request, "app/salon_dashboard/index.html",context)
 
