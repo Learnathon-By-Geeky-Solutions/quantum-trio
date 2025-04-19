@@ -89,14 +89,13 @@
                     const itemsDiv = services[i].querySelector('.items');
                     const itemSelects = itemsDiv.querySelectorAll('.item-select');
         
-                    for (let j = 0; j < itemSelects.length; j++) {
-                        const select = itemSelects[j];
+                    for (const select of itemSelects) {
                         const priceInput = select.nextElementSibling;
-        
+                    
                         if (select.value !== '' && priceInput.value === '') {
                             alert(`Please enter a price for the selected item in ${services[i].querySelector('.font-bold').textContent}.`);
                             e.preventDefault();
-                            return; // ✅ Now this will exit the whole submit handler correctly
+                            return;
                         }
                     }
                 }
