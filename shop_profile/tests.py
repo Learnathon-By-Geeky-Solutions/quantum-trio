@@ -471,7 +471,7 @@ class DebugStaticFilesTest(SimpleTestCase):
         import carehub.urls
         importlib.reload(carehub.urls)
         self.assertTrue(True)
-
+#passed
 class ShopProfileViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -575,3 +575,117 @@ class ShopProfileViewsTest(TestCase):
             "message": "Booking not found."
         })
 
+class AdditionalShopProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.user.set_password("password123")
+        self.user.save()
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0,
+            profile_pic=SimpleUploadedFile("worker.jpg", b"file_content", content_type="image/jpeg")
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_update_status_not_found(self):
+        """Test update_status view with non-existent booking"""
+        response = self.client.post(
+            reverse("update-status"),
+            json.dumps({"booking_id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "Booking not found."
+        })
+
+    def test_add_worker_expertise_addition(self):
+        """Test add_worker view adding expertise"""
+        data = {
+            "name": "New Worker",
+            "email": "worker2@example.com",
+            "phone": "1234567890",
+            "experience": "5",
+            "expertise": [self.item.id],
+            "profile_pic": SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
+        }
+        response = self.client.post(reverse("add_worker"), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        worker = ShopWorker.objects.get(email="worker2@example.com")
+        self.assertEqual(list(worker.expertise.all()), [self.item])
+        self.assertIsNotNone(worker.profile_pic)
+        messages = [str(m) for m in response.wsgi_request._messages]
+        self.assertIn("Worker added successfully!", messages)
+
+    def test_customers_print_booking(self):
+        """Test customers view printing bookings"""
+        BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date.today(),
+            time=time(10, 0),
+            status="pending"
+        )
+        response = self.client.get(reverse("shop_customers"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/customers.html")
+        bookings = response.context["bookings"]
+        self.assertEqual(len(bookings), 1)
+
+    def test_basic_update_landmarks(self):
+        """Test basic_update view updating landmarks"""
+        data = {
+            "shop_name": "Updated Shop",
+            "shop_title": "New Title",
+            "shop_info": "Updated Info",
+            "shop_owner": "New Owner",
+            "mobile_number": "1234567890",
+            "shop_website": "http://newwebsite.com",
+            "gender": "Unisex",
+            "status": "true",
+            "shop_state": "New State",
+            "shop_city": "New City",
+            "shop_area": "New Area",
+            "landmark_1": "Landmark 1",
+            "landmark_2": "Landmark 2",
+            "landmark_3": "Landmark 3",
+            "landmark_4": "Landmark 4",
+            "landmark_5": "Landmark 5"
+        }
+        response = self.client.post(reverse("basic_update"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/update_basic.html")
+        self.shop.refresh_from_db()
+        self.assertEqual(self.shop.shop_landmark_1, "Landmark 1")
+        self.assertEqual(self.shop.shop_landmark_2, "Landmark 2")
+        self.assertEqual(self.shop.shop_landmark_3, "Landmark 3")
+        self.assertEqual(self.shop.shop_landmark_4, "Landmark 4")
+        self.assertEqual(self.shop.shop_landmark_5, "Landmark 5")
+        messages = [str(m) for m in response.wsgi_request._messages]
+        self.assertIn("Shop profile updated successfully.", messages)
