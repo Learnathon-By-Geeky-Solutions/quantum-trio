@@ -222,7 +222,9 @@ class MyAppTests(TestCase):
         except ShopProfile.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Shop not found.'}, status=404)
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            import logging
+            logging.error("An error occurred: %s", str(e), exc_info=True)
+            return JsonResponse({'success': False, 'error': 'An internal error occurred.'}, status=500)
  
     def test_shop_profile_view(self):
         self.client.login(email='testuser@example.com', password='testpass123')
