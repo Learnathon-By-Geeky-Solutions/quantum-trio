@@ -63,7 +63,7 @@
           <div class="grid-item"
                onclick="selectService(this)"
                onkeydown="handleKeyPress(event, this)"
-               tabindex="0">
+               tabindex="-1">
             <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
             <label for="{{ service.id }}">
               <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
