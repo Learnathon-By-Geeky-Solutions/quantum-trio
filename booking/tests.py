@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -5,7 +6,7 @@ from datetime import date, time, datetime
 from booking.models import BookingSlot
 from my_app.models import Item, Service
 from user_profile.models import UserProfile
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopSchedule, ShopNotification
+from shop_profile.models import MyUser, ShopProfile, ShopWorker, ShopService, ShopSchedule, ShopNotification
 import uuid
 
 User = get_user_model()
@@ -270,3 +271,46 @@ class BookingTests(TestCase):
         self.assertTemplateUsed(response, "app/booking/success.html")
         self.assertEqual(BookingSlot.objects.count(), 0)
         self.assertEqual(ShopNotification.objects.count(), 0)
+class BookingViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.user.set_password("password123")
+        self.user.save()
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        # Create a shop schedule for Monday
+        self.schedule = ShopSchedule.objects.create(
+            shop=self.shop,
+            day_of_week="Monday",
+            start=time(9, 0),  # 9:00 AM
+            end=time(17, 0)    # 5:00 PM
+        )
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_available_slots_time_slot_generation(self):
+        """Test available_slots view generating time slots"""
+        test_date = "2025-04-28"  # A Monday
+        response = self.client.get(reverse("available_slots"), {
+            "shop_id": self.shop.id,
+            "worker_id": self.worker.id,
+            "item_id": self.item.id,
+            "date": test_date
+        })
+        self.assertEqual(response.status_code, 200)
+        expected_slots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
+        self.assertJSONEqual(response.content, expected_slots)
