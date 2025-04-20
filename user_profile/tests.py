@@ -294,3 +294,98 @@ class UserProfileViewsTest(TestCase):
             self.assertTrue(response.url.startswith("/accounts/login/"))
 
 
+class TargetedUserProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="test@example.com")
+        self.user.set_password("password123")
+        self.user.save()
+        self.profile = UserProfile.objects.create(
+            user=self.user,
+            first_name="John",
+            last_name="Doe",
+            phone_number="1234567890"
+        )
+        self.shop_user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.shop = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="test@example.com", password="password123")
+
+    def test_profile_post_password_update(self):
+        """Test profile POST with matching passwords to cover password update and logout redirect"""
+        data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "test@example.com",
+            "password": "newpassword123",
+            "retype_password": "newpassword123",
+            "mobile_number": "1234567890"
+        }
+        response = self.client.post(reverse("user"), data)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("newpassword123"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("logout"))
+        messages = [m.message for m in response.wsgi_request._messages]
+        self.assertIn("Please log in again since you changed your password or email.", messages)
+
+    @patch("user_profile.views.District")
+    @patch("user_profile.views.Upazilla")
+    @patch("user_profile.views.Area")
+    def test_addressofbooking_get_render(self, mock_area, mock_upazilla, mock_district):
+        """Test addressofbooking GET to cover template rendering"""
+        mock_district.objects.all.return_value.values.return_value = [
+            {"id": 1, "name": "Test District"}
+        ]
+        mock_upazilla.objects.values.return_value.annotate.return_value = [
+            {"district__name": "Test District", "upazilla_names": ["Test Upazilla"]}
+        ]
+        mock_area.objects.values.return_value.annotate.return_value = [
+            {"upazilla__name": "Test Upazilla", "area_names": ["Test Area"]}
+        ]
+        response = self.client.get(reverse("addressofbooking"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/customer_profile/addressofbooking.html")
+        self.assertEqual(response.context["district"], [{"id": 1, "name": "Test District"}])
+
+    def test_mybooking_post_worker_rating(self):
+        """Test mybooking POST to cover worker rating update"""
+        # Use timezone-aware datetime for time field
+        aware_time = timezone.now()
+        booking = BookingSlot.objects.create(
+            user=self.profile,
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date.today(),
+            time=aware_time,
+            status="confirmed"
+        )
+        data = {
+            "rating": "4.5",
+            "to": str(booking.id)
+        }
+        response = self.client.post(reverse("mybooking"), data)
+        booking.refresh_from_db()
+        self.worker.refresh_from_db()
+        self.assertTrue(booking.rated)
+        self.assertEqual(self.worker.rating, Decimal("4.5"))
+        self.assertContains(response, "Rating submitted successfully.")
