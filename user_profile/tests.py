@@ -389,3 +389,89 @@ class TargetedUserProfileViewsTest(TestCase):
         self.assertTrue(booking.rated)
         self.assertEqual(self.worker.rating, Decimal("4.5"))
         self.assertContains(response, "Rating submitted successfully.")
+        
+class AdditionalUserProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="test@example.com")
+        self.user.set_password("password123")
+        self.user.save()
+        self.profile = UserProfile.objects.create(
+            user=self.user,
+            first_name="John",
+            last_name="Doe",
+            phone_number="1234567890",
+            user_state="Initial State",
+            user_city="Initial City",
+            user_area="Initial Area",
+            latitude=12.34,
+            longitude=56.78
+        )
+        self.shop_user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.shop = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="test@example.com", password="password123")
+
+    def test_mybooking_post_invalid_booking_id(self):
+        """Test mybooking POST with invalid booking ID to cover BookingSlot.DoesNotExist"""
+        data = {
+            "rating": "4.5",
+            "to": "999"  # Non-existent booking ID
+        }
+        response = self.client.post(reverse("mybooking"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
+        # Note: The view prints "Booking slot not found" to console, which we can't directly test
+        # But we verify the view doesn't crash and renders the template
+
+    def test_addressofbooking_post_with_upazilla(self):
+        """Test addressofbooking POST with upazilla to cover conditional update logic"""
+        data = {
+            "district": "New District",
+            "upazilla": "New Upazilla",
+            "area": "New Area",
+            "latitude": "23.456",
+            "longitude": "90.123"
+        }
+        response = self.client.post(reverse("addressofbooking"), data)
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.user_state, "New District")
+        self.assertEqual(self.profile.user_city, "New Upazilla")
+        self.assertEqual(self.profile.user_area, "New Area")
+        self.assertEqual(self.profile.latitude, 23.456)
+        self.assertEqual(self.profile.longitude, 90.123)
+        self.assertContains(response, "Successfully changed your address.")
+
+    def test_addressofbooking_post_without_upazilla(self):
+        """Test addressofbooking POST without upazilla to cover unconditional update logic"""
+        data = {
+            "area": "New Area",
+            "latitude": "23.456",
+            "longitude": "90.123"
+        }
+        response = self.client.post(reverse("addressofbooking"), data)
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.user_state, "Initial State")  # Unchanged
+        self.assertEqual(self.profile.user_city, "Initial City")  # Unchanged
+        self.assertEqual(self.profile.user_area, "New Area")
+        self.assertEqual(self.profile.latitude, 23.456)
+        self.assertEqual(self.profile.longitude, 90.123)
+        self.assertContains(response, "Successfully changed your address.")
