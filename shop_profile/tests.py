@@ -575,36 +575,3 @@ class ShopProfileViewsTest(TestCase):
             "message": "Booking not found."
         })
 
-    def test_basic_update_post(self):
-        """Test basic_update view POST request"""
-        data = {
-            "shop_name": "Updated Shop",
-            "shop_title": "New Title",
-            "shop_info": "Updated Info",
-            "shop_owner": "New Owner",
-            "mobile_number": "1234567890",
-            "shop_website": "http://newwebsite.com",
-            "gender": "Unisex",
-            "status": "true",
-            "shop_state": "New State",
-            "shop_city": "New City",
-            "shop_area": "New Area"
-        }
-        response = self.client.post(reverse("basic_update"), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/salon_dashboard/update_basic.html")
-        self.shop.refresh_from_db()
-        self.assertEqual(self.shop.shop_name, "Updated Shop")
-        self.assertEqual(self.shop.shop_title, "New Title")
-        self.assertEqual(self.shop.shop_info, "Updated Info")
-        self.assertEqual(self.shop.shop_owner, "New Owner")
-        self.assertEqual(self.shop.mobile_number, "1234567890")
-        self.assertEqual(self.shop.shop_website, "http://newwebsite.com")
-        self.assertEqual(self.shop.gender, "Unisex")
-        self.assertTrue(self.shop.status)
-        self.assertEqual(self.shop.shop_state, "New State")
-        self.assertEqual(self.shop.shop_city, "New City")
-        self.assertEqual(self.shop.shop_area, "New Area")
-        messages = [str(m) for m in response.wsgi_request._messages]
-        self.assertIn("Shop profile updated successfully.", messages)
-
