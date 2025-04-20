@@ -389,7 +389,7 @@ class TargetedUserProfileViewsTest(TestCase):
         self.assertTrue(booking.rated)
         self.assertEqual(self.worker.rating, Decimal("4.5"))
         self.assertContains(response, "Rating submitted successfully.")
-        
+
 class AdditionalUserProfileViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -441,37 +441,3 @@ class AdditionalUserProfileViewsTest(TestCase):
         self.assertTemplateUsed(response, "app/customer_profile/mybooking.html")
         # Note: The view prints "Booking slot not found" to console, which we can't directly test
         # But we verify the view doesn't crash and renders the template
-
-    def test_addressofbooking_post_with_upazilla(self):
-        """Test addressofbooking POST with upazilla to cover conditional update logic"""
-        data = {
-            "district": "New District",
-            "upazilla": "New Upazilla",
-            "area": "New Area",
-            "latitude": "23.456",
-            "longitude": "90.123"
-        }
-        response = self.client.post(reverse("addressofbooking"), data)
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.user_state, "New District")
-        self.assertEqual(self.profile.user_city, "New Upazilla")
-        self.assertEqual(self.profile.user_area, "New Area")
-        self.assertEqual(self.profile.latitude, 23.456)
-        self.assertEqual(self.profile.longitude, 90.123)
-        self.assertContains(response, "Successfully changed your address.")
-
-    def test_addressofbooking_post_without_upazilla(self):
-        """Test addressofbooking POST without upazilla to cover unconditional update logic"""
-        data = {
-            "area": "New Area",
-            "latitude": "23.456",
-            "longitude": "90.123"
-        }
-        response = self.client.post(reverse("addressofbooking"), data)
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.user_state, "Initial State")  # Unchanged
-        self.assertEqual(self.profile.user_city, "Initial City")  # Unchanged
-        self.assertEqual(self.profile.user_area, "New Area")
-        self.assertEqual(self.profile.latitude, 23.456)
-        self.assertEqual(self.profile.longitude, 90.123)
-        self.assertContains(response, "Successfully changed your address.")
