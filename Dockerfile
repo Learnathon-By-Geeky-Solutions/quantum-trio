@@ -24,14 +24,21 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends libpq5 && \
     useradd -m -r appuser && \
     mkdir /my_app && \
-    chown -R appuser /my_app && \
+    chown -R root:root /my_app && \
+    chmod -R 755 /my_app && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 WORKDIR /my_app
-COPY --chown=appuser:appuser . .
+
+# COPY with .dockerignore in place to avoid sensitive files
+COPY . .
+
+# Optional: Make only specific folders writable by appuser
+RUN mkdir -p /my_app/tmp && \
+    chown -R appuser:appuser /my_app/tmp
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
