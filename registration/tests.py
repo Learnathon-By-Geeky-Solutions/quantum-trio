@@ -191,6 +191,7 @@ class RegistrationTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/register/business/step1.html')
         self.assertEqual(response.context.get('message', ''), 'The email exist.')
 
+    @patch('django.contrib.postgres.aggregates.ArrayAgg', lambda x: x)
     def test_business_register_step3_get(self):
         response = self.client.get(reverse('business_register_step3'))
         self.assertEqual(response.status_code, 200)
