@@ -1,3 +1,4 @@
+from gettext import translation
 from unittest.mock import patch
 from django.http import JsonResponse
 from django.test import TestCase, Client, SimpleTestCase
@@ -5,10 +6,10 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from shop_profile.models import (
-    ShopProfile, ShopGallery, ShopWorker, ShopService, 
+    MyUser, ShopProfile, ShopGallery, ShopWorker, ShopService, 
     ShopReview, ShopSchedule, ShopNotification
 )
-from my_app.models import Division, Item, District, Upazilla, Service
+from my_app.models import Area, Division, Item, District, Upazilla, Service
 from user_profile.models import UserProfile
 from booking.models import BookingSlot
 from datetime import date, time, datetime, timedelta
@@ -470,3 +471,140 @@ class DebugStaticFilesTest(SimpleTestCase):
         import carehub.urls
         importlib.reload(carehub.urls)
         self.assertTrue(True)
+
+class ShopProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.user.set_password("password123")
+        self.user.save()
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_profile_monthly_data_loop(self):
+        """Test profile view monthly data loop"""
+        # Create a completed booking
+        BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date(2025, 4, 1),  # April
+            time=time(10, 0),
+            status="completed"
+        )
+        response = self.client.get(reverse("shop_profile"))  # Assumed URL name
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        monthly_data = response.context["monthly_data"]
+        # Check April’s value (50.00 from shop_service price)
+        self.assertTrue(any(d["month"] == "Apr" and d["value"] == 50.0 for d in monthly_data))
+
+    def test_profile_reviews_with_missing_reviewer(self):
+        """Test profile view reviews loop with missing reviewer"""
+        # Create a review with a non-existent reviewer
+        ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,  # Non-existent UserProfile
+            rating=4
+        )
+        response = self.client.get(reverse("shop_profile"))  # Assumed URL name
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        reviews = response.context["reviews"]
+        self.assertEqual(len(reviews), 1)
+        self.assertIsNone(reviews[0].reviewer)  # Reviewer should be None
+        self.assertEqual(reviews[0].stars, "★★★★")
+
+    def test_reject_booking_success(self):
+        """Test reject_booking view successful cancellation"""
+        # Create a booking slot for a future date (more than 30 hours away)
+        booking = BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date.today() + timedelta(days=2),
+            time=time(10, 0),
+            status="pending"
+        )
+        response = self.client.post(
+            reverse("reject_booking"),
+            json.dumps({"booking_id": booking.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"success": True, "message": "Booking canceled."})
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, "canceled")
+
+    def test_update_status_not_found(self):
+        """Test update_status view with non-existent booking"""
+        response = self.client.post(
+            reverse("update-status"),  # Corrected URL name based on user_profile/views.py
+            json.dumps({"booking_id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "Booking not found."
+        })
+
+    def test_basic_update_post(self):
+        """Test basic_update view POST request"""
+        data = {
+            "shop_name": "Updated Shop",
+            "shop_title": "New Title",
+            "shop_info": "Updated Info",
+            "shop_owner": "New Owner",
+            "mobile_number": "1234567890",
+            "shop_website": "http://newwebsite.com",
+            "gender": "Unisex",
+            "status": "true",
+            "shop_state": "New State",
+            "shop_city": "New City",
+            "shop_area": "New Area"
+        }
+        response = self.client.post(reverse("basic_update"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/update_basic.html")
+        self.shop.refresh_from_db()
+        self.assertEqual(self.shop.shop_name, "Updated Shop")
+        self.assertEqual(self.shop.shop_title, "New Title")
+        self.assertEqual(self.shop.shop_info, "Updated Info")
+        self.assertEqual(self.shop.shop_owner, "New Owner")
+        self.assertEqual(self.shop.mobile_number, "1234567890")
+        self.assertEqual(self.shop.shop_website, "http://newwebsite.com")
+        self.assertEqual(self.shop.gender, "Unisex")
+        self.assertTrue(self.shop.status)
+        self.assertEqual(self.shop.shop_state, "New State")
+        self.assertEqual(self.shop.shop_city, "New City")
+        self.assertEqual(self.shop.shop_area, "New Area")
+        messages = [str(m) for m in response.wsgi_request._messages]
+        self.assertIn("Shop profile updated successfully.", messages)
+
