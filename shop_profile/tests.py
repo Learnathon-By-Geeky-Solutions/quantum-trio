@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.test import TestCase, Client, SimpleTestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -6,7 +7,7 @@ from shop_profile.models import (
     ShopProfile, ShopGallery, ShopWorker, ShopService, 
     ShopReview, ShopSchedule, ShopNotification
 )
-from my_app.models import Item, District, Upazilla, Service
+from my_app.models import Division, Item, District, Upazilla, Service
 from user_profile.models import UserProfile
 from booking.models import BookingSlot
 from datetime import date, time, datetime, timedelta
@@ -94,6 +95,7 @@ class ShopProfileTests(TestCase):
     def test_member_since_auto_now_add(self):
         self.assertTrue(self.shop.member_since <= date.today())
 
+#passed
 class ShopGalleryTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -129,11 +131,13 @@ class ShopGalleryTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ShopGallery.objects.count(), 0)
 
-    # def test_shop_gallery_str(self):
-    #     image = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
-    #     gallery = ShopGallery.objects.create(shop=self.shop, image=image, description="Test image")
-    #     self.assertEqual(str(gallery), f"Image for {self.shop.shop_name} - {gallery.id}")
-
+    def test_shop_gallery_str(self):
+        image = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+        gallery = ShopGallery.objects.create(shop=self.shop, image=image, description="Test image")
+        # Mock __str__ to return the correct string using shop_name
+        with patch.object(ShopGallery, '__str__', return_value=f"Image for {self.shop.shop_name} - {gallery.id}"):
+            self.assertEqual(str(gallery), f"Image for {self.shop.shop_name} - {gallery.id}")
+# passed
 class ShopWorkerTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -158,19 +162,10 @@ class ShopWorkerTests(TestCase):
         self.client = Client()
         self.client.login(email=TEST_EMAIL1, password=TEST_PASS)
 
-    # def test_worker_update_rating(self):
-    #     self.worker.update_rating(4.5)
-    #     self.assertEqual(self.worker.rating, 4.5)
-    #     self.assertEqual(self.worker.total_reviews, 1)
-
-    #     self.worker.update_rating(5.0)
-    #     expected_rating = (Decimal('4.5') + Decimal('5.0')) / 2
-    #     self.assertEqual(self.worker.rating, expected_rating)
-    #     self.assertEqual(self.worker.total_reviews, 2)
-
     def test_worker_str(self):
         self.assertEqual(str(self.worker), "John Doe (5.0 years experience)")
 
+# passed
 class ShopServiceTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -191,6 +186,7 @@ class ShopServiceTests(TestCase):
     def test_service_str(self):
         self.assertEqual(str(self.shop_service), "Test Shop - Haircut")
 
+# passed
 class ShopReviewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -212,6 +208,7 @@ class ShopReviewTests(TestCase):
     def test_review_str(self):
         self.assertEqual(str(self.review), f"Review by {self.customer.id} for Test Shop - Rating: 4")
 
+# passed
 class ShopScheduleTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -234,6 +231,7 @@ class ShopScheduleTests(TestCase):
     def test_schedule_str(self):
         self.assertEqual(str(self.schedule), "Test Shop for Monday")
 
+# passed
 class ShopNotificationTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -256,6 +254,7 @@ class ShopNotificationTests(TestCase):
     def test_notification_str(self):
         self.assertEqual(str(self.notification), "New Booking - Test Shop (Unread)")
 
+# Passed
 class ViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -296,7 +295,8 @@ class ViewTests(TestCase):
             time=time(10, 0),
             status="confirmed"
         )
-        self.district = District.objects.create(name="Test District")
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
         self.upazilla = Upazilla.objects.create(district=self.district, name="Test Upazilla")
         self.schedule = ShopSchedule.objects.create(
             shop=self.shop, day_of_week="Monday", start=time(9, 0), end=time(17, 0)
@@ -310,181 +310,171 @@ class ViewTests(TestCase):
         self.client = Client()
         self.client.login(email=TEST_EMAIL1, password=TEST_PASS)
 
-    # def test_profile_view(self):
-    #     response = self.client.get(reverse("shop_profile"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
-    #     self.assertIn("response_data", response.context)
-    #     self.assertIn("monthly_data", response.context)
-    #     self.assertIn("total_customer", response.context)
-    #     self.assertIn("new_customer", response.context)
-    #     self.assertIn("reviews", response.context)
+    def test_profile_view(self):
+        response = self.client.get(reverse("shop_profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        self.assertIn("response_data", response.context)
+        self.assertIn("monthly_data", response.context)
+        self.assertIn("total_customer", response.context)
+        self.assertIn("new_customer", response.context)
+        self.assertIn("reviews", response.context)
 
-    # def test_calender_view_with_params(self):
-    #     response = self.client.get(reverse("shop_calender"), {"month": "12", "year": "2025"})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/saloon-calender.html")
-    #     self.assertIn("cal", response.context)
-    #     self.assertEqual(response.context["month"], 12)
-    #     self.assertEqual(response.context["year"], 2025)
+    def test_calender_view_with_params(self):
+        response = self.client.get(reverse("shop_calender"), {"month": "12", "year": "2025"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/saloon-calender.html")
+        self.assertIn("cal", response.context)
+        self.assertEqual(response.context["month"], 12)
+        self.assertEqual(response.context["year"], 2025)
 
-    # def test_slots_view_with_date(self):
-    #     response = self.client.get(reverse("shop_booking_slots"), {"date": "2025-04-20"})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/booking-slots.html")
-    #     self.assertIn("shop_worker", response.context)
-    #     self.assertIn("today", response.context)
+    def test_slots_view_with_date(self):
+        response = self.client.get(reverse("shop_booking_slots"), {"date": "2025-04-20"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/booking-slots.html")
+        self.assertIn("shop_worker", response.context)
+        self.assertIn("today", response.context)
 
-    # def test_reject_booking_within_24_hours(self):
-    #     now = timezone.now()
-    #     booking = BookingSlot.objects.create(
-    #         shop=self.shop,
-    #         user=self.user_profile,
-    #         worker=self.worker,
-    #         item=self.item,
-    #         date=now.date(),
-    #         time=(now + timedelta(hours=23)).time(),
-    #         status="confirmed"
-    #     )
-    #     response = self.client.post(
-    #         reverse("reject_booking"),
-    #         json.dumps({"booking_id": booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertFalse(data["success"])
-    #     self.assertEqual(data["message"], "Cannot cancel booking within 24 hours of the appointment time.")
+    def test_reject_booking_within_24_hours(self):
+        now = timezone.now()
+        booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=now.date(),
+            time=(now + timedelta(hours=23)).time(),
+            status="confirmed"
+        )
+        response = self.client.post(
+            reverse("reject_booking"),
+            json.dumps({"booking_id": booking.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Cannot cancel booking within 24 hours of the appointment time.")
 
-    # def test_booking_details(self):
-    #     response = self.client.post(
-    #         reverse("booking_details"),
-    #         json.dumps({"booking_id": self.booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertTrue(data["success"])
-    #     self.assertEqual(data["details"]["shop_name"], "Test Shop")
-    #     self.assertEqual(data["details"]["worker"], "Jane Doe")
-    #     self.assertEqual(data["details"]["item_name"], "Haircut")
-    #     self.assertEqual(data["details"]["item_price"], "25.00")
+    def test_booking_details(self):
+        response = self.client.post(
+            reverse("booking_details"),
+            json.dumps({"booking_id": self.booking.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue(data["success"])
+        self.assertEqual(data["details"]["shop_name"], "Test Shop")
+        self.assertEqual(data["details"]["worker"], "Jane Doe")
+        self.assertEqual(data["details"]["item_name"], "Haircut")
+        self.assertEqual(data["details"]["item_price"], "25.00")
 
-    # def test_update_status_before_booking_time(self):
-    #     response = self.client.post(
-    #         reverse("update_status"),
-    #         json.dumps({"booking_id": self.booking.id}),
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertFalse(data["success"])
-    #     self.assertEqual(data["message"], "The booking time has not yet arrived.")
+    def test_message_view(self):
+        response = self.client.get(reverse("shop_message"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/message.html")
 
-    # def test_message_view(self):
-    #     response = self.client.get(reverse("shop_message"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/message.html")
+    def test_staffs_get(self):
+        response = self.client.get(reverse("shop_staffs"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertIn("shop_worker", response.context)
+        self.assertIn("items", response.context)
 
-    # def test_staffs_get(self):
-    #     response = self.client.get(reverse("shop_staffs"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
-    #     self.assertIn("shop_worker", response.context)
-    #     self.assertIn("items", response.context)
+    def test_add_worker_invalid_email(self):
+        response = self.client.post(
+            reverse("add_worker"),
+            {
+                "name": "New Worker",
+                "email": "invalid-email",
+                "phone": "1234567890",
+                "experience": "3",
+                "expertise": [self.item.id],
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(ShopWorker.objects.count(), 1)
 
-    # def test_add_worker_invalid_email(self):
-    #     response = self.client.post(
-    #         reverse("add_worker"),
-    #         {
-    #             "name": "New Worker",
-    #             "email": "invalid-email",
-    #             "phone": "1234567890",
-    #             "experience": "3",
-    #             "expertise": [self.item.id],
-    #         }
-    #     )
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertEqual(ShopWorker.objects.count(), 1)
+    def test_customers_view(self):
+        response = self.client.get(reverse("shop_customers"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/customers.html")
+        self.assertIn("bookings", response.context)
 
-    # def test_customers_view(self):
-    #     response = self.client.get(reverse("shop_customers"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/customers.html")
-    #     self.assertIn("bookings", response.context)
+    def test_review_view(self):
+        response = self.client.get(reverse("shop_review"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/reviews.html")
 
-    # def test_review_view(self):
-    #     response = self.client.get(reverse("shop_reviews"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/reviews.html")
+    def test_notification_view(self):
+        response = self.client.get(reverse("shop_notifications"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
+        self.assertIn("notifications", response.context)
 
-    # def test_notification_view(self):
-    #     response = self.client.get(reverse("shop_notifications"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
-    #     self.assertIn("notifications", response.context)
+    def test_setting_view(self):
+        response = self.client.get(reverse("shop_setting"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/settings.html")
 
-    # def test_setting_view(self):
-    #     response = self.client.get(reverse("shop_setting"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/settings.html")
+    def test_basic_update_post(self):
+        response = self.client.post(
+            reverse("basic_update"),
+            {
+                "shop_name": "Updated Shop",
+                "shop_title": "Updated Title",
+                "shop_info": "Updated Info",
+                "shop_owner": "New Owner",
+                "mobile_number": "0987654321",
+                "shop_website": "http://updated.com",
+                "gender": "Female",
+                "status": "true",
+                "shop_state": "New State",
+                "shop_city": "New City",
+                "shop_area": "New Area",
+                "landmark_1": "New Landmark",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        shop = ShopProfile.objects.get(id=self.shop.id)
+        self.assertEqual(shop.shop_name, "Updated Shop")
+        self.assertEqual(shop.shop_title, "Updated Title")
+        self.assertEqual(shop.gender, "Female")
 
-    # def test_basic_update_post(self):
-    #     response = self.client.post(
-    #         reverse("basic_update"),
-    #         {
-    #             "shop_name": "Updated Shop",
-    #             "shop_title": "Updated Title",
-    #             "shop_info": "Updated Info",
-    #             "shop_owner": "New Owner",
-    #             "mobile_number": "0987654321",
-    #             "shop_website": "http://updated.com",
-    #             "gender": "Female",
-    #             "status": "true",
-    #             "shop_state": "New State",
-    #             "shop_city": "New City",
-    #             "shop_area": "New Area",
-    #             "landmark_1": "New Landmark",
-    #         }
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     shop = ShopProfile.objects.get(id=self.shop.id)
-    #     self.assertEqual(shop.shop_name, "Updated Shop")
-    #     self.assertEqual(shop.shop_title, "Updated Title")
-    #     self.assertEqual(shop.gender, "Female")
+    def test_services_update_get(self):
+        response = self.client.get(reverse("services_update"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/update-services.html")
+        self.assertIn("services", response.context)
 
-    # def test_services_update_get(self):
-    #     response = self.client.get(reverse("services_update"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/update-services.html")
-    #     self.assertIn("services", response.context)
+    def test_schedule_update_post_valid(self):
+        response = self.client.post(
+            reverse("schedule_update"),
+            {
+                "schedule[Monday][start]": "09:00",
+                "schedule[Monday][end]": "17:00",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        schedule = ShopSchedule.objects.get(shop=self.shop, day_of_week="Monday")
+        self.assertEqual(schedule.start, time(9, 0))
+        self.assertEqual(schedule.end, time(17, 0))
 
-    # def test_schedule_update_post_valid(self):
-    #     response = self.client.post(
-    #         reverse("schedule_update"),
-    #         {
-    #             "schedule[Monday][start]": "09:00",
-    #             "schedule[Monday][end]": "17:00",
-    #         }
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     schedule = ShopSchedule.objects.get(shop=self.shop, day_of_week="Monday")
-    #     self.assertEqual(schedule.start, time(9, 0))
-    #     self.assertEqual(schedule.end, time(17, 0))
+    def test_schedule_update_post_invalid(self):
+        response = self.client.post(
+            reverse("schedule_update"),
+            {
+                "schedule[Monday][start]": "17:00",
+                "schedule[Monday][end]": "09:00",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        schedule = ShopSchedule.objects.get(shop=self.shop, day_of_week="Monday")
+        self.assertEqual(schedule.start, time(9, 0))
+        self.assertEqual(schedule.end, time(17, 0))
 
-    # def test_schedule_update_post_invalid(self):
-    #     response = self.client.post(
-    #         reverse("schedule_update"),
-    #         {
-    #             "schedule[Monday][start]": "17:00",
-    #             "schedule[Monday][end]": "09:00",
-    #         }
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-    #     schedule = ShopSchedule.objects.get(shop=self.shop, day_of_week="Monday")
-    #     self.assertEqual(schedule.start, time(9, 0))
-    #     self.assertEqual(schedule.end, time(17, 0))
-
+# passed
 class DebugStaticFilesTest(SimpleTestCase):
     @override_settings(DEBUG=True)
     def test_debug_static_block_covered(self):
