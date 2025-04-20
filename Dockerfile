@@ -33,7 +33,7 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 WORKDIR /my_app
 
-# Copy app code as root, but make specific folders writable if needed
+# COPY with .dockerignore in place to avoid sensitive files
 COPY . .
 
 # Optional: Make only specific folders writable by appuser

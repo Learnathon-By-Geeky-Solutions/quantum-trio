@@ -15,7 +15,7 @@ from PIL import Image
 import uuid
 
 UserModel = get_user_model()
-
+TEST_PASS = "testpass123"
 class RegistrationTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -39,7 +39,7 @@ class RegistrationTests(TestCase):
             'first-name': 'John',
             'last-name': 'Doe',
             'email': f'john_{uuid.uuid4()}@example.com',
-            'password': make_password('testpass123'),
+            'password': make_password(TEST_PASS),
             'mobile-number': '1234567890',
             'gender': 'Male',
             'business_name': 'Test Business',
