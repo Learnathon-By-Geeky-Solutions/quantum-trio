@@ -82,13 +82,18 @@ class ShopProfile(models.Model):
     # Additional Info
     member_since = models.DateField(auto_now_add=True)
 
-    def update_rating(self, new_rating):
-        """Updates the shop rating while ensuring it stays within a valid range (0.00 to 5.00)."""
-        if 0.00 <= new_rating <= 5.00:
-            self.shop_rating = round(new_rating, 2)  # Round to 2 decimal places
+    def update_rating(self, rating):
+        current_rating = self.shop_rating  # Already a Decimal
+        current_total = current_rating * self.shop_customer_count
+
+        self.shop_customer_count += 1
+        new_rating = (current_total + Decimal(str(rating))) / self.shop_customer_count  # Convert float to Decimal
+
+        if Decimal("0.00") <= new_rating <= Decimal("5.00"):
+            self.shop_rating = new_rating.quantize(Decimal("0.01"))  # Round to 2 decimal places
             self.save()
             return True
-        return False  # Invalid rating
+        return False
     
     def __str__(self): 
         return self.shop_name
@@ -135,6 +140,10 @@ class ShopReview(models.Model):
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True,default='')  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.shop.update_rating(self.rating)
+        print('Updated rating')
     def __str__(self):
         return f"Review by {self.reviewer_id} for {self.shop.shop_name} - Rating: {self.rating}"
 

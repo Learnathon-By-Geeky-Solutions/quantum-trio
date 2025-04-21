@@ -178,6 +178,12 @@ def submit_shop_review(request):
         return JsonResponse({'success': False, 'error': 'Shop not found.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+def area_database():
+    district = District.objects.all().values('id', 'name')
+    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
+    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+    return district,upazilla,area
 
 @csrf_protect
 def contact_us(request):
@@ -259,16 +265,13 @@ def service(request):
     return render(request, 'app/service.html',{'services':services})
 
 def book_now(request):
-    district = District.objects.all().values('id', 'name')
-    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+    district,upazilla,area=area_database()
     dist=""
     if request.GET.get('district'):
         dist=request.GET.get('district')
     if request.GET.get('upazilla'):
         dist=request.GET.get('upazilla')
-    print(dist)
-    print(area)
+        
     if request.method == 'GET':
         return render(request, 'app/book_now.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area,'dist':dist})
     else:
@@ -305,13 +308,6 @@ def fetch_shop(request):
     ]
     return JsonResponse(salon_list, safe=False)
 
-def explore_by_items(request):
-    district = District.objects.all().values('id', 'name')
-    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
-    item=request.GET.get('item')
-    return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area,'dist':dist})
-
 def fetch_by_items(request):
     """First find by items"""
     item=request.GET.get('item')
@@ -328,15 +324,11 @@ def fetch_by_items(request):
         shop = shop.filter(shop_city=upazilla)
     if area:
         shop = shop.filter(shop_area=area)
-
-    print(district,upazilla,area)
-    
-    print("Check",item)
-    limit = int(request.GET.get('limit', 9))  # Default to 10 if no limit is provided
+  
+    limit = int(request.GET.get('limit', 9))  # Default to 9 if no limit is provided
     offset = int(request.GET.get('offset', 0))  # Default to 0 if no offset is provided
     """Finding available shops of the desired service or item"""
-    
-    print(shop)
+
     paginator = Paginator(shop, limit)
     shop_page = paginator.get_page(offset // limit + 1)  # Get the current page based on the offset
     shop_data=[]
@@ -367,9 +359,7 @@ def explore_by_items(request):
     item=""
     if(request.method=="GET"):
         item=request.GET.get('item')
-    district = District.objects.all().values('id', 'name')
-    upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+    district,upazilla,area=area_database()
     item=request.GET.get('item')
     return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area})
  
