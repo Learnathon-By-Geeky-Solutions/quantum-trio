@@ -359,8 +359,8 @@ def explore_by_items(request):
     item=""
     if(request.method=="GET"):
         item=request.GET.get('item')
+    print(item)
     district,upazilla,area=area_database()
-    item=request.GET.get('item')
     return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area})
  
 def items(request):

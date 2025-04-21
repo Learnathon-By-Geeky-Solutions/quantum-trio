@@ -181,9 +181,7 @@ def reject_booking(request):
         booking.status = "canceled"
         booking.save()
         # Create a shop notification for the following cancellation
-        notification_message = (
-            f"Booking canceled!\n"
-        )
+        notification_message = "Booking cancelled by the customer!"
         ShopNotification.objects.create(
             shop=shop,
             title="New Booking canceled",
