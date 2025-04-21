@@ -28,8 +28,8 @@ BOOKING_NOT_FOUND = "Booking not found."
 DAYS_IN_PAST = 15
 HOURS_OFFSET = 6
 CANCEL_HOURS_LIMIT = 30
+SHOP_STAFFS = "shop_staffs"
 
-# Helper Functions
 def get_shop_from_user(user):
     """Retrieve shop profile from user."""
     return user.shop_profile
@@ -95,8 +95,6 @@ def get_current_datetime_with_offset(hours=HOURS_OFFSET):
     updated_time = timezone.now() + timedelta(hours=hours)
     return updated_time
 
-
-# Views
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
@@ -166,6 +164,7 @@ def slots(request):
         for worker in ShopWorker.objects.filter(shop=get_shop_from_user(request.user))
     ]
     return render(request, "app/salon_dashboard/booking-slots.html", {"shop_worker": shop_worker, "today": current_datetime})
+
 @csrf_protect
 @login_required
 @require_http_methods(["POST"])
@@ -248,9 +247,10 @@ def staffs(request):
             worker.name = request.POST.get("name")
             worker.email = request.POST.get("email")
             worker.phone = request.POST.get("phone")
-            worker.experience = int(float(request.POST.get("experience")))
-            worker.expertise.set(Item.objects.filter(id__in=request.POST.getlist("expertise")))
-            
+            worker.experience = float(request.POST.get("experience")) 
+            expertise_ids = request.POST.getlist("expertise")
+            if expertise_ids:
+                worker.expertise.set(Item.objects.filter(id__in=expertise_ids))
             if profile_pic := request.FILES.get("profile_pic"):
                 if worker.profile_pic:
                     worker.profile_pic.delete(save=False)
@@ -282,20 +282,20 @@ def add_worker(request):
         
         if not all([name, phone, expertise]):
             messages.error(request, "Name, Mobile, and Expertise are required.")
-            return redirect("add_worker")
+            return redirect(SHOP_STAFFS)
         
         if email:
             try:
                 validate_email(email)
             except ValidationError:
                 messages.error(request, "Invalid email format.")
-                return redirect("add_worker")
+                return redirect(SHOP_STAFFS)
         
         try:
             experience = float(experience)
         except ValueError:
             messages.error(request, "Experience must be a number.")
-            return redirect("add_worker")
+            return redirect(SHOP_STAFFS)
         
         worker = ShopWorker.objects.create(
             name=name, email=email, phone=phone, experience=experience,
@@ -303,9 +303,24 @@ def add_worker(request):
         )
         worker.expertise.add(*expertise)
         messages.success(request, "Worker added successfully!")
-        return redirect("shop_staffs")
+        return redirect(SHOP_STAFFS)
     
     return render(request, "app/salon_dashboard/staffs.html")
+
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
+def delete_worker(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        worker_id = data.get('id')
+        try:
+            worker = ShopWorker.objects.get(id=worker_id)
+            worker.delete()
+            return JsonResponse({'success': True})
+        except ShopWorker.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Worker not found'})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 @csrf_protect
 @login_required
