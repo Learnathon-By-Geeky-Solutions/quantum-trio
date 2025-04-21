@@ -20,7 +20,6 @@ from booking.models import BookingSlot
 from my_app.models import Item, District, Upazilla, Service
 from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification, ShopSchedule, ShopReview
 from user_profile.models import UserProfile
-import pytz
 from datetime import datetime, timedelta
 
 
@@ -94,7 +93,8 @@ def get_current_datetime_with_offset(hours=HOURS_OFFSET):
     """Get current datetime with timezone offset in UTC."""
     print("check again")
     updated_time = timezone.now() + timedelta(hours=hours)
-    return updated_time  # Use UTC
+    return updated_time
+
 
 # Views
 @csrf_protect
@@ -142,9 +142,6 @@ def calender(request):
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
-@csrf_protect
-@login_required
-@require_http_methods(["GET"])
 def slots(request):
     today = datetime.strptime(request.GET.get("date", date.today().strftime("%Y-%m-%d")), "%Y-%m-%d").date()
     current_datetime = get_current_datetime_with_offset()
@@ -178,7 +175,6 @@ def reject_booking(request):
     try:
         booking = BookingSlot.objects.get(id=booking_id)
         booking_datetime = make_aware(datetime.combine(booking.date, booking.time))
-        print("check last:",booking_datetime - datetime.now().astimezone() < timedelta(hours=CANCEL_HOURS_LIMIT))
         if booking_datetime - datetime.now().astimezone() < timedelta(hours=CANCEL_HOURS_LIMIT):
             return JsonResponse({"success": False, "message": "Cannot cancel within 24 hours."})
         booking.status = "canceled"
@@ -223,8 +219,7 @@ def update_status(request):
     
     try:
         booking = BookingSlot.objects.get(id=booking_id)
-        booking_datetime = datetime.combine(booking.date, booking.time)
-        booking_datetime = timezone.make_aware(booking_datetime)
+        booking_datetime = make_aware(datetime.combine(booking.date, booking.time))
         print("check 1:",booking_datetime)
         print("check 2:",get_current_datetime_with_offset())
         if get_current_datetime_with_offset() > booking_datetime:
@@ -297,7 +292,7 @@ def add_worker(request):
                 return redirect("add_worker")
         
         try:
-            experience = int(float(experience))
+            experience = float(experience)
         except ValueError:
             messages.error(request, "Experience must be a number.")
             return redirect("add_worker")
