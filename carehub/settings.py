@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'carehub.urls'
@@ -76,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },
@@ -85,13 +87,7 @@ WSGI_APPLICATION = 'carehub.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# to use postpreSQL install postgreSQL first then install psycopg2 using pip install psycopg2 in your virtual environment
-# follow this video(consequent 2 video): https://www.youtube.com/watch?v=d--mEqEUybA
-# superuser: rakib151p
-# email: rakib151p@gmail.com
-# python manage.py createsuperuser use this command to create superuser
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
