@@ -308,45 +308,41 @@ def booking_details(request):
 @login_required
 @require_http_methods(["POST"])
 def update_status(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        booking_id = data.get("booking_id")
-        try:
-            booking = BookingSlot.objects.get(id=booking_id)  # Get the booking object
-            # Combine the booking date and time
-            booking_datetime = datetime.combine(booking.date, booking.time)
+    data = json.loads(request.body)
+    booking_id = data.get("booking_id")
 
-            # adding 6 hours for the difference of timezone
-            updated_time = timezone.now() + timedelta(hours=6)
-            current_time = datetime.strptime(
-                updated_time.time().strftime("%H:%M:%S"), "%H:%M:%S"
-            ).time()  # for removing the millisecond
-            current_date = updated_time.date()
-            today = datetime.combine(current_date, current_time)
+    booking = get_booking_or_none(booking_id)
+    if not booking:
+        return JsonResponse({"success": False, "message": "Booking not found."})
 
-            # Check if the current time is greater than the booking date and time
-            if today > booking_datetime:
-                # Only update the status if the current time is after the booked time
-                booking.shop_end = True
-                booking.save()
-                return JsonResponse(
-                    {
-                        "success": True,
-                        "details": {
-                            "message": "You have successfully marked as completed!"
-                        },
-                    }
-                )
-            else:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "message": "The booking time has not yet arrived.",
-                    }
-                )
+    if booking_has_passed(booking):
+        booking.shop_end = True
+        booking.save()
+        return JsonResponse({
+            "success": True,
+            "details": {
+                "message": "You have successfully marked as completed!"
+            }
+        })
 
-        except BookingSlot.DoesNotExist:
-            return JsonResponse({"success": False, "message": booking_not_found})
+    return JsonResponse({
+        "success": False,
+        "message": "The booking time has not yet arrived."
+    })
+
+# --- Helper functions ---
+
+def get_booking_or_none(booking_id):
+    try:
+        return BookingSlot.objects.get(id=booking_id)
+    except BookingSlot.DoesNotExist:
+        return None
+
+def booking_has_passed(booking):
+    booking_datetime = datetime.combine(booking.date, booking.time)
+    current_time = timezone.now() + timedelta(hours=6)
+    current_datetime = datetime.combine(current_time.date(), current_time.time().replace(microsecond=0))
+    return current_datetime > booking_datetime
 
 @csrf_protect
 @login_required
@@ -359,43 +355,60 @@ def message(request):
 @require_http_methods(["GET","POST"])
 def staffs(request):
     if request.method == "POST":
-        worker_id = request.POST.get("id")
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        experience = request.POST.get("experience")
-        expertise_ids = request.POST.getlist("expertise")
-        profile_pic = request.FILES.get("profile_pic")
-        """ Fetch expertise items in one query """
-        expertise_items = Item.objects.filter(id__in=expertise_ids)
-        try:
-            worker = ShopWorker.objects.get(id=worker_id)
-            worker.name = name
-            worker.email = email
-            worker.phone = phone
-            worker.experience = experience
-            if expertise_items.exists():  # Only update if there are valid expertise items
-                worker.expertise.set(expertise_items)
-            if profile_pic:  # Only update profile_pic if a new file is uploaded delete first then upload
-                if worker.profile_pic:
-                    worker.profile_pic.delete(save=False)
-                worker.profile_pic = profile_pic
-            worker.save()
-            messages.success(request,"Worker details updated Successfully.")
-            
-        except (ValueError, TypeError):
-            messages.error(request,"Please enter a valid number of years.")
-        except ShopWorker.DoesNotExist:
-            messages.error(request,"Worker doesn't Exist.")
+        success = update_worker_details(request)
+        if success:
+            messages.success(request, "Worker details updated successfully.")
+        else:
+            # The helper handles its own messages
+            pass
 
     workers = ShopWorker.objects.filter(shop=request.user.shop_profile)
     items = ShopService.objects.filter(shop=request.user.shop_profile)
+    return render(request, "app/salon_dashboard/staffs.html", {
+        "shop_worker": workers,
+        "items": items,
+    })
 
-    return render(
-        request,
-        "app/salon_dashboard/staffs.html",
-        {"shop_worker": workers, "items": items},
-    )
+# --- Helper Function ---
+def update_worker_details(request):
+    try:
+        worker = ShopWorker.objects.get(id=request.POST.get("id"))
+    except ShopWorker.DoesNotExist:
+        messages.error(request, "Worker doesn't exist.")
+        return False
+
+    # Extract fields
+    name = request.POST.get("name")
+    email = request.POST.get("email")
+    phone = request.POST.get("phone")
+    experience = request.POST.get("experience")
+    expertise_ids = request.POST.getlist("expertise")
+    profile_pic = request.FILES.get("profile_pic")
+
+    # Validate experience
+    try:
+        experience = experience
+    except (ValueError, TypeError):
+        messages.error(request, "Please enter a valid number of years.")
+        return False
+
+    # Update fields
+    worker.name = name
+    worker.email = email
+    worker.phone = phone
+    worker.experience = experience
+
+    expertise_items = Item.objects.filter(id__in=expertise_ids)
+    if expertise_items.exists():
+        worker.expertise.set(expertise_items)
+
+    if profile_pic:
+        if worker.profile_pic:
+            worker.profile_pic.delete(save=False)
+        worker.profile_pic = profile_pic
+
+    worker.save()
+    return True
 
 @csrf_protect
 @login_required
@@ -478,48 +491,57 @@ def setting(request):
 @login_required
 @require_http_methods(["GET","POST"])
 def basic_update(request):
-    shop=request.user.shop_profile
-    user=request.user
+    shop = request.user.shop_profile
+    user = request.user
+
+    if request.method == 'POST':
+        success = update_shop_profile(request, shop)
+        if success:
+            messages.success(request, "Shop profile updated successfully.")
+        else:
+            messages.error(request, "Failed to update shop profile.")
+    
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
-    if request.method == 'POST':
-        try:
-            # Get updated data from the form
-            shop.shop_name = request.POST.get('shop_name', shop.shop_name)
-            shop.shop_title = request.POST.get('shop_title', shop.shop_title)
-            shop.shop_info = request.POST.get('shop_info', shop.shop_info)
-            shop.shop_owner = request.POST.get('shop_owner', shop.shop_owner)
-            shop.mobile_number = request.POST.get('mobile_number', shop.mobile_number)
-            shop.shop_website = request.POST.get('shop_website', shop.shop_website)
-            shop.gender = request.POST.get('gender', shop.gender)
-            shop.status = request.POST.get('status', shop.status) == 'true'
-            shop.shop_state = request.POST.get('shop_state', shop.shop_state)
-            shop.shop_city = request.POST.get('shop_city', shop.shop_city)
-            shop.shop_area = request.POST.get('shop_area', shop.shop_area)
-            
-            # Landmarks (optional fields)
-            shop.shop_landmark_1 = request.POST.get('landmark_1', shop.shop_landmark_1)
-            shop.shop_landmark_2 = request.POST.get('landmark_2', shop.shop_landmark_2)
-            shop.shop_landmark_3 = request.POST.get('landmark_3', shop.shop_landmark_3)
-            shop.shop_landmark_4 = request.POST.get('landmark_4', shop.shop_landmark_4)
-            shop.shop_landmark_5 = request.POST.get('landmark_5', shop.shop_landmark_5)
 
-            # Shop image (if uploaded)
-            if 'shop_picture' in request.FILES:
-                shop.shop_picture = request.FILES['shop_picture'] 
-            shop.save()
-            messages.success(request, "Shop profile updated successfully.")
-            print("Done")
+    return render(request, "app/salon_dashboard/update_basic.html", {
+        'user': user,
+        'shop': shop,
+        'district': list(district),
+        'Upazilla': list(upazilla)
+    })
 
-        except Exception as e:
-            messages.error(request, f"Failed to update shop: {str(e)}")
-            print("error2")
+# --- Helper Function ---
+def update_shop_profile(request, shop):
+    try:
+        fields_to_update = [
+            'shop_name', 'shop_title', 'shop_info', 'shop_owner',
+            'mobile_number', 'shop_website', 'gender', 'shop_state',
+            'shop_city', 'shop_area'
+        ]
 
-    else:
-        print("Error1")
-        
-    print(shop.gender)
-    return render(request, "app/salon_dashboard/update_basic.html",{'user':user,'shop':shop,'district':list(district),'Upazilla':list(upazilla)})
+        for field in fields_to_update:
+            setattr(shop, field, request.POST.get(field, getattr(shop, field)))
+
+        # Handle boolean field
+        shop.status = request.POST.get('status', str(shop.status)).lower() == 'true'
+
+        # Optional landmark fields
+        for i in range(1, 6):
+            field = f'shop_landmark_{i}'
+            value = request.POST.get(f'landmark_{i}', getattr(shop, field))
+            setattr(shop, field, value)
+
+        # Handle file upload
+        if 'shop_picture' in request.FILES:
+            shop.shop_picture = request.FILES['shop_picture']
+
+        shop.save()
+        return True
+
+    except Exception as e:
+        print(f"Update error: {str(e)}")  # Use logging in production
+        return False
 
 @csrf_protect
 @login_required
