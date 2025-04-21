@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -220,3 +222,64 @@ class RegistrationTests(TestCase):
         })
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content.decode(), 'Invalid session data')
+
+class RegistrationViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.service = Service.objects.create(name="Test Service")
+        self.item = Item.objects.create(name="Test Item", service=self.service)
+        self.user_data = {
+            "first-name": "John",
+            "last-name": "Doe",
+            "email": "test@example.com",
+            "password": make_password("password123"),
+            "mobile-number": "1234567890",
+            "gender": "Male",
+            "business_name": "Test Shop",
+            "business_title": "Test Title",
+            "website": "http://example.com",
+            "business_info": "Test Info",
+            "district": "Test District",
+            "upazilla": "Test Upazilla",
+            "area": "Test Area",
+            "landmark1": "Landmark 1",
+            "landmark2": "Landmark 2",
+            "landmark3": "Landmark 3",
+            "landmark4": "Landmark 4",
+            "landmark5": "Landmark 5",
+            "latitude": "12.34",
+            "longitude": "56.78",
+            "services": [str(self.service.id)],
+            "items": {
+                "items[0][name]": ["Test Item"],
+                "items[0][price]": ["50.00"]
+            },
+            "member": 1,
+            "members": {
+                "member[0][name]": ["Worker 1"],
+                "member[0][email]": ["worker1@example.com"],
+                "member[0][contact]": ["9876543210"],
+                "member[0][experience]": ["5"],
+                "member[0][expertise][]": ["Test Item"]
+            },
+            "worker_image": [["temp/worker1.jpg"]]
+        }
+
+    def test_customer_submit_missing_session(self):
+        """Test customer_submit with missing session data"""
+        response = self.client.post(reverse("customer_submit"), {})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode(), "Failed")
+
+    def test_business_submit_missing_session(self):
+        """Test business_submit handling missing session data"""
+        data = {
+            "schedule[Monday][start]": "09:00",
+            "schedule[Monday][end]": "17:00"
+        }
+        response = self.client.post(reverse("business_submit"), data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode(), "Invalid session data")
