@@ -45,12 +45,6 @@ class MyUser(AbstractBaseUser):
     def __str__(self):
         return f"{self.email} ({self.get_user_type_display()})"
 
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
-
     @property
     def is_staff(self):
         return self.is_admin
@@ -96,10 +90,6 @@ class ShopProfile(models.Model):
             return True
         return False  # Invalid rating
     
-    def check_password(self, raw_password):
-        """Checks if the given password matches the stored hashed password."""
-        return check_password(raw_password, self.password)
-    
     def __str__(self): 
         return self.shop_name
     
@@ -108,14 +98,13 @@ class ShopGallery(models.Model):
     image = models.ImageField(upload_to='ShopGallery/', blank=True, null=True)  # Image field
     description = models.CharField(max_length=255, blank=True, default="No description available")  # Optional description for the image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Time when image is uploaded
-
     def __str__(self):
         return f"Image for {self.shop.name} - {self.id}"
 
 class ShopWorker(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField() 
-    phone = models.CharField(max_length=15)  # Ensures unique phone numbers
+    phone = models.CharField(max_length=15)
     profile_pic = models.ImageField(upload_to='ShopWorker/', blank=True, default='default-profile.jpg')
     experience = models.FloatField(help_text="Experience in years")
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
