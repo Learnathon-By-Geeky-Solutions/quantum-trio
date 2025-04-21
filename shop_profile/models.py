@@ -83,7 +83,7 @@ class ShopProfile(models.Model):
     member_since = models.DateField(auto_now_add=True)
 
     def update_rating(self, rating):
-        current_rating = self.shop_rating  # Already a Decimal
+        current_rating = self.shop_rating 
         current_total = current_rating * self.shop_customer_count
 
         self.shop_customer_count += 1
