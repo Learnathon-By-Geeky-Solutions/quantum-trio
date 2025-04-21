@@ -10,7 +10,7 @@ from django.core.validators import validate_email
 from django.db.models import Q, Avg, F, ExpressionWrapper, DateTimeField, Value, CharField, BooleanField, Case, When
 from django.db.models.functions import Concat, Cast
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.utils import timezone
 from django.utils.timezone import make_aware, now
 from django.views.decorators.csrf import csrf_protect
@@ -92,8 +92,9 @@ def get_review_data(shop):
 
 def get_current_datetime_with_offset(hours=HOURS_OFFSET):
     """Get current datetime with timezone offset in UTC."""
+    print("check again")
     updated_time = timezone.now() + timedelta(hours=hours)
-    return updated_time.astimezone(timezone.utc)  # Use UTC
+    return updated_time  # Use UTC
 
 # Views
 @csrf_protect
@@ -174,14 +175,12 @@ def slots(request):
 def reject_booking(request):
     data = json.loads(request.body)
     booking_id = data.get("booking_id")
-    
     try:
         booking = BookingSlot.objects.get(id=booking_id)
         booking_datetime = make_aware(datetime.combine(booking.date, booking.time))
-        
+        print("check last:",booking_datetime - datetime.now().astimezone() < timedelta(hours=CANCEL_HOURS_LIMIT))
         if booking_datetime - datetime.now().astimezone() < timedelta(hours=CANCEL_HOURS_LIMIT):
             return JsonResponse({"success": False, "message": "Cannot cancel within 24 hours."})
-        
         booking.status = "canceled"
         booking.save()
         return JsonResponse({"success": True, "message": "Booking canceled."})
@@ -225,7 +224,9 @@ def update_status(request):
     try:
         booking = BookingSlot.objects.get(id=booking_id)
         booking_datetime = datetime.combine(booking.date, booking.time)
-        booking_datetime = timezone.make_aware(booking_datetime, timezone=timezone.utc)
+        booking_datetime = timezone.make_aware(booking_datetime)
+        print("check 1:",booking_datetime)
+        print("check 2:",get_current_datetime_with_offset())
         if get_current_datetime_with_offset() > booking_datetime:
             booking.shop_end = True
             booking.save()
