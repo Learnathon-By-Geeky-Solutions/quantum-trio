@@ -14,7 +14,7 @@
     {% include "app/salon_dashboard/header.html" %}
     
     <section class="flex flex-col md:flex-row min-h-screen">
-        {% include "app/salon_dashboard/sidebar.html" %}
+        {% include "app/salon_dashboard/sidebar.html" %} 
      
         <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
             <div class="main-content p-4 flex-1">
@@ -30,23 +30,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b hover:bg-pink-100">
-                                <td class="py-2 px-4">1</td>
-                                <td class="py-2 px-4">10.02.1025</td>
-                                <td class="py-2 px-4">Israt Jahan</td>
-                                <td class="py-2 px-4">It's the best place</td>
-                                <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
-                            </tr>
-                            <tr class="border-b hover:bg-pink-100">
-                                <td class="py-2 px-4">2</td>
-                                <td class="py-2 px-4">10.02.1025</td>
-                                <td class="py-2 px-4">Israt Jahan</td>
-                                <td class="py-2 px-4">It's the best place</td>
-                                <td class="py-2 px-4 font-bold text-yellow-500">5/5</td>
-                            </tr>
+                            {% for review in reviews %}
+                                <tr class="border-b hover:bg-pink-100">
+                                    <td class="py-2 px-4">{{ forloop.counter }}</td>
+                                    <td class="py-2 px-4">{{ review.created_at }}</td>
+                                    <td class="py-2 px-4">{{ review.reviewer.first_name }} {{ review.reviewer.last_name }}</td>
+                                    <td class="py-2 px-4">{{ review.review }}</td>
+                                    <td class="py-2 px-4 font-bold text-yellow-500">{{ review.stars }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
+                
+                    <!-- ✅ Pagination block moved here -->
+                    <div class="mt-4 flex justify-center space-x-2">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-pink-300 rounded hover:bg-pink-400">Previous</a>
+                        {% endif %}
+                
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if num == page_obj.number %}
+                                <span class="px-3 py-1 bg-pink-500 text-white rounded">{{ num }}</span>
+                            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                <a href="?page={{ num }}" class="px-3 py-1 bg-pink-200 rounded hover:bg-pink-300">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-pink-300 rounded hover:bg-pink-400">Next</a>
+                        {% endif %}
+                    </div>
                 </div>
+                
             </div>
         </div>
     </section>

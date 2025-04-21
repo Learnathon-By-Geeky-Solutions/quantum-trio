@@ -20,56 +20,79 @@
 
             <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
                 <div class="main-content p-4 flex-1">
-                    <div
-                        class="overflow-x-auto bg-white p-4 shadow-lg rounded-lg">
-                        <table
-                            class="min-w-full border border-gray-200 rounded-lg">
+                    <div class="overflow-x-auto bg-white p-4 shadow-lg rounded-lg">
+                        <table class="min-w-full border border-gray-200 rounded-lg">
                             <thead class="bg-pink-500">
                                 <tr>
-                                    <th class="py-2 px-4 text-left">
-                                        Serial No
-                                    </th>
+                                    <th class="py-2 px-4 text-left">Serial No</th>
                                     <th class="py-2 px-4 text-left">Date</th>
-                                    <th class="py-2 px-4 text-left">
-                                        Customer Name
-                                    </th>
-                                    <th class="py-2 px-4 text-left">status</th>
-                                    <th class="py-2 px-4 text-left">
-                                        see details
-                                    </th>
+                                    <th class="py-2 px-4 text-left">Customer Name</th>
+                                    <th class="py-2 px-4 text-left">Status</th>
+                                    <th class="py-2 px-4 text-left">See Details</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                                {%for booking in bookings%}
-                                <tr class="border-b hover:bg-pink-100">
-                                    <td class="py-2 px-4">
-                                        {{forloop.counter}}
-                                    </td>
-                                    <td class="py-2 px-4">
-                                        {{booking.date}} {{booking.time}}
-                                    </td>
-                                    <td class="py-2 px-4">{{booking.user}}</td>
-                                    <td class="py-2 px-4
-                                        {% if booking.status == 'completed' %}text-green-600 font-semibold
-                                        {% elif booking.status == 'confirmed' %}text-yellow-500 font-semibold
-                                        {% endif %}">
-                                        {{ booking.status }}
-                                    </td>
-                                    <td
-                                        class="py-2 px-4 font-bold text-yellow-500">
-                                        <button
-                                            class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
-                                            data-booking-id="{{ booking.id }}">
-                                            See details
-                                        </button>
-                                    </td>
-                                </tr>
-                                {%endfor%}
+                                {% if bookings %}
+                                    {% for booking in bookings %}
+                                    <tr class="border-b hover:bg-pink-100">
+                                        <td class="py-2 px-4">
+                                            {{ forloop.counter0|add:bookings.start_index }}
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            {{ booking.date }} {{ booking.time }}
+                                        </td>
+                                        <td class="py-2 px-4">{{ booking.user }}</td>
+                                        <td class="py-2 px-4
+                                            {% if booking.status == 'completed' %}text-green-600 font-semibold
+                                            {% elif booking.status == 'confirmed' %}text-yellow-500 font-semibold
+                                            {% endif %}">
+                                            {{ booking.status }}
+                                        </td>
+                                        <td class="py-2 px-4 font-bold text-yellow-500">
+                                            <button
+                                                class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
+                                                data-booking-id="{{ booking.id }}">
+                                                See details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-500 py-4">
+                                            No bookings found.
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
-                    <p class="mt-4 text-sm text-gray-500">No bookings found.</p>
+                
+                    <!-- Pagination Controls -->
+                    {% if page_obj.has_other_pages %}
+                    <div class="mt-4 flex justify-center space-x-2">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}"
+                               class="px-3 py-1 bg-pink-300 rounded hover:bg-pink-400">Previous</a>
+                        {% endif %}
+                
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if num == page_obj.number %}
+                                <span class="px-3 py-1 bg-pink-500 text-white rounded">{{ num }}</span>
+                            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                <a href="?page={{ num }}"
+                                   class="px-3 py-1 bg-pink-200 rounded hover:bg-pink-300">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}"
+                               class="px-3 py-1 bg-pink-300 rounded hover:bg-pink-400">Next</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
+                
             </div>
         </section>
         <script>

@@ -56,7 +56,23 @@
             <h2 class="text-3xl font-bold text-left text-gray-800 mb-8">
                 Search result of {{item}}
             </h2>
-            <!-- Dropdown Filters -->
+            
+            <div class="flex mb-8">
+                <select id="district" class="p-8 border rounded mr-4" onchange="loadNow('district')">
+                    <option value="{%if dist%}{{dist}}{%endif%}" disabled selected>{%if dist%}{{dist}}{%else%}Select District{%endif%}</option>
+                    {% for dist in district %}
+                        <option value="{{ dist.name }}">{{ dist.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="upazilla" name="upazilla" class="p-8 border rounded mr-4" onchange="loadNow('upazilla')">
+                    <option value="" disabled selected>Select Upazilla</option>
+                </select>
+
+                <select id="area" class="p-8 border rounded" onchange="loadNow('area')">
+                    <option value="" disabled selected>Select Area</option>
+                </select>
+            </div>
             <div class="flex mb-8">
                 <input type="hidden" id="item" name="item" value="{{item}}">
             </div>
@@ -75,11 +91,26 @@
         let limit = 9;
         let offset = 0;
 
-        function loadMoreSalons() {
-            const item = document.getElementById('item').value;
-            const timestamp = new Date().getTime(); // Add a timestamp to prevent caching
+        function loadNow(element){
+            if(element=='district'){
+                upazilla.innerHTML = '<option value="" disabled selected>Select Upazilla</option>';
+                area.innerHTML = '<option value="" disabled selected>Select Area</option>';
 
-            fetch(`fetch_by_items?limit=${limit}&offset=${offset}&item=${item}&t=${timestamp}`)
+            }else if(element=='upazilla'){
+                area.innerHTML = '<option value="" disabled selected>Select Area</option>';
+            }
+            offset = 0;
+            const container = document.getElementById('salonsContainer');
+            container.innerHTML = '';
+            loadMoreSalons();
+        }
+        function loadMoreSalons() {
+            const district=document.getElementById('district').value;
+            const upazilla=document.getElementById('upazilla').value;
+            const area=document.getElementById('area').value;
+            const item = document.getElementById('item').value;
+            const timestamp = new Date().getTime(); // added timestamp to prevent caching
+            fetch(`fetch_by_items?limit=${limit}&offset=${offset}&item=${item}&district=${district}&upazilla=${upazilla}&area=${area}&t=${timestamp}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.shop.length > 0) {
@@ -119,7 +150,7 @@
         document.addEventListener('DOMContentLoaded', loadMoreSalons);
     </script>
     {% include "app/footer.html" %}
- 
+    {% include 'app/address.html' %}
 </body>
 
 </html>

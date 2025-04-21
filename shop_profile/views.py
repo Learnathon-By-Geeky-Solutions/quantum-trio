@@ -21,7 +21,7 @@ from my_app.models import Item, District, Upazilla, Service
 from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification, ShopSchedule, ShopReview
 from user_profile.models import UserProfile
 from datetime import datetime, timedelta
-
+from django.core.paginator import Paginator
 
 # Constants
 BOOKING_NOT_FOUND = "Booking not found."
@@ -79,7 +79,7 @@ def get_customer_counts(shop):
 
 def get_review_data(shop):
     """Fetch and format shop reviews."""
-    reviews = ShopReview.objects.filter(shop=shop)
+    reviews = ShopReview.objects.filter(shop=shop).order_by('-created_at')
     for review in reviews:
         review.reviewer = UserProfile.objects.filter(id=review.reviewer_id).first()
         review.stars = '★' * review.rating
@@ -173,11 +173,23 @@ def reject_booking(request):
     booking_id = data.get("booking_id")
     try:
         booking = BookingSlot.objects.get(id=booking_id)
+        #for user only
+        shop=booking.shop
         booking_datetime = make_aware(datetime.combine(booking.date, booking.time))
         if booking_datetime - datetime.now().astimezone() < timedelta(hours=CANCEL_HOURS_LIMIT):
             return JsonResponse({"success": False, "message": "Cannot cancel within 24 hours."})
         booking.status = "canceled"
         booking.save()
+        # Create a shop notification for the following cancellation
+        notification_message = (
+            f"Booking canceled!\n"
+        )
+        ShopNotification.objects.create(
+            shop=shop,
+            title="New Booking canceled",
+            message=notification_message,
+            notification_type="cancel"
+        )
         return JsonResponse({"success": True, "message": "Booking canceled."})
     except BookingSlot.DoesNotExist:
         return JsonResponse({"success": False, "message": BOOKING_NOT_FOUND})
@@ -219,8 +231,6 @@ def update_status(request):
     try:
         booking = BookingSlot.objects.get(id=booking_id)
         booking_datetime = make_aware(datetime.combine(booking.date, booking.time))
-        print("check 1:",booking_datetime)
-        print("check 2:",get_current_datetime_with_offset())
         if get_current_datetime_with_offset() > booking_datetime:
             booking.shop_end = True
             booking.save()
@@ -326,14 +336,33 @@ def delete_worker(request):
 @login_required
 @require_http_methods(["GET"])
 def customers(request):
-    bookings = BookingSlot.objects.filter(shop=get_shop_from_user(request.user)).order_by("-date", "-time")
-    return render(request, "app/salon_dashboard/customers.html", {"bookings": bookings})
+    bookings = BookingSlot.objects.filter(
+        shop=get_shop_from_user(request.user)
+    ).order_by("-date", "-time")
 
+    paginator = Paginator(bookings, 10)  # Show 10 bookings per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "app/salon_dashboard/customers.html", {
+        "bookings": page_obj,
+        "page_obj": page_obj,
+    })
+    
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def review(request):
-    return render(request, "app/salon_dashboard/reviews.html")
+    reviews, _, _, _ = get_review_data(get_shop_from_user(request.user))
+
+    paginator = Paginator(reviews, 10)  # Show 10 reviews per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "app/salon_dashboard/reviews.html", {
+        'reviews': page_obj,  # paginated reviews
+        'page_obj': page_obj,  # page object for pagination controls
+    })
 
 @csrf_protect
 @login_required

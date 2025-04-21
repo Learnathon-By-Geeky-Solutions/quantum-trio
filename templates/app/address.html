@@ -10,5 +10,44 @@
         {% endfor %}
     };
 
+    const areasByupazilla = {
+        {% for area in Area %}
+        "{{ area.upazilla__name }}": [
+            {% for index in area.area_names %}
+            "{{ index }}"{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        ]{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    };
+
+    document.getElementById("district")?.addEventListener("change", function () {
+        const district = this.value;
+        const upazillaSelect = document.getElementById("upazilla");
+        upazillaSelect.innerHTML = '<option value="" disabled selected>Select Upazilla</option>';
+        
+        if (district && citiesBydistrict[district]) {
+            citiesBydistrict[district].forEach(upazilla => {
+                const option = document.createElement("option");
+                option.value = upazilla;
+                option.textContent = upazilla;
+                upazillaSelect.appendChild(option);
+            });
+        }
+    });
+
+    document.getElementById("upazilla")?.addEventListener("change", function () {
+        const upazilla = this.value;
+        const areaSelect = document.getElementById("area");
+        areaSelect.innerHTML = '<option value="" disabled selected>Select Area</option>';
+
+        if (upazilla && areasByupazilla[upazilla]) {
+            areasByupazilla[upazilla].forEach(area => {
+                const option = document.createElement("option");
+                option.value = area;
+                option.textContent = area;
+                areaSelect.appendChild(option);
+            });
+        }
+    });
   </script>
   <script src="{% static 'app/js/location.js' %}"></script>
