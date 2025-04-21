@@ -9,11 +9,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 # use this to import any data from database
 from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub,Contact
-from shop_profile.models import ShopProfile, ShopWorker, ShopService
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
+from booking.models import BookingSlot
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate,login, logout
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 temp_user=get_user_model()
@@ -35,13 +37,24 @@ def home(request):
             reviewer_name = request.user.shop_profile.shop_name
         elif request.user.user_type == "user":
             reviewer_name = f"{request.user.user_profile.first_name} {request.user.user_profile.last_name}"
-
+    
+    booked_appointment=BookingSlot.objects.all().count()
+    registered_shop=ShopProfile.objects.all().count()
+    available_upazilla = ShopProfile.objects.order_by('shop_city').distinct('shop_city').count()
+    available_barber=ShopWorker.objects.all().count()
+    statistics = {
+        'booked_appointment': booked_appointment,
+        'registered_shop': registered_shop,
+        'available_upazilla': available_upazilla,
+        'available_barber': available_barber
+    }
     return render(request, 'app/home.html', {
-        "reviews": reviews,
+        'reviews': reviews,
         'shops':shop,
         'male':male_item,
         'female':female_item,
         'reviewer_name':reviewer_name,
+        'statistics':statistics
     })
 def submit_review(request):
     # redirect("home")
@@ -136,7 +149,37 @@ def shop_profile(request):
              "shop": shop, 
              "shop_services": service,
              "shop_workers": workers
-        })
+    })
+    
+@require_POST
+@login_required
+def submit_shop_review(request):
+    try:
+        # Assume you're extracting data from POST
+        rating = request.POST.get('rating')
+        review = request.POST.get('review')
+        shop_id = request.POST.get('shop_id')
+        user_id = request.user.id  # or wherever you're getting user_id from
+        shop = ShopProfile.objects.get(id=shop_id)
+        """If any field is missing"""
+        if not rating or not review or not shop_id or not user_id:
+            return JsonResponse({'success': False, 'error': 'Fill all the required fields.'}, status=404)
+        """If the user has not received any services of the shop then how can he rate?"""
+        if not BookingSlot.objects.filter(user__id=user_id,shop__id=shop_id,status='completed').exists():
+            return JsonResponse({'success': False, 'error': 'You are not allowed.'}, status=404)
+        ShopReview.objects.create(
+            rating=rating,
+            review=review,
+            shop=shop,
+            reviewer_id=user_id
+        )
+        return JsonResponse({'success': True})
+
+    except ShopProfile.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Shop not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
 @csrf_protect
 def contact_us(request):
     if request.method=="POST":

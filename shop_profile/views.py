@@ -1,13 +1,13 @@
 import json
 from django.db.models import Q
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware,now
 from datetime import datetime, date, timedelta, timezone as tz
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -18,21 +18,117 @@ from django.db.models.functions import Concat, Cast
 from calendar import HTMLCalendar
 from booking.models import BookingSlot
 from my_app.models import Item
-from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule
+from shop_profile.models import ShopGallery, ShopWorker, ShopService, ShopNotification,ShopSchedule,ShopReview
+from user_profile.models import UserProfile 
 from my_app.models import District,Upazilla,Service
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-
+from collections import OrderedDict
+from decimal import Decimal
+from django.db.models import Avg
 # variable
 user = get_user_model()
 booking_not_found = "Booking not found."
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def profile(request):
-    return render(request, "app/salon_dashboard/index.html")
+    """previous 15 days response data"""
+    shop=request.user.shop_profile
+    response_data = [
+        {
+            "date": (datetime.now() - timedelta(days=i)).strftime("%d %b"),
+            "value": BookingSlot.objects.filter(
+                        shop=shop,
+                        status='completed',
+                        date=(datetime.now() - timedelta(days=i)).date()
+                    ).count()
+        }
+        for i in range(14, -1, -1)
+    ]
+    
+    """monthly data """
+    current_year = now().year
+    current_month = datetime.now().month
+    months = OrderedDict(
+        (datetime(2000, m, 1).strftime('%b'), Decimal('0.00')) 
+        for m in range(1, current_month + 1)
+    )
+    # Get completed bookings for this shop this year
+    completed_bookings = BookingSlot.objects.filter(
+        shop=shop,
+        status='completed',
+        date__year=current_year
+    ).select_related('item')
+    # Map item_id to price for this shop
+    price_map = {
+        service.item_id: service.price
+        for service in ShopService.objects.filter(shop=shop)
+    }
+    # sum up 
+    for booking in completed_bookings:
+        month_name = booking.date.strftime('%b')
+        price = price_map.get(booking.item_id, Decimal('0.00'))
+        months[month_name] += price
+    # convert to ordered dict
+    values = [float(val) for val in months.values()] 
+    monthly_data = [
+        {"month": month, "value": value}
+        for month, value in zip(months, values)
+    ]
+    # print(monthly_data)
+    
+    """Total customers count"""
+    total_customer=BookingSlot.objects.filter(shop=shop,status='completed').count()
+    
+    """New Customers (This Month)"""
+    now_time = now()
+    start_of_month = now_time.replace(day=1)
+    # Get users who completed bookings this month at the current shop
+    completed_this_month_users = BookingSlot.objects.filter(
+            shop=shop,
+            status='completed',
+            created_at__gte=start_of_month
+        ).values_list('user', flat=True).distinct()
+    
+    # Remove users who had any completed booking *before* this month
+    old_customers = BookingSlot.objects.filter(
+        shop=shop,
+        status='completed',
+        created_at__lt=start_of_month,
+        user__in=completed_this_month_users
+    ).values_list('user', flat=True).distinct()
+    
+    # Exclude old customers from the current month's list
+    new_customer= completed_this_month_users.exclude(id__in=old_customers).count()
+    
+    # Reviews
+    reviews=ShopReview.objects.filter(shop=shop)
+    for review in reviews:
+        try:
+            review.reviewer = UserProfile.objects.get(id=review.reviewer_id)
+        except UserProfile.DoesNotExist:
+            review.reviewer = None
+        review.stars = '★' * review.rating 
+    
+    # Happy unhappy customer
+    happy_count = ShopReview.objects.filter(shop=shop,rating__gte=4).count()
+    unhappy_count = ShopReview.objects.filter(shop=shop,rating__lte=3).count()
+    average_rating = ShopReview.objects.filter(shop=shop).aggregate(avg=Avg('rating'))['avg']
+
+    context={
+        'response_data':response_data,
+        'monthly_data':monthly_data,
+        'total_customer':total_customer,
+        'new_customer':new_customer,
+        'reviews':reviews,
+        'happy_count':happy_count,
+        'unhappy_count':unhappy_count,
+        'average_rating':average_rating
+    }
+    return render(request, "app/salon_dashboard/index.html",context)
 
 @csrf_protect
 @login_required
@@ -86,7 +182,7 @@ def calender(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 def slots(request):
     today = date.today()
     if request.method == "GET" and request.GET.get("date") is not None:
@@ -260,7 +356,7 @@ def message(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def staffs(request):
     if request.method == "POST":
         worker_id = request.POST.get("id")
@@ -278,21 +374,19 @@ def staffs(request):
             worker.email = email
             worker.phone = phone
             worker.experience = experience
-            if (
-                expertise_items.exists()
-            ):  # Only update if there are valid expertise items
+            if expertise_items.exists():  # Only update if there are valid expertise items
                 worker.expertise.set(expertise_items)
-            if (
-                profile_pic
-            ):  # Only update profile_pic if a new file is uploaded delete first then upload
+            if profile_pic:  # Only update profile_pic if a new file is uploaded delete first then upload
                 if worker.profile_pic:
                     worker.profile_pic.delete(save=False)
                 worker.profile_pic = profile_pic
             worker.save()
-            return JsonResponse({"message": "Worker updated successfully"}, status=200)
-
+            messages.success(request,"Worker details updated Successfully.")
+            
+        except (ValueError, TypeError):
+            messages.error(request,"Please enter a valid number of years.")
         except ShopWorker.DoesNotExist:
-            return JsonResponse({"error": "Worker not found"}, status=404)
+            messages.error(request,"Worker doesn't Exist.")
 
     workers = ShopWorker.objects.filter(shop=request.user.shop_profile)
     items = ShopService.objects.filter(shop=request.user.shop_profile)
@@ -382,7 +476,7 @@ def setting(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def basic_update(request):
     shop=request.user.shop_profile
     user=request.user
@@ -440,7 +534,7 @@ def services_update(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET","POST"])
 def schedule_update(request):
     shop=request.user.shop_profile
     if request.method == 'POST':

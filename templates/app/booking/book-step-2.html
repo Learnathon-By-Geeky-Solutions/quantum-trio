@@ -140,55 +140,26 @@
             document.getElementById('confirmButton').disabled = true;
         }
         window.onload = checkInputs;
-        function addTimeSlots(selectedDate) {
-            let shop_id = document.getElementById('shop_id').value;
-            let worker_id = document.getElementById('worker_id').value;
-            let item_id = document.getElementById('item_id').value;
-
-            console.log('Shop ID:', worker_id);
-
-            let timeSlots = [];
-
-            fetch(`available_slots?shop_id=${shop_id}&worker_id=${worker_id}&item_id=${item_id}&date=${selectedDate}`)
-                .then(response => response.json())
-                .then(resultSlots => {
-                    timeSlots.push(...resultSlots);
-                    alert(resultSlots);
-                    const timeSlotsContainer = document.getElementById('time-slots');
-                    timeSlotsContainer.innerHTML = ''; // Clear previous slots
-                    // Create and append each time slot
-                    timeSlots.forEach(function (time) {
-                        // Create a new div element for the time slot
-                        const timeSlotDiv = document.createElement('div');
-                        timeSlotDiv.className = 'time-slot border border-pink-500 text-black-500 font-semibold text-center p-4 rounded-md';
-                        timeSlotDiv.setAttribute('data-value', time);
-                        timeSlotDiv.textContent = time;
-
-                        // Append the new time slot to the container
-                        timeSlotsContainer.appendChild(timeSlotDiv);
-
-                        // Add event listener to handle time selection
-                        timeSlotDiv.addEventListener('click', function () {
-                            // Remove the 'selected' class from all time slots
-                            document.querySelectorAll('#time-slots .time-slot').forEach(function (slot) {
-                                slot.classList.remove('selected');
-                            });
-                            // Add the 'selected' class to the clicked time slot
-                            timeSlotDiv.classList.add('selected');
-                            // Update the hidden input with the selected time value
-                            const selectedTime = timeSlotDiv.getAttribute('data-value');
-                            document.getElementById('selected-time').value = selectedTime;
-                            document.getElementById('fetch_selected_time').innerText = selectedTime;
-                            document.getElementById('selected_date_id').value = selectedDate;
-                            document.getElementById('selected_time_id').value = selectedTime;
-                            if (selectedTime) {
-                                document.getElementById('confirmButton').disabled = false;
-                            }
-                            // Log the selected time to the console
-                            console.log('Selected time:', selectedTime);
-                        });
-                    });
-                    if (timeSlots.length == 0) Swal.fire({
+        async function addTimeSlots(selectedDate) {
+            try {
+                // Get DOM elements
+                const shopId = document.getElementById('shop_id').value;
+                const workerId = document.getElementById('worker_id').value;
+                const itemId = document.getElementById('item_id').value;
+                const timeSlotsContainer = document.getElementById('time-slots');
+        
+                // Fetch available time slots
+                const response = await fetch(
+                    `available_slots?shop_id=${shopId}&worker_id=${workerId}&item_id=${itemId}&date=${selectedDate}`
+                );
+                const timeSlots = await response.json();
+        
+                // Clear existing slots
+                timeSlotsContainer.innerHTML = '';
+        
+                // Handle empty time slots
+                if (timeSlots.length === 0) {
+                    Swal.fire({
                         icon: 'info',
                         title: 'Not Available',
                         text: 'This Day is currently unavailable!',
@@ -197,12 +168,49 @@
                         color: '#333',
                         iconColor: '#ffcc00',
                         confirmButtonColor: '#3085d6',
-                        backdrop: `rgba(0,0,123,0.4)`,
+                        backdrop: 'rgba(0,0,123,0.4)',
                     });
-                })
-                .catch(error => {
-                    console.error('Error fetching slots:', error);
+                    return;
+                }
+        
+                // Create and append time slots
+                timeSlots.forEach(time => {
+                    const timeSlotDiv = createTimeSlotElement(time, selectedDate);
+                    timeSlotsContainer.appendChild(timeSlotDiv);
                 });
+        
+            } catch (error) {
+                console.error('Error fetching slots:', error);
+            }
+        }
+        
+        function createTimeSlotElement(time, selectedDate) {
+            const div = document.createElement('div');
+            div.className = 'time-slot border border-pink-500 text-black-500 font-semibold text-center p-4 rounded-md';
+            div.setAttribute('data-value', time);
+            div.textContent = time;
+        
+            div.addEventListener('click', () => handleTimeSlotSelection(div, time, selectedDate));
+            return div;
+        }
+        
+        function handleTimeSlotSelection(selectedSlot, time, selectedDate) {
+            // Update selected slot styling
+            document.querySelectorAll('#time-slots .time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            selectedSlot.classList.add('selected');
+        
+            // Update form values
+            document.getElementById('selected-time').value = time;
+            document.getElementById('fetch_selected_time').innerText = time;
+            document.getElementById('selected_date_id').value = selectedDate;
+            document.getElementById('selected_time_id').value = time;
+        
+            // Enable confirm button
+            document.getElementById('confirmButton').disabled = false;
+        
+            console.log('Selected time:', time);
         }
 
         function updateMonthYear(date) {

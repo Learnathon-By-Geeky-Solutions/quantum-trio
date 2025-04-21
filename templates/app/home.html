@@ -11,8 +11,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
-    {% comment %}
-    <link rel="stylesheet" href="{% static 'app/css/style.css' %}" /> {% endcomment %}
     <style>
         #imagesize:hover {
             overflow: hidden;
@@ -343,16 +341,26 @@
                         <p class="mt-3 text-gray-700">{{ review.comment }}</p>
 
                         <div class="flex items-center mt-4">
-                            <img src="{% static 'app/image/customer/default.jpg' %}" alt="User"
+                            {% if review.reviewer_type.model == "userprofile" %}
+                                <img src="{% if review.reviewer.profile_picture %}{{ review.reviewer.profile_picture.url }}{% else %}{% static 'app/image/customer/default.jpg' %}{% endif %}" 
+                                    alt="User" 
+                                    class="w-10 h-10 rounded-full mr-3" />
+                            {% elif review.reviewer_type.model == "shopprofile" %}
+                                <img src="{% if review.reviewer.shop_picture %}{{ review.reviewer.shop_picture.url }}{% else %}{% static 'app/image/shop/default.jpg' %}{% endif %}" 
+                                    alt="Shop"
+                                    class="w-10 h-10 rounded-full mr-3" />
+                            {% else %}
+                                <img src="{% static 'app/image/customer/default.jpg' %}" alt="Annonymous"
                                 class="w-10 h-10 rounded-full mr-3" />
+                            {% endif %}
                             <div>
                                 <p class="text-gray-900 font-semibold">
                                     {% if review.reviewer_type.model == "userprofile" %}
-                                    {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
+                                        {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}
                                     {% elif review.reviewer_type.model == "shopprofile" %}
-                                    {{ review.reviewer.shop_name }}
+                                        {{ review.reviewer.shop_name }}
                                     {% else %}
-                                    Anonymous
+                                        Anonymous
                                     {% endif %}
                                 </p>
                                 <p class="text-gray-500 text-sm">
@@ -420,21 +428,21 @@
                 </p>
 
                 <div class="mt-8">
-                    <span class="text-6xl font-bold text-blue-600">100,000</span>
+                    <span class="text-6xl font-bold text-blue-600">{{statistics.booked_appointment}}</span>
                     <p class="text-lg text-gray-500">Appointments booked on CareHUB</p>
                 </div>
 
                 <div class="mt-12 flex justify-center space-x-12">
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-black">100,000</p>
+                        <p class="text-2xl font-bold text-black">{{statistics.registered_shop }}</p>
                         <p class="text-lg text-gray-500">Registered Shops</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-black">100 Upazillas</p>
-                        <p class="text-lg text-gray-500">Using CareHUB</p>
+                        <p class="text-2xl font-bold text-black">{{statistics.available_upazilla}}</p>
+                        <p class="text-lg text-gray-500">Using Upazillas</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-black">1,500</p>
+                        <p class="text-2xl font-bold text-black">{{statistics.available_barber }}</p>
                         <p class="text-lg text-gray-500">Professional Barbers</p>
                     </div>
                 </div>

@@ -46,6 +46,7 @@ urlpatterns = [
     path('service', views.service,name='service'),
     path('items', views.items,name='items'),
     path('salon-profile', views.shop_profile,name='salon-profile'),
+    path('submit-shop-review/', views.submit_shop_review, name='submit_shop_review'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

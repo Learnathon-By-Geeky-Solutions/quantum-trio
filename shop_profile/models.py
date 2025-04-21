@@ -1,6 +1,6 @@
 from django.db import models
 from my_app.models import Item
-from django.db import models
+from decimal import Decimal
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class MyUserManager(BaseUserManager):
@@ -36,7 +36,7 @@ class MyUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default="user")
-
+ 
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
@@ -120,7 +120,15 @@ class ShopWorker(models.Model):
     experience = models.FloatField(help_text="Experience in years")
     expertise = models.ManyToManyField(Item, related_name="experts",blank=True)
     shop = models.ForeignKey(ShopProfile, related_name="shopworker", on_delete=models.CASCADE)
-    rating=models.DecimalField(max_digits=2, decimal_places=2, default=0.0)
+    rating=models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    total_reviews = models.PositiveIntegerField(default=0)
+    def update_rating(self, new_rating):
+        """Update the average rating when a new rating is submitted."""
+        self.total_reviews += 1
+        current_total = self.rating * (self.total_reviews - 1)
+        new_avg = (current_total + Decimal(str(new_rating))) / self.total_reviews
+        self.rating = round(new_avg, 2)
+        self.save()
     def __str__(self):
         return f"{self.name} ({self.experience} years experience)"
      
@@ -134,11 +142,12 @@ class ShopService(models.Model):
 
 class ShopReview(models.Model):
     shop = models.ForeignKey(ShopProfile, related_name="shopreview", on_delete=models.CASCADE)  # The shop being reviewed
+    reviewer_id = models.IntegerField(null=True, blank=True)  # The shop reviewed by whom only id
     rating = models.PositiveIntegerField(default=1)  # Rating between 1 and 5
     review = models.TextField(blank=True,default='')  # Optional text review
     created_at = models.DateTimeField(auto_now_add=True)  # The date and time when the review was created
     def __str__(self):
-        return f"Review by {self.user.username} for {self.shop.name} - Rating: {self.rating}"
+        return f"Review by {self.reviewer_id} for {self.shop.shop_name} - Rating: {self.rating}"
 
 class ShopSchedule(models.Model):
     DAYS_OF_WEEK = [

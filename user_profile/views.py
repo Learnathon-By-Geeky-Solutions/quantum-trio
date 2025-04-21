@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponseNotAllowed
 from my_app.models import District, Upazilla, Area
 from booking.models import BookingSlot
+from decimal import Decimal
 from my_app.views import log_out
 from user_profile.models import UserProfile
 from django.contrib.auth import get_user_model
@@ -16,9 +17,11 @@ from django.db.models import ExpressionWrapper, F, Value, CharField, DateTimeFie
 from django.db.models.functions import Cast, Concat
 from datetime import datetime
 from datetime import datetime, date, timedelta, timezone as tz
-from shop_profile.views import booking_details as imported_booking_details, reject_booking as imported_reject_booking
+from shop_profile.views import booking_details as imported_booking_details, reject_booking as imported_reject_booking,ShopWorker
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_http_methods
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 MY_PROFILE_TEMPLATE = "app/customer_profile/my-profile.html"
 booking_not_found = "Booking not found."
 
@@ -38,6 +41,12 @@ def profile(request):
         profile.phone_number = request.POST.get("mobile_number")  # Corrected field name
         image = request.FILES.get("image")
         user_model = get_user_model()
+        # Validate email first
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, MY_PROFILE_TEMPLATE)
         # Validate email uniqueness
         if user_model.objects.filter(email=email).exclude(pk=user.pk).exists():
             messages.error(request, "This email is already in use.")
@@ -61,9 +70,10 @@ def profile(request):
         if image:
             profile.profile_picture = image  # Save uploaded image
         profile.save()
-        messages.success(request, "Profile updated successfully. Please log in again if you changed your password.")
+        messages.success(request, "Profile updated successfully.")
         render(request, MY_PROFILE_TEMPLATE)
     if check:
+        messages.success(request, "Please log in again since you changed your password or email.")
         return redirect('logout')
     context = {"user": user, "profile": profile}
     return render(request, MY_PROFILE_TEMPLATE, context)
@@ -82,27 +92,52 @@ def reviews(request):
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET"])
+@require_http_methods(["GET","POST"])
 def addressofbooking(request):
     district = District.objects.all().values('id', 'name')
     upazilla = Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))
     area = Area.objects.values('upazilla__name').annotate(area_names=ArrayAgg('name')) 
+    user=request.user.user_profile
+    if request.method=="POST": #perform update
+        if request.POST.get('upazilla'):
+            user.user_state=request.POST.get('district')
+            user.user_city=request.POST.get('upazilla')
+        user.user_area=request.POST.get('area')
+        user.latitude=request.POST.get('latitude')
+        user.longitude=request.POST.get('longitude')
+        user.save()
+        messages.success(request, "Successfully changed your address.")
+        
+    return render(request, 'app/customer_profile/addressofbooking.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area,'user':user})
 
-    if request.method == 'GET':
-        return render(request, 'app/customer_profile/addressofbooking.html',{'district':list(district),'Upazilla':list(upazilla),'Area':area})
-    else:
-        return HttpResponseNotAllowed(['GET'])
-    
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def myreviews(request):
+    
     return render(request,'app/customer_profile/myreviews.html')
 
 @csrf_protect
 @login_required
-@require_http_methods(["GET"])
+@require_http_methods(["GET","POST"])
 def mybooking(request):
+    if request.method == "POST":
+        rating = request.POST.get('rating')
+        booking_id = request.POST.get('to')
+        try:
+            # Fetch the actual BookingSlot object
+            slot = BookingSlot.objects.get(id=booking_id)
+            slot.rated = True
+            slot.save()
+            # Get the worker and update their rating
+            worker = slot.worker
+            worker.update_rating(Decimal(rating))
+            messages.success(request,"Rating submitted successfully.")
+        except BookingSlot.DoesNotExist:
+            print("Booking slot not found")
+        except ShopWorker.DoesNotExist:
+            print("Worker not found")
+
     current_datetime = datetime.now()
     booking = BookingSlot.objects.filter(
                     user=request.user.user_profile
@@ -128,7 +163,7 @@ def mybooking(request):
                         output_field=BooleanField()
                     )
                 )
-    print(booking)
+    # print(booking)
     return render(request,'app/customer_profile/mybooking.html',{'bookings':booking})
 
 @csrf_protect
@@ -193,7 +228,8 @@ def update_status(request):
 @login_required
 @require_http_methods(["GET"])
 def mycancellations(request):
-    return render(request,'app/customer_profile/mycancellations.html')
+    booking=BookingSlot.objects.filter(user=request.user.user_profile,status="canceled").order_by('-created_at')
+    return render(request,'app/customer_profile/mycancellations.html',{'booking':booking})
 
 @csrf_protect
 @login_required

@@ -31,61 +31,37 @@
                             <th class="px-4 py-2 text-left">Appointment Date</th>
                             <th class="px-4 py-2 text-left">Time</th>
                             <th class="px-4 py-2 text-left">Expert</th>
-                            <th class="px-4 py-2 text-left">Expert Contact</th>
                             <th class="px-4 py-2 text-left">Status</th>
+                            <th class="px-4 py-2 text-left">See details</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        <!-- Demo Data -->
-                        <tr class="border-t hover:bg-gray-100">
-                            <td class="px-4 py-2">2025-03-18</td>
-                            <td class="px-4 py-2">Salon A</td>
-                            <td class="px-4 py-2">123 Beauty Street, Downtown</td>
-                            <td class="px-4 py-2">Haircut</td>
-                            <td class="px-4 py-2">2025-03-20</td>
-                            <td class="px-4 py-2">10:00 AM</td>
-                            <td class="px-4 py-2">John Doe</td>
-                            <td class="px-4 py-2">+123456789</td>
-                            <td class="px-4 py-2 text-red-500">Cancelled</td>
-                        </tr>
-                        <tr class="border-t hover:bg-gray-100">
-                            <td class="px-4 py-2">2025-03-19</td>
-                            <td class="px-4 py-2">Salon B</td>
-                            <td class="px-4 py-2">456 Glamour Rd, Uptown</td>
-                            <td class="px-4 py-2">Facial</td>
-                            <td class="px-4 py-2">2025-03-22</td>
-                            <td class="px-4 py-2">11:00 AM</td>
-                            <td class="px-4 py-2">Jane Smith</td>
-                            <td class="px-4 py-2">+987654321</td>
-                            <td class="px-4 py-2 text-red-500">Cancelled</td>
-                        </tr>
-                        <tr class="border-t hover:bg-gray-100">
-                            <td class="px-4 py-2">2025-03-20</td>
-                            <td class="px-4 py-2">Salon C</td>
-                            <td class="px-4 py-2">789 Chic Ave, City Center</td>
-                            <td class="px-4 py-2">Massage</td>
-                            <td class="px-4 py-2">2025-03-25</td>
-                            <td class="px-4 py-2">02:00 PM</td>
-                            <td class="px-4 py-2">Alice Cooper</td>
-                            <td class="px-4 py-2">+112233445</td>
-                            <td class="px-4 py-2 text-red-500">Cancelled</td>
-                        </tr>
-                        <tr class="border-t hover:bg-gray-100">
-                            <td class="px-4 py-2">2025-03-21</td>
-                            <td class="px-4 py-2">Salon D</td>
-                            <td class="px-4 py-2">456 Elegant Blvd, Uptown</td>
-                            <td class="px-4 py-2">Haircut</td>
-                            <td class="px-4 py-2">2025-03-24</td>
-                            <td class="px-4 py-2">04:00 PM</td>
-                            <td class="px-4 py-2">Emily White</td>
-                            <td class="px-4 py-2">+556677889</td>
-                            <td class="px-4 py-2 text-red-500">Cancelled</td>
-                        </tr>
+                        {% for slot in booking%}
+                            <tr class="border-t hover:bg-gray-100">
+                                <td class="px-4 py-2">{{slot.created_at}}</td>
+                                <td class="px-4 py-2">{{slot.shop.shop_name}}</td>
+                                <td class="px-4 py-2">{{slot.shop.shop_state}},{{slot.shop.shop_city}},{{slot.shop.shop_area}}</td>
+                                <td class="px-4 py-2">{{slot.item.name}}</td>
+                                <td class="px-4 py-2">{{slot.date}}</td>
+                                <td class="px-4 py-2">{{slot.time}}</td>
+                                <td class="px-4 py-2">{{slot.worker.name}}</td>
+                                <td class="px-4 py-2 text-red-500">{{slot.status}}</td>
+                                <td class="px-4 py-2 text-red-500">
+                                    <button
+                                            class="see-more-button bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
+                                            data-booking-id="{{ slot.id }}">
+                                            See details
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-
         </div>
+        <script>
+            {% include "app/salon_dashboard/booking_details.html" %}
+        </script>
     </section>
     {% include 'app/footer.html' %}
 </body>
