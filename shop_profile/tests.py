@@ -358,7 +358,7 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Cannot cancel booking within 24 hours of the appointment time.")
+        self.assertEqual(data["message"], "Cannot cancel within 24 hours.")
 
     def test_booking_details(self):
         response = self.client.post(
