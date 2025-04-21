@@ -45,7 +45,7 @@
     {% include 'app/salon_dashboard/sidebar.html' %}
 
     <div class="flex-1 p-6">
-      <div class="overflow-x-auto rounded-lg">
+     
         <!-- Render JSON data safely -->
         {{ response_data|json_script:"response-data" }}
         {{ monthly_data|json_script:"monthly-data" }}
@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <!-- Sales -->
+          <!-- Sales  -->
           <div class="card bg-white rounded-lg shadow-md p-4 w-full lg:w-1/2">
             <h3 class="text-xl font-bold mb-2">Sales</h3>
             <div id="sales" style="height: 300px; width: 100%;">
@@ -123,8 +123,10 @@
             <button class="next-btn text-xl ml-3 font-semibold">❯</button>
           </div>
         </div>
+      
+      
       </div>
-    </div>
+    
   </section>
 
   <script>
