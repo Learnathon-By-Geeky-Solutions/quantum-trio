@@ -471,7 +471,7 @@ class DebugStaticFilesTest(SimpleTestCase):
         import carehub.urls
         importlib.reload(carehub.urls)
         self.assertTrue(True)
-
+#passed
 class ShopProfileViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -575,3 +575,68 @@ class ShopProfileViewsTest(TestCase):
             "message": "Booking not found."
         })
 
+class AdditionalShopProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.user.set_password("password123")
+        self.user.save()
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0,
+            profile_pic=SimpleUploadedFile("worker.jpg", b"file_content", content_type="image/jpeg")
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_update_status_not_found(self):
+        """Test update_status view with non-existent booking"""
+        response = self.client.post(
+            reverse("update-status"),
+            json.dumps({"booking_id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "Booking not found."
+        })
+
+    def test_add_worker_expertise_addition(self):
+        """Test add_worker view adding expertise"""
+        data = {
+            "name": "New Worker",
+            "email": "worker2@example.com",
+            "phone": "1234567890",
+            "experience": "5",
+            "expertise": [self.item.id],
+            "profile_pic": SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
+        }
+        response = self.client.post(reverse("add_worker"), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        worker = ShopWorker.objects.get(email="worker2@example.com")
+        self.assertEqual(list(worker.expertise.all()), [self.item])
+        self.assertIsNotNone(worker.profile_pic)
+        messages = [str(m) for m in response.wsgi_request._messages]
+        self.assertIn("Worker added successfully!", messages)
