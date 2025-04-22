@@ -34,7 +34,7 @@
                 category: "{{ shop.category | escapejs }}",
                 image: "{% if shop.shop_picture and shop.shop_picture.url %}{{ shop.shop_picture.url }}{% else %}{% static 'app/image/shop/1.jpg' %}{% endif %}",
                 link: "salon-profile?shop_id={{ shop.id }}",
-            },
+            }, 
         {% endfor %}
     ];
     let cnt=1;

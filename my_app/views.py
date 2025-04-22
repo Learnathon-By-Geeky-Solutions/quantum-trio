@@ -56,15 +56,24 @@ def home(request):
         'reviewer_name':reviewer_name,
         'statistics':statistics
     })
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.contrib import messages
+
 def submit_review(request):
     if request.method == "POST" and request.user.is_authenticated:
         comment = request.POST.get("review", "").strip()
         rating = request.POST.get("rating", "0").strip()
 
+        # Validate rating
         try:
-            rating = float(rating)  # Convert rating to float
+            rating = float(rating)
+            if rating < 0 or rating > 5:
+                raise ValueError("Rating must be between 0 and 5.")
         except ValueError:
-            rating = 0.0  # Default value
+            messages.error(request, "Invalid rating value.")
+            return redirect("home")
 
         # Determine reviewer type
         if hasattr(request.user, "shop_profile"):
@@ -74,16 +83,19 @@ def submit_review(request):
         else:
             return HttpResponse("Invalid reviewer", status=400)
 
+        # Create the review
         ReviewCarehub.objects.create(
             reviewer_type=ContentType.objects.get_for_model(reviewer_instance),
             reviewer_id=reviewer_instance.id,
             comment=comment,
             rating=rating
         )
-        
-        return redirect('home')
-    return HttpResponse("Invalid request", status=400)
 
+        messages.success(request, "The review was submitted successfully. Thank you!")
+        return redirect("home")
+
+    return HttpResponse("Invalid request", status=400)
+ 
 def select_user_type(request):
     return render(request, 'app/login_signup/select_user_type.html')
 
@@ -200,7 +212,7 @@ def contact_us(request):
                 message=message
             )
             messages.success(request, "Your message has been sent successfully!")  # optional
-        except Exception as e:
+        except Exception as e: 
             messages.error(request, f"Something went wrong: {str(e)}") 
         print(name,email,subject,message)
     return render(request, 'app/contact_us.html')
@@ -225,7 +237,7 @@ def search(request):
                 Q(shop_name__icontains=keyword) |
                 Q(shop_title__icontains=keyword) |
                 Q(shop_info__icontains=keyword)
-            )
+            ).order_by('-shop_rating')
             
             # Based on location 
             # If the keyword matches with any shops location
@@ -238,14 +250,15 @@ def search(request):
                 Q(shop_landmark_3__icontains=keyword)|
                 Q(shop_landmark_4__icontains=keyword)|
                 Q(shop_landmark_5__icontains=keyword)
-            ).distinct()
+            ).distinct().order_by('-shop_rating')
             print(location_based)
+            
             # Based on service 
             # If the keyword matches with shops service 
             service_based = ShopProfile.objects.filter(
                 shopservice__item__name__icontains=keyword
-            ).distinct()
-            
+            ).distinct().order_by('-shop_rating')
+            print(service_based)
             # Based on item
             # If the keyword matches with any item 
             items = Item.objects.filter(
@@ -302,10 +315,12 @@ def fetch_shop(request):
             'shop_customer_count': salon.shop_customer_count,
             'shop_city': salon.shop_city,
             'shop_title': salon.shop_title,
+            'image': salon.shop_picture.url if salon.shop_picture and hasattr(salon.shop_picture, 'url') else '',
             # 'image': salon.shop_picture.url if salon.shop_picture else '',  # Ensure media URLs work
         }
         for salon in salons
     ]
+    salon_list = sorted(salon_list, key=lambda x: x['shop_rating'], reverse=True)
     return JsonResponse(salon_list, safe=False)
 
 def fetch_by_items(request):
