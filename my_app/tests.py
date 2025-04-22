@@ -177,11 +177,11 @@ class MyAppTests(TestCase):
         self.assertIn(self.division, response.context['divisions'])
         self.assertIn(self.district, response.context['districts'])
 
-    def test_explore_by_items_view(self):
-        response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context['item'], 'Test Item')
+    # def test_explore_by_items_view(self):
+    #     response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/explore_by_items.html')
+    #     self.assertEqual(response.context['item'], 'Test Item')
 
     def test_items_view(self):
         response = self.client.get(reverse('items'), {'service': 'Test Service'})

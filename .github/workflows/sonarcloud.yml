@@ -3,7 +3,7 @@ name: SonarCloud Coverage
 on:
   push:
     branches:
-      - main,refactor
+      - main, refactor
   pull_request:
     types: [opened, synchronize, reopened]
 
