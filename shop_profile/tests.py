@@ -671,19 +671,6 @@ class ShopProfileViewsTest(TestCase):
             "message": "Booking not found."
         })
 
-import json
-from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopReview
-from user_profile.models import UserProfile
-from my_app.models import Service, Item, Division, District, Upazilla, Area
-from booking.models import BookingSlot
-from decimal import Decimal
-from datetime import date, time, timedelta
-
-User = get_user_model()
-
 class ShopProfileViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -783,3 +770,447 @@ class ShopProfileViewsTest(TestCase):
             "success": False,
             "message": "Booking not found."
         })
+
+
+class ShopProfileAdditionalViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321",
+            shop_rating=Decimal('0.00'),
+            shop_customer_count=10
+        )
+        self.service = Service.objects.create(name="Test Service")
+        self.item = Item.objects.create(name="Test Item", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=Decimal('0.00'),
+            profile_pic=SimpleUploadedFile("worker.jpg", b"file_content", content_type="image/jpeg")
+        )
+        self.review = ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,
+            rating=4,
+            review=""
+        )
+        self.notification = ShopNotification.objects.create(
+            shop=self.shop,
+            title="Test Notification",
+            message="Test message",
+            notification_type="general"
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.client.login(email=TEST_EMAIL1, password=TEST_PASS)
+
+    def test_staffs_view_get(self):
+        """Test staffs view GET request rendering."""
+        response = self.client.get(reverse("shop_staffs"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertIn(self.worker, response.context["shop_worker"])
+        self.assertIn(self.shop_service, response.context["items"])
+
+    def test_staffs_view_post_success(self):
+        """Test staffs view POST request with valid worker update."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "6.0",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.name, "Updated Worker")
+        self.assertEqual(self.worker.email, "updated@example.com")
+        self.assertEqual(self.worker.experience, 6.0)
+        self.assertIn(self.item, self.worker.expertise.all())
+        self.assertContains(response, "Worker details updated successfully")
+
+    def test_staffs_view_post_invalid_experience(self):
+        """Test staffs view POST request with invalid experience."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Invalid input for experience")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.experience, 5.0)
+
+    def test_staffs_view_post_non_existent_worker(self):
+        """Test staffs view POST request with non-existent worker."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": 999,
+            "name": "Non Existent",
+            "email": "nonexistent@example.com",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Worker does not exist")
+
+    def test_add_worker_missing_required_fields(self):
+        """Test add_worker view with missing required fields."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Name, Mobile, and Expertise are required.")
+
+    def test_add_worker_invalid_experience(self):
+        """Test add_worker view with invalid experience."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Experience must be a number.")
+
+    def test_add_worker_success(self):
+        """Test add_worker view with valid data."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "email": "new@example.com",
+            "phone": "9876543210",
+            "experience": "3.0",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        self.assertTrue(ShopWorker.objects.filter(name="New Worker").exists())
+        worker = ShopWorker.objects.get(name="New Worker")
+        self.assertEqual(worker.email, "new@example.com")
+        self.assertEqual(worker.experience, 3.0)
+        self.assertIn(self.item, worker.expertise.all())
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Worker added successfully!")
+
+    def test_delete_worker_success(self):
+        """Test delete_worker view with successful deletion."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": self.worker.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True})
+        self.assertFalse(ShopWorker.objects.filter(id=self.worker.id).exists())
+
+    def test_delete_worker_non_existent(self):
+        """Test delete_worker view with non-existent worker."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Worker not found'})
+
+    # def test_delete_worker_invalid_request(self):
+    #     """Test delete_worker view with non-POST request."""
+    #     response = self.client.get(reverse("delete_worker"))
+    #     self.assertEqual(response.status_code, 405)
+
+    def test_review_view_with_pagination(self):
+        """Test review view with paginated reviews."""
+        for i in range(15):
+            ShopReview.objects.create(
+                shop=self.shop,
+                reviewer_id=1000 + i,
+                rating=3,
+                review=f"Review {i}"
+            )
+        response = self.client.get(reverse("shop_review"), {"page": 2})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/reviews.html")
+        reviews = response.context["reviews"]
+        self.assertEqual(len(reviews), 6)
+        self.assertTrue(response.context["page_obj"].has_previous())
+        self.assertFalse(response.context["page_obj"].has_next())
+
+    def test_notification_view_with_notifications(self):
+        """Test notification view with notifications."""
+        response = self.client.get(reverse("shop_notifications"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
+        notifications = response.context["notifications"]
+        self.assertIn(self.notification, notifications)
+        self.assertEqual(notifications[0].title, "Test Notification")
+
+    def test_notification_view_no_notifications(self):
+        """Test notification view with no notifications."""
+        ShopNotification.objects.all().delete()
+        response = self.client.get(reverse("shop_notifications"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
+        self.assertEqual(len(response.context["notifications"]), 0)
+
+    def test_basic_update_view_get(self):
+        """Test basic_update view GET request rendering."""
+        response = self.client.get(reverse("basic_update"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/update_basic.html")
+        self.assertEqual(response.context["user"], self.user)
+        self.assertEqual(response.context["shop"], self.shop)
+        self.assertIn("district", response.context)
+        self.assertIn("Upazilla", response.context)
+
+
+TEST_EMAIL = "shop@example.com"
+TEST_PASS = "password123"
+SHOP_STAFFS = "shop_staffs"
+
+class ShopProfileAdditionalViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL, password=TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321",
+            shop_rating=Decimal('0.00'),
+            shop_customer_count=10
+        )
+        self.service = Service.objects.create(name="Test Service")
+        self.item = Item.objects.create(name="Test Item", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=Decimal('0.00'),
+            profile_pic=SimpleUploadedFile("worker.jpg", b"file_content", content_type="image/jpeg")
+        )
+        self.review = ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,
+            rating=4,
+            review=""
+        )
+        self.notification = ShopNotification.objects.create(
+            shop=self.shop,
+            title="Test Notification",
+            message="Test message",
+            notification_type="general"
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.client.login(email=TEST_EMAIL, password=TEST_PASS)
+
+    def test_add_worker_success(self):
+        """Test add_worker view with valid data."""
+        profile_pic = SimpleUploadedFile("new_worker.jpg", b"file_content", content_type="image/jpeg")
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "email": "new@example.com",
+            "phone": "9876543210",
+            "experience": "3.0",
+            "expertise": [self.item.id],
+            "profile_pic": profile_pic
+        }, format='multipart')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        self.assertTrue(ShopWorker.objects.filter(name="New Worker").exists())
+        worker = ShopWorker.objects.get(name="New Worker")
+        self.assertEqual(worker.email, "new@example.com")
+        self.assertEqual(worker.experience, 3.0)
+        self.assertIn(self.item, worker.expertise.all())
+        self.assertTrue(worker.profile_pic)  # Verify profile_pic was saved
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Worker added successfully!")
+
+    # Other test cases remain unchanged...
+    def test_staffs_view_get(self):
+        """Test staffs view GET request rendering."""
+        response = self.client.get(reverse("shop_staffs"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertIn(self.worker, response.context["shop_worker"])
+        self.assertIn(self.shop_service, response.context["items"])
+
+    def test_staffs_view_post_success(self):
+        """Test staffs view POST request with valid worker update."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "6.0",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.name, "Updated Worker")
+        self.assertEqual(self.worker.email, "updated@example.com")
+        self.assertEqual(self.worker.experience, 6.0)
+        self.assertIn(self.item, self.worker.expertise.all())
+        self.assertContains(response, "Worker details updated successfully")
+
+    def test_staffs_view_post_invalid_experience(self):
+        """Test staffs view POST request with invalid experience."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Invalid input for experience")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.experience, 5.0)
+
+    def test_staffs_view_post_non_existent_worker(self):
+        """Test staffs view POST request with non-existent worker."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": 999,
+            "name": "Non Existent",
+            "email": "nonexistent@example.com",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Worker does not exist")
+
+    def test_add_worker_missing_required_fields(self):
+        """Test add_worker view with missing required fields."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Name, Mobile, and Expertise are required.")
+
+    def test_add_worker_invalid_experience(self):
+        """Test add_worker view with invalid experience."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Experience must be a number.")
+
+    def test_delete_worker_success(self):
+        """Test delete_worker view with successful deletion."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": self.worker.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True})
+        self.assertFalse(ShopWorker.objects.filter(id=self.worker.id).exists())
+
+    def test_delete_worker_non_existent(self):
+        """Test delete_worker view with non-existent worker."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Worker not found'})
+
+    def test_delete_worker_invalid_request(self):
+        """Test delete_worker view with non-POST request."""
+        response = self.client.get(reverse("delete_worker"))
+        self.assertEqual(response.status_code, 405)
+
+    def test_review_view_with_pagination(self):
+        """Test review view with paginated reviews."""
+        for i in range(15):
+            ShopReview.objects.create(
+                shop=self.shop,
+                reviewer_id=1000 + i,
+                rating=3,
+                review=f"Review {i}"
+            )
+        response = self.client.get(reverse("shop_review"), {"page": 2})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/reviews.html")
+        reviews = response.context["reviews"]
+        self.assertEqual(len(reviews), 6)
+        self.assertTrue(response.context["page_obj"].has_previous())
+        self.assertFalse(response.context["page_obj"].has_next())
+
+    def test_notification_view_with_notifications(self):
+        """Test notification view with notifications."""
+        response = self.client.get(reverse("shop_notifications"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
+        notifications = response.context["notifications"]
+        self.assertIn(self.notification, notifications)
+        self.assertEqual(notifications[0].title, "Test Notification")
+
+    def test_notification_view_no_notifications(self):
+        """Test notification view with no notifications."""
+        ShopNotification.objects.all().delete()
+        response = self.client.get(reverse("shop_notifications"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/notifications.html")
+        self.assertEqual(len(response.context["notifications"]), 0)
+
+    def test_basic_update_view_get(self):
+        """Test basic_update view GET request rendering."""
+        response = self.client.get(reverse("basic_update"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/update_basic.html")
+        self.assertEqual(response.context["user"], self.user)
+        self.assertEqual(response.context["shop"], self.shop)
+        self.assertIn("district", response.context)
+        self.assertIn("Upazilla", response.context)
