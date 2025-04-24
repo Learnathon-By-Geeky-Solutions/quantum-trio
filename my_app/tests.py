@@ -428,7 +428,7 @@ class AdditionalMyAppTests(TestCase):
         self.assertTrue(Contact.objects.filter(email='invalid-email').exists())
         self.assertContains(response, 'Your message has been sent successfully', status_code=200)
 
-passed
+#passed
 class CoverageMyAppTests(TestCase):
     def setUp(self):
         self.client = Client()
