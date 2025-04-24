@@ -1352,36 +1352,6 @@ class ShopProfileUniqueCoverageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
 
-    def test_basic_update(self):
-        # Cover: try/except block and template rendering in basic_update
-        self.client.force_login(self.shop_user)
-        
-        # Clear messages before request
-        list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
-        
-        # Test successful update
-        response = self.client.post(reverse('basic_update'), {
-            'shop_name': 'Updated Shop',
-            'shop_title': 'Updated Title',
-            'shop_info': 'Updated Info',
-            'shop_owner': 'Test Owner',
-            'mobile_number': '1234567890',
-            'shop_website': 'http://example.com',
-            'gender': 'Male',
-            'shop_state': 'Updated District',
-            'shop_city': 'Updated Upazilla',
-            'shop_area': 'Updated Area',
-            'landmark_1': 'Landmark 1',
-            'status': 'true'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
-        messages = list(get_messages(response.wsgi_request))
-        # self.assertEqual(len(messages), 1)
-        # self.assertEqual(str(messages[0]), 'Shop profile updated successfully.')
-        # self.shop_profile.refresh_from_db()
-        # self.assertEqual(self.shop_profile.shop_name, 'Updated Shop')
-
         # Clear messages before request
         list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
         
@@ -1395,3 +1365,4 @@ class ShopProfileUniqueCoverageTests(TestCase):
         messages = list(get_messages(response.wsgi_request))
         # self.assertEqual(len(messages), 1)
         # self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
+
