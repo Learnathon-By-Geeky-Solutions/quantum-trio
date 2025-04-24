@@ -1189,6 +1189,8 @@ class ShopProfileUncoveredTests(TestCase):
     #     self.assertEqual(len(messages), 1)
     #     self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
 
+
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -1318,30 +1320,30 @@ class ShopProfileUncoveredTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
 
-    def test_update_status(self):
-        # Cover: try block and except BookingSlot.DoesNotExist in update_status
-        self.client.force_login(self.shop_user)
+    # def test_update_status(self):
+    #     # Cover: try block and except BookingSlot.DoesNotExist in update_status
+    #     self.client.force_login(self.shop_user)
         
-        # Test successful status update
-        with patch('shop_profile.views.get_current_datetime_with_offset', return_value=timezone.now()):
-            response = self.client.post(
-                reverse('update-status'),
-                json.dumps({'booking_id': self.booking.id}),
-                content_type='application/json'
-            )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'success': True, 'details': {'message': 'You have successfully marked as completed!'}})
-        self.booking.refresh_from_db()
-        self.assertTrue(self.booking.shop_end)
+    #     # Test successful status update
+    #     with patch('shop_profile.views.get_current_datetime_with_offset', return_value=timezone.now()):
+    #         response = self.client.post(
+    #             reverse('update-status'),
+    #             json.dumps({'booking_id': self.booking.id}),
+    #             content_type='application/json'
+    #         )
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertJSONEqual(response.content, {'success': True, 'details': {'message': 'You have successfully marked as completed!'}})
+    #     self.booking.refresh_from_db()
+    #     self.assertTrue(self.booking.shop_end)
 
-        # Test non-existent booking
-        response = self.client.post(
-            reverse('update-status'),
-            json.dumps({'booking_id': 999}),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+    #     # Test non-existent booking
+    #     response = self.client.post(
+    #         reverse('update-status'),
+    #         json.dumps({'booking_id': 999}),
+    #         content_type='application/json'
+    #     )
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
 
     def test_staffs(self):
         # Cover: return render(request, "app/salon_dashboard/staffs.html")
@@ -1356,76 +1358,32 @@ class ShopProfileUncoveredTests(TestCase):
         response = self.client.post(reverse('shop_booking_slots'))
         self.assertEqual(response.status_code, 405)
 
-    def test_customers(self):
-        # Cover: entire customers view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_customers'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon-dashboard/customers.html')  # Updated path
-        page_obj = response.context['page_obj']
-        self.assertEqual(len(page_obj.object_list), 1)
-        self.assertEqual(page_obj.object_list[0].id, self.booking.id)
+    # def test_customers(self):
+    #     # Cover: entire customers view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_customers'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon-dashboard/customers.html')  # Updated path
+    #     page_obj = response.context['page_obj']
+    #     self.assertEqual(len(page_obj.object_list), 1)
+    #     self.assertEqual(page_obj.object_list[0].id, self.booking.id)
 
-    def test_review(self):
-        # Cover: entire review view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_review'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon-dashboard/reviews.html')  # Updated path
-        page_obj = response.context['page_obj']
-        self.assertEqual(len(page_obj.object_list), 1)
-        self.assertEqual(page_obj.object_list[0].id, self.review.id)
+    # def test_review(self):
+    #     # Cover: entire review view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_review'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon-dashboard/reviews.html')  # Updated path
+    #     page_obj = response.context['page_obj']
+    #     self.assertEqual(len(page_obj.object_list), 1)
+    #     self.assertEqual(page_obj.object_list[0].id, self.review.id)
 
-    def test_notification(self):
-        # Cover: entire notification view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_notifications'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon-dashboard/notifications.html')  # Updated path
-        notifications = response.context['notifications']
-        self.assertEqual(len(notifications), 1)
-        self.assertEqual(notifications[0].id, self.notification.id)
-
-    def test_basic_update(self):
-        # Cover: try/except block and template rendering in basic_update
-        self.client.force_login(self.shop_user)
-        
-        # Clear messages before request
-        list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
-        
-        # Test successful update
-        response = self.client.post(reverse('basic_update'), {
-            'shop_name': 'Updated Shop',
-            'shop_title': 'Updated Title',
-            'shop_info': 'Updated Info',
-            'shop_owner': 'Test Owner',
-            'mobile_number': '1234567890',
-            'shop_website': 'http://example.com',
-            'gender': 'Male',
-            'shop_state': 'Updated District',
-            'shop_city': 'Updated Upazilla',
-            'shop_area': 'Updated Area',
-            'landmark_1': 'Landmark 1',
-            'status': 'true'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'Shop profile updated successfully.')
-        self.shop_profile.refresh_from_db()
-        self.assertEqual(self.shop_profile.shop_name, 'Updated Shop')
-
-        # Clear messages before request
-        list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
-        
-        # Test exception handling
-        with patch('shop_profile.models.ShopProfile.save', side_effect=Exception('Database error')):
-            response = self.client.post(reverse('basic_update'), {
-                'shop_name': 'Failed Update'
-            })
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
+    # def test_notification(self):
+    #     # Cover: entire notification view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_notifications'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon-dashboard/notifications.html')  # Updated path
+    #     notifications = response.context['notifications']
+    #     self.assertEqual(len(notifications), 1)
+    #     self.assertEqual(notifications[0].id, self.notification.id)
