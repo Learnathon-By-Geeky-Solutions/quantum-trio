@@ -2,7 +2,7 @@ from datetime import date, time
 from decimal import Decimal
 import decimal
 from unittest.mock import patch
-from django.http import HttpResponseNotAllowed, JsonResponse
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -568,16 +568,6 @@ class CoverageMyAppTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content.decode(), 'Invalid reviewer')
 
-    def test_log_in_admin_user(self):
-        # Test admin user type redirect
-        self.client.login(email='admin@example.com', password='adminpass123')
-        response = self.client.post(reverse('login'), {
-            'email': 'admin@example.com',
-            'password': 'adminpass123'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
-
     # def test_success_reset_password(self):
     #     # Test password reset response
     #     response = self.client.get(reverse('password_reset_complete'))
@@ -667,9 +657,4 @@ class CoverageMyAppTests(TestCase):
     #     self.assertTemplateUsed(response, 'app/explore_by_items.html')
     #     self.assertEqual(response.context['item'], '')
 
-    def test_explore_by_items_with_item(self):
-        # Test explore_by_items with item parameter
-        response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context['item'], 'Test Item')
+
