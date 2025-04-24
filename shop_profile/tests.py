@@ -1208,7 +1208,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 UserModel = get_user_model()
 
-class ShopProfileUncoveredTests(TestCase):
+class ShopProfileUncoveredTests1(TestCase):
     def setUp(self):
         self.client = Client()
 
