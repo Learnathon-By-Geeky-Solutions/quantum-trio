@@ -1,10 +1,12 @@
+import json
 from unittest.mock import patch
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from datetime import date, time, datetime
 from booking.models import BookingSlot
-from my_app.models import Item, Service
+from my_app.models import Area, District, Division, Item, Service, Upazilla
+from my_app.tests import UserModel
 from user_profile.models import UserProfile
 from shop_profile.models import MyUser, ShopProfile, ShopWorker, ShopService, ShopSchedule, ShopNotification
 import uuid
@@ -302,17 +304,7 @@ class BookingViewsTest(TestCase):
         )
         self.client.login(email="shop@example.com", password="password123")
 
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from datetime import date, time, datetime, timedelta
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopSchedule
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-import json
 
-UserModel = get_user_model()
 
 class BookingUncoveredTests(TestCase):
     def setUp(self):
