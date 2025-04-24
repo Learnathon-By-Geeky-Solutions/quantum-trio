@@ -114,7 +114,7 @@ def available_slots(request):
         return error
 
     slots = get_available_time_slots(
-        request.GET['shop_id'], request.GET['worker_id'], request.GET['item_id'], date_obj
+        request.GET['shop_id'], request.GET['worker_id'], date_obj
     )
     return JsonResponse(slots, safe=False)
 
