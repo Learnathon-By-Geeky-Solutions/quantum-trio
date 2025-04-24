@@ -84,7 +84,8 @@ class ShopProfile(models.Model):
 
     def update_rating(self, rating):
         current_rating = self.shop_rating 
-        current_total = current_rating * self.shop_customer_count
+        # current_total = current_rating * self.shop_customer_count
+        current_total = current_rating * Decimal(str(self.shop_customer_count))
 
         self.shop_customer_count += 1
         new_rating = (current_total + Decimal(str(rating))) / self.shop_customer_count  # Convert float to Decimal
