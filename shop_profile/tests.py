@@ -1225,3 +1225,163 @@ class ShopProfileUncoveredTests1(TestCase):
         self.assertEqual(response.status_code, 405)
 
 
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.core.paginator import Paginator
+from django.utils import timezone
+from datetime import date, time, datetime, timedelta
+from my_app.models import Division, District, Upazilla, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview, ShopNotification
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+import json
+from unittest.mock import patch
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+UserModel = get_user_model()
+
+class ShopProfileUniqueCoverageTests1(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0,
+            profile_pic='ShopWorker/old_profile.jpg'
+        )
+
+        # Create booking slot
+        self.booking = BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='pending',
+            date=date(2024, 5, 5),
+            time=time(10, 0),
+            payment_status='unpaid',
+            user_end=True,
+            shop_end=False,
+            notes='',
+            rated=False
+        )
+
+        # Create review with mocked update_rating
+        with patch('shop_profile.models.ShopProfile.update_rating', return_value=True):
+            self.review = ShopReview.objects.create(
+                shop=self.shop_profile,
+                reviewer_id=self.user_profile.id,
+                rating=5,
+                review='Great service!'
+            )
+
+        # Create notification
+        self.notification = ShopNotification.objects.create(
+            shop=self.shop_profile,
+            title='Test Notification',
+            message='Test message',
+            notification_type='general'
+        )
+
+    def test_booking_details_does_not_exist(self):
+        # Cover: except (BookingSlot.DoesNotExist, ShopService.DoesNotExist) in booking_details
+        self.client.force_login(self.shop_user)
+        response = self.client.post(
+            reverse('booking_details'),
+            json.dumps({'booking_id': 999}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+
+
+    def test_customers(self):
+        # Cover: entire customers view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_customers'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.booking.id)
+
+    def test_review(self):
+        # Cover: entire review view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_review'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/reviews.html')
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.review.id)
+
+    def test_notification(self):
+        # Cover: entire notification view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_notifications'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/notifications.html')
+        notifications = response.context['notifications']
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(notifications[0].id, self.notification.id)
