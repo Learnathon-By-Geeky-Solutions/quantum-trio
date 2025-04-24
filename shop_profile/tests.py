@@ -776,6 +776,7 @@ TEST_EMAIL = "shop@example.com"
 TEST_PASS = "password123"
 SHOP_STAFFS = "shop_staffs"
 
+#passed
 class ShopProfileAdditionalViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -953,6 +954,8 @@ class ShopProfileAdditionalViewsTest(TestCase):
         response = self.client.get(reverse("delete_worker"))
         self.assertEqual(response.status_code, 405)
 
+
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -969,7 +972,7 @@ from unittest.mock import patch
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 UserModel = get_user_model()
-
+# passed
 class ShopProfileUncoveredTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -1095,7 +1098,7 @@ from unittest.mock import patch
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 UserModel = get_user_model()
-
+#passed
 class ShopProfileUncoveredTests1(TestCase):
     def setUp(self):
         self.client = Client()
@@ -1222,6 +1225,7 @@ class ShopProfileUncoveredTests1(TestCase):
         self.assertEqual(response.status_code, 405)
 
 
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -1341,16 +1345,37 @@ class ShopProfileUniqueCoverageTests(TestCase):
             notification_type='general'
         )
 
-    def test_booking_details_does_not_exist(self):
-        # Cover: except (BookingSlot.DoesNotExist, ShopService.DoesNotExist) in booking_details
+
+    def test_customers(self):
+        # Cover: entire customers view
         self.client.force_login(self.shop_user)
-        response = self.client.post(
-            reverse('booking_details'),
-            json.dumps({'booking_id': 999}),
-            content_type='application/json'
-        )
+        response = self.client.get(reverse('shop_customers'))
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+        self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.booking.id)
+
+    def test_review(self):
+        # Cover: entire review view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_review'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/reviews.html')
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.review.id)
+
+    def test_notification(self):
+        # Cover: entire notification view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_notifications'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/notifications.html')
+        notifications = response.context['notifications']
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(notifications[0].id, self.notification.id)
+
 
         # Clear messages before request
         list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
@@ -1363,6 +1388,5 @@ class ShopProfileUniqueCoverageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
         messages = list(get_messages(response.wsgi_request))
-        # self.assertEqual(len(messages), 1)
-        # self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
-
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
