@@ -311,7 +311,8 @@ def fetch_shop(request):
         {
             'shop_id': salon.id,
             'shop_name': salon.shop_name,
-            'shop_rating': salon.shop_rating,
+            # 'shop_rating': salon.shop_rating,
+            'shop_rating': str(float(salon.shop_rating)),
             'shop_customer_count': salon.shop_customer_count,
             'shop_city': salon.shop_city,
             'shop_title': salon.shop_title,
@@ -370,13 +371,19 @@ def location(request):
     districts = District.objects.all()
     return render(request, 'app/location.html', {'divisions': divisions, 'districts': districts})
 
+# def explore_by_items(request):
+#     item=""
+#     if(request.method=="GET"):
+#         item=request.GET.get('item')
+#     print(item)
+#     district,upazilla,area=area_database()
+#     return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area})
+
 def explore_by_items(request):
-    item=""
-    if(request.method=="GET"):
-        item=request.GET.get('item')
+    item = request.GET.get('item', '')
     print(item)
-    district,upazilla,area=area_database()
-    return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area})
+    district, upazilla, area = area_database()
+    return render(request, 'app/explore_by_items.html', {'item': item, 'district': list(district), 'Upazilla': list(upazilla), 'Area': area})
  
 def items(request):
     item=service=''
