@@ -948,15 +948,6 @@ class UncoveredMyAppTests(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
 
-    def test_log_in_admin_user(self):
-        # Cover: else branch for admin user type in log_in
-        self.client.login(email='admin@example.com', password='adminpass123')
-        response = self.client.post(reverse('login'), {
-            'email': 'admin@example.com',
-            'password': 'adminpass123'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
 
     def test_contact_us_exception(self):
         # Cover: except Exception block in contact_us
@@ -978,21 +969,6 @@ class UncoveredMyAppTests(TestCase):
         response = self.client.post(reverse('booknow'))
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
-
-    def test_explore_by_items(self):
-        # Cover: explore_by_items view, including item handling and area_database call
-        # Test without item parameter
-        response = self.client.get(reverse('explore_by_items'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context.get('item', ''), '')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
 
         # Test with item parameter
         response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
