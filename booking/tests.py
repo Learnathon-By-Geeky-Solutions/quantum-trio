@@ -301,3 +301,144 @@ class BookingViewsTest(TestCase):
             end=time(17, 0)    # 5:00 PM
         )
         self.client.login(email="shop@example.com", password="password123")
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from datetime import date, time, datetime, timedelta
+from my_app.models import Division, District, Upazilla, Area, Service, Item
+from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopSchedule
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+import json
+
+UserModel = get_user_model()
+
+class BookingUncoveredTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create test user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+        # Create shop schedule for Monday
+        self.schedule = ShopSchedule.objects.create(
+            shop=self.shop_profile,
+            day_of_week='Monday',
+            start=time(9, 0),  # 9:00 AM
+            end=time(12, 0)    # 12:00 PM
+        )
+
+    def test_get_available_time_slots(self):
+        # Cover: return [slot.strftime("%H:%M") for slot in time_slots if slot not in booked]
+        date_obj = date(2025, 5, 5)  # A Monday in the future
+        # Create a booked slot
+        BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='pending',
+            date=date_obj,
+            time=time(10, 0),  # Book 10:00 AM
+            payment_status='unpaid',
+            user_end=True,
+            shop_end=False,
+            notes='',
+            rated=False
+        )
+        # Expected slots: 09:00, 11:00 (10:00 is booked)
+        from booking.views import get_available_time_slots
+        slots = get_available_time_slots(self.shop_profile.id, self.shop_worker.id, date_obj)
+        self.assertEqual(slots, ['09:00', '11:00'])
+
+    def test_available_slots_view(self):
+        # Cover: slots = get_available_time_slots(...) and return JsonResponse(slots, safe=False)
+        date_obj = date(2025, 5, 5)  # A Monday in the future
+        # Create a booked slot
+        BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='pending',
+            date=date_obj,
+            time=time(10, 0),  # Book 10:00 AM
+            payment_status='unpaid',
+            user_end=True,
+            shop_end=False,
+            notes='',
+            rated=False
+        )
+        # Send GET request to available_slots
+        response = self.client.get(reverse('available_slots'), {
+            'shop_id': str(self.shop_profile.id),
+            'worker_id': str(self.shop_worker.id),
+            'item_id': str(self.item.id),
+            'date': date_obj.strftime('%Y-%m-%d')
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data, ['09:00', '11:00'])
