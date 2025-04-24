@@ -27,7 +27,7 @@ from django.core.paginator import Paginator
 BOOKING_NOT_FOUND = "Booking not found."
 DAYS_IN_PAST = 15
 HOURS_OFFSET = 6
-CANCEL_HOURS_LIMIT = 30
+CANCEL_HOURS_LIMIT = 0
 SHOP_STAFFS = "shop_staffs"
 
 def get_shop_from_user(user):
@@ -163,7 +163,7 @@ def slots(request):
         }
         for worker in ShopWorker.objects.filter(shop=get_shop_from_user(request.user))
     ]
-    return render(request, "app/salon_dashboard/booking-slots.html", {"shop_worker": shop_worker, "today": current_datetime})
+    return render(request, "app/salon_dashboard/booking-slots.html", {"shop_worker": shop_worker, "today": current_datetime,"selected":today})
 
 @csrf_protect
 @login_required
