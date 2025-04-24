@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
-
+from django.contrib.messages import get_messages
 from booking.tests import User
 from my_app.views import area_database
 from .models import Division, District, Upazilla, Area, Landmark, Service, Item, ReviewCarehub, Contact
@@ -770,26 +770,26 @@ class CoverageMyAppTestsTests1(TestCase):
             experience=5.0
         )
 
-    # def test_submit_shop_review_general_exception(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     BookingSlot.objects.create(
-    #         user=self.user_profile,
-    #         shop=self.shop_profile,
-    #         status='completed',
-    #         date=date(2025, 4, 24),
-    #         time=time(12, 0),
-    #         payment_status='unpaid',
-    #         item=self.item,
-    #         worker=self.shop_worker
-    #     )
-    #     with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
-    #         response = self.client.post(reverse('submit_shop_review'), {
-    #             'rating': '4',
-    #             'review': 'Great shop!',
-    #             'shop_id': self.shop_profile.id,
-    #             'user_id': self.user_profile.id
-    #         })
-    #     self.assertEqual(response.status_code, 404)
+    def test_submit_shop_review_general_exception(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            status='completed',
+            date=date(2025, 4, 24),
+            time=time(12, 0),
+            payment_status='unpaid',
+            item=self.item,
+            worker=self.shop_worker
+        )
+        with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
+            response = self.client.post(reverse('submit_shop_review'), {
+                'rating': '4',
+                'review': 'Great shop!',
+                'shop_id': self.shop_profile.id,
+                'user_id': self.user_profile.id
+            })
+        self.assertEqual(response.status_code, 404)
 
     def test_fetch_shop_filters_and_sorting(self):
         response = self.client.get(reverse('fetch_shop'), {
@@ -816,22 +816,6 @@ class CoverageMyAppTestsTests1(TestCase):
         self.assertEqual(data[0]['shop_name'], 'Test Shop')
         self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
 
-
-
-from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.contrib.messages import get_messages
-from django.db.models import Q
-from django.http import HttpResponseNotAllowed
-from .models import Division, District, Upazilla, Area, Landmark, Service, Item, Contact, ReviewCarehub
-from shop_profile.models import ShopProfile, ShopService, ShopWorker
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from unittest.mock import patch
-from datetime import date, time
-
-UserModel = get_user_model()
 
 class UncoveredMyAppTests(TestCase):
     def setUp(self):
