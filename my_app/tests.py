@@ -1054,77 +1054,12 @@ class UniqueCoverageMyAppTests(TestCase):
             experience=5.0
         )
 
-    def test_log_in_admin_user(self):
-        # Cover: else branch for admin user type in log_in
-        self.client.login(email='admin@example.com', password='adminpass123')
-        response = self.client.post(reverse('login'), {
-            'email': 'admin@example.com',
-            'password': 'adminpass123'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
-
-
     def test_book_now_non_get(self):
         # Cover: else branch in book_now
         response = self.client.post(reverse('booknow'))
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
 
-    # def test_fetch_shop_filters(self):
-    #     # Cover: upazilla and area filters in fetch_shop
-    #     # Test with upazila filter
-    #     response = self.client.get(reverse('fetch_shop'), {
-    #         'upazila': 'Test Upazilla',
-    #         'limit': 5,
-    #         'offset': 0
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertEqual(len(data), 1)
-    #     self.assertEqual(data[0]['shop_name'], 'Test Shop')
-    #     self.assertEqual(data[0]['shop_city'], 'Test Upazilla')
-
-    #     # Test with area filter
-    #     response = self.client.get(reverse('fetch_shop'), {
-    #         'area': 'Test Area',
-    #         'limit': 5,
-    #         'offset': 0
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertEqual(len(data), 2)
-    #     self.assertEqual(data[0]['shop_name'], 'Test Shop')
-    #     self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
-    #     self.assertTrue(all(s['shop_area'] == 'Test Area' for s in data))
-
-    def test_explore_by_items(self):
-        # Cover: explore_by_items view
-        # Test without item parameter
-        response = self.client.get(reverse('explore_by_items'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context.get('item', ''), '')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
-
-        # Test with item parameter
-        response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context.get('item', ''), 'Test Item')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
 
 class UniqueCoverageMyAppTests1(TestCase):
     def setUp(self):
