@@ -1,4 +1,5 @@
 from gettext import translation
+from sqlite3 import DatabaseError
 from unittest.mock import patch
 from django.http import JsonResponse
 from django.test import TestCase, Client, SimpleTestCase
@@ -33,7 +34,7 @@ class ShopProfileTests(TestCase):
         self.shop = ShopProfile.objects.create(
             user=self.user,
             shop_name="Test Shop",
-            shop_rating=4.5,
+            shop_rating=Decimal('4.50'),
             shop_customer_count=10,
             gender="Male",
             status=True
@@ -52,19 +53,21 @@ class ShopProfileTests(TestCase):
 
     def test_shop_profile_creation(self):
         self.assertEqual(self.shop.shop_name, "Test Shop")
-        self.assertEqual(self.shop.shop_rating, 4.5)
+        self.assertEqual(self.shop.shop_rating, Decimal('4.50'))
         self.assertEqual(self.shop.user.email, TEST_EMAIL1)
         self.assertTrue(self.shop.status)
 
-    # def test_update_rating_valid(self):
-    #     result = self.shop.update_rating('4.8')
-    #     self.assertTrue(result)
-    #     self.assertEqual(self.shop.shop_rating, 4.8)
+    def test_update_rating_valid(self):
+        """Test updating ShopProfile rating with a valid value."""
+        result = self.shop.update_rating(Decimal('4.8'))
+        self.assertTrue(result)
+        self.assertEqual(self.shop.shop_rating, Decimal('4.53'))  # Expected average: (4.50*10 + 4.8)/11
 
-    # def test_update_rating_invalid(self):
-    #     result = self.shop.update_rating(6.0)
-    #     self.assertFalse(result)
-    #     self.assertEqual(self.shop.shop_rating, 4.5)
+    def test_update_rating_invalid(self):
+        """Test updating ShopProfile rating with a value that causes an invalid average."""
+        result = self.shop.update_rating(Decimal('100.0'))  # Large value to push average > 5.00
+        self.assertFalse(result)
+        self.assertEqual(self.shop.shop_rating, Decimal('4.50'))  # Rating should not change
 
     def test_shop_profile_str(self):
         self.assertEqual(str(self.shop), "Test Shop")
@@ -187,28 +190,6 @@ class ShopServiceTests(TestCase):
 
     def test_service_str(self):
         self.assertEqual(str(self.shop_service), "Test Shop - Haircut")
-
-# passed
-class ShopReviewTests(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
-        )
-        self.customer = User.objects.create_user(
-            email=TEST_EMAIL2, password=TEST_PASS, user_type="user"
-        )
-        self.shop = ShopProfile.objects.create(user=self.user, shop_name="Test Shop")
-        self.review = ShopReview.objects.create(
-            shop=self.shop, rating=4, review="Great service!", reviewer_id=self.customer.id
-        )
-
-    # def test_review_creation(self):
-    #     self.assertEqual(self.review.shop, self.shop)
-    #     self.assertEqual(self.review.rating, 4)
-    #     self.assertEqual(self.review.review, "Great service!")
-
-    # def test_review_str(self):
-    #     self.assertEqual(str(self.review), f"Review by {self.customer.id} for Test Shop - Rating: 4")
 
 # passed
 class ShopScheduleTests(TestCase):
@@ -464,117 +445,16 @@ class ViewTests(TestCase):
         schedule = ShopSchedule.objects.get(shop=self.shop, day_of_week="Monday")
         self.assertEqual(schedule.start, time(9, 0))
         self.assertEqual(schedule.end, time(17, 0))
-# passed
+
+#passed
 class DebugStaticFilesTest(SimpleTestCase):
     @override_settings(DEBUG=True)
     def test_debug_static_block_covered(self):
         import carehub.urls
         importlib.reload(carehub.urls)
         self.assertTrue(True)
+
 #passed
-class ShopProfileViewsTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
-        self.user.set_password("password123")
-        self.user.save()
-        self.shop = ShopProfile.objects.create(
-            user=self.user,
-            shop_name="Test Shop",
-            shop_owner="Shop Owner",
-            mobile_number="0987654321"
-        )
-        self.service = Service.objects.create(name="TestService")
-        self.item = Item.objects.create(name="TestItem", service=self.service)
-        self.shop_service = ShopService.objects.create(
-            shop=self.shop,
-            item=self.item,
-            price=Decimal("50.00")
-        )
-        self.worker = ShopWorker.objects.create(
-            name="Test Worker",
-            email="worker@example.com",
-            phone="1234567890",
-            experience=5.0,
-            shop=self.shop,
-            rating=0.0
-        )
-        self.division = Division.objects.create(name="Test Division")
-        self.district = District.objects.create(name="Test District", division=self.division)
-        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
-        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
-        self.client.login(email="shop@example.com", password="password123")
-
-    def test_profile_monthly_data_loop(self):
-        """Test profile view monthly data loop"""
-        # Create a completed booking
-        BookingSlot.objects.create(
-            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
-            shop=self.shop,
-            worker=self.worker,
-            item=self.item,
-            date=date(2025, 4, 1),  # April
-            time=time(10, 0),
-            status="completed"
-        )
-        response = self.client.get(reverse("shop_profile"))  # Assumed URL name
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
-        monthly_data = response.context["monthly_data"]
-        # Check April’s value (50.00 from shop_service price)
-        self.assertTrue(any(d["month"] == "Apr" and d["value"] == 50.0 for d in monthly_data))
-
-    # def test_profile_reviews_with_missing_reviewer(self):
-    #     """Test profile view reviews loop with missing reviewer"""
-    #     # Create a review with a non-existent reviewer
-    #     ShopReview.objects.create(
-    #         shop=self.shop,
-    #         reviewer_id=999,  # Non-existent UserProfile
-    #         rating=4
-    #     )
-    #     response = self.client.get(reverse("shop_profile"))  # Assumed URL name
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
-    #     reviews = response.context["reviews"]
-    #     self.assertEqual(len(reviews), 1)
-    #     self.assertIsNone(reviews[0].reviewer)  # Reviewer should be None
-    #     self.assertEqual(reviews[0].stars, "★★★★")
-
-    def test_reject_booking_success(self):
-        """Test reject_booking view successful cancellation"""
-        # Create a booking slot for a future date (more than 30 hours away)
-        booking = BookingSlot.objects.create(
-            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
-            shop=self.shop,
-            worker=self.worker,
-            item=self.item,
-            date=date.today() + timedelta(days=2),
-            time=time(10, 0),
-            status="pending"
-        )
-        response = self.client.post(
-            reverse("reject_booking"),
-            json.dumps({"booking_id": booking.id}),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {"success": True, "message": "Booking canceled."})
-        booking.refresh_from_db()
-        self.assertEqual(booking.status, "canceled")
-
-    def test_update_status_not_found(self):
-        """Test update_status view with non-existent booking"""
-        response = self.client.post(
-            reverse("update-status"),  # Corrected URL name based on user_profile/views.py
-            json.dumps({"booking_id": 999}),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {
-            "success": False,
-            "message": "Booking not found."
-        })
-
 class AdditionalShopProfileViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -640,3 +520,436 @@ class AdditionalShopProfileViewsTest(TestCase):
         self.assertIsNotNone(worker.profile_pic)
         messages = [str(m) for m in response.wsgi_request._messages]
         self.assertIn("Worker added successfully!", messages)
+
+
+# passed
+class ShopProfileReviewTests(TestCase):
+    def setUp(self):
+        # Create shop user and shop profile
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL1, password=TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_rating=Decimal('0.00'),  # Set valid Decimal initial rating
+            shop_customer_count=10  # Non-zero to avoid division by zero
+        )
+
+        # Create customer user and user profile
+        self.customer = User.objects.create_user(
+            email=TEST_EMAIL2, password=TEST_PASS, user_type="user"
+        )
+        self.customer_profile = UserProfile.objects.create(
+            user=self.customer,
+            first_name="Test",
+            last_name="Customer",
+            gender="Male",
+            phone_number="1234567890"
+        )
+
+        # Create shop review
+        self.review = ShopReview.objects.create(
+            shop=self.shop,
+            rating=4,
+            review="Great service!",
+            reviewer_id=self.customer_profile.id
+        )
+
+    def test_review_creation(self):
+        """Test that a ShopReview object is created correctly."""
+        self.assertEqual(self.review.shop, self.shop)
+        self.assertEqual(self.review.rating, 4)
+        self.assertEqual(self.review.review, "Great service!")
+        self.assertEqual(self.review.reviewer_id, self.customer_profile.id)
+
+    def test_review_str(self):
+        """Test the string representation of a ShopReview."""
+        expected_str = f"Review by {self.customer_profile.id} for Test Shop - Rating: 4"
+        self.assertEqual(str(self.review), expected_str)
+
+
+class ShopProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
+        self.user.set_password("password123")
+        self.user.save()
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321"
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=0.0
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_profile_monthly_data_loop(self):
+        """Test profile view monthly data loop"""
+        # Create a completed booking
+        BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date(2025, 4, 1),  # April
+            time=time(10, 0),
+            status="completed"
+        )
+        response = self.client.get(reverse("shop_profile"))  # Assumed URL name
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        monthly_data = response.context["monthly_data"]
+        # Check April’s value (50.00 from shop_service price)
+        self.assertTrue(any(d["month"] == "Apr" and d["value"] == 50.0 for d in monthly_data))
+
+    def test_profile_reviews_with_missing_reviewer(self):
+        """Test profile view reviews loop with missing reviewer"""
+        # Create a review with a non-existent reviewer
+        ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,  # Non-existent UserProfile
+            rating=4
+        )
+        response = self.client.get(reverse("shop_profile"))  # Assumed URL name
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        reviews = response.context["reviews"]
+        self.assertEqual(len(reviews), 1)
+        self.assertIsNone(reviews[0].reviewer)  # Reviewer should be None
+        self.assertEqual(reviews[0].stars, "★★★★")
+
+    def test_reject_booking_success(self):
+        """Test reject_booking view successful cancellation"""
+        # Create a booking slot for a future date (more than 30 hours away)
+        booking = BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=MyUser.objects.create(email="user@example.com")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date.today() + timedelta(days=2),
+            time=time(10, 0),
+            status="pending"
+        )
+        response = self.client.post(
+            reverse("reject_booking"),
+            json.dumps({"booking_id": booking.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"success": True, "message": "Booking canceled."})
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, "canceled")
+
+    def test_update_status_not_found(self):
+        """Test update_status view with non-existent booking"""
+        response = self.client.post(
+            reverse("update-status"),  # Corrected URL name based on user_profile/views.py
+            json.dumps({"booking_id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "Booking not found."
+        })
+
+class ShopProfileViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email="shop@example.com", password="password123", user_type="shop")
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321",
+            shop_rating=Decimal('0.00'),  # Set valid Decimal initial rating
+            shop_customer_count=10  # Non-zero to avoid division by zero
+        )
+        self.service = Service.objects.create(name="TestService")
+        self.item = Item.objects.create(name="TestItem", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=Decimal('0.00')
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.area = Area.objects.create(name="Test Area", upazilla=self.upazilla)
+        self.client.login(email="shop@example.com", password="password123")
+
+    def test_profile_monthly_data_loop(self):
+        """Test profile view monthly data loop"""
+        BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=User.objects.create_user(email="user@example.com", password="password123")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date(2025, 4, 1),  # April
+            time=time(10, 0),
+            status="completed"
+        )
+        response = self.client.get(reverse("shop_profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        monthly_data = response.context["monthly_data"]
+        self.assertTrue(any(d["month"] == "Apr" and d["value"] == 50.0 for d in monthly_data))
+
+    def test_profile_reviews_with_missing_reviewer(self):
+        """Test profile view reviews loop with missing reviewer"""
+        # Create a review with a non-existent reviewer
+        ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,  # Non-existent UserProfile
+            rating=4
+        )
+        response = self.client.get(reverse("shop_profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/index.html")
+        reviews = response.context["reviews"]
+        self.assertEqual(len(reviews), 1)
+        self.assertIsNone(reviews[0].reviewer)  # Reviewer should be None
+        self.assertEqual(reviews[0].stars, "★★★★")
+
+    def test_reject_booking_success(self):
+        """Test reject_booking view successful cancellation"""
+        booking = BookingSlot.objects.create(
+            user=UserProfile.objects.create(user=User.objects.create_user(email="user@example.com", password="password123")),
+            shop=self.shop,
+            worker=self.worker,
+            item=self.item,
+            date=date.today() + timedelta(days=2),
+            time=time(10, 0),
+            status="pending"
+        )
+        response = self.client.post(
+            reverse("reject_booking"),
+            json.dumps({"booking_id": booking.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"success": True, "message": "Booking canceled."})
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, "canceled")
+
+    def test_update_status_not_found(self):
+        """Test update_status view with non-existent booking"""
+        response = self.client.post(
+            reverse("update-status"),
+            json.dumps({"booking_id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            "success": False,
+            "message": "Booking not found."
+        })
+
+TEST_EMAIL = "shop@example.com"
+TEST_PASS = "password123"
+SHOP_STAFFS = "shop_staffs"
+
+class ShopProfileAdditionalViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email=TEST_EMAIL, password=TEST_PASS, user_type="shop"
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name="Test Shop",
+            shop_owner="Shop Owner",
+            mobile_number="0987654321",
+            shop_rating=Decimal('0.00'),
+            shop_customer_count=10
+        )
+        self.service = Service.objects.create(name="Test Service")
+        self.item = Item.objects.create(name="Test Item", service=self.service)
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=Decimal("50.00")
+        )
+        self.worker = ShopWorker.objects.create(
+            name="Test Worker",
+            email="worker@example.com",
+            phone="1234567890",
+            experience=5.0,
+            shop=self.shop,
+            rating=Decimal('0.00'),
+            profile_pic=SimpleUploadedFile("worker.jpg", b"file_content", content_type="image/jpeg")
+        )
+        self.review = ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=999,
+            rating=4,
+            review=""
+        )
+        self.notification = ShopNotification.objects.create(
+            shop=self.shop,
+            title="Test Notification",
+            message="Test message",
+            notification_type="general"
+        )
+        self.division = Division.objects.create(name="Test Division")
+        self.district = District.objects.create(name="Test District", division=self.division)
+        self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
+        self.client.login(email=TEST_EMAIL, password=TEST_PASS)
+
+    def test_add_worker_success(self):
+        """Test add_worker view with valid data."""
+        profile_pic = SimpleUploadedFile("new_worker.jpg", b"file_content", content_type="image/jpeg")
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "email": "new@example.com",
+            "phone": "9876543210",
+            "experience": "3.0",
+            "expertise": [self.item.id],
+            "profile_pic": profile_pic
+        }, format='multipart')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        self.assertTrue(ShopWorker.objects.filter(name="New Worker").exists())
+        worker = ShopWorker.objects.get(name="New Worker")
+        self.assertEqual(worker.email, "new@example.com")
+        self.assertEqual(worker.experience, 3.0)
+        self.assertIn(self.item, worker.expertise.all())
+        self.assertTrue(worker.profile_pic)  # Verify profile_pic was saved
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Worker added successfully!")
+
+    # Other test cases remain unchanged...
+    def test_staffs_view_get(self):
+        """Test staffs view GET request rendering."""
+        response = self.client.get(reverse("shop_staffs"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertIn(self.worker, response.context["shop_worker"])
+        self.assertIn(self.shop_service, response.context["items"])
+
+    def test_staffs_view_post_success(self):
+        """Test staffs view POST request with valid worker update."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "6.0",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.name, "Updated Worker")
+        self.assertEqual(self.worker.email, "updated@example.com")
+        self.assertEqual(self.worker.experience, 6.0)
+        self.assertIn(self.item, self.worker.expertise.all())
+        self.assertContains(response, "Worker details updated successfully")
+
+    def test_staffs_view_post_invalid_experience(self):
+        """Test staffs view POST request with invalid experience."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": self.worker.id,
+            "name": "Updated Worker",
+            "email": "updated@example.com",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Invalid input for experience")
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.experience, 5.0)
+
+    def test_staffs_view_post_non_existent_worker(self):
+        """Test staffs view POST request with non-existent worker."""
+        response = self.client.post(reverse("shop_staffs"), {
+            "id": 999,
+            "name": "Non Existent",
+            "email": "nonexistent@example.com",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "app/salon_dashboard/staffs.html")
+        self.assertContains(response, "Worker does not exist")
+
+    def test_add_worker_missing_required_fields(self):
+        """Test add_worker view with missing required fields."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "",
+            "phone": "9876543210",
+            "experience": "5.0"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Name, Mobile, and Expertise are required.")
+
+    def test_add_worker_invalid_experience(self):
+        """Test add_worker view with invalid experience."""
+        response = self.client.post(reverse("add_worker"), {
+            "name": "New Worker",
+            "phone": "9876543210",
+            "experience": "invalid",
+            "expertise": [self.item.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("shop_staffs"))
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), "Experience must be a number.")
+
+    def test_delete_worker_success(self):
+        """Test delete_worker view with successful deletion."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": self.worker.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True})
+        self.assertFalse(ShopWorker.objects.filter(id=self.worker.id).exists())
+
+    def test_delete_worker_non_existent(self):
+        """Test delete_worker view with non-existent worker."""
+        response = self.client.post(
+            reverse("delete_worker"),
+            json.dumps({"id": 999}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Worker not found'})
+
+    def test_delete_worker_invalid_request(self):
+        """Test delete_worker view with non-POST request."""
+        response = self.client.get(reverse("delete_worker"))
+        self.assertEqual(response.status_code, 405)
+

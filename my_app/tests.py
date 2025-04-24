@@ -1,7 +1,14 @@
-from django.http import JsonResponse
+from datetime import date, time
+from decimal import Decimal
+import decimal
+from unittest.mock import patch
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
+
+from booking.tests import User
+from my_app.views import area_database
 from .models import Division, District, Upazilla, Area, Landmark, Service, Item, ReviewCarehub, Contact
 from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopReview
@@ -177,11 +184,6 @@ class MyAppTests(TestCase):
         self.assertIn(self.division, response.context['divisions'])
         self.assertIn(self.district, response.context['districts'])
 
-    # def test_explore_by_items_view(self):
-    #     response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'app/explore_by_items.html')
-    #     self.assertEqual(response.context['item'], 'Test Item')
 
     def test_items_view(self):
         response = self.client.get(reverse('items'), {'service': 'Test Service'})
@@ -240,4 +242,583 @@ class MyAppTests(TestCase):
         response = self.client.get(reverse('salon-profile'), {'shop_id': 'invalid'})
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"error": "Invalid shop ID"})
-    
+
+
+class AdditionalMyAppTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+
+        # Create test user with UserProfile
+        self.user = UserModel.objects.create_user(
+            email='adduser@example.com',
+            password='addpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Add',
+            last_name='User',
+            gender='Female',
+            phone_number='9876543210'
+        )
+
+        # Create test shop user with ShopProfile
+        self.shop_user = UserModel.objects.create_user(
+            email='addshop@example.com',
+            password='addshop123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Add Shop',
+            shop_title='Add Title',
+            shop_info='Add Info',
+            shop_state='Add District',
+            shop_city='Add Upazilla',
+            shop_area='Add Area',
+            shop_rating=4.0,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='0123456789'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Add Division')
+        self.district = District.objects.create(name='Add District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Add Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Add Area', upazilla=self.upazilla)
+        self.landmark = Landmark.objects.create(name='Add Landmark', area=self.area)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Add Service')
+        self.item = Item.objects.create(
+            name='Add Item',
+            item_description='Add Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=75.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Add Worker',
+            email='addworker@example.com',
+            phone='0987654321',
+            experience=3.0
+        )
+
+    def test_select_user_type_view(self):
+        response = self.client.get(reverse('select_user'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/select_user_type.html')
+
+    def test_create_account_view(self):
+        response = self.client.get(reverse('select_user'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/select_user_type.html')
+
+    def test_submit_review_authenticated_user(self):
+        self.client.login(email='adduser@example.com', password='addpass123')
+        response = self.client.post(reverse('submit_review'), {
+            'review': 'Fantastic service!',
+            'rating': '4.5'
+        })
+        self.assertEqual(response.status_code, 302)
+        review = ReviewCarehub.objects.get(comment='Fantastic service!')
+        self.assertEqual(review.rating, decimal.Decimal('4.5'))
+        self.assertEqual(review.reviewer_type, ContentType.objects.get_for_model(self.user_profile))
+        self.assertEqual(review.reviewer_id, self.user_profile.id)
+
+    def test_submit_review_authenticated_shop(self):
+        self.client.login(email='addshop@example.com', password='addshop123')
+        response = self.client.post(reverse('submit_review'), {
+            'review': 'Great platform!',
+            'rating': '5.0'
+        })
+        self.assertEqual(response.status_code, 302)
+        review = ReviewCarehub.objects.get(comment='Great platform!')
+        self.assertEqual(review.rating, decimal.Decimal('5.0'))
+        self.assertEqual(review.reviewer_type, ContentType.objects.get_for_model(self.shop_profile))
+        self.assertEqual(review.reviewer_id, self.shop_profile.id)
+
+    def test_submit_review_invalid_rating(self):
+        self.client.login(email='adduser@example.com', password='addpass123')
+        response = self.client.post(reverse('submit_review'), {
+            'review': 'Invalid rating test',
+            'rating': '6.0'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(ReviewCarehub.objects.filter(comment='Invalid rating test').exists())
+
+    def test_fetch_by_items_view(self):
+        response = self.client.get(reverse('fetch_by_items'), {
+            'item': 'Add Item',
+            'district': 'Add District',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data['shop']), 1)
+        self.assertEqual(data['shop'][0]['shop_name'], 'Add Shop')
+        self.assertFalse(data['has_next'])
+        self.assertFalse(data['has_previous'])
+
+    def test_fetch_by_items_no_results(self):
+        response = self.client.get(reverse('fetch_by_items'), {
+            'item': 'Nonexistent Item',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data['shop']), 0)
+        self.assertFalse(data['has_next'])
+        self.assertFalse(data['has_previous'])
+
+    def test_about_us_view(self):
+        response = self.client.get(reverse('about'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/about_us.html')
+
+    def test_privacy_policy_view(self):
+        response = self.client.get(reverse('privacy_policy'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/privacy_policy.html')
+
+    def test_terms_conditions_view(self):
+        response = self.client.get(reverse('terms_conditions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/terms_conditions.html')
+
+    def test_submit_shop_review_missing_fields(self):
+        self.client.login(email='adduser@example.com', password='addpass123')
+        response = self.client.post(reverse('submit_shop_review'), {
+            'rating': '5',
+            'shop_id': self.shop_profile.id
+        })
+        self.assertEqual(response.status_code, 404)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Fill all the required fields.'})
+
+    def test_search_view_item_based(self):
+        response = self.client.post(reverse('search'), {'search': 'Add Item'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/search.html')
+        self.assertIn(self.item, response.context['items'])
+        self.assertIn(self.shop_profile, response.context['service_based'])
+        self.assertEqual(response.context['keyword'], 'Add Item')
+
+    def test_contact_us_invalid_email(self):
+        response = self.client.post(reverse('contact'), {
+            'name': 'Add User',
+            'email': 'invalid-email',
+            'subject': 'Add Subject',
+            'message': 'Add Message'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/contact_us.html')
+        self.assertTrue(Contact.objects.filter(email='invalid-email').exists())
+        self.assertContains(response, 'Your message has been sent successfully', status_code=200)
+
+#passed
+class CoverageMyAppTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+
+        # Create test users
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create second shop user to avoid unique constraint
+        self.shop_user2 = UserModel.objects.create_user(
+            email='shopuser2@example.com',
+            password='shoppass456',
+            user_type='shop'
+        )
+        self.shop_profile2 = ShopProfile.objects.create(
+            user=self.shop_user2,
+            shop_name='Test Shop 2',
+            shop_title='Test Title 2',
+            shop_info='Test Info 2',
+            shop_state='Test District',
+            shop_city='Test Upazilla 2',
+            shop_area='Test Area',
+            shop_rating=3.5,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='0123456789'
+        )
+
+        # Create admin user
+        self.admin_user = UserModel.objects.create_user(
+            email='admin@example.com',
+            password='adminpass123',
+            user_type='admin'
+        )
+
+        # Create user without profile for invalid reviewer test
+        self.no_profile_user = UserModel.objects.create_user(
+            email='noprofile@example.com',
+            password='nopass123',
+            user_type='user'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.upazilla2 = Upazilla.objects.create(name='Test Upazilla 2', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+        self.landmark = Landmark.objects.create(name='Test Landmark', area=self.area)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+    def test_home_non_get(self):
+        # Test non-GET request to home
+        response = self.client.post(reverse('home'))
+        self.assertEqual(response.status_code, 405)
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+
+    def test_submit_review_invalid_reviewer(self):
+        # Test user without shop_profile or user_profile
+        self.client.login(email='noprofile@example.com', password='nopass123')
+        response = self.client.post(reverse('submit_review'), {
+            'review': 'Test review',
+            'rating': '4.0'
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode(), 'Invalid reviewer')
+
+    def test_submit_shop_review_shop_not_found(self):
+        # Test ShopProfile.DoesNotExist exception
+        self.client.login(email='testuser@example.com', password='testpass123')
+        response = self.client.post(reverse('submit_shop_review'), {
+            'rating': '4',
+            'review': 'Great shop!',
+            'shop_id': 999  # Non-existent shop_id
+        })
+        self.assertEqual(response.status_code, 404)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Shop not found.'})
+
+
+class CoverageMyAppTestsTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+
+        # Create test users
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        self.shop_user2 = UserModel.objects.create_user(
+            email='shopuser2@example.com',
+            password='shoppass456',
+            user_type='shop'
+        )
+        self.shop_profile2 = ShopProfile.objects.create(
+            user=self.shop_user2,
+            shop_name='Test Shop 2',
+            shop_title='Test Title 2',
+            shop_info='Test Info 2',
+            shop_state='Test District',
+            shop_city='Test Upazilla 2',
+            shop_area='Test Area',
+            shop_rating=3.5,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='0123456789'
+        )
+
+        # Create admin user
+        self.admin_user = UserModel.objects.create_user(
+            email='admin@example.com',
+            password='adminpass123',
+            user_type='admin'
+        )
+
+        # Create user without profile for invalid reviewer test
+        self.no_profile_user = UserModel.objects.create_user(
+            email='noprofile@example.com',
+            password='nopass123',
+            user_type='user'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.upazilla2 = Upazilla.objects.create(name='Test Upazilla 2', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+        self.landmark = Landmark.objects.create(name='Test Landmark', area=self.area)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+    def test_success_reset_password(self):
+        response = self.client.get(reverse('password_reset_complete'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode(), 'Password reset successful. This is a test response.')
+        self.assertIsInstance(response, HttpResponse)
+
+
+class CoverageMyAppTestsTests1(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+
+        # Create test users
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        self.shop_user2 = UserModel.objects.create_user(
+            email='shopuser2@example.com',
+            password='shoppass456',
+            user_type='shop'
+        )
+        self.shop_profile2 = ShopProfile.objects.create(
+            user=self.shop_user2,
+            shop_name='Test Shop 2',
+            shop_title='Test Title 2',
+            shop_info='Test Info 2',
+            shop_state='Test District',
+            shop_city='Test Upazilla 2',
+            shop_area='Test Area',
+            shop_rating=3.5,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='0123456789'
+        )
+
+        # Create admin user
+        self.admin_user = UserModel.objects.create_user(
+            email='admin@example.com',
+            password='adminpass123',
+            user_type='admin'
+        )
+
+        # Create user without profile for invalid reviewer test
+        self.no_profile_user = UserModel.objects.create_user(
+            email='noprofile@example.com',
+            password='nopass123',
+            user_type='user'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.upazilla2 = Upazilla.objects.create(name='Test Upazilla 2', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+        self.landmark = Landmark.objects.create(name='Test Landmark', area=self.area)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+    def test_submit_shop_review_general_exception(self):
+        self.client.login(email='testuser@example.com', password='testpass123')
+        BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            status='completed',
+            date=date(2025, 4, 24),
+            time=time(12, 0),
+            payment_status='unpaid',
+            item=self.item,
+            worker=self.shop_worker
+        )
+        with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
+            response = self.client.post(reverse('submit_shop_review'), {
+                'rating': '4',
+                'review': 'Great shop!',
+                'shop_id': self.shop_profile.id,
+                'user_id': self.user_profile.id
+            })
+        self.assertEqual(response.status_code, 500)
+
+    def test_fetch_shop_filters_and_sorting(self):
+        response = self.client.get(reverse('fetch_shop'), {
+            'district': 'Test District',
+            'upazila': 'Test Upazilla',
+            'area': 'Test Area',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['shop_name'], 'Test Shop')
+        self.assertEqual(data[0]['shop_rating'], '4.5')
+
+        response = self.client.get(reverse('fetch_shop'), {
+            'district': 'Test District',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['shop_name'], 'Test Shop')
+        self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
