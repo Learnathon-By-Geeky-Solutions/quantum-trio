@@ -47,32 +47,22 @@
                                 <td class="px-4 py-2">{{booking.worker.name}}</td>
                                 <td class="px-4 py-2">
                                     {% if booking.status != "completed" %}
-                                        {% if booking.user_end %}
-                                        <button
-                                            class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Confirmed!</button>
-                                            {% if not booking.rated %}
-                                                <button onclick="rating({{booking.id}},'{{booking.worker.name}}')" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded">Rate</button>
-                                            {% endif %}
-                                        {% else %}
-                                            {% if booking.is_expired %}
-                                                <button
-                                                    class="book-button bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-                                                    data-booking-id="{{ booking.id }}">
-                                                    Confirm?
-                                                </button>
-                                                <button
-                                                    class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-                                                    data-booking-id="{{ booking.id }}"
-                                                    onclick="open_report_modal()">
-                                                    Report
-                                                </button>
-                                            {%else%}
-                                                <button
-                                                    class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Pending!</button>
-                                                <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
-                                                    data-booking-id="{{ booking.id }}">Cancel</button>
-                                            {% endif %}
+                                        {% if booking.is_expired %}
+                                            <button
+                                                class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Pending!</button>
+                                            <button
+                                                class="report-button bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+                                                data-booking-id="{{ booking.id }}"
+                                                onclick="open_report_modal()">
+                                                Report
+                                            </button>
+                                        {%else%}
+                                            <button
+                                                class="bg-blue-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Pending!</button>
+                                            <button class="reject-button bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
+                                                data-booking-id="{{ booking.id }}">Cancel</button>
                                         {% endif %}
+                                        
                                     {% else %}
                                     <button
                                         class="bg-green-500 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed">Completed!</button>

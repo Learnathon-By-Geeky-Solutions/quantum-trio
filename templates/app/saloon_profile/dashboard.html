@@ -12,7 +12,34 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'app/css/salon-profile/dashboard.css' %}" />
-    
+    <style>
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .photo-slider {
+                height: 400px;
+            }
+
+            .prev,
+            .next {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-slider {
+                height: 300px;
+            }
+        }
+        .photo-slider {
+            position: relative;
+            width: 100%;
+            max-width: 1500px;
+            height: 800px;
+            margin: 50px auto;
+            overflow: hidden;
+            border-radius: 15px;
+        } 
+    </style>
 
 </head>
 
@@ -30,7 +57,7 @@
         <div class="container mx-auto px-4">
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 <div class="flex flex-col md:flex-row">
-                    <img src="{% static 'app/image/shop/1.jpg' %}"
+                    <img src="{% if shop.shop_picture and shop.shop_picture.url %}{{ shop.shop_picture.url }}{% else %}{% static 'app/image/shop/1.jpg' %}{% endif %}"
                         alt="shop name"
                         class="w-full md:w-1/3 rounded-lg shadow-lg object-cover">
                     <div class="md:ml-6 mt-6 md:mt-5">
@@ -215,7 +242,56 @@
             isDragging = false;
         });
     </script>
-    <!-- Photo Gallary -->
+    <!--Gallery-->
+    
+    <section class="photo-slider py-12">
+        <div class="container mx-auto px-4">
+            {% if shop_images %}
+                {% for image in shop_images %}
+                    <div class="slide">
+                        <img src="{{ image.image.url }}" alt="Shop Image">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No images available for this shop.</p>
+            {% endif %}
+        </div>
+        <button class="prev" onclick="changeSlide(-1)">
+            <img src="{% static 'image/icon/left-arrow1.png' %}" alt="Left Arrow" class="w-8 h-8 opacity-75 hover:opacity-100">
+        </button>
+        <button class="next" onclick="changeSlide(1)">
+            <img src="{% static 'image/icon/right-arrow.png' %}" alt="Right Arrow" class="w-8 h-8 opacity-75 hover:opacity-100">
+        </button>
+    </section>
+    <script>
+        let currentSlideIndex = 0;
+    
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            if (slides.length === 0) return;
+    
+            // Make index loop back if out of range
+            if (index >= slides.length) currentSlideIndex = 0;
+            else if (index < 0) currentSlideIndex = slides.length - 1;
+            else currentSlideIndex = index;
+    
+            // Hide all slides
+            slides.forEach((slide, i) => {
+                slide.style.display = (i === currentSlideIndex) ? 'block' : 'none';
+            });
+        }
+    
+        function changeSlide(direction) {
+            showSlide(currentSlideIndex + direction);
+        }
+    
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function () {
+            showSlide(currentSlideIndex);
+        });
+    </script>
+    
+    <!-- Services Section -->
     <section class="py-12">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Our Services</h2>

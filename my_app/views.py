@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 # use this to import any data from database
 from .models import District,Upazilla, Division, Service, Area,Item,ReviewCarehub,Contact
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
+from shop_profile.models import ShopGallery, ShopProfile, ShopWorker, ShopService, ShopReview
 from booking.models import BookingSlot
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -155,11 +155,12 @@ def shop_profile(request):
         shop = ShopProfile.objects.filter(id=shop_id).first()  # Fetch as object
         service = ShopService.objects.filter(shop=shop_id)
         workers = ShopWorker.objects.filter(shop=shop_id)
- 
+        images=ShopGallery.objects.filter(shop=shop_id)
     return render(request, 'app/saloon_profile/dashboard.html', {
              "shop": shop, 
              "shop_services": service,
-             "shop_workers": workers
+             "shop_workers": workers,
+             "shop_images":images
     })
     
 @require_POST
@@ -251,8 +252,7 @@ def search(request):
                 Q(shop_landmark_4__icontains=keyword)|
                 Q(shop_landmark_5__icontains=keyword)
             ).distinct().order_by('-shop_rating')
-            print(location_based)
-            
+
             # Based on service 
             # If the keyword matches with shops service 
             service_based = ShopProfile.objects.filter(
