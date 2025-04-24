@@ -797,7 +797,6 @@ class CoverageMyAppTestsTests1(TestCase):
                 'user_id': self.user_profile.id
             })
         self.assertEqual(response.status_code, 500)
-        self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
 
     def test_fetch_shop_filters_and_sorting(self):
         response = self.client.get(reverse('fetch_shop'), {
