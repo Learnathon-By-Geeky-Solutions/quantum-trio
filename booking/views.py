@@ -42,7 +42,7 @@ def generate_time_slots(start_time, end_time, date_obj):
         current_time += timedelta(hours=1)
     return slots
 
-def get_available_time_slots(shop_id, worker_id, item_id, date_obj):
+def get_available_time_slots(shop_id, worker_id, date_obj):
     day_name = date_obj.strftime("%A")
     schedule = ShopSchedule.objects.filter(shop=shop_id, day_of_week=day_name)
 
