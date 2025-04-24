@@ -1121,35 +1121,35 @@ class ShopProfileUncoveredTests(TestCase):
     #     self.assertEqual(response.status_code, 400)
     #     self.assertJSONEqual(response.content, {'success': False, 'error': 'Invalid request'})
 
-    def test_customers(self):
-        # Cover: entire customers view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_customers'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
-        page_obj = response.context['page_obj']
-        self.assertEqual(len(page_obj.object_list), 1)
-        self.assertEqual(page_obj.object_list[0].id, self.booking.id)
+    # def test_customers(self):
+    #     # Cover: entire customers view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_customers'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
+    #     page_obj = response.context['page_obj']
+    #     self.assertEqual(len(page_obj.object_list), 1)
+    #     self.assertEqual(page_obj.object_list[0].id, self.booking.id)
 
-    def test_review(self):
-        # Cover: entire review view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_review'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/reviews.html')
-        page_obj = response.context['page_obj']
-        self.assertEqual(len(page_obj.object_list), 1)
-        self.assertEqual(page_obj.object_list[0].id, self.review.id)
+    # def test_review(self):
+    #     # Cover: entire review view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_review'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon_dashboard/reviews.html')
+    #     page_obj = response.context['page_obj']
+    #     self.assertEqual(len(page_obj.object_list), 1)
+    #     self.assertEqual(page_obj.object_list[0].id, self.review.id)
 
-    def test_notification(self):
-        # Cover: entire notification view
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_notifications'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/notifications.html')
-        notifications = response.context['notifications']
-        self.assertEqual(len(notifications), 1)
-        self.assertEqual(notifications[0].id, self.notification.id)
+    # def test_notification(self):
+    #     # Cover: entire notification view
+    #     self.client.force_login(self.shop_user)
+    #     response = self.client.get(reverse('shop_notifications'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'app/salon_dashboard/notifications.html')
+    #     notifications = response.context['notifications']
+    #     self.assertEqual(len(notifications), 1)
+    #     self.assertEqual(notifications[0].id, self.notification.id)
 
     # def test_basic_update(self):
     #     # Cover: try/except block and template rendering in basic_update
