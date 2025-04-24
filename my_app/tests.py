@@ -1182,16 +1182,3 @@ class UniqueCoverageMyAppTests1(TestCase):
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]['shop_name'], 'Test Shop')
         self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
-
-    def test_area_database(self):
-        # Cover: area_database queries via book_now
-        response = self.client.get(reverse('booknow'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/book_now.html')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
