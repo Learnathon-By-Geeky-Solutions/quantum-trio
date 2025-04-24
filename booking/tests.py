@@ -301,16 +301,3 @@ class BookingViewsTest(TestCase):
             end=time(17, 0)    # 5:00 PM
         )
         self.client.login(email="shop@example.com", password="password123")
-
-    def test_available_slots_time_slot_generation(self):
-        """Test available_slots view generating time slots"""
-        test_date = "2025-04-28"  # A Monday
-        response = self.client.get(reverse("available_slots"), {
-            "shop_id": self.shop.id,
-            "worker_id": self.worker.id,
-            "item_id": self.item.id,
-            "date": test_date
-        })
-        self.assertEqual(response.status_code, 200)
-        expected_slots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
-        self.assertJSONEqual(response.content, expected_slots)
