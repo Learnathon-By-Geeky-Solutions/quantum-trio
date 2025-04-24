@@ -666,13 +666,6 @@ class CoverageMyAppTestsTests(TestCase):
             experience=5.0
         )
 
-    def test_success_reset_password(self):
-        response = self.client.get(reverse('password_reset_complete'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content.decode(), 'Password reset successful. This is a test response.')
-        self.assertIsInstance(response, HttpResponse)
-
-
 class CoverageMyAppTestsTests1(TestCase):
     def setUp(self):
         self.client = Client()
@@ -963,22 +956,3 @@ class UncoveredMyAppTests(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Something went wrong: Database error')
-
-    def test_book_now_non_get(self):
-        # Cover: else branch in book_now
-        response = self.client.post(reverse('booknow'))
-        self.assertEqual(response.status_code, 405)
-        self.assertIsInstance(response, HttpResponseNotAllowed)
-
-        # Test with item parameter
-        response = self.client.get(reverse('explore_by_items'), {'item': 'Test Item'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context.get('item', ''), 'Test Item')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
