@@ -132,7 +132,7 @@ def log_in(request):
             user_type = 'customer'  
 
     return render(request, 'app/login_signup/login.html', {'type': user_type, 'message': error})
-def success_reset_password(request):
+def success_reset_password():
     return HttpResponse("Password reset successful. This is a test response.")
 
 def log_out(request):
@@ -370,14 +370,6 @@ def location(request):
     divisions = Division.objects.all()  # Fetch all Division objects
     districts = District.objects.all()
     return render(request, 'app/location.html', {'divisions': divisions, 'districts': districts})
-
-# def explore_by_items(request):
-#     item=""
-#     if(request.method=="GET"):
-#         item=request.GET.get('item')
-#     print(item)
-#     district,upazilla,area=area_database()
-#     return render(request, 'app/explore_by_items.html',{'item':item,'district':list(district),'Upazilla':list(upazilla),'Area':area})
 
 def explore_by_items(request):
     item = request.GET.get('item', '')
