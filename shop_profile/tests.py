@@ -1188,3 +1188,244 @@ class ShopProfileUncoveredTests(TestCase):
     #     messages = list(get_messages(response.wsgi_request))
     #     self.assertEqual(len(messages), 1)
     #     self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.core.paginator import Paginator
+from django.utils import timezone
+from datetime import date, time, datetime, timedelta
+from my_app.models import Division, District, Upazilla, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview, ShopNotification
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+import json
+from unittest.mock import patch
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+UserModel = get_user_model()
+
+class ShopProfileUncoveredTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+        # Create booking slot
+        self.booking = BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='pending',
+            date=date(2024, 5, 5),  # Past date for completion
+            time=time(10, 0),
+            payment_status='unpaid',
+            user_end=True,
+            shop_end=False,
+            notes='',
+            rated=False
+        )
+
+        # Create review with mocked update_rating to avoid TypeError
+        with patch('shop_profile.models.ShopProfile.update_rating', return_value=True):
+            self.review = ShopReview.objects.create(
+                shop=self.shop_profile,
+                reviewer_id=self.user_profile.id,
+                rating=5,
+                review='Great service!'
+            )
+
+        # Create notification
+        self.notification = ShopNotification.objects.create(
+            shop=self.shop_profile,
+            title='Test Notification',
+            message='Test message',
+            notification_type='general'
+        )
+
+    def test_reject_booking_does_not_exist(self):
+        # Cover: except BookingSlot.DoesNotExist in reject_booking
+        self.client.force_login(self.shop_user)
+        response = self.client.post(
+            reverse('reject_booking'),
+            json.dumps({'booking_id': 999}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+
+    def test_update_status(self):
+        # Cover: try block and except BookingSlot.DoesNotExist in update_status
+        self.client.force_login(self.shop_user)
+        
+        # Test successful status update
+        with patch('shop_profile.views.get_current_datetime_with_offset', return_value=timezone.now()):
+            response = self.client.post(
+                reverse('update-status'),
+                json.dumps({'booking_id': self.booking.id}),
+                content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True, 'details': {'message': 'You have successfully marked as completed!'}})
+        self.booking.refresh_from_db()
+        self.assertTrue(self.booking.shop_end)
+
+        # Test non-existent booking
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps({'booking_id': 999}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+
+    def test_staffs(self):
+        # Cover: return render(request, "app/salon_dashboard/staffs.html")
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_staffs'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/staffs.html')
+
+    def test_slots_invalid_request(self):
+        # Cover: POST request to slots (returns 405 due to @require_http_methods(["GET"]))
+        self.client.force_login(self.shop_user)
+        response = self.client.post(reverse('shop_booking_slots'))
+        self.assertEqual(response.status_code, 405)
+
+    def test_customers(self):
+        # Cover: entire customers view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_customers'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon-dashboard/customers.html')  # Updated path
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.booking.id)
+
+    def test_review(self):
+        # Cover: entire review view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_review'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon-dashboard/reviews.html')  # Updated path
+        page_obj = response.context['page_obj']
+        self.assertEqual(len(page_obj.object_list), 1)
+        self.assertEqual(page_obj.object_list[0].id, self.review.id)
+
+    def test_notification(self):
+        # Cover: entire notification view
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('shop_notifications'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon-dashboard/notifications.html')  # Updated path
+        notifications = response.context['notifications']
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(notifications[0].id, self.notification.id)
+
+    def test_basic_update(self):
+        # Cover: try/except block and template rendering in basic_update
+        self.client.force_login(self.shop_user)
+        
+        # Clear messages before request
+        list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
+        
+        # Test successful update
+        response = self.client.post(reverse('basic_update'), {
+            'shop_name': 'Updated Shop',
+            'shop_title': 'Updated Title',
+            'shop_info': 'Updated Info',
+            'shop_owner': 'Test Owner',
+            'mobile_number': '1234567890',
+            'shop_website': 'http://example.com',
+            'gender': 'Male',
+            'shop_state': 'Updated District',
+            'shop_city': 'Updated Upazilla',
+            'shop_area': 'Updated Area',
+            'landmark_1': 'Landmark 1',
+            'status': 'true'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Shop profile updated successfully.')
+        self.shop_profile.refresh_from_db()
+        self.assertEqual(self.shop_profile.shop_name, 'Updated Shop')
+
+        # Clear messages before request
+        list(get_messages(self.client.get(reverse('basic_update')).wsgi_request))
+        
+        # Test exception handling
+        with patch('shop_profile.models.ShopProfile.save', side_effect=Exception('Database error')):
+            response = self.client.post(reverse('basic_update'), {
+                'shop_name': 'Failed Update'
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
