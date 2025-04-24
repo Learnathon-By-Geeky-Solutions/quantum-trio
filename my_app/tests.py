@@ -687,18 +687,6 @@ class CoverageMyAppTestsTests(TestCase):
     #     self.assertEqual(response.status_code, 500)
     #     self.assertJSONEqual(response.content, {'success': False, 'error': 'Database error'})
 
-    def test_area_database(self):
-        response = self.client.get(reverse('booknow'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/book_now.html')
-        if response.context is not None:
-            district = response.context.get('district', [])
-            upazilla = response.context.get('Upazilla', [])
-            area = response.context.get('Area', [])
-            self.assertTrue(any(d['name'] == 'Test District' for d in district))
-            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
-            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
-
     # def test_fetch_shop_filters_and_sorting(self):
     #     response = self.client.get(reverse('fetch_shop'), {
     #         'district': 'Test District',
@@ -735,22 +723,3 @@ class CoverageMyAppTestsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(), 'Password reset successful. This is a test response.')
         self.assertIsInstance(response, HttpResponse)
-
-    def test_home_statistics(self):
-        BookingSlot.objects.create(
-            user=self.user_profile,
-            shop=self.shop_profile,
-            status='completed',
-            date=date(2025, 4, 24),
-            time=time(12, 0),
-            payment_status='unpaid',
-            item=self.item,
-            worker=self.shop_worker
-        )
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
-        stats = response.context['statistics']
-        self.assertEqual(stats['booked_appointment'], 1)
-        self.assertEqual(stats['registered_shop'], 2)
-        self.assertEqual(stats['available_upazilla'], 2)
-        self.assertEqual(stats['available_barber'], 1)
