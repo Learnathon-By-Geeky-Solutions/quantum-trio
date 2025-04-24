@@ -1064,13 +1064,6 @@ class UniqueCoverageMyAppTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
-    # def test_success_reset_password(self):
-    #     # Cover: success_reset_password function
-    #     response = self.client.get(reverse('password_reset_complete'))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.content.decode(), 'Password reset successful. This is a test response.')
-    #     self.assertIsInstance(response, HttpResponse)
-
 
     def test_book_now_non_get(self):
         # Cover: else branch in book_now
@@ -1125,6 +1118,141 @@ class UniqueCoverageMyAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/explore_by_items.html')
         self.assertEqual(response.context.get('item', ''), 'Test Item')
+        if response.context is not None:
+            district = response.context.get('district', [])
+            upazilla = response.context.get('Upazilla', [])
+            area = response.context.get('Area', [])
+            self.assertTrue(any(d['name'] == 'Test District' for d in district))
+            self.assertTrue(any('Test Upazilla' in u['upazilla_names'] for u in upazilla))
+            self.assertTrue(any('Test Area' in a['area_names'] for a in area))
+
+class UniqueCoverageMyAppTests1(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+
+        # Create test users
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        self.shop_user2 = UserModel.objects.create_user(
+            email='shopuser2@example.com',
+            password='shoppass456',
+            user_type='shop'
+        )
+        self.shop_profile2 = ShopProfile.objects.create(
+            user=self.shop_user2,
+            shop_name='Test Shop 2',
+            shop_title='Test Title 2',
+            shop_info='Test Info 2',
+            shop_state='Test District',
+            shop_city='Test Upazilla 2',
+            shop_area='Test Area',
+            shop_rating=3.5,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='0123456789'
+        )
+
+        self.admin_user = UserModel.objects.create_user(
+            email='admin@example.com',
+            password='adminpass123',
+            user_type='admin'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.upazilla2 = Upazilla.objects.create(name='Test Upazilla 2', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+        self.landmark = Landmark.objects.create(name='Test Landmark', area=self.area)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+    def test_fetch_shop_filters(self):
+        # Cover: upazilla and area filters in fetch_shop
+        # Test with upazila filter
+        response = self.client.get(reverse('fetch_shop'), {
+            'upazila': 'Test Upazilla',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['shop_name'], 'Test Shop')
+        self.assertEqual(data[0]['shop_city'], 'Test Upazilla')
+
+        # Test with area filter
+        response = self.client.get(reverse('fetch_shop'), {
+            'area': 'Test Area',
+            'limit': 5,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['shop_name'], 'Test Shop')
+        self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
+
+    def test_area_database(self):
+        # Cover: area_database queries via book_now
+        response = self.client.get(reverse('booknow'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/book_now.html')
         if response.context is not None:
             district = response.context.get('district', [])
             upazilla = response.context.get('Upazilla', [])
