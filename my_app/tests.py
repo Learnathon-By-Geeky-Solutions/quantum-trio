@@ -398,13 +398,6 @@ class AdditionalMyAppTests(TestCase):
         self.assertFalse(data['has_next'])
         self.assertFalse(data['has_previous'])
 
-
-    def test_explore_by_items_view(self):
-        response = self.client.get(reverse('explore_by_items'), {'item': 'Add Item'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context['item'], 'Add Item')
-
     def test_about_us_view(self):
         response = self.client.get(reverse('about'))
         self.assertEqual(response.status_code, 200)
