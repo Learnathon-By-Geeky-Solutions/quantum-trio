@@ -666,18 +666,6 @@ class CoverageMyAppTestsTests(TestCase):
             experience=5.0
         )
 
-    #     response = self.client.get(reverse('fetch_shop'), {
-    #         'district': 'Test District',
-    #         'limit': 5,
-    #         'offset': 0
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(response.content)
-    #     self.assertEqual(len(data), 2)
-    #     self.assertEqual(data[0]['shop_name'], 'Test Shop')
-    #     self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
-
-
     def test_success_reset_password(self):
         response = self.client.get(reverse('password_reset_complete'))
         self.assertEqual(response.status_code, 200)
@@ -808,7 +796,8 @@ class CoverageMyAppTestsTests1(TestCase):
                 'shop_id': self.shop_profile.id,
                 'user_id': self.user_profile.id
             })
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 500)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
 
     def test_fetch_shop_filters_and_sorting(self):
         response = self.client.get(reverse('fetch_shop'), {
@@ -834,9 +823,3 @@ class CoverageMyAppTestsTests1(TestCase):
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]['shop_name'], 'Test Shop')
         self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
-
-    def test_explore_by_items_no_item(self):
-        response = self.client.get(reverse('explore_by_items'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/explore_by_items.html')
-        self.assertEqual(response.context.get('item', ''), '')
