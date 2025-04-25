@@ -1180,6 +1180,7 @@ from booking.models import BookingSlot
 from django.contrib.contenttypes.models import ContentType
 from unittest.mock import patch
 from django.http import HttpResponseNotAllowed
+import django.urls.exceptions
 
 UserModel = get_user_model()
 
@@ -1353,9 +1354,13 @@ class MyAppUncoveredTests(TestCase):
 
     # def test_success_reset_password(self):
     #     # Cover: success_reset_password returning HttpResponse
-    #     response = self.client.get(reverse('success_reset_password'))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.content.decode(), "Password reset successful. This is a test response.")
+    #     try:
+    #         response = self.client.get(reverse('success_reset_password'))  # Adjust if name differs, e.g., 'reset_password_success'
+    #         self.assertEqual(response.status_code, 200)
+    #         self.assertEqual(response.content.decode(), "Password reset successful. This is a test response.")
+    #     except django.urls.exceptions.NoReverseMatch as e:
+    #         print(f"URL resolution error: {str(e)}")  # Debug
+    #         self.fail(f"Failed to resolve 'success_reset_password' URL: {str(e)}. Check my_app/urls.py for correct URL name.")
 
     def test_explore_by_items(self):
         # Cover: GET request to explore_by_items

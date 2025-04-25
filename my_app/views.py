@@ -40,7 +40,8 @@ def home(request):
     
     booked_appointment=BookingSlot.objects.all().count()
     registered_shop=ShopProfile.objects.all().count()
-    available_upazilla = ShopProfile.objects.order_by('shop_city').distinct('shop_city').count()
+    # available_upazilla = ShopProfile.objects.order_by('shop_city').distinct('shop_city').count()
+    available_upazilla = ShopProfile.objects.values('shop_city').distinct().count()
     available_barber=ShopWorker.objects.all().count()
     statistics = {
         'booked_appointment': booked_appointment,
