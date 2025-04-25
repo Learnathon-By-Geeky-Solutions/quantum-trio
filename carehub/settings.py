@@ -55,6 +55,7 @@ INTERNAL_IPS = [
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this near the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -167,3 +168,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rakib1551p@gmail.com'
 EMAIL_HOST_PASSWORD = config('DJANGO_EMAIL_KEY',default="test-secret-key-unsafe-for-production")  # user this 'osdd eyfn pfig kadn' as key is env variable
 DEFAULT_FROM_EMAIL = 'CareHubBD <rakib1551p@gmail.com>'
+
+if config("RAILWAY_STATIC", default=False, cast=bool):
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
