@@ -52,7 +52,11 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+# Set NPM_BIN_PATH for local Windows development
+if os.name == 'nt':  # Check if the OS is Windows
+    NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"  # Path to npm.cmd on Windows
+else:
+    NPM_BIN_PATH = "/usr/local/bin/npm"  # Default for Linux/Mac (Railway)
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this near the top
