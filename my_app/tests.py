@@ -1375,3 +1375,183 @@ class MyAppUncoveredTests(TestCase):
             self.assertEqual(response.context['Upazilla'][0]['upazilla_names'][0], self.upazilla.name)
             self.assertEqual(len(response.context['Area']), 1)
             self.assertEqual(response.context['Area'][0]['area_names'][0], self.area.name)
+
+# my_app/tests.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import date, time, datetime
+from my_app.models import Division, District, Upazilla, Area, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+from unittest.mock import patch
+from django.http import HttpResponseNotAllowed
+import django.urls.exceptions
+
+UserModel = get_user_model()
+
+class MyAppAdditionalUncoveredTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create regular user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create admin user
+        self.admin_user = UserModel.objects.create_user(
+            email='admin@example.com',
+            password='adminpass123',
+            user_type='admin'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+        # Create completed booking slot for review eligibility
+        self.booking = BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='completed',
+            date=date(2024, 5, 5),
+            time=time(10, 0),
+            payment_status='paid',
+            user_end=True,
+            shop_end=True,
+            notes='',
+            rated=False
+        )
+
+    def test_login_shop_user(self):
+        # Cover: Successful login with shop user
+        response = self.client.post(reverse('login'), {
+            'email': 'shopuser@example.com',
+            'password': 'shoppass123',
+            'profile-type': 'shop'
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
+
+    def test_login_regular_user(self):
+        # Cover: Successful login with regular user
+        response = self.client.post(reverse('login'), {
+            'email': 'testuser@example.com',
+            'password': 'testpass123',
+            'profile-type': 'user'
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
+
+    def test_login_admin_user(self):
+        # Cover: Successful login with admin user
+        response = self.client.post(reverse('login'), {
+            'email': 'admin@example.com',
+            'password': 'adminpass123',
+            'profile-type': 'admin'
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
+
+    # def test_submit_shop_review_generic_exception(self):
+    #     # Cover: Generic exception in submit_shop_review
+    #     self.client.force_login(self.user)
+    #     with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
+    #         response = self.client.post(reverse('submit_shop_review'), {
+    #             'rating': '5',
+    #             'review': 'Great service!',
+    #             'shop_id': self.shop_profile.id
+    #         })
+    #     self.assertEqual(response.status_code, 500)
+    #     self.assertJSONEqual(response.content, {'success': False, 'error': 'Database error'})
+
+    def test_book_now_with_district(self):
+        # Cover: GET request with district parameter
+        with patch('my_app.views.area_database', return_value=([{'id': self.district.id, 'name': self.district.name}], [{'district__name': self.district.name, 'upazilla_names': [self.upazilla.name]}], [{'upazilla__name': self.upazilla.name, 'area_names': [self.area.name]}])):
+            response = self.client.get(reverse('booknow'), {'district': 'Test District'})
+            self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, 'app/book_now.html')
+            self.assertEqual(response.context['dist'], 'Test District')
+            self.assertEqual(len(response.context['district']), 1)
+            self.assertEqual(response.context['district'][0]['id'], self.district.id)
+
+    def test_book_now_with_upazilla(self):
+        # Cover: GET request with upazilla parameter
+        with patch('my_app.views.area_database', return_value=([{'id': self.district.id, 'name': self.district.name}], [{'district__name': self.district.name, 'upazilla_names': [self.upazilla.name]}], [{'upazilla__name': self.upazilla.name, 'area_names': [self.area.name]}])):
+            response = self.client.get(reverse('booknow'), {'upazilla': 'Test Upazilla'})
+            self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, 'app/book_now.html')
+            self.assertEqual(response.context['dist'], 'Test Upazilla')
+            self.assertEqual(len(response.context['Upazilla']), 1)
+            self.assertEqual(response.context['Upazilla'][0]['upazilla_names'][0], self.upazilla.name)
+
+    def test_book_now_non_get_method(self):
+        # Cover: Non-GET request returning HttpResponseNotAllowed
+        response = self.client.post(reverse('booknow'))
+        self.assertEqual(response.status_code, 405)
+        self.assertIsInstance(response, HttpResponseNotAllowed)
