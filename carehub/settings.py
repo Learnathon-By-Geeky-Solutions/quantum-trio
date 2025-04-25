@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 from django.core.exceptions import ImproperlyConfigured 
 from decouple import config
 from dotenv import load_dotenv
@@ -24,7 +25,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="127.0.0.1,localhost").split(",")
 
 
 # Application definition
@@ -89,14 +90,7 @@ WSGI_APPLICATION = 'carehub.wsgi.application'
 # Database
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "carehub_db", #database name
-        "USER": "postgres",   #username
-        "PASSWORD": os.getenv('DATABASE_PASSWORD'),   #password
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 # Override for CI environment
