@@ -276,44 +276,50 @@ def staffs(request):
         "items": ShopService.objects.filter(shop=shop)
     })
 
+def _validate_worker_inputs(name, phone, expertise, email, experience):
+    """Validate worker input fields and return processed values."""
+    if not all([name, phone, expertise]):
+        raise ValueError("Name, Mobile, and Expertise are required.")
+    
+    if email:
+        validate_email(email)  # Raises ValidationError if invalid
+    
+    try:
+        return float(experience)
+    except ValueError:
+        raise ValueError("Experience must be a number.")
+
 @csrf_protect
-@login_required
 @require_http_methods(["POST"])
 def add_worker(request):
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        email = request.POST.get("email", "").strip()
-        phone = request.POST.get("phone", "").strip()
-        experience = request.POST.get("experience", "0").strip()
-        expertise = request.POST.getlist("expertise")
-        profile_pic = request.FILES.get("profile_pic")
-        
-        if not all([name, phone, expertise]):
-            messages.error(request, "Name, Mobile, and Expertise are required.")
-            return redirect(SHOP_STAFFS)
-        
-        if email:
-            try:
-                validate_email(email)
-            except ValidationError:
-                messages.error(request, "Invalid email format.")
-                return redirect(SHOP_STAFFS)
-        
-        try:
-            experience = float(experience)
-        except ValueError:
-            messages.error(request, "Experience must be a number.")
-            return redirect(SHOP_STAFFS)
-        
+    if request.method != "POST":
+        return render(request, "app/salon_dashboard/staffs.html")
+    
+    name = request.POST.get("name", "").strip()
+    email = request.POST.get("email", "").strip()
+    phone = request.POST.get("phone", "").strip()
+    experience = request.POST.get("experience", "0").strip()
+    expertise = request.POST.getlist("expertise")
+    profile_pic = request.FILES.get("profile_pic")
+    
+    try:
+        experience = _validate_worker_inputs(name, phone, expertise, email, experience)
         worker = ShopWorker.objects.create(
-            name=name, email=email, phone=phone, experience=experience,
-            profile_pic=profile_pic, shop=get_shop_from_user(request.user)
+            name=name,
+            email=email,
+            phone=phone,
+            experience=experience,
+            profile_pic=profile_pic,
+            shop=get_shop_from_user(request.user)
         )
         worker.expertise.add(*expertise)
         messages.success(request, "Worker added successfully!")
-        return redirect(SHOP_STAFFS)
+    except ValueError as e:
+        messages.error(request, str(e))
+    except ValidationError:
+        messages.error(request, "Invalid email format.")
     
-    return render(request, "app/salon_dashboard/staffs.html")
+    return redirect(SHOP_STAFFS)
 
 @csrf_protect
 @login_required
