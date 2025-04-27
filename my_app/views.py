@@ -205,22 +205,15 @@ def privacy_policy(request):
 
 def terms_conditions(request):
     return render(request, 'app/terms_conditions.html')
-
-def search(request):
-    if request.method != "POST":
-        return render(request, 'app/search.html', {'keyword': '', 'shops': [], 'location_based': [], 'service_based': [], 'items': []})
-    
-    keyword = request.POST.get('search', '').strip()
-    shops = location_based = service_based = items = []
-    
-    if keyword:
-        shops = ShopProfile.objects.filter(
+def search_shops_for_title(keyword):
+    return ShopProfile.objects.filter(
             Q(shop_name__icontains=keyword) |
             Q(shop_title__icontains=keyword) |
             Q(shop_info__icontains=keyword)
         ).order_by('-shop_rating')
-        
-        location_based = ShopProfile.objects.filter(
+    
+def search_shops_location_based(keyword):
+    return ShopProfile.objects.filter(
             Q(shop_state__icontains=keyword) |
             Q(shop_city__icontains=keyword) |
             Q(shop_area__icontains=keyword) |
@@ -230,6 +223,15 @@ def search(request):
             Q(shop_landmark_4__icontains=keyword) |
             Q(shop_landmark_5__icontains=keyword)
         ).distinct().order_by('-shop_rating')
+    
+def search(request):
+    if request.method != "POST":
+        return render(request, 'app/search.html', {'keyword': '', 'shops': [], 'location_based': [], 'service_based': [], 'items': []})
+    keyword = request.POST.get('search', '').strip()
+    shops = location_based = service_based = items = []
+    if keyword:
+        shops = search_shops_for_title(keyword)
+        location_based = search_shops_location_based(keyword)
         
         service_based = ShopProfile.objects.filter(
             shopservice__item__name__icontains=keyword
@@ -292,27 +294,8 @@ def fetch_shop(request):
         for salon in salons
     ]
     return JsonResponse(sorted(salon_list, key=lambda x: x['shop_rating'], reverse=True), safe=False)
-
-def fetch_by_items(request):
-    item = request.GET.get('item')
-    district = request.GET.get('district')
-    upazilla = request.GET.get('upazilla')
-    area = request.GET.get('area')
-    limit = int(request.GET.get('limit', 9))
-    offset = int(request.GET.get('offset', 0))
-    
-    shops = ShopProfile.objects.filter(shopservice__item__name=item)
-    if district:
-        shops = shops.filter(shop_state=district)
-    if upazilla:
-        shops = shops.filter(shop_city=upazilla)
-    if area:
-        shops = shops.filter(shop_area=area)
-    
-    paginator = Paginator(shops, limit)
-    shop_page = paginator.get_page(offset // limit + 1)
-    
-    shop_data = [
+def extract_shop_data(shop_page):
+    return [
         {
             'shop_id': shop.id,
             'shop_name': shop.shop_name,
@@ -324,6 +307,26 @@ def fetch_by_items(request):
         }
         for shop in shop_page
     ]
+def fetch_by_items(request):
+    item = request.GET.get('item')
+    district = request.GET.get('district')
+    upazilla = request.GET.get('upazilla')
+    area = request.GET.get('area')
+    limit = int(request.GET.get('limit', 9))
+    offset = int(request.GET.get('offset', 0))
+    
+    shops = ShopProfile.objects.filter(shopservice__item__name=item).order_by('-shop_rating')
+    if district:
+        shops = shops.filter(shop_state=district)
+    if upazilla:
+        shops = shops.filter(shop_city=upazilla)
+    if area:
+        shops = shops.filter(shop_area=area)
+    
+    paginator = Paginator(shops, limit)
+    shop_page = paginator.get_page(offset // limit + 1)
+    
+    shop_data = extract_shop_data(shop_page)
     
     return JsonResponse({
         'shop': shop_data,
