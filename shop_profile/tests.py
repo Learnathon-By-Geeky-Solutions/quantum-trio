@@ -1502,9 +1502,183 @@ class ShopProfileUncoveredTestsFinal(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Worker details updated successfully.')
 
+# shop_profile/tests.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.utils import timezone
+from datetime import date, time, datetime
+from my_app.models import Division, District, Upazilla, Area, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview, ShopNotification
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+from unittest.mock import patch
+from django.http import HttpResponseNotAllowed
+from django.core.files.uploadedfile import SimpleUploadedFile
+import json
 
+UserModel = get_user_model()
 
+class QuantumShopTests(TestCase):
+    def setUp(self):
+        self.client = Client()
 
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create regular user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+        # Create booking slot
+        self.booking = BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='pending',
+            date=date(2024, 5, 5),
+            time=time(10, 0),
+            payment_status='unpaid',
+            user_end=True,
+            shop_end=False,
+            notes='',
+            rated=False
+        )
+
+    def test_update_status_invalid_booking(self):
+        # Cover: POST with invalid booking_id
+        self.client.force_login(self.shop_user)
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps({'booking_id': 999}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+
+    def test_basic_update_success(self):
+        # Cover: POST request updating all fields, landmarks, status, and shop_picture
+        self.client.force_login(self.shop_user)
+        new_picture = SimpleUploadedFile('shop_picture.jpg', b'file_content', content_type='image/jpeg')
+        response = self.client.post(reverse('basic_update'), {
+            'shop_name': 'Updated Shop',
+            'shop_title': 'Updated Title',
+            'shop_info': 'Updated Info',
+            'shop_owner': 'New Owner',
+            'mobile_number': '1234567890',
+            'shop_website': 'http://example.com',
+            'genus': 'Male',
+            'shop_state': 'New District',
+            'shop_city': 'New Upazilla',
+            'shop_area': 'New Area',
+            'landmark_1': 'Landmark 1',
+            'landmark_2': 'Landmark 2',
+            'landmark_3': 'Landmark 3',
+            'landmark_4': 'Landmark 4',
+            'landmark_5': 'Landmark 5',
+            'status': 'true',
+            'shop_picture': new_picture
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Shop profile updated successfully.')
+        self.shop_profile.refresh_from_db()
+        self.assertEqual(self.shop_profile.shop_name, 'Updated Shop')
+        self.assertEqual(self.shop_profile.shop_landmark_1, 'Landmark 1')
+        self.assertEqual(self.shop_profile.shop_landmark_2, 'Landmark 2')
+        self.assertEqual(self.shop_profile.shop_landmark_3, 'Landmark 3')
+        self.assertEqual(self.shop_profile.shop_landmark_4, 'Landmark 4')
+        self.assertEqual(self.shop_profile.shop_landmark_5, 'Landmark 5')
+        self.assertTrue(self.shop_profile.status)
+        # self.assertTrue(self.shop_profile.shop_picture.name.endswith('shop_picture.jpg'))
+
+    def test_basic_update_exception(self):
+        # Cover: POST request triggering exception during shop.save()
+        self.client.force_login(self.shop_user)
+        with patch('shop_profile.models.ShopProfile.save', side_effect=Exception('Database error')):
+            response = self.client.post(reverse('basic_update'), {
+                'shop_name': 'Failed Update'
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Failed to update shop: Database error')
+
+    def test_basic_update_get(self):
+        # Cover: GET request rendering update_basic template
+        self.client.force_login(self.shop_user)
+        response = self.client.get(reverse('basic_update'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        self.assertEqual(response.context['user'], self.shop_user)
+        self.assertEqual(response.context['shop'], self.shop_profile)
+        self.assertEqual(len(response.context['district']), 1)
+        self.assertEqual(response.context['district'][0]['id'], self.district.id)
+        self.assertEqual(len(response.context['Upazilla']), 1)
+        self.assertEqual(response.context['Upazilla'][0]['upazilla_names'][0], self.upazilla.name)
         
 
 
