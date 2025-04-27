@@ -1709,3 +1709,123 @@ class MyAppUncoveredTests1(TestCase):
         response = self.client.post(reverse('items'), {'service': self.service.name})
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
+
+
+# my_app/tests.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.utils import timezone
+from datetime import date, time, datetime
+from my_app.models import Division, District, Upazilla, Area, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+from unittest.mock import patch
+from django.http import HttpResponseNotAllowed
+import django.urls.exceptions
+
+UserModel = get_user_model()
+
+class MyAppProfileUncoveredTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create regular user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890',
+            user_state='Old District',
+            user_city='Old Upazilla',
+            user_area='Old Area',
+            latitude='0.0',
+            longitude='0.0'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+    def test_fetch_by_items_with_upazilla(self):
+        # Cover: GET request with upazilla parameter filtering shops
+        response = self.client.get(reverse('fetch_by_items'), {
+            'item': 'Test Item',
+            'upazilla': 'Test Upazilla',
+            'limit': 9,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data['shop']), 1)
+        self.assertEqual(data['shop'][0]['shop_id'], self.shop_profile.id)
+        self.assertEqual(data['shop'][0]['shop_city'], 'Test Upazilla')
+
+    def test_fetch_by_items_with_area(self):
+        # Cover: GET request with area parameter filtering shops
+        response = self.client.get(reverse('fetch_by_items'), {
+            'item': 'Test Item',
+            'area': 'Test Area',
+            'limit': 9,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data['shop']), 1)
+        self.assertEqual(data['shop'][0]['shop_id'], self.shop_profile.id)
+        self.assertEqual(data['shop'][0]['shop_city'], 'Test Upazilla')
