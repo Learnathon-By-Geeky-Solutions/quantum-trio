@@ -37,7 +37,7 @@
     <div class="bg-white p-10 rounded-2xl shadow-lg max-w-lg m-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
-            <a href="../">
+            <a href="{% url 'select_user_type' %}">
                 <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="Back" class="w-8 h-8">
             </a>
             <h2 class="text-2xl font-bold text-gray-700">Create Your Business Account</h2>
@@ -49,73 +49,71 @@
         </div>
 
         <!-- Form -->
-        <form id="registrationForm" action="step2" method="POST">
+        <form id="registrationForm" action="{% url 'business_register_step1' %}" method="POST">
             {% csrf_token %}
             
             <!-- First Name -->
             <div class="mb-5">
                 <label for="first-name" class="block text-gray-700 font-medium mb-2">First Name *</label>
-                <input type="text" id="first-name" name="first-name" value=""
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.first_name.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <!-- Last Name -->
             <div class="mb-5">
                 <label for="last-name" class="block text-gray-700 font-medium mb-2">Last Name *</label>
-                <input type="text" id="last-name" name="last-name" value=""
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.last_name.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <!-- Email -->
             <div class="mb-5">
                 <label for="email" class="block text-gray-700 font-medium mb-2">Email *</label>
-                <input type="email" id="email" name="email" value=""
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
-                <p class="text-red-600 text-sm mt-1">{{ message }}</p>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.email.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <!-- Password -->
             <div class="mb-5">
                 <label for="password" class="block text-gray-700 font-medium mb-2">Password *</label>
-                <input type="password" id="password" name="password" value=""
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required minlength="6">
+                {{ form.password }}
                 <p id="passwordError" class="text-red-600 text-sm mt-1"></p>
+                {% if form.password.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.password.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <!-- Mobile Number -->
             <div class="mb-5">
                 <label for="mobile-number" class="block text-gray-700 font-medium mb-2">Mobile Number *</label>
                 <div class="flex">
-                    <select id="country-code" name="country-code"
-                        class="border border-gray-300 px-4 py-3 rounded-l-lg focus:outline-none focus:border-pink-600">
-                        <option value="+880">+880</option>
-                    </select>
-                    <input type="tel" id="mobile-number" name="mobile-number" value=""
-                        class="border border-gray-300 px-4 py-3 rounded-r-lg w-full focus:outline-none focus:border-pink-600"
-                        required>
+                    {{ form.country_code }}
+                    {{ form.mobile_number }}
                 </div>
+                {% if form.mobile_number.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.mobile_number.errors.as_text }}</p>
+                {% endif %}
+                {% if form.country_code.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.country_code.errors.as_text }}</p>
+                {% endif %}
             </div>
-
-            <!-- Country -->
-            <div class="mb-5">
-                <label for="country" class="block text-gray-700 font-medium mb-2">Country *</label>
-                <input type="text" id="country" name="country" value="Bangladesh" readonly
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full bg-gray-100 focus:outline-none"
-                    required>
-            </div>
-
+            
             <!-- Terms and Conditions -->
             <div class="flex items-center mb-6">
-                <input type="checkbox" id="terms" name="terms"
-                    class="text-pink-600 focus:ring-pink-500 h-5 w-5" required>
+                {{ form.terms }}
                 <label for="terms" class="ml-3 text-gray-700 text-sm">
                     I agree to the <a href="#" class="text-pink-600 hover:underline">Privacy Policy</a> and 
                     <a href="#" class="text-pink-600 hover:underline">Terms of Business</a>.
                 </label>
+                {% if form.terms.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.terms.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <!-- Submit Button -->

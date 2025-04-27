@@ -14,52 +14,56 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen ">
     <div class="bg-white p-10 rounded-2xl shadow-lg max-w-lg">
         <div class="flex items-center justify-between mb-6">
-            <a href="step1">
+            <a href="{% url 'business_register_step1' %}">
                 <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
             </a>
             <h2 class="text-2xl font-semibold text-gray-700 text-center flex-1">Write Your Business Name</h2>
-            <div class="w-8"></div> <!-- Empty div for spacing balance -->
+            <div class="w-8"></div>
         </div>
 
         <p class="text-center text-gray-600 mb-6">This is your brand name of your shop</p>
 
-        <form action="step3" method="POST">
+        <form action="{% url 'business_register_step2' %}" method="POST">
             {% csrf_token %}
             
             <div class="mb-4">
                 <label for="business-name" class="block text-gray-700 font-medium mb-2">Business Name</label>
-                <input type="text" id="business-name" name="business_name"
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
+                {{ form.business_name }}
+                {% if form.business_name.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.business_name.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <div class="mb-4">
                 <label for="business-title" class="block text-gray-700 font-medium mb-2">Business Title</label>
-                <input type="text" id="business-title" name="business_title"
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"
-                    required>
+                {{ form.business_title }}
+                {% if form.business_title.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.business_title.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <div class="mb-4">
                 <label for="website" class="block text-gray-700 font-medium mb-2">Website (if you have, but not necessary)</label>
-                <input type="url" id="website" name="website"
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600">
+                {{ form.website }}
+                {% if form.website.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.website.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <div class="mb-4">
                 <label for="info" class="block text-gray-700 font-medium mb-2">Your Business Info (Minimum 50 words required*)</label>
-                <textarea id="info" name="business_info" rows="5"
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600"></textarea>
+                {{ form.business_info }}
+                {% if form.business_info.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.business_info.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <div class="mb-4">
                 <label for="gender" class="block text-gray-700 font-medium mb-2">For</label>
-                <select id="gender" name="gender"
-                    class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="both">Both</option>
-                </select>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.gender.errors.as_text }}</p>
+                {% endif %}
             </div>
 
             <button type="submit"

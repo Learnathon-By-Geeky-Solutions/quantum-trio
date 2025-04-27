@@ -8,83 +8,77 @@
     <title>Shop addresses</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-  
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen ">
   <div class="bg-white p-10 rounded-2xl shadow-lg w-1/2">
       <div class="flex items-center justify-between mb-6">
-          <a href="step2">
+          <a href="{% url 'business_register_step2' %}">
               <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
           </a> 
           <h2 class="text-2xl font-semibold text-gray-700 text-center flex-1">Write Your Shop Address</h2>
-          
+          <div class="w-8"></div>
       </div>
 
-      <form action="step4" method="POST" id="shopAddressForm">
+      <form action="{% url 'business_register_step3' %}" method="POST" id="shopAddressForm">
         {% csrf_token %}
         <div class="mb-4">
           <label for="district" class="block text-gray-700 font-bold mb-2">Select Your District *</label>
-          <select id="district" name="district" 
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600" required>
-            <option disabled selected>Select District</option>
-            
-            {% for dist in district %}
-                <option value="{{ dist.name }}">{{ dist.name }}</option>
-            {% endfor %}
-          </select>
+          {{ form.district }}
+          {% if form.district.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.district.errors.as_text }}</p>
+          {% endif %}
         </div>
         <div class="mb-4">
-          <label for="upazilla" class="block text-gray-700 font-bold mb-2">Shop upazilla *</label>
-          <select id="upazilla" name="upazilla"
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600" required>
-            <option value="" disabled selected>Select Your Upazilla</option>
-          </select>
+          <label for="upazilla" class="block text-gray-700 font-bold mb-2">Shop Upazilla *</label>
+          {{ form.upazilla }}
+          {% if form.upazilla.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.upazilla.errors.as_text }}</p>
+          {% endif %}
         </div>
         <div class="mb-4">
           <label for="area" class="block text-gray-700 font-bold mb-2">Shop Area *</label>
-          <input type="text" id="area" name="area" value=""
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600" required />
+          {{ form.area }}
+          {% if form.area.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.area.errors.as_text }}</p>
+          {% endif %}
         </div>
         <div class="mb-4">
-          <label for="landmarks" class="block text-gray-700 font-bold mb-2">Landmark Addresses (At least 3 required)
-            *</label>
-          <input type="text" id="landmark1" name="landmarks[]" 
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-            placeholder="Landmark address 1." required />
-          <input type="text" id="landmark2" name="landmarks[]"
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-            placeholder="Landmark address 2." required />
-          <input type="text" id="landmark3" name="landmarks[]"
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-            placeholder="Landmark address 3." required />
-          <input type="text" id="landmark4" name="landmarks[]"
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-            placeholder="Landmark address 4(if required)." />
-          <input type="text" id="landmark5" name="landmarks[]"
-            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:border-pink-600 mb-2"
-            placeholder="Landmark address 5(if required)." />
+          <label for="landmarks" class="block text-gray-700 font-bold mb-2">Landmark Addresses (At least 3 required) *</label>
+          {{ form.shop_landmark_1 }}
+          {{ form.shop_landmark_2 }}
+          {{ form.shop_landmark_3 }}
+          {{ form.shop_landmark_4 }}
+          {{ form.shop_landmark_5 }}
+          {% if form.landmark1.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.landmark1.errors.as_text }}</p>
+          {% endif %}
+          {% if form.landmark2.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.landmark2.errors.as_text }}</p>
+          {% endif %}
+          {% if form.landmark3.errors %}
+              <p class="text-red-600 text-sm mt-1">{{ form.landmark3.errors.as_text }}</p>
+          {% endif %}
         </div>
         
         <div class="mb-4">
           <div class="flex flex-wrap items-center space-x-4">
-            <!-- Latitude -->
             <div class="flex flex-col">
               <label for="latitude" class="text-gray-700 font-bold mb-1">Latitude *</label>
-              <input type="text" id="latitude" name="latitude"
-                class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:border-pink-600 w-40"
-                required />
+              {{ form.latitude }}
+              {% if form.latitude.errors %}
+                  <p class="text-red-600 text-sm mt-1">{{ form.latitude.errors.as_text }}</p>
+              {% endif %}
             </div>
         
-            <!-- Longitude -->
             <div class="flex flex-col">
               <label for="longitude" class="text-gray-700 font-bold mb-1">Longitude *</label>
-              <input type="text" id="longitude" name="longitude"
-                class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:border-pink-600 w-40"
-                required />
+              {{ form.longitude }}
+              {% if form.longitude.errors %}
+                  <p class="text-red-600 text-sm mt-1">{{ form.longitude.errors.as_text }}</p>
+              {% endif %}
             </div>
         
-            <!-- Get Location Button -->
             <div>
               <button type="button"
                 class="bg-pink-500 text-white p-2 px-4 rounded-lg hover:bg-pink-700 transition duration-300"
@@ -99,7 +93,33 @@
         </button>
       </form>
     </div>
-    {% include 'app/address.html' %}
-  </body>
 
+    <script>
+        const citiesBydistrict = {
+            {% for upazilla in Upazilla %}
+            "{{ upazilla.district__name }}": [
+                {% for index in upazilla.upazilla_names %}
+                "{{ index }}"{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            ]{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        };
+
+        document.getElementById("district")?.addEventListener("change", function () {
+            const district = this.value;
+            const upazillaSelect = document.getElementById("upazilla");
+            upazillaSelect.innerHTML = '<option value="" disabled selected>Select Upazilla</option>';
+            
+            if (district && citiesBydistrict[district]) {
+                citiesBydistrict[district].forEach(upazilla => {
+                    const option = document.createElement("option");
+                    option.value = upazilla;
+                    option.textContent = upazilla;
+                    upazillaSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+    <script src="{% static 'app/js/location.js' %}"></script>
+</body>
 </html>

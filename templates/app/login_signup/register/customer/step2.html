@@ -2,61 +2,63 @@
 {% load static %}
 {% load static tailwind_tags %}
 <html lang="en">
- 
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Address</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    <style>
-        #map {
-            height: 400px;
-            width: 100%;
-        }
-    </style>
 </head>
 
 <body class="bg-gray-100 py-10">
     <div class="min-h-screen flex items-center justify-center px-4">
         <div class="bg-white p-10 rounded-xl shadow-lg max-w-2xl w-1/2">
             <div class="flex justify-between items-center mb-6">
-                <a href="step1" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">
-                    &larr;
+                <a href="{% url 'customer_register_step1' %}" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">
+                    ←
                 </a>
                 <h2 class="text-2xl font-bold text-gray-700">Your Address</h2>
                 <div></div>
             </div>
-            <form action="submit" method="POST" id="shopAddressForm">
+            <form action="{% url 'customer_register_step2' %}" method="POST" id="shopAddressForm">
                 {% csrf_token %}
                 <div class="mb-6">
                     <label for="district" class="block text-gray-700 font-semibold mb-2">Select Your District *</label>
-                    <select id="district" name="district" class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600" required>
-                        <option disabled selected>Select District</option>
-                        {% for dist in district %}
-                            <option value="{{ dist.name }}">{{ dist.name }}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.district }}
+                    {% if form.district.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.district.errors.as_text }}</p>
+                    {% endif %}
                 </div>
                 <div class="mb-6">
                     <label for="upazilla" class="block text-gray-700 font-semibold mb-2">Select Your Upazilla *</label>
-                    <select id="upazilla" name="upazilla" class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600" required>
-                        <option value="" disabled selected>Select Your Upazilla</option>
-                    </select>
+                    {{ form.upazilla }}
+                    {% if form.upazilla.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.upazilla.errors.as_text }}</p>
+                    {% endif %}
                 </div>
                 <div class="mb-6">
                     <label for="area" class="block text-gray-700 font-semibold mb-2">Your Area *</label>
-                    <input type="text" id="area" name="area" class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600" required />
+                    {{ form.area }}
+                    {% if form.area.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.area.errors.as_text }}</p>
+                    {% endif %}
                 </div>
                 <div class="mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="latitude" class="block text-gray-700 font-semibold mb-2">Latitude *</label>
-                            <input type="text" id="latitude" name="latitude" class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600" required />
+                            {{ form.latitude }}
+                            {% if form.latitude.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.latitude.errors.as_text }}</p>
+                            {% endif %}
                         </div>
                         <div>
                             <label for="longitude" class="block text-gray-700 font-semibold mb-2">Longitude *</label>
-                            <input type="text" id="longitude" name="longitude" class="border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600" required />
+                            {{ form.longitude }}
+                            {% if form.longitude.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.longitude.errors.as_text }}</p>
+                            {% endif %}
                         </div>
                         <div class="flex items-end">
                             <button type="button" class="bg-pink-500 text-white p-3 rounded-lg w-full hover:bg-pink-700 transition duration-300" onclick="getLocation()">Get My Location</button>

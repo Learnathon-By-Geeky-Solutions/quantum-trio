@@ -9,7 +9,7 @@
     <title>Basic Update</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
-    
+    {% include "app/message.html" %}
 </head>
 
 <body class="bg-gray-100">
@@ -82,7 +82,7 @@
 
                         <div class="mb-4">
                             <label for="shop_state" class="block text-sm font-medium">District:
-                            <select id="district" name="district" 
+                            <select id="district" name="shop_state" 
                                 class="border border-gray-300 p-2 w-full" required>
                                 <option disabled selected>Select District</option>
                                 {% for dist in district %}
@@ -94,7 +94,7 @@
                         </label></div>
                         <div class="mb-4">
                             <label for="upazilla" class="block text-sm font-medium">Shop upazilla *
-                                <select id="upazilla" name="upazilla"
+                                <select id="upazilla" name="shop_city"
                                     class="border border-gray-300 p-2 w-full">
                                     <option value="" disabled selected>{{shop.shop_city}}</option>
                                 </select>
