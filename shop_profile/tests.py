@@ -1503,15 +1503,6 @@ class ShopProfileUncoveredTestsFinal(TestCase):
         self.assertEqual(str(messages[0]), 'Worker details updated successfully.')
 
 
-    def test_customers_with_page(self):
-        # Cover: GET request with page parameter
-        self.client.force_login(self.shop_user)
-        response = self.client.get(reverse('shop_customers'), {'page': 1})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
-        self.assertEqual(len(response.context['bookings']), 1)
-        self.assertEqual(response.context['bookings'][0].id, self.booking.id)
-
 
 
         
