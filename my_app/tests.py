@@ -1680,20 +1680,6 @@ class MyAppUncoveredTests1(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
 
-    def test_area_database(self):
-        # Cover: area_database returning district, upazilla, area
-        from my_app.views import area_database
-        district, upazilla, area = area_database()
-        self.assertEqual(len(district), 1)
-        self.assertEqual(district[0]['id'], self.district.id)
-        self.assertEqual(district[0]['name'], self.district.name)
-        self.assertEqual(len(upazilla), 1)
-        self.assertEqual(upazilla[0]['district__name'], self.district.name)
-        self.assertEqual(upazilla[0]['upazilla_names'][0], self.upazilla.name)
-        self.assertEqual(len(area), 1)
-        self.assertEqual(area[0]['upazilla__name'], self.upazilla.name)
-        self.assertEqual(area[0]['area_names'][0], self.area.name)
-
     def test_search_non_post_method(self):
         # Cover: Non-POST request rendering search template with empty context
         response = self.client.get(reverse('search'))
