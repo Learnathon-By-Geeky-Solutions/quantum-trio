@@ -192,17 +192,6 @@ class MyAppTests(TestCase):
         self.assertIn(self.item, response.context['items'])
         self.assertEqual(response.context['service'], 'Test Service')
 
-    # def test_submit_shop_review_no_booking(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     response = self.client.post(reverse('submit_shop_review'), {
-    #         'rating': '4',
-    #         'review': 'Great shop!',
-    #         'shop_id': self.shop_profile.id
-    #     })
-    #     self.assertEqual(response.status_code, 404)  # JSON response
-    #     self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
-
-  
     def submit_shop_review(request):
         try:
             rating = request.POST.get('rating')
@@ -1353,16 +1342,6 @@ class MyAppUncoveredTests(TestCase):
         self.assertEqual(stats['available_upazilla'], 1)
         self.assertEqual(stats['available_barber'], 1)
 
-    # def test_success_reset_password(self):
-    #     # Cover: success_reset_password returning HttpResponse
-    #     try:
-    #         response = self.client.get(reverse('success_reset_password'))  # Adjust if name differs, e.g., 'reset_password_success'
-    #         self.assertEqual(response.status_code, 200)
-    #         self.assertEqual(response.content.decode(), "Password reset successful. This is a test response.")
-    #     except django.urls.exceptions.NoReverseMatch as e:
-    #         print(f"URL resolution error: {str(e)}")  # Debug
-    #         self.fail(f"Failed to resolve 'success_reset_password' URL: {str(e)}. Check my_app/urls.py for correct URL name.")
-
     def test_explore_by_items(self):
         # Cover: GET request to explore_by_items
         with patch('my_app.views.area_database', return_value=([{'id': self.district.id, 'name': self.district.name}], [{'district__name': self.district.name, 'upazilla_names': [self.upazilla.name]}], [{'upazilla__name': self.upazilla.name, 'area_names': [self.area.name]}])):
@@ -1519,18 +1498,6 @@ class MyAppAdditionalUncoveredTests(TestCase):
         self.assertRedirects(response, reverse('home'))
         self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
 
-    # def test_submit_shop_review_generic_exception(self):
-    #     # Cover: Generic exception in submit_shop_review
-    #     self.client.force_login(self.user)
-    #     with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
-    #         response = self.client.post(reverse('submit_shop_review'), {
-    #             'rating': '5',
-    #             'review': 'Great service!',
-    #             'shop_id': self.shop_profile.id
-    #         })
-    #     self.assertEqual(response.status_code, 500)
-    #     self.assertJSONEqual(response.content, {'success': False, 'error': 'Database error'})
-
     def test_book_now_with_district(self):
         # Cover: GET request with district parameter
         with patch('my_app.views.area_database', return_value=([{'id': self.district.id, 'name': self.district.name}], [{'district__name': self.district.name, 'upazilla_names': [self.upazilla.name]}], [{'upazilla__name': self.upazilla.name, 'area_names': [self.area.name]}])):
@@ -1554,5 +1521,205 @@ class MyAppAdditionalUncoveredTests(TestCase):
     def test_book_now_non_get_method(self):
         # Cover: Non-GET request returning HttpResponseNotAllowed
         response = self.client.post(reverse('booknow'))
+        self.assertEqual(response.status_code, 405)
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+
+
+# my_app/tests.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import date, time, datetime
+from my_app.models import Division, District, Upazilla, Area, Service, Item
+from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
+from user_profile.models import UserProfile
+from booking.models import BookingSlot
+from django.contrib.contenttypes.models import ContentType
+from unittest.mock import patch
+from django.http import HttpResponseNotAllowed
+import django.urls.exceptions
+
+UserModel = get_user_model()
+
+class MyAppUncoveredTests1(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create shop user and profile
+        self.shop_user = UserModel.objects.create_user(
+            email='shopuser@example.com',
+            password='shoppass123',
+            user_type='shop'
+        )
+        self.shop_profile = ShopProfile.objects.create(
+            user=self.shop_user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_state='Test District',
+            shop_city='Test Upazilla',
+            shop_area='Test Area',
+            shop_rating=4.5,
+            shop_customer_count=100,
+            gender='Both',
+            mobile_number='0987654321'
+        )
+
+        # Create regular user and profile
+        self.user = UserModel.objects.create_user(
+            email='testuser@example.com',
+            password='testpass123',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            first_name='Test',
+            last_name='User',
+            gender='Male',
+            phone_number='1234567890'
+        )
+
+        # Create new shop for no-booking test
+        self.new_shop_user = UserModel.objects.create_user(
+            email='newshop@example.com',
+            password='newpass123',
+            user_type='shop'
+        )
+        self.new_shop = ShopProfile.objects.create(
+            user=self.new_shop_user,
+            shop_name='New Shop',
+            shop_title='New Title',
+            shop_info='New Info',
+            shop_state='New District',
+            shop_city='New Upazilla',
+            shop_area='New Area',
+            shop_rating=4.0,
+            shop_customer_count=50,
+            gender='Both',
+            mobile_number='1234567890'
+        )
+
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Test District', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Test Upazilla', district=self.district)
+        self.area = Area.objects.create(name='Test Area', upazilla=self.upazilla)
+
+        # Create service and item
+        self.service = Service.objects.create(name='Test Service')
+        self.item = Item.objects.create(
+            name='Test Item',
+            item_description='Test Description',
+            service=self.service,
+            gender='Both'
+        )
+
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop_profile,
+            item=self.item,
+            price=50.00
+        )
+
+        # Create shop worker
+        self.shop_worker = ShopWorker.objects.create(
+            shop=self.shop_profile,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+
+        # Create completed booking slot for review eligibility
+        self.booking = BookingSlot.objects.create(
+            user=self.user_profile,
+            shop=self.shop_profile,
+            worker=self.shop_worker,
+            item=self.item,
+            status='completed',
+            date=date(2024, 5, 5),
+            time=time(10, 0),
+            payment_status='paid',
+            user_end=True,
+            shop_end=True,
+            notes='',
+            rated=False
+        )
+
+    def test_shop_profile_non_get_method(self):
+        # Cover: Non-GET request returning HttpResponseNotAllowed
+        response = self.client.post(reverse('salon-profile'), {'shop_id': self.shop_profile.id})
+        self.assertEqual(response.status_code, 405)
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+
+    def test_shop_profile_invalid_shop_id(self):
+        # Cover: GET request with invalid shop_id returning 404
+        response = self.client.get(reverse('salon-profile'), {'shop_id': 999})
+        self.assertEqual(response.status_code, 404)
+        self.assertJSONEqual(response.content, {"error": "Shop not found"})
+
+    def test_submit_shop_review_missing_fields(self):
+        # Cover: POST request with missing fields returning 400
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('submit_shop_review'), {
+            'rating': '5',
+            # Missing review and shop_id
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'Fill all the required fields.'})
+
+    def test_submit_shop_review_no_completed_booking(self):
+        # Cover: POST request with no completed bookings returning 403
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('submit_shop_review'), {
+            'rating': '5',
+            'review': 'Great service!',
+            'shop_id': self.new_shop.id
+        })
+        self.assertEqual(response.status_code, 403)
+        self.assertJSONEqual(response.content, {'success': False, 'error': 'You are not allowed.'})
+
+    def test_area_database(self):
+        # Cover: area_database returning district, upazilla, area
+        from my_app.views import area_database
+        district, upazilla, area = area_database()
+        self.assertEqual(len(district), 1)
+        self.assertEqual(district[0]['id'], self.district.id)
+        self.assertEqual(district[0]['name'], self.district.name)
+        self.assertEqual(len(upazilla), 1)
+        self.assertEqual(upazilla[0]['district__name'], self.district.name)
+        self.assertEqual(upazilla[0]['upazilla_names'][0], self.upazilla.name)
+        self.assertEqual(len(area), 1)
+        self.assertEqual(area[0]['upazilla__name'], self.upazilla.name)
+        self.assertEqual(area[0]['area_names'][0], self.area.name)
+
+    def test_search_non_post_method(self):
+        # Cover: Non-POST request rendering search template with empty context
+        response = self.client.get(reverse('search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/search.html')
+        self.assertEqual(response.context['keyword'], '')
+        self.assertEqual(list(response.context['shops']), [])
+        self.assertEqual(list(response.context['location_based']), [])
+        self.assertEqual(list(response.context['service_based']), [])
+        self.assertEqual(list(response.context['items']), [])
+
+    def test_fetch_shop_with_area(self):
+        # Cover: GET request with area parameter filtering shops
+        response = self.client.get(reverse('fetch_shop'), {
+            'area': 'Test Area',
+            'limit': 9,
+            'offset': 0
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['shop_id'], self.shop_profile.id)
+        self.assertEqual(data[0]['shop_city'], 'Test Upazilla')  # Updated to check shop_city
+
+    def test_items_non_get_method(self):
+        # Cover: Non-GET request returning HttpResponseNotAllowed
+        response = self.client.post(reverse('items'), {'service': self.service.name})
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
