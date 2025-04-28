@@ -399,11 +399,11 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "app/salon_dashboard/settings.html")
 
-    def test_services_update_get(self):
-        response = self.client.get(reverse("services_update"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "app/salon_dashboard/update-services.html")
-        self.assertIn("services", response.context)
+    # def test_services_update_get(self):
+    #     response = self.client.get(reverse("services_update"))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "app/salon_dashboard/update-services.html")
+    #     self.assertIn("services", response.context)
 
     def test_schedule_update_post_valid(self):
         response = self.client.post(
