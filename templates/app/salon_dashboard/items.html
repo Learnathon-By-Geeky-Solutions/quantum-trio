@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Selection</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+    {% tailwind_css %}
+</head>
+
+<body class="bg-gray-100">
+    {% include 'app/salon_dashboard/header.html' %}
+    <section class="flex flex-col md:flex-row min-h-screen">
+        {% include 'app/salon_dashboard/sidebar.html' %}
+        <form action="update" method="POST" class="bg-white p-4 rounded shadow-md">
+            {% csrf_token %}
+            <a href="services_update">
+                <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-6 h-6">
+            </a>
+            <h2 class="text-xl font-bold text-center mb-4">Add Items to Services</h2>
+
+            <div class="" id="services">
+                {% for service in services %}
+                <div class="service mb-4">
+                    <p class="block font-bold mb-2">Service: {{ service.service__name }} </p>
+                    <p class="block font-bold mb-2">Items</p>
+                    <div class="items">
+                        <div class="item mb-2 flex gap-2">
+                            <select name="items[{{ forloop.counter }}][name][]"
+                                class="block flex-grow w-3/4 p-2 border rounded item-select">
+                                {% for item in service.service_names %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="number" name="items[{{ forloop.counter }}][price][]"
+                                class="block w-1/4 p-2 border rounded item-price" placeholder="Price">
+                        </div>
+                    </div>
+                    <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2 text-sm">Add
+                        Item</button>
+                </div>
+                {% endfor %}
+
+            </div>
+            <button type="submit"
+                class="submit bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-4">Update</button>
+        </form>
+    </section>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('add-item')) {
+                const serviceDiv = e.target.closest('.service');
+                const itemsDiv = serviceDiv.querySelector('.items');
+                const lastItemSelect = itemsDiv.querySelector('.item:last-child .item-select');
+                const lastItemPrice = itemsDiv.querySelector('.item:last-child .item-price');
+
+                if (lastItemSelect.value === '' || lastItemPrice.value === '') {
+                    alert('Please select an item and enter its price before adding a new item.');
+                    return;
+                }
+
+                const itemSelects = Array.from(itemsDiv.querySelectorAll('.item-select'));
+                const selectedValues = itemSelects.map(select => select.value);
+                if (new Set(selectedValues).size !== selectedValues.length) {
+                    alert('An item has already been selected. Please choose a different item.');
+                    return;
+                }
+
+                const itemIndex = itemsDiv.querySelectorAll('.item').length;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item mb-2 flex';
+                itemDiv.innerHTML = `
+                    <select name="${serviceDiv.querySelector('select').name.replace(/\[\d+\]\[\]/, '[' + itemIndex + '][]')}" class="block w-3/4 p-2 border rounded mb-2 mr-2 item-select">
+                        ${Array.from(itemsDiv.querySelector('.item-select').options).map(option => `<option value="${option.value}">${option.text}</option>`).join('')}
+                    </select>
+                    <input type="number" name="${serviceDiv.querySelector('input').name.replace(/\[\d+\]\[\]/, '[' + itemIndex + '][]')}" class="block w-1/4 p-2 border rounded mb-2 item-price" placeholder="Price">
+                `;
+                itemsDiv.appendChild(itemDiv);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('form').addEventListener('submit', function (e) {
+                const services = document.querySelectorAll('.service');
+
+                for (const service of services) {
+                    const itemsDiv = service.querySelector('.items');
+                    const itemSelects = itemsDiv.querySelectorAll('.item-select');
+
+                    for (const select of itemSelects) {
+                        const priceInput = select.nextElementSibling;
+
+                        if (select.value !== '' && priceInput.value === '') {
+                            alert(`Please enter a price for the selected item in ${service.querySelector('.font-bold').textContent}`);
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+            });
+        });
+        
+    </script>
+</body>
+
+</html>

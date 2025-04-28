@@ -1,13 +1,15 @@
 from django import forms
 from django.core.validators import MinLengthValidator, RegexValidator
 from shop_profile.models import MyUser
+att_1='border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600'
+att_2='border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500'
 class Step1Form(forms.Form):
     first_name = forms.CharField(
         max_length=255,
         required=True,
         label="First Name",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'first-name'
         })
     )
@@ -16,7 +18,7 @@ class Step1Form(forms.Form):
         required=True,
         label="Last Name",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'last-name'
         })
     )
@@ -25,7 +27,7 @@ class Step1Form(forms.Form):
         required=True,
         label="Email",
         widget=forms.EmailInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'email'
         })
     )
@@ -35,7 +37,7 @@ class Step1Form(forms.Form):
         label="Password",
         validators=[MinLengthValidator(6)],
         widget=forms.PasswordInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'password',
             'minlength': '6'
         })
@@ -73,7 +75,7 @@ class Step1Form(forms.Form):
         required=False,  # Default to not required
         label="Gender",
         widget=forms.Select(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'gender'
         })
     )
@@ -90,7 +92,7 @@ class Step2Form(forms.Form):
         required=True,
         label="Business Name",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'business-name'
         })
     )
@@ -99,7 +101,7 @@ class Step2Form(forms.Form):
         required=True,
         label="Business Title",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'business-title'
         })
     )
@@ -108,7 +110,7 @@ class Step2Form(forms.Form):
         required=False,
         label="Website",
         widget=forms.URLInput(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'website'
         })
     )
@@ -118,7 +120,7 @@ class Step2Form(forms.Form):
         label="Business Info",
         validators=[MinLengthValidator(10, "Business info must be at least 10 characters.")],
         widget=forms.Textarea(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'info',
             'rows': '5'
         })
@@ -128,7 +130,7 @@ class Step2Form(forms.Form):
         required=True,
         label="For",
         widget=forms.Select(attrs={
-            'class': 'border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_1,
             'id': 'gender'
         })
     )
@@ -171,7 +173,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Landmark 1",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'shop-landmark-1',
             'placeholder': 'Enter first landmark (Mandatory)'
         })
@@ -181,7 +183,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Landmark 2",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'shop-landmark-2',
             'placeholder': 'Enter second landmark (Mandatory)'
         })
@@ -191,7 +193,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Landmark 3",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'shop-landmark-3',
             'placeholder': 'Enter third landmark (Mandatory)'
         })
@@ -201,7 +203,7 @@ class Step3Form(forms.Form):
         required=False,
         label="Landmark 4",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'shop-landmark-4',
             'placeholder': 'Enter fourth landmark (optional)'
         })
@@ -211,7 +213,7 @@ class Step3Form(forms.Form):
         required=False,
         label="Landmark 5",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500',
+            'class': att_2,
             'id': 'shop-landmark-5',
             'placeholder': 'Enter fifth landmark (optional)'
         })

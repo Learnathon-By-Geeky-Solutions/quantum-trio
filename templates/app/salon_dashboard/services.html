@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Selection</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
+  {% tailwind_css %}
+
+  <style>
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .grid-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .grid-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .grid-item.selected {
+      background-color: rgb(24, 210, 80);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transform: scale(1.05);
+    }
+
+    .grid-item img {
+      max-width: 50px;
+      margin-bottom: 8px;
+    }
+
+    .ji {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+{% include 'app/salon_dashboard/header.html' %}
+  {% comment %} <div class="min-h-screen flex items-center justify-center p-5"> {% endcomment %}
+    <section class="flex flex-col md:flex-row min-h-screen">
+    {% include 'app/salon_dashboard/sidebar.html' %}
+    <div class="bg-white p-8 rounded-lg shadow-lg w-1/2 max-w-3xl p-5 ">
+      <form class="form" action="items_update" method="POST" id="serviceForm">
+        {% csrf_token %}
+        <a href="update_services">
+          <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
+        </a>
+        <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
+        <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
+        <div class="grid-container">
+          {% for service in services %}
+          <div class="grid-item"
+               onclick="selectService(this)"
+               onkeydown="handleKeyPress(event, this)"
+               tabindex="-1">
+            <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
+            <label for="{{ service.id }}">
+              <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
+              <span>{{ service.name }}</span>
+            </label>
+          </div>
+        {% endfor %}
+        
+          <div class="ji"></div>
+        </div>
+        <button type="submit"
+                class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue
+        </button>
+      </form>
+    </div>
+    </section>
+  <script>
+    let selectedServices = []
+
+    function selectService(element) {
+      const checkbox = element.querySelector('input[type="checkbox"]')
+      const index = selectedServices.indexOf(element)
+      if (index > -1) {
+        selectedServices.splice(index, 1)
+        element.classList.remove('selected')
+        checkbox.checked = false
+        element.setAttribute('aria-checked', 'false')
+      } else if (selectedServices.length >= 4) {
+        return
+      } else {
+        selectedServices.push(element)
+        element.classList.add('selected')
+        checkbox.checked = true
+        element.setAttribute('aria-checked', 'true')
+      }
+      selectedServices.forEach((el, i) => {
+        el.setAttribute('data-order', i + 1)
+      })
+    }
+
+    function handleKeyPress(event, element) {
+      if (event.key === ' ' || event.key === 'Enter') {
+        event.preventDefault()
+        selectService(element)
+      }
+    }
+
+    document.getElementById('serviceForm').addEventListener('submit', function (event) {
+      if (selectedServices.length === 0) {
+        event.preventDefault()
+        alert('Please select at least one service.')
+        return
+      }
+      const selectedServiceNames = selectedServices.map((item) => item.querySelector('input[type="checkbox"]').value)
+      console.log('Selected services:', selectedServiceNames)
+
+      // Optionally, you can submit the form if you want to proceed after logging the data
+      this.submit()
+    })
+  </script>
+</body>
+
+</html>

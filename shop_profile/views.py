@@ -412,14 +412,61 @@ def basic_update(request):
         'district': list(District.objects.values('id', 'name')),
         'Upazilla': list(Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name')))
     })
-
+@csrf_protect
+@login_required
+@require_http_methods(["GET"])
+def update_services(request):
+    shop=get_shop_from_user(request.user)
+    items=ShopService.objects.filter(shop=shop)
+    return render(request, "app/salon_dashboard/update-services.html",{'items':items})
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def services_update(request):
-    return render(request, "app/salon_dashboard/update-services.html", {
+    return render(request, "app/salon_dashboard/services.html", {
         'services': Service.objects.values('id', 'name')
     })
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
+def items_update(request):
+    if request.method == 'POST':
+         services = request.POST.getlist("services[]", [])
+    """Fetch available services"""
+    available_services = Item.objects.values('service__id', 'service__name').annotate(service_names=ArrayAgg('name'))
+
+    """Convert IDs to strings for comparison and filter matching services"""
+    matching_services = []
+    if len(services) > 0:  # Correct way to check non-empty list
+        matching_services = [
+            service for service in available_services if str(service['service__id']) in services
+        ]
+    return render(request, "app/salon_dashboard/items.html", {
+        'services': matching_services
+    })
+@csrf_protect
+@login_required
+@require_http_methods(["POST"])
+def update(request):
+    if request.method == "POST":
+         items = {key: request.POST.getlist(key) for key in request.POST if key.startswith("items")}
+         
+    try:
+        item_names = [name for key, name_list in items.items() if 'name' in key for name in name_list]
+        prices = [price for key, price_list in items.items() if 'price' in key for price in price_list]
+        shop=get_shop_from_user(request.user)
+        ShopService.objects.filter(shop=shop).delete()
+        for name, price in zip(item_names, prices):
+            ShopService.objects.create(
+                shop=shop,
+                item=Item.objects.get(name=name),
+                price=price
+            )
+        messages.success(request, "Services updated successfully.")
+    except Exception as e:
+        messages.error(request, f"Failed to update services. Error: {str(e)}")
+        print(f"Service creation error: {e}")
+    return redirect('shop_setting')
 
 @csrf_protect
 @login_required
@@ -437,6 +484,7 @@ def schedule_update(request):
                 shop_schedule.start = start_time
                 shop_schedule.end = end_time
                 shop_schedule.save()
+                messages.success(request,"Schedule updated successfully.")
     
     schedule_dict = {
         s.day_of_week: {'start': s.start.strftime('%H:%M'), 'end': s.end.strftime('%H:%M')}

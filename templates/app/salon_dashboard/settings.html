@@ -8,6 +8,7 @@
     <title>Settings</title>
     <link rel="icon" type="image/x-icon" href="{% static 'app/image/favicon.ico' %}" />
     {% tailwind_css %}
+    {% include 'app/message.html' %}
   </head>
 
   <body class="bg-gray-100">
@@ -20,7 +21,7 @@
         <div class="main-content p-4 flex-1">
           <div class="flex justify-center items-start min-h-screen pt-20">
             <a href="basic_update" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out ml-6">Basic Update</a>
-            <a href="services_update" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out ml-6">Services Update</a>
+            <a href="update_services" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out ml-6">Services Update</a>
             <a href="schedule_update" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out ml-6">Schedule Update</a>
           </div>
         </div>

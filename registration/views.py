@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from registration.forms import Step1Form, Step2Form, Step3Form
-from shop_profile.models import MyUser, ShopProfile
+from shop_profile.models import MyUser, ShopProfile,ShopSchedule
 from user_profile.models import UserProfile
 from my_app.models import District, Upazilla
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib import messages
-
+from datetime import time
 def select_user_type(request):
     return render(request, 'app/login_signup/sign-up.html')
 
@@ -39,7 +39,6 @@ def customer_register_step2(request):
     if request.method == 'POST':
         form = Step3Form(request.POST,user_type='customer', districts=district, upazillas=upazilla_names)
         if form.is_valid():
-            print('valid')
             user_details = request.session['step1_data']
             try:
                 user = MyUser.objects.create_user(
@@ -156,7 +155,26 @@ def business_register_step3(request):
             
             del request.session['step1_data']
             del request.session['step2_data']
-            
+            days_of_week = [
+                'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Saturday' ,'Friday'
+            ]
+            start_time = time(hour=9, minute=0)   # 09:00 AM
+            end_time = time(hour=20, minute=0)     # 08:00 PM
+
+            # First, delete existing schedule if any (optional)
+            ShopSchedule.objects.filter(shop=shop_profile).delete()
+
+            # Create schedule for non-Friday days
+            schedules = [
+                ShopSchedule(
+                    shop=shop_profile,
+                    day_of_week=day,
+                    start=start_time,
+                    end=end_time if day != 'Friday' else time(hour=17, minute=0)
+                )
+                for day in days_of_week
+            ]
+            ShopSchedule.objects.bulk_create(schedules)
             messages.success(request,"You have successfully created account.")
             request.session.flush()
             return redirect('login')

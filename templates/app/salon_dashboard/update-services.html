@@ -10,11 +10,41 @@
     {% tailwind_css %}
 </head>
 <body class="bg-gray-100">
-    {% include "app/salon_dashboard/header.html" %} 
+    {% include "app/salon_dashboard/header.html" %}  
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include "app/salon_dashboard/sidebar.html" %}
-     
-        
+        <div class="flex-1 p-6">
+            <a href="{% url 'services_update' %}" class="inline-block bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out mb-6">
+                Update
+            </a>
+    
+            {% comment %} Items Price List {% endcomment %}
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">Item Price List</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 bg-gray-200 font-semibold text-left">Item Name</th>
+                                <th class="py-2 px-4 bg-gray-200 font-semibold text-left">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr class="border-b">
+                                <td class="py-2 px-4">{{ item.item.name }}</td>
+                                <td class="py-2 px-4">{{ item.price }} ৳</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="py-2 px-4 text-gray-500" colspan="2">No items found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </section>
     {% include 'app/address.html' %}
 </body>

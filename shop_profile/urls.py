@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path,include
 from django import views
-from shop_profile import views
+from shop_profile import views 
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [ 
@@ -22,7 +22,10 @@ urlpatterns = [
     path('notifications', views.notification,name='shop_notifications'),
     path('settings', views.setting,name='shop_setting'),
     path('basic_update', views.basic_update,name='basic_update'),
+    path('update_services', views.update_services,name='update_services'),
     path('services_update', views.services_update,name='services_update'),
+    path('items_update', views.items_update,name='items_update'),
+    path('update', views.update,name='update'),
     path('schedule_update', views.schedule_update,name='schedule_update'),
 ]
 # Serve media files during development
