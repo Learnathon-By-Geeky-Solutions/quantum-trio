@@ -20,6 +20,7 @@ from decimal import Decimal
 import json
 import importlib
 from django.test import override_settings
+from django.contrib.messages import get_messages
 
 User = get_user_model()
 
@@ -1288,24 +1289,6 @@ class ShopProfileUniqueCoverageTests1(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
 
-# shop_profile/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.contrib.messages import get_messages
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview, ShopNotification
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from django.contrib.contenttypes.models import ContentType
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-from django.core.files.uploadedfile import SimpleUploadedFile
-import json
-
-UserModel = get_user_model()
 
 class ShopProfileUncoveredTestsFinal(TestCase):
     def setUp(self):
@@ -1502,23 +1485,6 @@ class ShopProfileUncoveredTestsFinal(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Worker details updated successfully.')
 
-# shop_profile/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.contrib.messages import get_messages
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview, ShopNotification
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-from django.core.files.uploadedfile import SimpleUploadedFile
-import json
-
-UserModel = get_user_model()
 
 class QuantumShopTests(TestCase):
     def setUp(self):
@@ -1615,5 +1581,3 @@ class QuantumShopTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
-   
-
