@@ -1,285 +1,327 @@
-# import os
-# from django.conf import settings
-# from django.test import TestCase, Client, RequestFactory
-# from django.urls import reverse
-# from django.core.files.uploadedfile import SimpleUploadedFile
-# from django.contrib.auth import get_user_model
-# from django.contrib.auth.hashers import make_password
-# from django.utils import timezone
-# from my_app.models import Division, District, Upazilla, Area, Service, Item
-# from shop_profile.models import MyUser, ShopProfile, ShopWorker, ShopService, ShopSchedule
-# from user_profile.models import UserProfile
-# from unittest.mock import patch
-# import json
-# from datetime import time
-# from io import BytesIO
-# from PIL import Image
-# import uuid
+from django.test import TestCase, Client
+from django.urls import reverse, resolve
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test.client import RequestFactory
+from django.contrib.messages.middleware import MessageMiddleware
+from django.contrib.messages import get_messages
+from registration.views import (
+    select_user_type, customer_register_step1, customer_register_step2,
+    customer_submit, business_register_step1, business_register_step2,
+    business_register_step3
+)
+from registration.forms import Step1Form, Step2Form, Step3Form
+from shop_profile.models import MyUser, ShopProfile
+from user_profile.models import UserProfile
+from my_app.models import District, Upazilla
+from unittest.mock import patch
+import uuid
 
-# UserModel = get_user_model()
+class RegistrationAppTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.user_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'email': 'john.doe@example.com',
+            'password': 'password123',
+            'country_code': '+880',
+            'mobile_number': '1234567890',
+            'terms': True,
+            'gender': 'Male'
+        }
+        self.district_data = [
+            {'id': 1, 'name': 'Dhaka'},
+            {'id': 2, 'name': 'Chittagong'}
+        ]
+        self.upazilla_data = [
+            {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Gulshan']},
+            {'district__name': 'Chittagong', 'upazilla_names': ['Hathazari']}
+        ]
 
-# class RegistrationTests(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.factory = RequestFactory()
+    # Helper method to add session and messages middleware to requests
+    def _add_middleware(self, request):
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session.save()
+        messages_middleware = MessageMiddleware(lambda x: None)
+        messages_middleware.process_request(request)
+        return request
 
-#         # Create dependencies
-#         self.division = Division.objects.create(name='Dhaka Division')
-#         self.district = District.objects.create(name='Dhaka', division=self.division)
-#         self.upazilla = Upazilla.objects.create(name='Mirpur', district=self.district)
-#         self.area = Area.objects.create(name='Mirpur-10', upazilla=self.upazilla)
-#         self.service = Service.objects.create(name='Haircare')
-#         self.item = Item.objects.create(
-#             name='Haircut',
-#             item_description='Standard haircut',
-#             service=self.service,
-#             gender='Both'
-#         )
+    # URL Tests
+    def test_url_select_user_type(self):
+        url = reverse('select_user_type')
+        self.assertEqual(url, '/register/')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, select_user_type)
 
-#         # Define user data for session simulation
-#         self.user_data = {
-#             'first-name': 'John',
-#             'last-name': 'Doe',
-#             'email': f'john_{uuid.uuid4()}@example.com',
-#             'password': make_password('testpass123'),
-#             'mobile-number': '1234567890',
-#             'gender': 'Male',
-#             'business_name': 'Test Business',
-#             'business_title': 'Test Title',
-#             'website': 'http://test.com',
-#             'business_info': 'Test Info',
-#             'district': 'Dhaka',
-#             'upazilla': 'Mirpur',
-#             'area': 'Mirpur-10',
-#             'landmark1': 'Landmark 1',
-#             'landmark2': '',
-#             'landmark3': '',
-#             'landmark4': '',
-#             'landmark5': '',
-#             'latitude': '23.8103',
-#             'longitude': '90.4125',
-#             'services': [str(self.service.id)],
-#             'items': {
-#                 f'items[{self.service.id}][name][]': ['Haircut'],
-#                 f'items[{self.service.id}][price][]': ['50.00']
-#             },
-#             'member': 1,
-#             'members': {
-#                 'member[0][name][]': ['Worker One'],
-#                 'member[0][email][]': ['worker1@example.com'],
-#                 'member[0][contact][]': ['1234567890'],
-#                 'member[0][experience][]': ['5'],
-#                 'member[0][expertise][]': ['Haircut']
-#             },
-#             'worker_image': [['temp/worker1.jpg']]
-#         }
+    def test_url_customer_register_step1(self):
+        url = reverse('customer_register_step1')
+        self.assertEqual(url, '/register/customer/step1')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_register_step1)
 
-#     # View Tests
-#     def test_select_user_type(self):
-#         """Test GET request to select_user_type."""
-#         response = self.client.get(reverse('select_user_type'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/sign-up.html')
+    def test_url_customer_register_step2(self):
+        url = reverse('customer_register_step2')
+        self.assertEqual(url, '/register/customer/step2')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_register_step2)
 
-#     def test_customer_register_step1_get(self):
-#         """Test GET request to customer_register_step1."""
-#         response = self.client.get(reverse('customer_register_step1'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/customer/step1.html')
-#         self.assertIn('message', response.context)
-#         self.assertEqual(response.context['message'], '')
+    def test_url_customer_submit(self):
+        url = reverse('customer_submit')
+        self.assertEqual(url, '/register/customer/submit')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_submit)
 
-#     @patch('registration.views.Upazilla.objects.values')
-#     def test_customer_register_step2_get(self, mock_upazilla_values):
-#         """Test GET request to customer_register_step2."""
-#         mock_upazilla_values.return_value.annotate.return_value = [
-#             {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Dhanmondi']}
-#         ]
-#         response = self.client.get(reverse('step2'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/customer/step2.html')
-#         self.assertIn('district', response.context)
-#         self.assertIn('Upazilla', response.context)
+    def test_url_business_register_step1(self):
+        url = reverse('business_register_step1')
+        self.assertEqual(url, '/register/business/step1')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step1)
 
-#     @patch('registration.views.Upazilla.objects.values')
-#     def test_customer_register_step2_post_valid(self, mock_upazilla_values):
-#         """Test POST to customer_register_step2 with valid data."""
-#         mock_upazilla_values.return_value.annotate.return_value = [
-#             {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Dhanmondi']}
-#         ]
-#         data = {
-#             'first-name': 'John',
-#             'last-name': 'Doe',
-#             'email': f'john_{uuid.uuid4()}@example.com',
-#             'password': 'testpass123',
-#             'mobile-number': '1234567890',
-#             'gender': 'Male'
-#         }
-#         response = self.client.post(reverse('step2'), data)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/customer/step2.html')
-#         session_user = self.client.session.get('user', {})
-#         self.assertEqual(session_user.get('first-name'), 'John')
-#         self.assertEqual(session_user.get('email'), data['email'])
+    def test_url_business_register_step2(self):
+        url = reverse('business_register_step2')
+        self.assertEqual(url, '/register/business/step2')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step2)
 
-#     def test_customer_register_step2_post_existing_email(self):
-#         """Test POST to customer_register_step2 with existing email."""
-#         UserModel.objects.create_user(
-#             email='existing@example.com',
-#             password='testpass123',
-#             user_type='user'
-#         )
-#         data = {
-#             'first-name': 'Jane',
-#             'last-name': 'Doe',
-#             'email': 'existing@example.com',
-#             'password': 'testpass123',
-#             'mobile-number': '1234567890',
-#             'gender': 'Female'
-#         }
-#         response = self.client.post(reverse('step2'), data)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step1.html')
-#         self.assertEqual(response.context.get('message', ''), 'The email exist.')
+    def test_url_business_register_step3(self):
+        url = reverse('business_register_step3')
+        self.assertEqual(url, '/register/business/step3')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step3)
 
-#     def test_customer_submit_post_invalid_session(self):
-#         response = self.client.post(reverse('customer_submit'), {
-#             'district': 'Dhaka',
-#             'upazilla': 'Mirpur',
-#             'area': 'Mirpur-10'
-#         })
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(response.content.decode(), 'Failed')
+    # View Tests: select_user_type
+    def test_select_user_type_get(self):
+        response = self.client.get(reverse('select_user_type'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/sign-up.html')
 
-#     def test_business_register_step1_get(self):
-#         """Test GET request to business_register_step1."""
-#         response = self.client.get(reverse('business_register_step1'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step1.html')
-#         self.assertIn('message', response.context)
-#         self.assertEqual(response.context['message'], '')
+    # View Tests: customer_register_step1
+    def test_customer_register_step1_get(self):
+        response = self.client.get(reverse('customer_register_step1'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/register/customer/step1.html')
+        self.assertIsInstance(response.context['form'], Step1Form)
 
-#     def test_business_register_step2_post_valid(self):
-#         """Test POST to business_register_step2 with valid data."""
-#         data = {
-#             'first-name': 'Jane',
-#             'last-name': 'Smith',
-#             'email': f'jane_{uuid.uuid4()}@example.com',
-#             'password': 'testpass123',
-#             'mobile-number': '9876543210'
-#         }
-#         response = self.client.post(reverse('business_register_step2'), data)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step2.html')
-#         session_user = self.client.session.get('user', {})
-#         self.assertEqual(session_user.get('first-name'), 'Jane')
-#         self.assertEqual(session_user.get('email'), data['email'])
+    def test_customer_register_step1_post_valid(self):
+        response = self.client.post(reverse('customer_register_step1'), self.user_data)
+        self.assertRedirects(response, reverse('customer_register_step2'))
+        self.assertEqual(self.client.session.get('step1_data'), self.user_data)
 
-#     def test_business_register_step2_post_existing_email(self):
-#         UserModel.objects.create_user(
-#             email='existing@example.com',
-#             password='testpass123',
-#             user_type='shop'
-#         )
-#         data = {
-#             'first-name': 'Jane',
-#             'last-name': 'Smith',
-#             'email': 'existing@example.com',
-#             'password': 'testpass123',
-#             'mobile-number': '9876543210'
-#         }
-#         response = self.client.post(reverse('business_register_step2'), data)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step1.html')
-#         self.assertEqual(response.context.get('message', ''), 'The email exist.')
+    def test_customer_register_step1_post_invalid(self):
+        invalid_data = self.user_data.copy()
+        invalid_data['email'] = 'invalid_email'
+        response = self.client.post(reverse('customer_register_step1'), invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/register/customer/step1.html')
+        self.assertFalse(response.context['form'].is_valid())
 
-#     def test_business_register_step4_get(self):
-#         response = self.client.get(reverse('business_register_step4'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step4.html')
-#         self.assertIn('services', response.context)
+    # View Tests: customer_register_step2
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_register_step2_get_no_session(self, mock_upazilla, mock_district):
+        response = self.client.get(reverse('customer_register_step2'))
+        self.assertRedirects(response, reverse('customer_register_step1'))
 
-#     @patch('registration.views.Item.objects.values')
-#     def test_business_register_step5_post(self, mock_item_values):
-#         """Test POST to business_register_step5."""
-#         email = f'jane_{uuid.uuid4()}@example.com'
-#         self.client.session['user'] = {'email': email}
-#         self.client.session.modified = True
-#         mock_item_values.return_value.annotate.return_value = [
-#             {'service__id': self.service.id, 'service__name': 'Haircare', 'service_names': ['Haircut']}
-#         ]
-#         data = {'services[]': [str(self.service.id)]}
-#         response = self.client.post(reverse('business_register_step5'), data)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'app/login_signup/register/business/step5.html')
-#         session_user = self.client.session.get('user', {})
-#         self.assertEqual(session_user.get('services', []), [str(self.service.id)])
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_register_step2_get(self, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        # Set session data
+        session = self.client.session
+        session['step1_data'] = self.user_data
+        session.save()
+        response = self.client.get(reverse('customer_register_step2'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/register/customer/step2.html')
 
-#     def test_business_submit_post_invalid_session(self):
-#         response = self.client.post(reverse('business_submit'), {
-#             'schedule[Monday][start]': '09:00',
-#             'schedule[Monday][end]': '17:00'
-#         })
-#         self.assertEqual(response.status_code, 400)
-#         self.assertEqual(response.content.decode(), 'Invalid session data')
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_register_step2_post_valid(self, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        request = self.factory.post(reverse('customer_register_step2'), {
+            'district': 'Dhaka',
+            'upazilla': 'Mirpur',
+            'area': 'Test Area',
+            'latitude': 23.8103,
+            'longitude': 90.4125
+        })
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        response = customer_register_step2(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
+        self.assertTrue(MyUser.objects.filter(email=self.user_data['email']).exists())
+        self.assertTrue(UserProfile.objects.filter(user__email=self.user_data['email']).exists())
 
-# class RegistrationViewsTest(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.division = Division.objects.create(name="Test Division")
-#         self.district = District.objects.create(name="Test District", division=self.division)
-#         self.upazilla = Upazilla.objects.create(name="Test Upazilla", district=self.district)
-#         self.service = Service.objects.create(name="Test Service")
-#         self.item = Item.objects.create(name="Test Item", service=self.service)
-#         self.user_data = {
-#             "first-name": "John",
-#             "last-name": "Doe",
-#             "email": "test@example.com",
-#             "password": make_password("password123"),
-#             "mobile-number": "1234567890",
-#             "gender": "Male",
-#             "business_name": "Test Shop",
-#             "business_title": "Test Title",
-#             "website": "http://example.com",
-#             "business_info": "Test Info",
-#             "district": "Test District",
-#             "upazilla": "Test Upazilla",
-#             "area": "Test Area",
-#             "landmark1": "Landmark 1",
-#             "landmark2": "Landmark 2",
-#             "landmark3": "Landmark 3",
-#             "landmark4": "Landmark 4",
-#             "landmark5": "Landmark 5",
-#             "latitude": "12.34",
-#             "longitude": "56.78",
-#             "services": [str(self.service.id)],
-#             "items": {
-#                 "items[0][name]": ["Test Item"],
-#                 "items[0][price]": ["50.00"]
-#             },
-#             "member": 1,
-#             "members": {
-#                 "member[0][name]": ["Worker 1"],
-#                 "member[0][email]": ["worker1@example.com"],
-#                 "member[0][contact]": ["9876543210"],
-#                 "member[0][experience]": ["5"],
-#                 "member[0][expertise][]": ["Test Item"]
-#             },
-#             "worker_image": [["temp/worker1.jpg"]]
-#         }
+    # View Tests: customer_submit
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_customer_submit_post(self, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        request = self.factory.post(reverse('customer_submit'), {
+            'district': 'Dhaka',
+            'upazilla': 'Mirpur',
+            'area': 'Test Area',
+            'latitude': 23.8103,
+            'longitude': 90.4125
+        })
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        response = customer_submit(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
 
-#     def test_customer_submit_missing_session(self):
-#         """Test customer_submit with missing session data"""
-#         response = self.client.post(reverse("customer_submit"), {})
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(response.content.decode(), "Failed")
+    # View Tests: business_register_step1
+    def test_business_register_step1_get(self):
+        response = self.client.get(reverse('business_register_step1'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/register/business/step1.html')
+        self.assertIsInstance(response.context['form'], Step1Form)
 
-#     def test_business_submit_missing_session(self):
-#         """Test business_submit handling missing session data"""
-#         data = {
-#             "schedule[Monday][start]": "09:00",
-#             "schedule[Monday][end]": "17:00"
-#         }
-#         response = self.client.post(reverse("business_submit"), data)
-#         self.assertEqual(response.status_code, 400)
-#         self.assertEqual(response.content.decode(), "Invalid session data")
+    def test_business_register_step1_post_valid(self):
+        response = self.client.post(reverse('business_register_step1'), self.user_data)
+        self.assertRedirects(response, reverse('business_register_step2'))
+        self.assertEqual(self.client.session.get('step1_data'), self.user_data)
+
+    # View Tests: business_register_step2
+    def test_business_register_step2_get_no_session(self):
+        response = self.client.get(reverse('business_register_step2'))
+        self.assertRedirects(response, reverse('business_register_step1'))
+
+    def test_business_register_step2_get(self):
+        # Set session data
+        session = self.client.session
+        session['step1_data'] = self.user_data
+        session.save()
+        response = self.client.get(reverse('business_register_step2'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/login_signup/register/business/step2.html')
+
+    def test_business_register_step2_post_valid(self):
+        business_data = {
+            'business_name': 'Test Shop',
+            'business_title': 'Test Title',
+            'business_info': 'This is a test business.',
+            'gender': 'male'
+        }
+        request = self.factory.post(reverse('business_register_step2'), business_data)
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        response = business_register_step2(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('business_register_step3'))
+
+    # View Tests: business_register_step3
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_business_register_step3_get_no_session(self, mock_upazilla, mock_district):
+        response = self.client.get(reverse('business_register_step3'))
+        self.assertRedirects(response, reverse('business_register_step1'))
+
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    def test_business_register_step3_post_valid(self, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        business_data = {
+            'district': 'Dhaka',
+            'upazilla': 'Mirpur',
+            'area': 'Test Area',
+            'shop_landmark_1': 'Landmark 1',
+            'shop_landmark_2': 'Landmark 2',
+            'shop_landmark_3': 'Landmark 3',
+            'latitude': 23.8103,
+            'longitude': 90.4125
+        }
+        request = self.factory.post(reverse('business_register_step3'), business_data)
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        request.session['step2_data'] = {
+            'business_name': 'Test Shop',
+            'business_title': 'Test Title',
+            'business_info': 'This is a test business.',
+            'gender': 'male',
+            'website': ''  # Add website field, empty since it's optional
+        }
+        response = business_register_step3(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
+        self.assertTrue(MyUser.objects.filter(email=self.user_data['email']).exists())
+        self.assertTrue(ShopProfile.objects.filter(user__email=self.user_data['email']).exists())
+
+    # Form Tests: Step1Form
+    def test_step1_form_valid(self):
+        form = Step1Form(data=self.user_data)
+        self.assertTrue(form.is_valid())
+
+    def test_step1_form_invalid_email(self):
+        invalid_data = self.user_data.copy()
+        invalid_data['email'] = 'invalid_email'
+        form = Step1Form(data=invalid_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('email', form.errors)
+
+    def test_step1_form_duplicate_email(self):
+        MyUser.objects.create_user(email=self.user_data['email'], password='testpass', user_type='user')
+        form = Step1Form(data=self.user_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('email', form.errors)
+
+    # Form Tests: Step2Form
+    def test_step2_form_valid(self):
+        form = Step2Form(data={
+            'business_name': 'Test Shop',
+            'business_title': 'Test Title',
+            'business_info': 'This is a test business.',
+            'gender': 'male'
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_step2_form_invalid_business_info(self):
+        form = Step2Form(data={
+            'business_name': 'Test Shop',
+            'business_title': 'Test Title',
+            'business_info': 'Short',
+            'gender': 'male'
+        })
+        self.assertFalse(form.is_valid())
+        self.assertIn('business_info', form.errors)
+
+    # Form Tests: Step3Form
+    def test_step3_form_valid_customer(self):
+        form = Step3Form(
+            data={
+                'district': 'Dhaka',
+                'upazilla': 'Mirpur',
+                'area': 'Test Area',
+                'latitude': 23.8103,
+                'longitude': 90.4125
+            },
+            user_type='customer',
+            districts=self.district_data,
+            upazillas=['Mirpur', 'Gulshan']
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_step3_form_valid_shop(self):
+        form = Step3Form(
+            data={
+                'district': 'Dhaka',
+                'upazilla': 'Mirpur',
+                'area': 'Test Area',
+                'shop_landmark_1': 'Landmark 1',
+                'shop_landmark_2': 'Landmark 2',
+                'shop_landmark_3': 'Landmark 3',
+                'latitude': 23.8103,
+                'longitude': 90.4125
+            },
+            user_type='shop',
+            districts=self.district_data,
+            upazillas=['Mirpur', 'Gulshan']
+        )
+        self.assertTrue(form.is_valid())
