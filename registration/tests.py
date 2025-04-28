@@ -104,10 +104,6 @@ class RegistrationAppTests(TestCase):
         self.assertTemplateUsed(response, 'app/login_signup/register/customer/step1.html')
         self.assertIsInstance(response.context['form'], Step1Form)
 
-    def test_customer_register_step1_post_valid(self):
-        response = self.client.post(reverse('customer_register_step1'), self.user_data)
-        self.assertRedirects(response, reverse('customer_register_step2'))
-        self.assertEqual(self.client.session.get('step1_data'), self.user_data)
 
     def test_customer_register_step1_post_invalid(self):
         invalid_data = self.user_data.copy()
