@@ -14,6 +14,7 @@ from user_profile.models import UserProfile
 from shop_profile.models import ShopProfile, ShopService, ShopWorker, ShopReview
 from booking.models import BookingSlot
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 import json
 
 UserModel = get_user_model()
@@ -388,15 +389,6 @@ class AdditionalMyAppTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'app/terms_conditions.html')
 
-    # def test_submit_shop_review_missing_fields(self):
-    #     self.client.login(email='adduser@example.com', password='addpass123')
-    #     response = self.client.post(reverse('submit_shop_review'), {
-    #         'rating': '5',
-    #         'shop_id': self.shop_profile.id
-    #     })
-    #     self.assertEqual(response.status_code, 404)
-    #     self.assertJSONEqual(response.content, {'success': False, 'error': 'Fill all the required fields.'})
-
     def test_search_view_item_based(self):
         response = self.client.post(reverse('search'), {'search': 'Add Item'})
         self.assertEqual(response.status_code, 200)
@@ -758,28 +750,6 @@ class CoverageMyAppTestsTests1(TestCase):
             phone='1234567890',
             experience=5.0
         )
-
-    # def test_submit_shop_review_general_exception(self):
-    #     self.client.login(email='testuser@example.com', password='testpass123')
-    #     BookingSlot.objects.create(
-    #         user=self.user_profile,
-    #         shop=self.shop_profile,
-    #         status='completed',
-    #         date=date(2025, 4, 24),
-    #         time=time(12, 0),
-    #         payment_status='unpaid',
-    #         item=self.item,
-    #         worker=self.shop_worker
-    #     )
-    #     with patch('shop_profile.models.ShopReview.objects.create', side_effect=Exception('Database error')):
-    #         response = self.client.post(reverse('submit_shop_review'), {
-    #             'rating': '4',
-    #             'review': 'Great shop!',
-    
-    #             'shop_id': self.shop_profile.id,
-    #             'user_id': self.user_profile.id
-    #         })
-    #     self.assertEqual(response.status_code, 404)
 
     def test_fetch_shop_filters_and_sorting(self):
         response = self.client.get(reverse('fetch_shop'), {
@@ -1157,22 +1127,6 @@ class UniqueCoverageMyAppTests1(TestCase):
         self.assertEqual(data[0]['shop_name'], 'Test Shop')
         self.assertEqual(data[1]['shop_name'], 'Test Shop 2')
 
-# my_app/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item, ReviewCarehub
-from shop_profile.models import ShopProfile, ShopWorker, ShopService
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from django.contrib.contenttypes.models import ContentType
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-import django.urls.exceptions
-
-UserModel = get_user_model()
 
 class MyAppUncoveredTests(TestCase):
     def setUp(self):
@@ -1356,22 +1310,6 @@ class MyAppUncoveredTests(TestCase):
             self.assertEqual(len(response.context['Area']), 1)
             self.assertEqual(response.context['Area'][0]['area_names'][0], self.area.name)
 
-# my_app/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model, authenticate, login
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-import django.urls.exceptions
-
-UserModel = get_user_model()
 
 class MyAppAdditionalUncoveredTests(TestCase):
     def setUp(self):
@@ -1524,23 +1462,6 @@ class MyAppAdditionalUncoveredTests(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
 
-
-# my_app/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopWorker, ShopService, ShopReview
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from django.contrib.contenttypes.models import ContentType
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-import django.urls.exceptions
-
-UserModel = get_user_model()
 
 class MyAppUncoveredTests1(TestCase):
     def setUp(self):
@@ -1709,24 +1630,6 @@ class MyAppUncoveredTests1(TestCase):
         response = self.client.post(reverse('items'), {'service': self.service.name})
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
-
-
-# my_app/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.contrib.messages import get_messages
-from django.utils import timezone
-from datetime import date, time, datetime
-from my_app.models import Division, District, Upazilla, Area, Service, Item
-from shop_profile.models import ShopProfile, ShopWorker, ShopService
-from user_profile.models import UserProfile
-from booking.models import BookingSlot
-from unittest.mock import patch
-from django.http import HttpResponseNotAllowed
-import django.urls.exceptions
-
-UserModel = get_user_model()
 
 class MyAppProfileUncoveredTests(TestCase):
     def setUp(self):
