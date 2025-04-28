@@ -15,6 +15,8 @@ from datetime import datetime, date, time, timedelta
 import json
 from unittest.mock import patch, MagicMock
 
+UserModel = get_user_model()
+
 class UserProfileModelTest(TestCase):
     def setUp(self):
         self.user = MyUser.objects.create(email="test@example.com")
@@ -444,9 +446,6 @@ class AdditionalUserProfileViewsTest(TestCase):
 
 
 # user_profile/tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
 from django.utils import timezone
 from datetime import date, time, datetime
@@ -459,8 +458,6 @@ from unittest.mock import patch
 from django.http import HttpResponse
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
-
-UserModel = get_user_model()
 
 class UserProfileCoverageTests(TestCase):
     def setUp(self):
