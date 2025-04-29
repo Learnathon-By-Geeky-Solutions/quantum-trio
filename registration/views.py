@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from registration.forms import Step1Form, Step2Form, Step3Form
 from shop_profile.models import MyUser, ShopProfile,ShopSchedule
 from user_profile.models import UserProfile
-from my_app.models import District, Upazilla
+from my_app.models import District, Upazilla, Area
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib import messages
 from datetime import time
@@ -59,6 +59,10 @@ def customer_register_step2(request):
                     user_area=form.cleaned_data['area'],
                     latitude=form.cleaned_data['latitude'],
                     longitude=form.cleaned_data['longitude']
+                )
+                Area.objects.get_or_create(
+                    name=form.cleaned_data['area'],
+                    upazilla=Upazilla.objects.get(name=form.cleaned_data['upazilla'])
                 )
                 messages.success(request,"You have successfully created account.")
                 request.session.flush()
@@ -152,7 +156,10 @@ def business_register_step3(request):
                 shop_landmark_5=step3_data['shop_landmark_5'],
             )
             shop_profile.save()
-            
+            Area.objects.get_or_create(
+                name=step3_data['area'],
+                upazilla=Upazilla.objects.get(name=step3_data['upazilla'])
+            )
             del request.session['step1_data']
             del request.session['step2_data']
             days_of_week = [

@@ -105,11 +105,20 @@ def log_in(request):
         password = request.POST.get('password')
         user = authenticate(request, username=email, password=password)
         
-        if user:
-            login(request, user)
-            return redirect('home')
-        error = "Invalid email or password"
-        user_type = 'customer'
+        if user is not None:
+            if user.user_type == 'user':
+                login(request, user)
+                return redirect('home')
+            elif user.user_type == 'shop':
+                login(request, user)
+                return redirect('dashboard/')
+            elif user.user_type == 'admin':
+                login(request, user)
+                return redirect('admin/')
+            else:
+                error = "Unrecognized user type"
+        else:
+            error = "Invalid email or password"
     
     return render(request, 'app/login_signup/login.html', {'type': user_type, 'message': error})
 
