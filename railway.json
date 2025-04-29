@@ -1,0 +1,9 @@
+{
+    "build": {
+      "builder": "nixpacks",
+      "install": ["nodejs-18_x", "python-3_9"]
+    },
+    "deploy": {
+      "startCommand": "gunicorn carehub.wsgi:application"
+    }
+  }
