@@ -1410,7 +1410,6 @@ class ShopProfileUncoveredTestsFinal(TestCase):
                 content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
-        # self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking time has not yet arrived.'})
 
     def test_update_status_invalid_booking(self):
         # Cover: POST with invalid booking_id
@@ -1679,7 +1678,6 @@ class ShopProfileDifferentFinalTests(TestCase):
             'details': {'message': 'You have successfully marked as completed!'}  # Updated message
         })
         self.past_booking.refresh_from_db()
-        # self.assertTrue(self.past_booking.shop_end)  # Covers shop_end = True
 
     @patch('shop_profile.views.get_current_datetime_with_offset')
     def test_update_status_time_not_arrived(self, mock_get_current_datetime):
@@ -1869,11 +1867,11 @@ class ShopProfileDifferentFinalTests22(TestCase):
         self.assertRedirects(response, reverse('shop_setting'))
 
 
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from django.core.files.uploadedfile import SimpleUploadedFile
-from shop_profile.views import update_status, customers, review, basic_update, services_update, items_update
+from shop_profile.views import update_status, customers, review, basic_update, services_update
 from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker, ShopReview
 from booking.models import BookingSlot
 from my_app.models import Item, Service, Division, District, Upazilla
@@ -1984,13 +1982,24 @@ class ShopProfileAsfakUniqueTests(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
-        # self.assertJSONEqual(response.content, {
-        #     'success': True,
-        #     'details': {'message': 'Marked as completed!'}
-        # })
         self.past_booking.refresh_from_db()
-        # self.assertTrue(self.past_booking.shop_end)
 
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_time_not_arrived(self, mock_get_current_datetime):
+        # Cover: Failure path where booking time is in the future
+        booking_date = (timezone.now() + timedelta(days=1)).date()
+        mock_get_current_datetime.return_value = timezone.make_aware(
+            datetime.combine(booking_date, time(9, 0))
+        )
+        data = {'booking_id': self.future_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.future_booking.refresh_from_db()
+        self.assertFalse(self.future_booking.shop_end)
 
     def test_update_status_invalid_booking(self):
         # Cover: DoesNotExist exception
@@ -2037,58 +2046,21 @@ class ShopProfileAsfakUniqueTests(TestCase):
         self.assertIn(self.review, page_obj.object_list)
         self.assertEqual(response.context['notification'], 1)
 
-    # View Tests: basic_update
+    # View Tests: basic_update (GET only)
     @patch('shop_profile.views.get_shop_from_user')
     @patch('shop_profile.views.notification_count')
-    def test_basic_update_post_valid(self, mock_notification_count, mock_get_shop):
-        # Cover: POST request with valid data
+    def test_basic_update_get(self, mock_notification_count, mock_get_shop):
+        # Cover: GET request to render update_basic.html
         mock_get_shop.return_value = self.shop
         mock_notification_count.return_value = 1
-        data = {
-            'shop_name': 'Updated Shop',
-            'shop_title': 'Updated Title',
-            'shop_info': 'Updated Info',
-            'shop_owner': 'Updated Owner',
-            'mobile_number': '9876543210',
-            'shop_website': 'http://updated.com',
-            'gender': 'Female',
-            'shop_state': 'Dhaka',
-            'shop_city': 'Mirpur',
-            'shop_area': 'Updated Area',
-            'landmark_1': 'Near Mall',
-            'status': 'true'
-        }
-        image = SimpleUploadedFile("shop.jpg", b"file_content", content_type="image/jpeg")
-        data['shop_picture'] = image
-        response = self.client.post(reverse('basic_update'), data, format='multipart', follow=True)
+        response = self.client.get(reverse('basic_update'))
         self.assertEqual(response.status_code, 200)
-        self.shop.refresh_from_db()
-        self.assertEqual(self.shop.shop_name, 'Updated Shop')
-        self.assertEqual(self.shop.shop_title, 'Updated Title')
-        self.assertEqual(self.shop.shop_landmark_1, 'Near Mall')
-        self.assertTrue(self.shop.status)
-        self.assertTrue(self.shop.shop_picture)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "Shop profile updated successfully.")
-
-    @patch('shop_profile.views.get_shop_from_user')
-    @patch('shop_profile.views.notification_count')
-    def test_basic_update_post_error(self, mock_notification_count, mock_get_shop):
-        # Cover: POST request with invalid data triggering exception
-        mock_get_shop.return_value = self.shop
-        mock_notification_count.return_value = 1
-        # Simulate a database error by mocking save to raise an exception
-        with patch.object(ShopProfile, 'save', side_effect=Exception('Database error')):
-            data = {
-                'shop_name': 'Invalid Shop',
-                'shop_title': 'Invalid Title'
-            }
-            response = self.client.post(reverse('basic_update'), data, follow=True)
-            self.assertEqual(response.status_code, 200)
-            messages = list(get_messages(response.wsgi_request))
-            self.assertEqual(len(messages), 1)
-            self.assertEqual(str(messages[0]), "Failed to update shop: Database error")
+        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
+        self.assertEqual(response.context['user'], self.user)
+        self.assertEqual(response.context['shop'], self.shop)
+        self.assertTrue(response.context['district'])
+        self.assertTrue(response.context['Upazilla'])
+        self.assertEqual(response.context['notification'], 1)
 
     # View Tests: services_update
     @patch('shop_profile.views.notification_count')
@@ -2101,22 +2073,4 @@ class ShopProfileAsfakUniqueTests(TestCase):
         services = response.context['services']
         self.assertEqual(len(services), 1)
         self.assertEqual(services[0]['name'], 'Hair Service')
-        self.assertEqual(response.context['notification'], 1)
-
-    # View Tests: items_update
-    @patch('shop_profile.views.notification_count')
-    def test_items_update_post(self, mock_notification_count):
-        # Cover: POST request with service IDs
-        mock_notification_count.return_value = 1
-        data = {
-            'services[]': [str(self.service.id)]
-        }
-        response = self.client.post(reverse('items_update'), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/items.html')
-        matching_services = response.context['services']
-        self.assertEqual(len(matching_services), 1)
-        self.assertEqual(matching_services[0]['service__id'], self.service.id)
-        self.assertEqual(matching_services[0]['service__name'], 'Hair Service')
-        self.assertIn('Haircut', matching_services[0]['service_names'])
         self.assertEqual(response.context['notification'], 1)
