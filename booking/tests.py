@@ -442,3 +442,140 @@ class BookingUncoveredTests(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data, ['09:00', '11:00'])
+
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from booking.views import adjust_start_time, booking_step_1
+from shop_profile.models import MyUser, ShopProfile, ShopWorker
+from my_app.models import Item, Service
+from unittest.mock import patch
+from datetime import datetime, time, timedelta
+
+class AsfakCoverageTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Create shop user and profile
+        self.user = MyUser.objects.create_user(
+            email='shop@example.com',
+            password='testpass',
+            user_type='shop'
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_owner='Test Owner'
+        )
+        # Create service and item
+        self.service = Service.objects.create(name='Hair Service')
+        self.item = Item.objects.create(name='Haircut', service=self.service)
+        # Create shop worker
+        self.worker = ShopWorker.objects.create(
+            shop=self.shop,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+        self.worker.expertise.add(self.item)
+        # Log in shop user
+        self.client.login(email='shop@example.com', password='testpass')
+
+    def tearDown(self):
+        self.client.logout()  # Clear session to prevent interference
+        super().tearDown()
+
+    # Tests: adjust_start_time
+    @patch('booking.views.datetime')
+    def test_adjust_start_time_today_after_start(self, mock_datetime):
+        # Cover: date is today, current time > start_time
+        mock_datetime.today.return_value.date.return_value = datetime(2025, 4, 29).date()
+        mock_datetime.now.return_value.time.return_value = time(12, 30)  # Current time: 12:30
+        mock_datetime.now.return_value.replace.return_value = datetime(2025, 4, 29, 12, 0, 0, 0)
+        start_time = time(10, 0)  # Start time: 10:00
+        date_obj = datetime(2025, 4, 29).date()
+        result = adjust_start_time(start_time, date_obj)
+        expected = time(13, 0)  # Next rounded hour: 13:00
+        self.assertEqual(result, expected)
+
+    @patch('booking.views.datetime')
+    def test_adjust_start_time_today_before_start(self, mock_datetime):
+        # Cover: date is today, current time < start_time
+        mock_datetime.today.return_value.date.return_value = datetime(2025, 4, 29).date()
+        mock_datetime.now.return_value.time.return_value = time(8, 30)  # Current time: 08:30
+        start_time = time(10, 0)  # Start time: 10:00
+        date_obj = datetime(2025, 4, 29).date()
+        result = adjust_start_time(start_time, date_obj)
+        self.assertEqual(result, start_time)
+
+    def test_adjust_start_time_not_today(self):
+        # Cover: date is not today
+        start_time = time(10, 0)
+        date_obj = datetime(2025, 4, 30).date()  # Tomorrow
+        result = adjust_start_time(start_time, date_obj)
+        self.assertEqual(result, start_time)
+
+    # Tests: booking_step_1
+    @patch('booking.views.validate_post_params')
+    @patch('booking.views.get_object_or_none')
+    def test_booking_step_1_post_valid(self, mock_get_object, mock_validate_params):
+        # Cover: Valid POST with item_id and shop_id
+        mock_validate_params.return_value = True
+        mock_get_object.side_effect = [self.shop, self.item]
+        data = {
+            'shop_id': str(self.shop.id),
+            'item_id': str(self.item.id)
+        }
+        response = self.client.post(reverse('index'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/booking/book-step-1.html')
+        context = response.context
+        self.assertEqual(context['shop'], self.shop)
+        self.assertEqual(context['service'], self.item)
+        self.assertQuerysetEqual(
+            context['workers'],
+            ShopWorker.objects.filter(shop=self.shop, expertise=self.item),
+            transform=lambda x: x
+        )
+
+    @patch('booking.views.validate_post_params')
+    def test_booking_step_1_post_invalid_params(self, mock_validate_params):
+        # Cover: Invalid POST (missing parameters)
+        mock_validate_params.return_value = False
+        response = self.client.post(reverse('index'), {})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/booking/book-step-1.html')
+        context = response.context
+        self.assertIsNone(context['shop'])
+        self.assertIsNone(context['service'])
+        self.assertIsNone(context['workers'])
+
+    @patch('booking.views.validate_post_params')
+    @patch('booking.views.get_object_or_none')
+    def test_booking_step_1_post_invalid_shop_or_item(self, mock_get_object, mock_validate_params):
+        # Cover: POST with invalid shop_id or item_id
+        mock_validate_params.return_value = True
+        mock_get_object.side_effect = [None, self.item]  # Invalid shop
+        data = {
+            'shop_id': '999',
+            'item_id': str(self.item.id)
+        }
+        response = self.client.post(reverse('index'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/booking/book-step-1.html')
+        context = response.context
+        self.assertIsNone(context['shop'])
+        self.assertEqual(context['service'], self.item)
+        self.assertIsNone(context['workers'])
+
+    def test_booking_step_1_get(self):
+        # Cover: GET request
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/booking/book-step-1.html')
+        context = response.context
+        self.assertIsNone(context['shop'])
+        self.assertIsNone(context['service'])
+        self.assertIsNone(context['workers'])

@@ -399,12 +399,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "app/salon_dashboard/settings.html")
 
-    # def test_services_update_get(self):
-    #     response = self.client.get(reverse("services_update"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "app/salon_dashboard/update-services.html")
-    #     self.assertIn("services", response.context)
-
     def test_schedule_update_post_valid(self):
         response = self.client.post(
             reverse("schedule_update"),
@@ -554,7 +548,7 @@ class ShopProfileReviewTests(TestCase):
         self.assertEqual(str(self.review), expected_str)
 
 
-class ShopProfileViewsTest(TestCase):
+class ShopProfileViewsTestTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = MyUser.objects.create(email="shop@example.com", user_type="shop")
@@ -1416,7 +1410,6 @@ class ShopProfileUncoveredTestsFinal(TestCase):
                 content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
-        # self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking time has not yet arrived.'})
 
     def test_update_status_invalid_booking(self):
         # Cover: POST with invalid booking_id
@@ -1581,3 +1574,456 @@ class QuantumShopTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
+
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.messages import get_messages
+from shop_profile.views import notification, update, update_status
+from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker
+from booking.models import BookingSlot
+from my_app.models import Item, Service, Division, District, Upazilla
+from user_profile.models import UserProfile
+from unittest.mock import patch
+from datetime import date, time, datetime, timedelta
+from django.utils import timezone
+import json
+
+class ShopProfileDifferentFinalTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Create shop user and profile
+        self.user = MyUser.objects.create_user(
+            email='shop@example.com',
+            password='testpass',
+            user_type='shop'
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_owner='Test Owner'
+        )
+        # Create customer user and profile
+        self.customer = MyUser.objects.create_user(
+            email='customer@example.com',
+            password='testpass',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.customer,
+            first_name='Test',
+            last_name='Customer'
+        )
+        # Create service and item
+        self.service = Service.objects.create(name='Hair Service')
+        self.item = Item.objects.create(name='Haircut', service=self.service)
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=50.00
+        )
+        # Create shop worker
+        self.worker = ShopWorker.objects.create(
+            shop=self.shop,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+        # Create booking slot (past and future) with worker
+        self.past_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() - timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        self.future_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() + timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        # Log in shop user
+        self.client.login(email='shop@example.com', password='testpass')
+
+    def tearDown(self):
+        self.client.logout()  # Clear session to prevent interference
+        super().tearDown()
+
+    # View Tests: update_status
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_success(self, mock_get_current_datetime):
+        # Cover: Success path where booking time is in the past
+        mock_get_current_datetime.return_value = timezone.make_aware(datetime(2025, 5, 1, 12, 0))
+        data = {'booking_id': self.past_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': True,
+            'details': {'message': 'You have successfully marked as completed!'}  # Updated message
+        })
+        self.past_booking.refresh_from_db()
+
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_time_not_arrived(self, mock_get_current_datetime):
+        # Cover: Failure path where booking time is in the future
+        mock_get_current_datetime.return_value = timezone.make_aware(datetime(2025, 4, 29, 8, 0))
+        data = {'booking_id': self.future_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': False,
+            'message': 'The booking time has not yet arrived.'  # Updated message
+        })
+        self.future_booking.refresh_from_db()
+        self.assertFalse(self.future_booking.shop_end)
+
+    def test_update_status_invalid_booking(self):
+        # Cover: DoesNotExist exception
+        data = {'booking_id': 999}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': False,
+            'message': 'Booking not found.'
+        })
+
+    # View Tests: update
+    @patch('shop_profile.views.get_shop_from_user')
+    @patch('shop_profile.views.Item.objects.get')
+    def test_update_post_valid(self, mock_item_get, mock_get_shop):
+        # Cover: Success path with messages.success
+        mock_get_shop.return_value = self.shop
+        mock_item_get.return_value = self.item
+        data = {
+            'items[name][]': ['Haircut'],
+            'items[price][]': ['50.00']
+        }
+        response = self.client.post(reverse('update'), data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(ShopService.objects.filter(shop=self.shop, item=self.item, price='50.00').exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Services updated successfully.")
+        self.assertRedirects(response, reverse('shop_setting'))
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.messages import get_messages
+from shop_profile.views import notification, update, update_status
+from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker
+from booking.models import BookingSlot
+from my_app.models import Item, Service, Division, District, Upazilla
+from user_profile.models import UserProfile
+from unittest.mock import patch
+from datetime import date, time, datetime, timedelta
+from django.utils import timezone
+import json
+
+class ShopProfileDifferentFinalTests22(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Create shop user and profile
+        self.user = MyUser.objects.create_user(
+            email='shop@example.com',
+            password='testpass',
+            user_type='shop'
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_owner='Test Owner'
+        )
+        # Create customer user and profile
+        self.customer = MyUser.objects.create_user(
+            email='customer@example.com',
+            password='testpass',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.customer,
+            first_name='Test',
+            last_name='Customer'
+        )
+        # Create service and item
+        self.service = Service.objects.create(name='Hair Service')
+        self.item = Item.objects.create(name='Haircut', service=self.service)
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=50.00
+        )
+        # Create shop worker
+        self.worker = ShopWorker.objects.create(
+            shop=self.shop,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+        # Create booking slot (past and future) with worker
+        self.past_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() - timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        self.future_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() + timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        # Log in shop user
+        self.client.login(email='shop@example.com', password='testpass')
+
+    def tearDown(self):
+        self.client.logout()  # Clear session to prevent interference
+        super().tearDown()
+
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_time_not_arrived(self, mock_get_current_datetime):
+        # Cover: Failure path where booking time is in the future
+        mock_get_current_datetime.return_value = timezone.make_aware(datetime(2025, 4, 29, 8, 0))
+        data = {'booking_id': self.future_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': False,
+            'message': 'The booking time has not yet arrived.'
+        })
+        self.future_booking.refresh_from_db()
+        self.assertFalse(self.future_booking.shop_end)
+
+    def test_update_status_invalid_booking(self):
+        # Cover: DoesNotExist exception
+        data = {'booking_id': 999}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': False,
+            'message': 'Booking not found.'
+        })
+
+    # View Tests: update
+    @patch('shop_profile.views.get_shop_from_user')
+    @patch('shop_profile.views.Item.objects.get')
+    def test_update_post_valid(self, mock_item_get, mock_get_shop):
+        # Cover: Success path with messages.success
+        mock_get_shop.return_value = self.shop
+        mock_item_get.return_value = self.item
+        data = {
+            'items[name][]': ['Haircut'],
+            'items[price][]': ['50.00']
+        }
+        response = self.client.post(reverse('update'), data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(ShopService.objects.filter(shop=self.shop, item=self.item, price='50.00').exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Services updated successfully.")
+        self.assertRedirects(response, reverse('shop_setting'))
+
+
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.messages import get_messages
+from shop_profile.views import update_status, customers, review, basic_update, services_update
+from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker, ShopReview
+from booking.models import BookingSlot
+from my_app.models import Item, Service, Division, District, Upazilla
+from user_profile.models import UserProfile
+from unittest.mock import patch
+from datetime import date, time, datetime, timedelta
+from django.utils import timezone
+import json
+
+class ShopProfileAsfakUniqueTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Create shop user and profile
+        self.user = MyUser.objects.create_user(
+            email='shop@example.com',
+            password='testpass',
+            user_type='shop'
+        )
+        self.shop = ShopProfile.objects.create(
+            user=self.user,
+            shop_name='Test Shop',
+            shop_title='Test Title',
+            shop_info='Test Info',
+            shop_owner='Test Owner',
+            shop_state='Dhaka',
+            shop_city='Mirpur',
+            shop_area='Test Area'
+        )
+        # Create customer user and profile
+        self.customer = MyUser.objects.create_user(
+            email='customer@example.com',
+            password='testpass',
+            user_type='user'
+        )
+        self.user_profile = UserProfile.objects.create(
+            user=self.customer,
+            first_name='Test',
+            last_name='Customer'
+        )
+        # Create location hierarchy
+        self.division = Division.objects.create(name='Test Division')
+        self.district = District.objects.create(name='Dhaka', division=self.division)
+        self.upazilla = Upazilla.objects.create(name='Mirpur', district=self.district)
+        # Create service and item
+        self.service = Service.objects.create(name='Hair Service')
+        self.item = Item.objects.create(name='Haircut', service=self.service)
+        # Create shop service
+        self.shop_service = ShopService.objects.create(
+            shop=self.shop,
+            item=self.item,
+            price=50.00
+        )
+        # Create shop worker
+        self.worker = ShopWorker.objects.create(
+            shop=self.shop,
+            name='Test Worker',
+            email='worker@example.com',
+            phone='1234567890',
+            experience=5.0
+        )
+        # Create booking slot (past and future)
+        self.past_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() - timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        self.future_booking = BookingSlot.objects.create(
+            shop=self.shop,
+            user=self.user_profile,
+            worker=self.worker,
+            item=self.item,
+            date=(timezone.now() + timedelta(days=1)).date(),
+            time=time(10, 0),
+            status='confirmed',
+            shop_end=False
+        )
+        # Create review
+        self.review = ShopReview.objects.create(
+            shop=self.shop,
+            reviewer_id=self.user_profile.id,
+            rating=5,
+            review='Great service!'
+        )
+        # Log in shop user
+        self.client.login(email='shop@example.com', password='testpass')
+
+    def tearDown(self):
+        self.client.logout()  # Clear session to prevent interference
+        super().tearDown()
+
+    # View Tests: update_status
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_success(self, mock_get_current_datetime):
+        # Cover: Success path where booking time is in the past
+        booking_date = (timezone.now() - timedelta(days=1)).date()
+        mock_get_current_datetime.return_value = timezone.make_aware(
+            datetime.combine(booking_date, time(11, 0)) + timedelta(hours=1)
+        )
+        data = {'booking_id': self.past_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.past_booking.refresh_from_db()
+
+    @patch('shop_profile.views.get_current_datetime_with_offset')
+    def test_update_status_time_not_arrived(self, mock_get_current_datetime):
+        # Cover: Failure path where booking time is in the future
+        booking_date = (timezone.now() + timedelta(days=1)).date()
+        mock_get_current_datetime.return_value = timezone.make_aware(
+            datetime.combine(booking_date, time(9, 0))
+        )
+        data = {'booking_id': self.future_booking.id}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.future_booking.refresh_from_db()
+        self.assertFalse(self.future_booking.shop_end)
+
+    def test_update_status_invalid_booking(self):
+        # Cover: DoesNotExist exception
+        data = {'booking_id': 999}
+        response = self.client.post(
+            reverse('update-status'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {
+            'success': False,
+            'message': 'Booking not found.'
+        })
+
+    # View Tests: services_update
+    @patch('shop_profile.views.notification_count')
+    def test_services_update_get(self, mock_notification_count):
+        # Cover: GET request to retrieve services
+        mock_notification_count.return_value = 1
+        response = self.client.get(reverse('services_update'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app/salon_dashboard/services.html')
+        services = response.context['services']
+        self.assertEqual(len(services), 1)
+        self.assertEqual(services[0]['name'], 'Hair Service')
+        self.assertEqual(response.context['notification'], 1)
