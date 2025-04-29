@@ -146,9 +146,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS=[STATIC_DIR,]
 
-
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -175,3 +172,6 @@ DEFAULT_FROM_EMAIL = 'CareHubBD <rakib1551p@gmail.com>'
 
 if config("RAILWAY_STATIC", default=False, cast=bool):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+# for login required decorator
+LOGIN_URL = '/login'

@@ -22,7 +22,7 @@ def home(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
-    shops = ShopProfile.objects.all()
+    shops = ShopProfile.objects.all().order_by('-shop_rating')
     male_items = Item.objects.filter(Q(gender='Male') | Q(gender='Both')).values()
     female_items = Item.objects.filter(Q(gender='Female') | Q(gender='Both')).values()
     reviews = ReviewCarehub.objects.all().order_by("-created_at")

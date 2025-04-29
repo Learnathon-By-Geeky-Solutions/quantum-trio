@@ -77,7 +77,7 @@ def create_booking_and_notify(user, shop, service, worker, date, time):
     return booking
 
 # --- Views ---
-
+@login_required
 @csrf_protect
 @require_http_methods(["GET", "POST"])
 def booking_step_1(request):
