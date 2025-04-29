@@ -174,4 +174,4 @@ if config("RAILWAY_STATIC", default=False, cast=bool):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
 # for login required decorator
-LOGIN_URL = '/login'
+# LOGIN_URL = '/login'
