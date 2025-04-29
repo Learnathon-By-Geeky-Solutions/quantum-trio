@@ -157,11 +157,6 @@ class UserProfileViewsTest(TestCase):
         self.profile.refresh_from_db()
         self.assertTrue(self.profile.profile_picture.name.startswith("profile_pictures/test"))
 
-    # def test_profile_view_unauthenticated(self):
-    #     self.client.logout()
-    #     response = self.client.get(reverse("user"))
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertTrue(response.url.startswith("/accounts/login/"))
 
     def test_myreviews_view(self):
         response = self.client.get(reverse("myreviews"))
@@ -282,19 +277,6 @@ class UserProfileViewsTest(TestCase):
         response = self.client.get(reverse("mymessage"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "app/customer_profile/mymessage.html")
-
-    # def test_views_require_login(self):
-    #     self.client.logout()
-    #     urls = [
-    #         "user", "addressofbooking", "myreviews", "mybooking",
-    #         "booking_details", "reject_booking", "update-status",
-    #         "mycancellations", "mynotifications", "mymessage"
-    #     ]
-    #     for url_name in urls:
-    #         response = self.client.get(reverse(url_name))
-    #         self.assertEqual(response.status_code, 302)
-    #         self.assertTrue(response.url.startswith("/accounts/login/"))
-
 
 class TargetedUserProfileViewsTest(TestCase):
     def setUp(self):
