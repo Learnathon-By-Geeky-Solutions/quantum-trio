@@ -7,7 +7,7 @@ from shop_profile.models import ShopProfile, ShopSchedule, ShopWorker, ShopServi
 from my_app.models import Item
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-
+from datetime import date
 # --- Helper Functions ---
 
 def get_object_or_none(model, **kwargs):
@@ -37,16 +37,20 @@ def generate_time_slots(start_time, end_time, date_obj):
     slots = []
     current_time = datetime.combine(date_obj, start_time)
     end_datetime = datetime.combine(date_obj, end_time)
+
     while current_time + timedelta(hours=1) <= end_datetime:
         slots.append(current_time.time())
         current_time += timedelta(hours=1)
     return slots
 
 def get_available_time_slots(shop_id, worker_id, date_obj):
+    time_slots = []
+    today = date.today()
+    if date_obj<today:
+        return time_slots
     day_name = date_obj.strftime("%A")
     schedule = ShopSchedule.objects.filter(shop=shop_id, day_of_week=day_name)
-
-    time_slots = []
+    
     for day in schedule:
         adjusted_start = adjust_start_time(day.start, date_obj)
         time_slots.extend(generate_time_slots(adjusted_start, day.end, date_obj))
@@ -94,12 +98,13 @@ def booking_step_1(request):
 @csrf_protect
 @require_http_methods(["GET", "POST"])
 def booking_step_2(request):
-    context = {"shop": None, "service": None, "worker": None}
+    context = {"shop": None, "service": None, "worker": None ,"shop_service": None}
 
     if request.method == 'POST' and validate_post_params(request, ['item_id', 'shop_id', 'worker_id']):
         context["shop"] = get_object_or_none(ShopProfile, id=request.POST['shop_id'])
         context["service"] = get_object_or_none(Item, id=request.POST['item_id'])
         context["worker"] = get_object_or_none(ShopWorker, id=request.POST['worker_id'])
+        context["shop_service"] = get_object_or_none(ShopService, item__id=request.POST['item_id'])
 
     return render(request, 'app/booking/book-step-2.html', context)
 

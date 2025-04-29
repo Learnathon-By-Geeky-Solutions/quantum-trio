@@ -30,12 +30,18 @@ HOURS_OFFSET = 6
 CANCEL_HOURS_LIMIT = 0
 SHOP_STAFFS = "shop_staffs"
 
+#Retrieve shop profile from user.
 def get_shop_from_user(user):
-    """Retrieve shop profile from user."""
+    
     return user.shop_profile
 
+#Unread Notification count.
+def notification_count(user):
+    shop=user.shop_profile
+    return ShopNotification.objects.filter(shop=shop,is_read=False).count()
+
+#Generate response data for the past n days.
 def get_response_data(shop, days=DAYS_IN_PAST):
-    """Generate response data for the past n days."""
     return [
         {
             "date": (datetime.now() - timedelta(days=i)).strftime("%d %b"),
@@ -47,9 +53,10 @@ def get_response_data(shop, days=DAYS_IN_PAST):
         }
         for i in range(days - 1, -1, -1)
     ]
-
+    
+#Calculate monthly revenue data for completed bookings.
 def get_monthly_data(shop, year):
-    """Calculate monthly revenue data for completed bookings."""
+    
     months = OrderedDict((datetime(2000, m, 1).strftime('%b'), Decimal('0.00')) 
                         for m in range(1, datetime.now().month + 1))
     price_map = {service.item_id: service.price for service in ShopService.objects.filter(shop=shop)}
@@ -60,8 +67,8 @@ def get_monthly_data(shop, year):
     
     return [{"month": month, "value": float(value)} for month, value in months.items()]
 
+#Calculate total and new customer counts.
 def get_customer_counts(shop):
-    """Calculate total and new customer counts."""
     total_customer = BookingSlot.objects.filter(shop=shop, status='completed').count()
     
     start_of_month = now().replace(day=1)
@@ -77,8 +84,8 @@ def get_customer_counts(shop):
     new_customer = len(set(completed_this_month) - set(old_customers))
     return total_customer, new_customer
 
+#Fetch and format shop reviews.
 def get_review_data(shop):
-    """Fetch and format shop reviews."""
     reviews = ShopReview.objects.filter(shop=shop).order_by('-created_at')
     for review in reviews:
         review.reviewer = UserProfile.objects.filter(id=review.reviewer_id).first()
@@ -89,12 +96,13 @@ def get_review_data(shop):
     average_rating = reviews.aggregate(avg=Avg('rating'))['avg'] or 0
     return reviews, happy_count, unhappy_count, average_rating
 
+#Get current datetime with timezone offset in UTC.
 def get_current_datetime_with_offset(hours=HOURS_OFFSET):
-    """Get current datetime with timezone offset in UTC."""
-    print("check again")
+    
     updated_time = timezone.now() + timedelta(hours=hours)
     return updated_time
 
+#Dashboard view
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
@@ -105,10 +113,12 @@ def profile(request):
         'monthly_data': get_monthly_data(shop, now().year),
         'total_customer': get_customer_counts(shop)[0],
         'new_customer': get_customer_counts(shop)[1],
+        'notification': notification_count(request.user),
         **dict(zip(['reviews', 'happy_count', 'unhappy_count', 'average_rating'], get_review_data(shop)))
     }
     return render(request, "app/salon_dashboard/index.html", context)
 
+# Gallery view
 @csrf_protect
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -126,7 +136,7 @@ def gallery(request):
             image.delete()
     
     images = ShopGallery.objects.filter(shop=shop)
-    return render(request, "app/salon_dashboard/saloon-gallery.html", {"image": images, "message": message})
+    return render(request, "app/salon_dashboard/saloon-gallery.html", {"image": images,'notification': notification_count(request.user), "message": message})
 
 @csrf_protect
 @login_required
@@ -135,7 +145,7 @@ def calender(request):
     month = int(request.GET.get("month", datetime.now().month))
     year = int(request.GET.get("year", datetime.now().year))
     cal = HTMLCalendar().formatmonth(year, month)
-    return render(request, "app/salon_dashboard/saloon-calender.html", {"cal": cal, "month": month, "year": year})
+    return render(request, "app/salon_dashboard/saloon-calender.html", {"cal": cal, "month": month, "year": year,'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
@@ -163,7 +173,7 @@ def slots(request):
         }
         for worker in ShopWorker.objects.filter(shop=get_shop_from_user(request.user))
     ]
-    return render(request, "app/salon_dashboard/booking-slots.html", {"shop_worker": shop_worker, "today": current_datetime,"selected":today})
+    return render(request, "app/salon_dashboard/booking-slots.html", {"shop_worker": shop_worker, "today": current_datetime,"selected":today, 'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
@@ -273,7 +283,8 @@ def staffs(request):
     
     return render(request, "app/salon_dashboard/staffs.html", {
         "shop_worker": ShopWorker.objects.filter(shop=shop),
-        "items": ShopService.objects.filter(shop=shop)
+        "items": ShopService.objects.filter(shop=shop),
+        'notification': notification_count(request.user)
     })
 
 def _validate_worker_inputs(name, phone, expertise, email, experience):
@@ -351,6 +362,7 @@ def customers(request):
     return render(request, "app/salon_dashboard/customers.html", {
         "bookings": page_obj,
         "page_obj": page_obj,
+        'notification': notification_count(request.user)
     })
     
 @csrf_protect
@@ -366,6 +378,7 @@ def review(request):
     return render(request, "app/salon_dashboard/reviews.html", {
         'reviews': page_obj,  # paginated reviews
         'page_obj': page_obj,  # page object for pagination controls
+        'notification': notification_count(request.user)
     })
 
 @csrf_protect
@@ -373,13 +386,14 @@ def review(request):
 @require_http_methods(["GET"])
 def notification(request):
     notifications = ShopNotification.objects.filter(shop=get_shop_from_user(request.user)).order_by("-created_at")
-    return render(request, "app/salon_dashboard/notifications.html", {"notifications": notifications})
+    ShopNotification.objects.filter(shop=get_shop_from_user(request.user), is_read=False).update(is_read=True)
+    return render(request, "app/salon_dashboard/notifications.html", {"notifications": notifications,'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def setting(request):
-    return render(request, "app/salon_dashboard/settings.html")
+    return render(request, "app/salon_dashboard/settings.html",{'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
@@ -410,22 +424,27 @@ def basic_update(request):
         'user': user,
         'shop': shop,
         'district': list(District.objects.values('id', 'name')),
-        'Upazilla': list(Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name')))
+        'Upazilla': list(Upazilla.objects.values('district__name').annotate(upazilla_names=ArrayAgg('name'))),
+        'notification': notification_count(request.user)
     })
+    
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def update_services(request):
     shop=get_shop_from_user(request.user)
     items=ShopService.objects.filter(shop=shop)
-    return render(request, "app/salon_dashboard/update-services.html",{'items':items})
+    return render(request, "app/salon_dashboard/update-services.html",{'items':items,'notification': notification_count(request.user)})
+
 @csrf_protect
 @login_required
 @require_http_methods(["GET"])
 def services_update(request):
     return render(request, "app/salon_dashboard/services.html", {
-        'services': Service.objects.values('id', 'name')
+        'services': Service.objects.values('id', 'name'),
+        'notification': notification_count(request.user)
     })
+    
 @csrf_protect
 @login_required
 @require_http_methods(["POST"])
@@ -442,8 +461,10 @@ def items_update(request):
             service for service in available_services if str(service['service__id']) in services
         ]
     return render(request, "app/salon_dashboard/items.html", {
-        'services': matching_services
+        'services': matching_services,
+        'notification': notification_count(request.user)
     })
+    
 @csrf_protect
 @login_required
 @require_http_methods(["POST"])
@@ -492,5 +513,6 @@ def schedule_update(request):
     }
     return render(request, 'app/salon_dashboard/update_schedule.html', {
         'days_of_week': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        'schedule_dict': schedule_dict
+        'schedule_dict': schedule_dict,
+        'notification': notification_count(request.user)
     })

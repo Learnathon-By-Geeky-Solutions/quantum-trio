@@ -10,12 +10,13 @@
 
     <!-- Notification and Logout -->
     <div class="notification flex items-center space-x-4" style="margin-right:40px;">
-        <div class="relative">
-            <img src="{% static 'app/image/icon/notification.png' %}" alt="Notification Icon"
-                class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">
-            <span class="absolute top-0 right-0 text-xs text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">1</span>
-        </div>
-        
+        <a href="notifications">
+            <div class="relative">
+                <img src="{% static 'app/image/icon/notification.png' %}" alt="Notification Icon"
+                    class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">
+                <span class="absolute top-0 right-0 text-xs text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">{{notification}}</span>
+            </div>
+        </a>
         <a href="../logout" class="hover:text-pink-300">
             <img src="{% static 'app/image/icon/logout.png'%}" alt="Logout"
                 class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">

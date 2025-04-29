@@ -57,7 +57,8 @@ def _get_reviewer_name(user):
 
 def submit_review(request):
     if request.method != "POST" or not request.user.is_authenticated:
-        return HttpResponse("Invalid request", status=400)
+        messages.error(request, "Please log in first.")
+        return redirect("home")
     
     comment = request.POST.get("review", "").strip()
     rating = _validate_rating(request.POST.get("rating", "0").strip())
@@ -68,7 +69,8 @@ def submit_review(request):
     
     reviewer_instance = _get_reviewer_instance(request.user)
     if not reviewer_instance:
-        return HttpResponse("Invalid reviewer", status=400)
+        messages.error(request, "Please log in first.")
+        return redirect("home")
     
     ReviewCarehub.objects.create(
         reviewer_type=ContentType.objects.get_for_model(reviewer_instance),

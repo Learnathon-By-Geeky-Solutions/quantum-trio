@@ -41,7 +41,7 @@
                                         <td class="py-2 px-4">
                                             {{ booking.date }} {{ booking.time }}
                                         </td>
-                                        <td class="py-2 px-4">{{ booking.user }}</td>
+                                        <td class="py-2 px-4">{{ booking.user.first_name }} {{ booking.user.last_name }}</td>
                                         <td class="py-2 px-4
                                             {% if booking.status == 'completed' %}text-green-600 font-semibold
                                             {% elif booking.status == 'confirmed' %}text-yellow-500 font-semibold

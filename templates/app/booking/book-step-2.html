@@ -11,9 +11,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+    <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
         integrity="sha384-Y1zzU5I7+ujiuXE1zuR3FJEPzfjZulUbsE9v7KDX7ztQ+fpy+aCix9RgfskCL2Oz"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .professional-card {
             background-color: white;
@@ -97,7 +98,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md w-1/2">
                 <h1 class="text-4xl font-bold mb-4">{{shop.shop_name}}</h1>
                 <p class="text-gray-700">4 ⭐ 100 customer 50 review</p>
-                <p class="text-gray-500 text-2xl">shop city</p>
+                <p class="text-gray-500 text-2xl">{{shop.shop_city}}</p>
                 <p class="text-gray-500">{{ shop.shop_area }}, {{ shop.shop_landmark_1 }}, {{ shop.shop_landmark_2 }}
                 </p>
                 <hr class="my-4">
@@ -108,13 +109,12 @@
                 </p>
                 <p class="text-gray-500">Your desired Expert:{{ worker.name }}</p>
                 <p class="text-gray-500">Time: 1 hour (approx) &bull; {{ service.item_description }}</p>
-                <p class="text-gray-700 font-bold mt-4">BDT: {{ service.price }} TK</p>
-                <p class="text-gray-700 font-bold mt-4">ID: {{ service.id }} </p>
+                <p class="text-gray-700 font-bold mt-4">BDT: {{ shop_service.price }} TK</p>
+                <p class="text-gray-700 font-bold mt-4">Item: {{ service.name }} </p>
                 <hr class="my-4">
 
                 <p class="text-lg font-bold">Total:
-                    <span class="text-green-600">BDT: {{ service.price }} TK</span>
-
+                    <span class="text-green-600">{{ shop_service.price }} TK</span>
                 </p>
 
                 <form id="worker-selection-form" action="success" method="POST">
@@ -170,6 +170,7 @@
                         confirmButtonColor: '#3085d6',
                         backdrop: 'rgba(0,0,123,0.4)',
                     });
+                    
                     return;
                 }
         
@@ -241,7 +242,7 @@
                 date.setDate(startDate.getDate() + i);  // Move the date forward by i days
 
                 // Reset the time to midnight to avoid timezone issues
-                date.setHours(date.getHours() + 6);
+                date.setHours(date.getHours() + 0);
 
                 let day = date.getDate();
                 let dayName = dayNames[date.getDay()];
