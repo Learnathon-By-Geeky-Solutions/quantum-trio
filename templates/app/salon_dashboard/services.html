@@ -52,37 +52,49 @@
 {% include 'app/salon_dashboard/header.html' %}
   {% comment %} <div class="min-h-screen flex items-center justify-center p-5"> {% endcomment %}
     <section class="flex flex-col md:flex-row min-h-screen">
-    {% include 'app/salon_dashboard/sidebar.html' %}
-    <div class="bg-white p-8 rounded-lg shadow-lg w-1/2 max-w-3xl p-5 ">
-      <form class="form" action="items_update" method="POST" id="serviceForm">
-        {% csrf_token %}
-        <a href="update_services">
-          <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
-        </a>
-        <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
-        <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
-        <div class="grid-container">
-          {% for service in services %}
-          <div class="grid-item"
-               onclick="selectService(this)"
-               onkeydown="handleKeyPress(event, this)"
-               tabindex="-1">
-            <input type="checkbox" id="{{ service.id }}" name="services[]" value="{{ service.id }}" class="hidden">
-            <label for="{{ service.id }}">
-              <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
-              <span>{{ service.name }}</span>
-            </label>
-          </div>
-        {% endfor %}
-        
-          <div class="ji"></div>
+      {% include 'app/salon_dashboard/sidebar.html' %}
+        <div class="flex flex-row w-full">
+          <div class="bg-white p-5 rounded-lg shadow-lg w-full">
+            <form class="form" action="items_update" method="POST" id="serviceForm">
+              {% csrf_token %}
+              <a href="update_services">
+                <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-8 h-8">
+              </a>
+              <h1 class="text-2xl font-bold mb-4 text-center text-gray-700">What types of services do you offer?</h1>
+              <p class="text-center text-gray-600 mb-8">Choose your primary and up to 4 related service types</p>
+              <div class="grid-container">
+                {% for service in services %}
+                            <button type="button" 
+                          class="grid-item" 
+                          onclick="selectService(this)" 
+                          aria-pressed="false" 
+                          aria-label="Select service: {{ service.name }}">
+                      <input type="checkbox" 
+                            id="{{ service.id }}" 
+                            name="services[]" 
+                            value="{{ service.id }}" 
+                            class="hidden">
+                      <label for="{{ service.id }}">
+                          <img src="{% static 'app/image/service_icon/' %}{{ service.id }}.png" alt="{{ service.name }}">
+                          <span>{{ service.name }}</span>
+                      </label>
+                  </button>
+                {% endfor %}
+              
+                <div class="ji"></div>
+              </div>
+              <div class="flex justify-center">
+                <button type="submit"
+                    class="bg-pink-500 text-white px-4 py-2 w-32 rounded-lg hover:bg-pink-700 transition duration-300 mt-4">
+                    Continue
+                </button>
+              </div>
+            </form>
+          
         </div>
-        <button type="submit"
-                class="bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-6">Continue
-        </button>
-      </form>
-    </div>
-    </section>
+      </div>
+   
+</section>
   <script>
     let selectedServices = []
 

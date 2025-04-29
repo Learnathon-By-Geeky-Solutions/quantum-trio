@@ -1,12 +1,6 @@
 {% load static %}
-<div class="header flex justify-between items-center  bg-pink-500 shadow-lg py-6 px-6">
-    <a href="/home" class="text-4xl font-bold text-white-700">CareHUB BD</a>
-    <!-- Shop Name -->
-    <h2 class="text-4xl font-bold text-white" style="margin:0 0 0 40px;">
-        {% if user.is_authenticated %}
-            {{ user.shop_profile.shop_name }}
-        {% endif %}
-    </h2>
+<!-- Add this inside your base template <head> -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&display=swap" rel="stylesheet">
 
     <!-- Notification and Logout -->
     <div class="notification flex items-center space-x-4" style="margin-right:40px;">
@@ -21,5 +15,27 @@
             <img src="{% static 'app/image/icon/logout.png'%}" alt="Logout"
                 class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">
         </a>
+
+        <!-- Shop Name (Parlor Name) -->
+        <h2 class="shop-name text-white ml-10">
+            {% if user.is_authenticated %}
+                {{ user.shop_profile.shop_name }}
+            {% endif %}
+        </h2>
+
+        <!-- Notification and Logout -->
+        <div class="notification flex items-center space-x-4" style="margin-right:40px;">
+            <div class="relative">
+                <img src="{% static 'app/image/icon/notification.png' %}" alt="Notification Icon"
+                    class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">
+                <span class="absolute top-0 right-0 text-xs text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">1</span>
+            </div>
+
+            <a href="../logout" class="hover:text-pink-300">
+                <img src="{% static 'app/image/icon/logout.png'%}" alt="Logout"
+                    class="w-8 h-8 rounded-full hover:bg-pink-700 transition-all duration-300">
+            </a>
+        </div>
+
     </div>
-</div>
+</header>

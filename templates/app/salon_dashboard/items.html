@@ -15,39 +15,44 @@
     {% include 'app/salon_dashboard/header.html' %}
     <section class="flex flex-col md:flex-row min-h-screen">
         {% include 'app/salon_dashboard/sidebar.html' %}
-        <form action="update" method="POST" class="bg-white p-4 rounded shadow-md">
-            {% csrf_token %}
-            <a href="services_update">
-                <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-6 h-6">
-            </a>
-            <h2 class="text-xl font-bold text-center mb-4">Add Items to Services</h2>
+        <div class="flex flex-row w-full item-center">
+            <div class="bg-white p-5 rounded-lg shadow-lg w-full">
+                
+                <form action="update" method="POST" class="bg-white p-4 rounded shadow-md">
+                    {% csrf_token %}
+                    <a href="services_update">
+                        <img src="{% static 'app/image/icon/left-arrow.png' %}" alt="" class="w-6 h-6">
+                    </a>
+                    <h2 class="text-xl font-bold text-center mb-4">Add Items to Services</h2>
 
-            <div class="" id="services">
-                {% for service in services %}
-                <div class="service mb-4">
-                    <p class="block font-bold mb-2">Service: {{ service.service__name }} </p>
-                    <p class="block font-bold mb-2">Items</p>
-                    <div class="items">
-                        <div class="item mb-2 flex gap-2">
-                            <select name="items[{{ forloop.counter }}][name][]"
-                                class="block flex-grow w-3/4 p-2 border rounded item-select">
-                                {% for item in service.service_names %}
-                                <option value="{{ item }}">{{ item }}</option>
-                                {% endfor %}
-                            </select>
-                            <input type="number" name="items[{{ forloop.counter }}][price][]"
-                                class="block w-1/4 p-2 border rounded item-price" placeholder="Price">
+                    <div class="" id="services">
+                        {% for service in services %}
+                        <div class="service mb-4">
+                            <p class="block font-bold mb-2">Service: {{ service.service__name }} </p>
+                            <p class="block font-bold mb-2">Items</p>
+                            <div class="items">
+                                <div class="item mb-2 flex gap-2">
+                                    <select name="items[{{ forloop.counter }}][name][]"
+                                        class="block flex-grow w-3/4 p-2 border rounded item-select">
+                                        {% for item in service.service_names %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="number" name="items[{{ forloop.counter }}][price][]"
+                                        class="block w-1/4 p-2 border rounded item-price" placeholder="Price">
+                                </div>
+                            </div>
+                            <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2 text-sm">Add
+                                Item</button>
                         </div>
-                    </div>
-                    <button type="button" class="add-item bg-pink-500 text-white p-2 rounded mt-2 text-sm">Add
-                        Item</button>
-                </div>
-                {% endfor %}
+                        {% endfor %}
 
+                    </div>
+                    <button type="submit"
+                        class="submit bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-4">Update</button>
+                </form>
             </div>
-            <button type="submit"
-                class="submit bg-pink-500 text-white p-2 w-full rounded-lg hover:bg-pink-700 transition duration-300 mt-4">Update</button>
-        </form>
+        </div>
     </section>
 
     <script>
