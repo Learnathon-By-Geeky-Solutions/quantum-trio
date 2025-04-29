@@ -562,3 +562,103 @@ class RegistrationAppTests1(TestCase):
             upazillas=['Mirpur', 'Gulshan']
         )
         self.assertTrue(form.is_valid())
+
+from django.test import TestCase, Client
+from django.urls import reverse, resolve
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test.client import RequestFactory
+from django.contrib.messages.middleware import MessageMiddleware
+from django.contrib.messages import get_messages
+from registration.views import (
+    select_user_type, customer_register_step1, customer_register_step2,
+    customer_submit, business_register_step1, business_register_step2,
+    business_register_step3
+)
+from registration.forms import Step1Form, Step2Form, Step3Form
+from shop_profile.models import MyUser, ShopProfile, ShopSchedule
+from user_profile.models import UserProfile
+from my_app.models import District, Upazilla, Area
+from unittest.mock import patch
+from datetime import time
+import uuid
+
+class RegistrationAppCoverageTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.user_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'email': 'john.doe@example.com',
+            'password': 'password123',
+            'country_code': '+880',
+            'mobile_number': '1234567890',
+            'terms': True,
+            'gender': 'Male'
+        }
+        self.district_data = [
+            {'id': 1, 'name': 'Dhaka'},
+            {'id': 2, 'name': 'Chittagong'}
+        ]
+        self.upazilla_data = [
+            {'district__name': 'Dhaka', 'upazilla_names': ['Mirpur', 'Gulshan']},
+            {'district__name': 'Chittagong', 'upazilla_names': ['Hathazari']}
+        ]
+
+    # Helper method to add session and messages middleware to requests
+    def _add_middleware(self, request):
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session.save()
+        messages_middleware = MessageMiddleware(lambda x: None)
+        messages_middleware.process_request(request)
+        return request
+
+    # URL Tests
+    def test_url_select_user_type(self):
+        url = reverse('select_user_type')
+        self.assertEqual(url, '/register/')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, select_user_type)
+
+    def test_url_customer_register_step1(self):
+        url = reverse('customer_register_step1')
+        self.assertEqual(url, '/register/customer/step1')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_register_step1)
+
+    def test_url_customer_register_step2(self):
+        url = reverse('customer_register_step2')
+        self.assertEqual(url, '/register/customer/step2')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_register_step2)
+
+    def test_url_customer_submit(self):
+        url = reverse('customer_submit')
+        self.assertEqual(url, '/register/customer/submit')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, customer_submit)
+
+    def test_url_business_register_step1(self):
+        url = reverse('business_register_step1')
+        self.assertEqual(url, '/register/business/step1')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step1)
+
+    def test_url_business_register_step2(self):
+        url = reverse('business_register_step2')
+        self.assertEqual(url, '/register/business/step2')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step2)
+
+    def test_url_business_register_step3(self):
+        url = reverse('business_register_step3')
+        self.assertEqual(url, '/register/business/step3')
+        resolver = resolve(url)
+        self.assertEqual(resolver.func, business_register_step3)
+
+    # View Tests: customer_register_step1
+    def test_customer_register_step1_post_valid(self):
+        response = self.client.post(reverse('customer_register_step1'), self.user_data)
+        self.assertRedirects(response, reverse('customer_register_step2'))
+        self.assertEqual(self.client.session.get('step1_data'), self.user_data)  # Covers session storage
