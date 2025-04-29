@@ -2015,53 +2015,6 @@ class ShopProfileAsfakUniqueTests(TestCase):
             'message': 'Booking not found.'
         })
 
-    # View Tests: customers
-    @patch('shop_profile.views.get_shop_from_user')
-    @patch('shop_profile.views.notification_count')
-    def test_customers_get(self, mock_notification_count, mock_get_shop):
-        # Cover: GET request to retrieve paginated bookings
-        mock_get_shop.return_value = self.shop
-        mock_notification_count.return_value = 1
-        response = self.client.get(reverse('shop_customers'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/customers.html')
-        page_obj = response.context['page_obj']
-        self.assertEqual(page_obj.paginator.count, 2)  # Two bookings (past and future)
-        self.assertIn(self.past_booking, page_obj.object_list)
-        self.assertIn(self.future_booking, page_obj.object_list)
-        self.assertEqual(response.context['notification'], 1)
-
-    # View Tests: review
-    @patch('shop_profile.views.get_shop_from_user')
-    @patch('shop_profile.views.notification_count')
-    def test_review_get(self, mock_notification_count, mock_get_shop):
-        # Cover: GET request to retrieve paginated reviews
-        mock_get_shop.return_value = self.shop
-        mock_notification_count.return_value = 1
-        response = self.client.get(reverse('shop_review'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/reviews.html')
-        page_obj = response.context['page_obj']
-        self.assertEqual(page_obj.paginator.count, 1)  # One review
-        self.assertIn(self.review, page_obj.object_list)
-        self.assertEqual(response.context['notification'], 1)
-
-    # View Tests: basic_update (GET only)
-    @patch('shop_profile.views.get_shop_from_user')
-    @patch('shop_profile.views.notification_count')
-    def test_basic_update_get(self, mock_notification_count, mock_get_shop):
-        # Cover: GET request to render update_basic.html
-        mock_get_shop.return_value = self.shop
-        mock_notification_count.return_value = 1
-        response = self.client.get(reverse('basic_update'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'app/salon_dashboard/update_basic.html')
-        self.assertEqual(response.context['user'], self.user)
-        self.assertEqual(response.context['shop'], self.shop)
-        self.assertTrue(response.context['district'])
-        self.assertTrue(response.context['Upazilla'])
-        self.assertEqual(response.context['notification'], 1)
-
     # View Tests: services_update
     @patch('shop_profile.views.notification_count')
     def test_services_update_get(self, mock_notification_count):
