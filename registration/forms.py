@@ -3,6 +3,8 @@ from django.core.validators import MinLengthValidator, RegexValidator
 from shop_profile.models import MyUser
 att_1='border border-gray-300 px-4 py-3 rounded-lg w-full focus:outline-none focus:border-pink-600'
 att_2='border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500'
+att_3='border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600'
+
 class Step1Form(forms.Form):
     first_name = forms.CharField(
         max_length=255,
@@ -146,7 +148,7 @@ class Step3Form(forms.Form):
         required=True,
         label="District",
         widget=forms.Select(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_3,
             'id': 'district'
         })
     )
@@ -155,7 +157,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Upazilla",
         widget=forms.Select(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_3,
             'id': 'upazilla'
         })
     )
@@ -164,7 +166,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Shop Area",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_3,
             'id': 'area'
         })
     )
@@ -222,7 +224,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Latitude",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_3,
             'id': 'latitude'
         })
     )
@@ -230,7 +232,7 @@ class Step3Form(forms.Form):
         required=True,
         label="Longitude",
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:border-pink-600',
+            'class': att_3,
             'id': 'longitude'
         })
     )
