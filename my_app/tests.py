@@ -125,13 +125,6 @@ class MyAppTests(TestCase):
         response = self.client.post(reverse('home'))
         self.assertEqual(response.status_code, 405)
 
-    # def test_submit_review_unauthenticated(self):
-    #     response = self.client.post(reverse('submit_review'), {
-    #         'review': 'Great service!',
-    #         'rating': '4.5'
-    #     })
-    #     self.assertEqual(response.status_code, 400)
-
     def test_log_in_view_get(self):
         response = self.client.get(reverse('login'), {'profile-type': 'customer'})
         self.assertEqual(response.status_code, 200)
@@ -520,16 +513,6 @@ class CoverageMyAppTests(TestCase):
         response = self.client.post(reverse('home'))
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, HttpResponseNotAllowed)
-
-    # def test_submit_review_invalid_reviewer(self):
-    #     # Test user without shop_profile or user_profile
-    #     self.client.login(email='noprofile@example.com', password='nopass123')
-    #     response = self.client.post(reverse('submit_review'), {
-    #         'review': 'Test review',
-    #         'rating': '4.0'
-    #     })
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertEqual(response.content.decode(), 'Invalid reviewer')
 
     def test_submit_shop_review_shop_not_found(self):
         # Test ShopProfile.DoesNotExist exception
@@ -1403,17 +1386,6 @@ class MyAppAdditionalUncoveredTests(TestCase):
             rated=False
         )
 
-    # def test_login_shop_user(self):
-    #     # Cover: Successful login with shop user
-    #     response = self.client.post(reverse('login'), {
-    #         'email': 'shopuser@example.com',
-    #         'password': 'shoppass123',
-    #         'profile-type': 'shop'
-    #     })
-    #     self.assertEqual(response.status_code, 302)  # Redirect
-    #     self.assertRedirects(response, reverse('home'))
-    #     self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
-
     def test_login_regular_user(self):
         # Cover: Successful login with regular user
         response = self.client.post(reverse('login'), {
@@ -1424,17 +1396,6 @@ class MyAppAdditionalUncoveredTests(TestCase):
         self.assertEqual(response.status_code, 302)  # Redirect
         self.assertRedirects(response, reverse('home'))
         self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
-
-    # def test_login_admin_user(self):
-    #     # Cover: Successful login with admin user
-    #     response = self.client.post(reverse('login'), {
-    #         'email': 'admin@example.com',
-    #         'password': 'adminpass123',
-    #         'profile-type': 'admin'
-    #     })
-    #     self.assertEqual(response.status_code, 302)  # Redirect
-    #     self.assertRedirects(response, reverse('home'))
-    #     self.assertTrue(self.client.session.get('_auth_user_id'))  # User is logged in
 
     def test_book_now_with_district(self):
         # Cover: GET request with district parameter
