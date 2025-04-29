@@ -26,7 +26,7 @@ if not SECRET_KEY:
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="127.0.0.1,localhost").split(",")
-
+CSRF_TRUSTED_ORIGINS=['https://carehub.up.railway.app']
 
 # Application definition
 
@@ -174,4 +174,4 @@ if config("RAILWAY_STATIC", default=False, cast=bool):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
 # for login required decorator
-# LOGIN_URL = '/login'
+LOGIN_URL = '/login'
