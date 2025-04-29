@@ -4,7 +4,7 @@ from django import views
 from carehub import settings
 from my_app import views
 from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views 
 urlpatterns = [ 
     path('admin/', admin.site.urls,name='admin'),
     path('', views.home,name='home'),
