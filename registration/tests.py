@@ -577,7 +577,7 @@ from registration.views import (
 from registration.forms import Step1Form, Step2Form, Step3Form
 from shop_profile.models import MyUser, ShopProfile, ShopSchedule
 from user_profile.models import UserProfile
-from my_app.models import District, Upazilla, Area
+from my_app.models import District, Upazilla, Area, Division  # Added Division import
 from unittest.mock import patch
 from datetime import time
 import uuid
@@ -661,4 +661,92 @@ class RegistrationAppCoverageTests(TestCase):
     def test_customer_register_step1_post_valid(self):
         response = self.client.post(reverse('customer_register_step1'), self.user_data)
         self.assertRedirects(response, reverse('customer_register_step2'))
-        self.assertEqual(self.client.session.get('step1_data'), self.user_data)  # Covers session storage
+        self.assertEqual(self.client.session.get('step1_data'), self.user_data)
+
+    # View Tests: customer_register_step2
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    @patch('registration.views.Upazilla.objects.get')
+    def test_customer_register_step2_post_valid(self, mock_upazilla_get, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        # Create a Division and District with required division_id
+        division = Division.objects.create(name='Dhaka Division')
+        district = District.objects.create(name='Dhaka', division=division)
+        upazilla = Upazilla.objects.create(name='Mirpur', district=district)
+        mock_upazilla_get.return_value = upazilla
+        request = self.factory.post(reverse('customer_register_step2'), {
+            'district': 'Dhaka',
+            'upazilla': 'Mirpur',
+            'area': 'Test Area',
+            'latitude': 23.8103,
+            'longitude': 90.4125
+        })
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        response = customer_register_step2(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
+        self.assertTrue(MyUser.objects.filter(email=self.user_data['email']).exists())
+        self.assertTrue(UserProfile.objects.filter(user__email=self.user_data['email']).exists())
+        self.assertTrue(Area.objects.filter(name='Test Area', upazilla=upazilla).exists())
+        messages = list(get_messages(request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You have successfully created account.")
+        self.assertEqual(dict(request.session), {})
+
+    # View Tests: business_register_step3
+    @patch('registration.views.District.objects.all')
+    @patch('registration.views.Upazilla.objects.values')
+    @patch('registration.views.Upazilla.objects.get')
+    @patch('registration.views.time')
+    def test_business_register_step3_post_valid(self, mock_time, mock_upazilla_get, mock_upazilla, mock_district):
+        mock_district.return_value.values.return_value = self.district_data
+        mock_upazilla.return_value.annotate.return_value = self.upazilla_data
+        # Create a Division and District with required division_id
+        division = Division.objects.create(name='Dhaka Division')
+        district = District.objects.create(name='Dhaka', division=division)
+        upazilla = Upazilla.objects.create(name='Mirpur', district=district)
+        mock_upazilla_get.return_value = upazilla
+        mock_time.side_effect = lambda hour, minute: time(hour=hour, minute=minute)
+        business_data = {
+            'district': 'Dhaka',
+            'upazilla': 'Mirpur',
+            'area': 'Test Area',
+            'shop_landmark_1': 'Landmark 1',
+            'shop_landmark_2': 'Landmark 2',
+            'shop_landmark_3': 'Landmark 3',
+            'latitude': 23.8103,
+            'longitude': 90.4125
+        }
+        request = self.factory.post(reverse('business_register_step3'), business_data)
+        request = self._add_middleware(request)
+        request.session['step1_data'] = self.user_data
+        request.session['step2_data'] = {
+            'business_name': 'Test Shop',
+            'business_title': 'Test Title',
+            'business_info': 'This is a test business.',
+            'gender': 'male',
+            'website': ''
+        }
+        response = business_register_step3(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('login'))
+        self.assertTrue(MyUser.objects.filter(email=self.user_data['email']).exists())
+        shop_profile = ShopProfile.objects.get(user__email=self.user_data['email'])
+        self.assertTrue(shop_profile)
+        self.assertTrue(Area.objects.filter(name='Test Area', upazilla=upazilla).exists())
+        schedules = ShopSchedule.objects.filter(shop=shop_profile)
+        self.assertEqual(schedules.count(), 7)
+        for schedule in schedules:
+            if schedule.day_of_week == 'Friday':
+                self.assertEqual(schedule.end, time(hour=17, minute=0))
+            else:
+                self.assertEqual(schedule.end, time(hour=20, minute=0))
+            self.assertEqual(schedule.start, time(hour=9, minute=0))
+        messages = list(get_messages(request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You have successfully created account.")
+        self.assertEqual(dict(request.session), {})
+        self.assertNotIn('step1_data', request.session)
+        self.assertNotIn('step2_data', request.session)
