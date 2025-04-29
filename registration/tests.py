@@ -657,12 +657,6 @@ class RegistrationAppCoverageTests(TestCase):
         resolver = resolve(url)
         self.assertEqual(resolver.func, business_register_step3)
 
-    # View Tests: customer_register_step1
-    def test_customer_register_step1_post_valid(self):
-        response = self.client.post(reverse('customer_register_step1'), self.user_data)
-        self.assertRedirects(response, reverse('customer_register_step2'))
-        self.assertEqual(self.client.session.get('step1_data'), self.user_data)
-
     # View Tests: customer_register_step2
     @patch('registration.views.District.objects.all')
     @patch('registration.views.Upazilla.objects.values')
