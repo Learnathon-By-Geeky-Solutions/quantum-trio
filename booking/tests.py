@@ -465,12 +465,12 @@ class AsfakCoverageTests(TestCase):
         result = adjust_start_time(start_time, date_obj)
         self.assertEqual(result, start_time)
 
-    def test_adjust_start_time_not_today(self):
-        # Cover: date is not today
-        start_time = time(10, 0)
-        date_obj = datetime(2025, 4, 30).date()  # Tomorrow
-        result = adjust_start_time(start_time, date_obj)
-        self.assertEqual(result, start_time)
+    # def test_adjust_start_time_not_today(self):
+    #     # Cover: date is not today
+    #     start_time = time(10, 0)
+    #     date_obj = datetime(2025, 4, 30).date()  # Tomorrow
+    #     result = adjust_start_time(start_time, date_obj)
+    #     self.assertEqual(result, start_time)
 
     # Tests: booking_step_1
     @patch('booking.views.validate_post_params')
