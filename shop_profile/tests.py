@@ -1988,20 +1988,6 @@ class ShopProfileAsfakUniqueTests(TestCase):
         self.assertEqual(services[0]['name'], 'Hair Service')
         self.assertEqual(response.context['notification'], 1)
 
-
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.messages import get_messages
-from shop_profile.views import update_status, notification, update
-from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker
-from booking.models import BookingSlot
-from my_app.models import Item, Service
-from user_profile.models import UserProfile
-from unittest.mock import patch
-from datetime import date, time, datetime, timedelta
-from django.utils import timezone
-import json
-
 class ShopProfileACoverageTests(TestCase):
     def setUp(self):
         self.client = Client()
