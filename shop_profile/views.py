@@ -359,7 +359,7 @@ def customers(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "app/salon_dashboard/customers.html", {
+    return render(request, "app/salon_dashboard/Customers.html", {
         "bookings": page_obj,
         "page_obj": page_obj,
         'notification': notification_count(request.user)
@@ -375,7 +375,7 @@ def review(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "app/salon_dashboard/reviews.html", {
+    return render(request, "app/salon_dashboard/Reviews.html", {
         'reviews': page_obj,  # paginated reviews
         'page_obj': page_obj,  # page object for pagination controls
         'notification': notification_count(request.user)
@@ -387,7 +387,7 @@ def review(request):
 def notification(request):
     notifications = ShopNotification.objects.filter(shop=get_shop_from_user(request.user)).order_by("-created_at")
     ShopNotification.objects.filter(shop=get_shop_from_user(request.user), is_read=False).update(is_read=True)
-    return render(request, "app/salon_dashboard/notifications.html", {"notifications": notifications,'notification': notification_count(request.user)})
+    return render(request, "app/salon_dashboard/Notifications.html", {"notifications": notifications,'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
