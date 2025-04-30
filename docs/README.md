@@ -1,10 +1,6 @@
 # CareHub - Beauty & Wellness Booking Platform
 
 <p align="center">
-  <img src="static/app/image/logo-circular.png" alt="CareHub Logo" width="200"/>
-</p>
-
-<p align="center">
   A modern platform to simplify beauty and wellness service bookings with a seamless, tech-driven experience.
 </p>
 
