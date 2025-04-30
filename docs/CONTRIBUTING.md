@@ -173,7 +173,7 @@ To maintain code quality and consistency, follow these guidelines:
 For questions or clarification, reach out to the Quantum Trio team:
 
 - **GitHub Issues**: [Create an issue](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/issues)
-- **Email**: [quantum.trio@example.com](mailto:quantum.trio@example.com)
+- **Email**: [quantum.trio@example.com](mailto:quantum.trio@gmail.com)
 - **Wiki**: Check the [Project Wiki](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/wiki) for additional resources.
 
 ---
