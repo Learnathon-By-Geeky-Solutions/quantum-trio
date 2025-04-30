@@ -79,7 +79,6 @@ class BookingTests(TestCase):
         )
         self.assertEqual(booking.status, "pending")
         self.assertEqual(booking.payment_status, "unpaid")
-        # self.assertFalse(booking.user_end)
         self.assertFalse(booking.shop_end)
         self.assertIsNotNone(booking.created_at)
 
@@ -186,7 +185,6 @@ class BookingTests(TestCase):
         self.assertJSONEqual(response.content.decode(), {"error": "Invalid date format. Use YYYY-MM-DD."})
 
     def test_success_post_valid(self):
-        """Test POST to success creates booking and notification."""
         self.client.force_login(self.customer_user)
         data = {
             "item_id": self.item.id,
@@ -370,7 +368,6 @@ class BookingUncoveredTests(TestCase):
         self.assertEqual(slots, ['09:00', '11:00'])
 
     def test_available_slots_view(self):
-        # Cover: slots = get_available_time_slots(...) and return JsonResponse(slots, safe=False)
         date_obj = date(2025, 5, 5)  # A Monday in the future
         # Create a booked slot
         BookingSlot.objects.create(

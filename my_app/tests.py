@@ -1085,7 +1085,6 @@ class UniqueCoverageMyAppTests1(TestCase):
         )
 
     def test_fetch_shop_filters(self):
-        # Cover: upazilla and area filters in fetch_shop
         # Test with upazila filter
         response = self.client.get(reverse('fetch_shop'), {
             'upazila': 'Test Upazilla',
@@ -1574,7 +1573,6 @@ class MyAppUncoveredTests1(TestCase):
         self.assertEqual(list(response.context['items']), [])
 
     def test_fetch_shop_with_area(self):
-        # Cover: GET request with area parameter filtering shops
         response = self.client.get(reverse('fetch_shop'), {
             'area': 'Test Area',
             'limit': 9,
@@ -1584,7 +1582,7 @@ class MyAppUncoveredTests1(TestCase):
         data = response.json()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]['shop_id'], self.shop_profile.id)
-        self.assertEqual(data[0]['shop_city'], 'Test Upazilla')  # Updated to check shop_city
+        self.assertEqual(data[0]['shop_city'], 'Test Upazilla') 
 
     def test_items_non_get_method(self):
         # Cover: Non-GET request returning HttpResponseNotAllowed

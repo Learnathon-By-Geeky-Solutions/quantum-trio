@@ -1575,20 +1575,6 @@ class QuantumShopTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {'success': False, 'message': 'Booking not found.'})
 
-
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.messages import get_messages
-from shop_profile.views import notification, update, update_status
-from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker
-from booking.models import BookingSlot
-from my_app.models import Item, Service, Division, District, Upazilla
-from user_profile.models import UserProfile
-from unittest.mock import patch
-from datetime import date, time, datetime, timedelta
-from django.utils import timezone
-import json
-
 class ShopProfileDifferentFinalTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -1730,18 +1716,6 @@ class ShopProfileDifferentFinalTests(TestCase):
         self.assertEqual(str(messages[0]), "Services updated successfully.")
         self.assertRedirects(response, reverse('shop_setting'))
 
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.messages import get_messages
-from shop_profile.views import notification, update, update_status
-from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker
-from booking.models import BookingSlot
-from my_app.models import Item, Service, Division, District, Upazilla
-from user_profile.models import UserProfile
-from unittest.mock import patch
-from datetime import date, time, datetime, timedelta
-from django.utils import timezone
-import json
 
 class ShopProfileDifferentFinalTests22(TestCase):
     def setUp(self):
@@ -1867,20 +1841,6 @@ class ShopProfileDifferentFinalTests22(TestCase):
         self.assertRedirects(response, reverse('shop_setting'))
 
 
-
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.messages import get_messages
-from shop_profile.views import update_status, customers, review, basic_update, services_update
-from shop_profile.models import MyUser, ShopProfile, ShopNotification, ShopService, ShopWorker, ShopReview
-from booking.models import BookingSlot
-from my_app.models import Item, Service, Division, District, Upazilla
-from user_profile.models import UserProfile
-from unittest.mock import patch
-from datetime import date, time, datetime, timedelta
-from django.utils import timezone
-import json
-
 class ShopProfileAsfakUniqueTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -1964,7 +1924,7 @@ class ShopProfileAsfakUniqueTests(TestCase):
         self.client.login(email='shop@example.com', password='testpass')
 
     def tearDown(self):
-        self.client.logout()  # Clear session to prevent interference
+        self.client.logout()  
         super().tearDown()
 
     # View Tests: update_status
