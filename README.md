@@ -20,9 +20,7 @@
 
 ---
 
-## 🌐 Live Website
-
-👉 **[Click here to visit the live site](https://carehub.up.railway.app/)**
+## 🌐 Live Website  👉 **[Click here to visit the live site](https://carehub.up.railway.app/)**
 
 ---
 
