@@ -1,12 +1,28 @@
 # CareHub - Beauty & Wellness Booking Platform
 
-## 🌐 Live Website
+<p align="center">
+  <img src="static/app/image/logo.jpg" alt="CareHub Logo" width="200"/>
+</p>
+
+<p align="center">
+  A modern platform to simplify beauty and wellness service bookings with a seamless, tech-driven experience.
+</p>
 
 <p align="center">
   <a href="https://carehub.up.railway.app/">
     <img src="https://img.shields.io/badge/Live_Site-Visit_Now-brightgreen?style=for-the-badge&logo=internet-explorer" alt="Live Site" />
   </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio">
+    <img src="https://img.shields.io/github/stars/Learnathon-By-Geeky-Solutions/quantum-trio?style=for-the-badge&color=4C8BF5" alt="Stars" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Learnathon-By-Geeky-Solutions/quantum-trio?style=for-the-badge&color=28A745" alt="License" />
+  </a>
 </p>
+
+---
+
+## 🌐 Live Website
 
 👉 **[Click here to visit the live site](https://carehub.up.railway.app/)**
 
@@ -32,32 +48,52 @@ Stay updated and dive deeper into the project!
   </a>
 </div>
 
+---
 
 ## 🚀 Project Status and Quality Metrics
 
 <div align="center">
-
-[![Contributors](https://img.shields.io/github/contributors/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5)](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/graphs/contributors)
-[![Forks](https://img.shields.io/github/forks/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5)](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/network/members)
-[![Stars](https://img.shields.io/github/stars/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5)](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/stargazers)
-[![Issues](https://img.shields.io/github/issues/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=FF6F61)](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/issues)
-[![License](https://img.shields.io/github/license/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=28A745)](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/blob/main/LICENSE)
-<br>
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=alert_status&style=for-the-badge)](https://sonarcloud.io/dashboard?id=Learnathon-By-Geeky-Solutions_quantum-trio)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=bugs&style=for-the-badge)](https://sonarcloud.io/component_measures/domain/Bugs?id=Learnathon-By-Geeky-Solutions_quantum-trio)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=vulnerabilities&style=for-the-badge)](https://sonarcloud.io/component_measures/domain/Vulnerability?id=Learnathon-By-Geeky-Solutions_quantum-trio)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=code_smells&style=for-the-badge)](https://sonarcloud.io/component_measures/domain/CodeSmells?id=Learnathon-By-Geeky-Solutions_quantum-trio)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=security_rating&style=for-the-badge)](https://sonarcloud.io/component_measures/domain/Security?id=Learnathon-By-Geeky-Solutions_quantum-trio)
-
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5" alt="Contributors" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/network/members">
+    <img src="https://img.shields.io/github/forks/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5" alt="Forks" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/stargazers">
+    <img src="https://img.shields.io/github/stars/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=4C8BF5" alt="Stars" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/issues">
+    <img src="https://img.shields.io/github/issues/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=FF6F61" alt="Issues" />
+  </a>
+  <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Learnathon-By-Geeky-Solutions/quantum-trio.svg?style=for-the-badge&color=28A745" alt="License" />
+  </a>
+  <br>
+  <a href="https://sonarcloud.io/dashboard?id=Learnathon-By-Geeky-Solutions_quantum-trio">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=alert_status&style=for-the-badge" alt="Quality Gate" />
+  </a>
+  <a href="https://sonarcloud.io/component_measures/domain/Bugs?id=Learnathon-By-Geeky-Solutions_quantum-trio">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=bugs&style=for-the-badge" alt="Bugs" />
+  </a>
+  <a href="https://sonarcloud.io/component_measures/domain/Vulnerability?id=Learnathon-By-Geeky-Solutions_quantum-trio">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=vulnerabilities&style=for-the-badge" alt="Vulnerabilities" />
+  </a>
+  <a href="https://sonarcloud.io/component_measures/domain/CodeSmells?id=Learnathon-By-Geeky-Solutions_quantum-trio">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=code_smells&style=for-the-badge" alt="Code Smells" />
+  </a>
+  <a href="https://sonarcloud.io/component_measures/domain/Security?id=Learnathon-By-Geeky-Solutions_quantum-trio">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_quantum-trio&metric=security_rating&style=for-the-badge" alt="Security Rating" />
+  </a>
 </div>
 
+---
 
 ## 🤝 Team Information: Quantum Trio
 
 Meet the amazing team behind the project:
 
 | Name                   | Role        | GitHub Username                                     |
-| ---------------------- | ----------- | --------------------------------------------------- |
+|------------------------|-------------|-----------------------------------------------------|
 | Israt Jahan Reshma     | Team Leader | [IsratJahanR](https://github.com/IsratJahanR)       |
 | Md Rakibul Islam       | Member      | [rakib151p](https://github.com/rakib151p)           |
 | Asfak Shahriur         | Member      | [asfak27](https://github.com/asfak27)               |
@@ -115,19 +151,19 @@ Meet the amazing team behind the project:
 
 ## 🛠 Development Guidelines
 
-1. **Feature Branches**: Always create feature branches.
+1. **Feature Branches**: Always create feature branches (`feature/<feature-name>`).
 2. **Small, Focused Commits**: Keep commits focused and manageable.
 3. **Descriptive Commit Messages**: Clearly describe the changes made.
 4. **Pull Requests**: Submit pull requests for code reviews.
 
 ---
 
-
-
 ### Tech Stack
 
 #### Frontend:
-- HTML, Tailwind CSS, JavaScript
+- HTML
+- Tailwind CSS
+- JavaScript
 
 #### Backend:
 - Django Framework
@@ -137,9 +173,80 @@ Meet the amazing team behind the project:
 
 ---
 
+## 🧑‍💻 Getting Started
+
+To set up the project locally, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio.git
+   ```
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Set Up Environment**:
+   - Configure PostgreSQL database.
+   - Create a `.env` file and add necessary credentials (e.g., database URL, secret key).
+4. **Run Migrations**:
+   ```bash
+   python manage.py migrate
+   ```
+5. **Run the Application**:
+   ```bash
+   python manage.py runserver
+   ```
+
+For detailed setup instructions, refer to [Development Setup](docs/setup.md).
+
+---
+
+## 🛡️ Security and Testing
+
+- **Code Quality**: Integrated with SonarCloud for continuous code quality checks (bugs, vulnerabilities, code smells).
+- **Testing**: Unit and integration tests are implemented to ensure reliability. Run tests with:
+  ```bash
+  python manage.py test
+  ```
+- **Security Practices**: Follow OWASP guidelines for secure coding and data handling.
+
+---
+
+## 📈 Future Enhancements
+
+- **Mobile App**: Develop iOS and Android apps for enhanced accessibility.
+- **AI Recommendations**: Implement AI-driven service and provider recommendations.
+- **Multi-Language Support**: Add support for multiple languages to reach a global audience.
+- **Payment Gateway Integration**: Integrate popular payment gateways for seamless transactions.
+
+---
+
+## 🙌 Contributing
+
+We welcome contributions from the community! To contribute:
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add your feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a pull request.
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
+---
+
 ## 🗒️ License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📬 Contact
+
+For questions, feedback, or collaboration inquiries, reach out to the Quantum Trio team via:
+
+- **Email**: [quantum.trio@example.com](mailto:quantum.trio@example.com)
+- **GitHub Issues**: [Create an issue](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/issues)
 
 ---
 
@@ -156,3 +263,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [license-url]: https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/blob/master/LICENSE
 [sonarqube-shield]: https://img.shields.io/static/v1?label=Quality%20Gate&message=Passed&color=28A745&style=for-the-badge
 [sonarqube-url]: https://sonarcloud.io/dashboard?id=Learnathon-By-Geeky-Solutions_quantum-trio
+
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio">Quantum Trio</a>
+</p>
