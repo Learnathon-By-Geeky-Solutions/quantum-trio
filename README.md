@@ -1,7 +1,7 @@
 # CareHub - Beauty & Wellness Booking Platform
 
 <p align="center">
-  <img src="static/app/image/logo.jpg" alt="CareHub Logo" width="200"/>
+  <img src="static/app/image/logo.jpg" alt="CareHub Logo" width="200" style="border-radius: 50%;"/>
 </p>
 
 <p align="center">
