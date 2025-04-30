@@ -377,7 +377,7 @@ We welcome contributions from the community! Please read our [Contributing Guide
 
 For questions, feedback, or collaboration inquiries, reach out to the Quantum Trio team via:
 
-- **Email**: [quantum.trio@example.com](mailto:quantum.trio@example.com)
+- **Email**: [quantum.trio@example.com](mailto:quantum.trio@gmail.com)
 - **GitHub Issues**: [Create an issue](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/issues)
 
 ---
