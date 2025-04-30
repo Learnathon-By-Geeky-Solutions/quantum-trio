@@ -265,5 +265,5 @@ For questions, feedback, or collaboration inquiries, reach out to the Quantum Tr
 [sonarqube-url]: https://sonarcloud.io/dashboard?id=Learnathon-By-Geeky-Solutions_quantum-trio
 
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio">Quantum Trio</a>
+  Built with ❤️ by <a href="https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio">Team - Quantum Trio</a>
 </p>
