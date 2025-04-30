@@ -181,7 +181,6 @@ The file will be in Markdown format, as requested, and will include all details 
 6. **Booking**: Advanced booking with customizable slots.
 7. **Service Provider Selection**: Choose your preferred expert for each service.
 8. **Payment Slip**: Auto-generated payment confirmation slips.
-9. **In-App Chat**: Communicate directly with shop managers.
 10. **Booking Reports**: Detailed reports for both customers and shops.
 11. **Order Confirmation**: Dual consent system ensuring order completion only when both parties agree.
 12. **Post-Service Ratings**: Rate the service only after order completion.
