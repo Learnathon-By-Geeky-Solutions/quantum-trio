@@ -45,8 +45,12 @@
                     {% for worker in workers %}
                         <div class="professional-card border p-4 rounded-lg text-center cursor-pointer"
                             data-worker-id="{{ worker.id }}">
-                            <img class="mx-auto rounded-full h-16 w-16 mb-2" alt="" src="{{ worker.profile_pic.url }}">
-                            <p class="text-gray-700 font-semibold">{{ worker.name }}</p>
+                            {% if worker.profile_pic %}
+                                <img class="mx-auto rounded-full h-16 w-16 mb-2" alt="" src="{{ worker.profile_pic.url }}">
+                            {% else %}
+                                <img class="mx-auto rounded-full h-16 w-16 mb-2" alt="" src="{% static 'app/image/default.jpg' %}">
+                            {% endif %}
+                                <p class="text-gray-700 font-semibold">{{ worker.name }}</p>
                             <p class="text-yellow-500 text-sm">⭐ Rating: {{ worker.rating }}</p>
                         </div>
                     {% endfor %}
