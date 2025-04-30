@@ -387,7 +387,7 @@ def review(request):
 def notification(request):
     notifications = ShopNotification.objects.filter(shop=get_shop_from_user(request.user)).order_by("-created_at")
     ShopNotification.objects.filter(shop=get_shop_from_user(request.user), is_read=False).update(is_read=True)
-    return render(request, "app/salon_dashboard/notifications.html", {"notifications": notifications,'notification': notification_count(request.user)})
+    return render(request, "app/salon_dashboard/Notifications.html", {"notifications": notifications,'notification': notification_count(request.user)})
 
 @csrf_protect
 @login_required
