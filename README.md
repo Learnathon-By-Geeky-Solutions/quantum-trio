@@ -27,7 +27,6 @@
 ## 📚 Explore Project Resources
 
 Stay updated and dive deeper into the project!
-
 - 📖 [**Wiki**](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/wiki) – Project documentation and guides.
 - 📓 [**DevLogs**](https://github.com/Learnathon-By-Geeky-Solutions/quantum-trio/tree/main/DevLog) – Track our development progress.
 - ✅ [**Asana Board**](https://app.asana.com/0/1209363821145650/1209363827689666) – Visualize the project roadmap and manage tasks collaboratively.
